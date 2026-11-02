@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>นับแคล</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main>
+  <h1>นับแคล</h1>
+
+  <section class="card">
+    <div class="row"><span id="date"></span>
+      <label>เป้าหมาย <input id="goal" type="number" min="500" step="50"> kcal</label></div>
+    <div class="total"><b id="eaten">0</b> / <span id="goalText">0</span> kcal</div>
+    <div class="bar"><div id="fill"></div></div>
+    <div id="left" class="muted"></div>
+  </section>
+
+  <section class="card">
+    <h2>เพิ่มอาหาร</h2>
+    <input id="search" list="foods" placeholder="ค้นหาเมนู เช่น ข้าวผัด">
+    <datalist id="foods"></datalist>
+    <div class="row">
+      <input id="kcal" type="number" min="0" placeholder="kcal">
+      <input id="qty" type="number" min="0.5" step="0.5" value="1" title="จำนวน">
+      <button id="add">เพิ่ม</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="row"><h2>วันนี้กินอะไรไป</h2><button id="clear" class="ghost">ล้างวันนี้</button></div>
+    <ul id="list"></ul>
+  </section>
+</main>
+<script src="js/foods.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
