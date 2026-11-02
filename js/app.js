@@ -46,6 +46,11 @@ $('clear').onclick = () => { if (confirm('ล้างรายการวั�
 $('goal').onchange = e => { goal = Math.max(500, +e.target.value || 2000); Store.set('goal', goal); render(); };
 
 // --- AI ---
+// รับ key จากลิงก์ #key=... ครั้งเดียว แล้วลบออกจาก URL
+if (location.hash.startsWith('#key=')) {
+  Store.set('gkey', decodeURIComponent(location.hash.slice(5)));
+  history.replaceState(null, '', location.pathname);
+}
 $('gkey').value = Store.get('gkey', '');
 $('gmodel').value = Store.get('gmodel', '');
 $('gkey').onchange = e => Store.set('gkey', e.target.value.trim());
