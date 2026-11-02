@@ -18,3 +18,8 @@ button{background:var(--accent);color:#fff;border:0;cursor:pointer}
 ul{list-style:none;padding:0;margin:0}
 li{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
 li button{background:none;color:var(--over);padding:4px 8px}
+#aiText,details input{width:100%;margin-bottom:8px}
+.btn{padding:10px;border-radius:8px;cursor:pointer}
+.ghost-btn{border:1px solid var(--line);flex:1;text-align:center}
+#aiGo{flex:1}button:disabled{opacity:.5}
+summary{cursor:pointer;margin-bottom:8px}
