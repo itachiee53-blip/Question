@@ -2,57 +2,138 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>นับแคล</title>
-<link rel="stylesheet" href="css/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#10b981">
+<title>FitCal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/ui.css">
+<link rel="stylesheet" href="css/anim.css">
 </head>
 <body>
-<main>
-  <h1>นับแคล</h1>
+<div class="blobs"><i></i><i></i><i></i></div>
 
-  <section class="card">
-    <div class="row"><span id="date"></span>
-      <label>เป้าหมาย <input id="goal" type="number" min="500" step="50"> kcal</label></div>
-    <div class="total"><b id="eaten">0</b> / <span id="goalText">0</span> kcal</div>
-    <div class="bar"><div id="fill"></div></div>
-    <div id="left" class="muted"></div>
-  </section>
+<!-- แบบสอบถามตอนเริ่มใช้ -->
+<div id="onboard" class="onboard" hidden>
+  <div class="ob-progress"><div id="obBar"></div></div>
+  <div id="obStep" class="ob-step"></div>
+  <div class="ob-nav">
+    <button id="obBack" class="btn ghost">ย้อนกลับ</button>
+    <button id="obNext" class="btn">ถัดไป</button>
+  </div>
+</div>
 
-  <section class="card">
-    <h2>ถาม AI 🤖</h2>
-    <input id="aiText" placeholder="เช่น ข้าวมันไก่ 1 จาน + ชาเย็น">
-    <div class="row">
-      <label class="btn ghost-btn">📷 ถ่ายรูป<input id="aiImg" type="file" accept="image/*" capture="environment" hidden></label>
-      <button id="aiGo">วิเคราะห์</button>
-    </div>
-    <div id="aiMsg" class="muted"></div>
-  </section>
+<div id="app" hidden>
+  <header class="top">
+    <div><small id="hello"></small><h1 id="dateText"></h1></div>
+    <div class="streak" title="บันทึกต่อเนื่อง">🔥 <b id="streak">0</b></div>
+  </header>
 
-  <section class="card">
-    <h2>เพิ่มอาหาร</h2>
-    <input id="search" list="foods" placeholder="ค้นหาเมนู เช่น ข้าวผัด">
-    <datalist id="foods"></datalist>
-    <div class="row">
-      <input id="kcal" type="number" min="0" placeholder="kcal">
-      <input id="qty" type="number" min="0.5" step="0.5" value="1" title="จำนวน">
-      <button id="add">เพิ่ม</button>
-    </div>
-  </section>
+  <main>
+    <!-- หน้าวันนี้ -->
+    <section id="tab-home" class="tab active">
+      <div class="card ring-card">
+        <div class="ring">
+          <svg viewBox="0 0 120 120">
+            <defs><linearGradient id="grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--a1)"/><stop offset="1" stop-color="var(--a2)"/></linearGradient></defs>
+            <circle class="ring-bg" cx="60" cy="60" r="52"/>
+            <circle id="ringFg" class="ring-fg" cx="60" cy="60" r="52" pathLength="100"/>
+          </svg>
+          <div class="ring-center"><b id="leftNum">0</b><small id="leftLabel">เหลือ kcal</small></div>
+        </div>
+        <div class="ring-side">
+          <div><small>เป้าหมาย</small><b id="targetNum">0</b></div>
+          <div><small>กินแล้ว</small><b id="eatenNum">0</b></div>
+        </div>
+      </div>
 
-  <section class="card">
-    <div class="row"><h2>วันนี้กินอะไรไป</h2><button id="clear" class="ghost">ล้างวันนี้</button></div>
-    <ul id="list"></ul>
-  </section>
-  <details class="card">
-    <summary>ตั้งค่า Gemini</summary>
-    <input id="gkey" type="password" placeholder="API key (เก็บไว้ในเครื่องนี้เท่านั้น)">
-    <input id="gmodel" placeholder="gemini-2.5-flash">
-    <p class="muted">ขอ key ฟรีที่ aistudio.google.com/apikey</p>
-  </details>
-</main>
-<script src="js/foods.js"></script>
+      <div class="card macros" id="macros"></div>
+
+      <div class="card water">
+        <div class="row"><h3>💧 น้ำ</h3><span id="waterText"></span></div>
+        <div id="cups" class="cups"></div>
+      </div>
+
+      <div class="card coach">
+        <div class="row"><h3>🧠 โค้ช AI</h3><button id="coachBtn" class="btn sm">ขอคำแนะนำ</button></div>
+        <p id="coachText" class="muted">กดเพื่อให้ AI วิเคราะห์วันนี้ของคุณ</p>
+      </div>
+
+      <div id="meals"></div>
+    </section>
+
+    <!-- หน้าเพิ่มอาหาร -->
+    <section id="tab-add" class="tab">
+      <div class="card ai-card">
+        <h3>🤖 บอก AI ว่ากินอะไร</h3>
+        <textarea id="aiText" rows="2" placeholder="เช่น ข้าวมันไก่ 1 จาน กับชาเย็นหวานน้อย"></textarea>
+        <img id="aiPreview" class="preview" alt="" hidden>
+        <div class="row gap">
+          <label class="btn ghost grow">📷 ถ่าย/เลือกรูป<input id="aiImg" type="file" accept="image/*" capture="environment" hidden></label>
+          <button id="aiGo" class="btn grow">✨ วิเคราะห์</button>
+        </div>
+        <div id="aiResult"></div>
+      </div>
+
+      <div class="card">
+        <h3>✍️ เพิ่มเอง</h3>
+        <input id="search" list="foods" placeholder="ค้นหาเมนู">
+        <datalist id="foods"></datalist>
+        <div class="row gap">
+          <input id="kcal" type="number" min="0" placeholder="kcal" class="grow">
+          <select id="meal"></select>
+          <button id="addBtn" class="btn">เพิ่ม</button>
+        </div>
+        <div id="recent" class="chips"></div>
+      </div>
+    </section>
+
+    <!-- หน้าสถิติ -->
+    <section id="tab-stats" class="tab">
+      <div class="card">
+        <div class="row"><h3>⚖️ น้ำหนัก</h3><span id="goalProg" class="muted"></span></div>
+        <div class="bar big"><div id="goalBar"></div></div>
+        <svg id="weightChart" class="chart" viewBox="0 0 300 120" preserveAspectRatio="none"></svg>
+        <div class="row gap">
+          <input id="weightIn" type="number" step="0.1" placeholder="น้ำหนักวันนี้ (kg)" class="grow">
+          <button id="weightBtn" class="btn">บันทึก</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>📊 7 วันล่าสุด</h3>
+        <div id="week" class="week"></div>
+      </div>
+      <div class="card stats-grid" id="statsGrid"></div>
+    </section>
+
+    <!-- หน้าโปรไฟล์ -->
+    <section id="tab-profile" class="tab">
+      <div class="card" id="profileCard"></div>
+      <div class="card">
+        <button id="editProfile" class="btn full">✏️ แก้ไขข้อมูล/เป้าหมาย</button>
+        <button id="resetAll" class="btn ghost full danger">ลบข้อมูลทั้งหมด</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabs">
+    <button data-tab="home" class="on"><span>🏠</span>วันนี้</button>
+    <button data-tab="add" class="add-tab"><span>＋</span>เพิ่ม</button>
+    <button data-tab="stats"><span>📈</span>สถิติ</button>
+    <button data-tab="profile"><span>👤</span>ฉัน</button>
+  </nav>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="js/config.js"></script>
 <script src="js/storage.js"></script>
+<script src="js/foods.js"></script>
+<script src="js/profile.js"></script>
 <script src="js/gemini.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/onboard.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

@@ -1,0 +1,32 @@
+/* อนิเมชั่น */
+@keyframes float { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(40px,60px) scale(1.15); } 66% { transform: translate(-30px,20px) scale(.9); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes pop { 0% { opacity: 0; transform: scale(.85); } 70% { transform: scale(1.03); } 100% { opacity: 1; transform: none; } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
+@keyframes shimmer { to { background-position: -200% 0; } }
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes burst { to { transform: translate(var(--x), var(--y)) rotate(540deg); opacity: 0; } }
+
+.tab { display: none; }
+.tab.active { display: block; }
+.tab.active > * { animation: fadeUp .45s both; }
+.tab.active > *:nth-child(2) { animation-delay: .05s; }
+.tab.active > *:nth-child(3) { animation-delay: .1s; }
+.tab.active > *:nth-child(4) { animation-delay: .15s; }
+.tab.active > *:nth-child(5) { animation-delay: .2s; }
+
+.ob-step > * { animation: slideIn .45s both; }
+.ob-step > *:nth-child(2) { animation-delay: .06s; }
+.ob-step > *:nth-child(3) { animation-delay: .12s; }
+.ob-step > *:nth-child(4) { animation-delay: .18s; }
+.ob-step .emoji { animation: slideIn .45s both, bounce 2.4s 0.5s ease-in-out infinite; }
+
+.item.new { animation: pop .5s both; }
+.streak.hot { animation: bounce .6s 2; }
+
+.loading { height: 14px; border-radius: 8px; margin: 10px 0; background: linear-gradient(90deg, var(--line) 25%, color-mix(in srgb, var(--a1) 25%, transparent) 50%, var(--line) 75%);
+  background-size: 200% 100%; animation: shimmer 1.2s linear infinite; }
+
+.confetti { position: fixed; width: 8px; height: 12px; border-radius: 2px; pointer-events: none; z-index: 98; animation: burst 1s ease-out forwards; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

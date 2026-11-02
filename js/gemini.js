@@ -1,44 +1,59 @@
-// เรียก Gemini API ให้ประเมินแคลอรี่ (ออกแบบให้ประหยัดโทเคน)
-const PROMPT = 'คุณคือนักโภชนาการ ประเมินแคลอรี่อาหารแยกทีละรายการ ถ้าไม่ระบุปริมาณให้ใช้ 1 ที่มาตรฐานของไทย ตั้งชื่อภาษาไทยสั้นๆ พร้อมปริมาณ\n';
-const SCHEMA = {
+// เรียก Gemini API (ออกแบบให้ประหยัดโทเคน)
+const FOOD_SCHEMA = {
   type: 'ARRAY',
-  items: { type: 'OBJECT', properties: { name: { type: 'STRING' }, kcal: { type: 'INTEGER' } }, required: ['name', 'kcal'] },
+  items: {
+    type: 'OBJECT',
+    properties: { name: { type: 'STRING' }, kcal: { type: 'INTEGER' }, p: { type: 'INTEGER' }, c: { type: 'INTEGER' }, f: { type: 'INTEGER' } },
+    required: ['name', 'kcal', 'p', 'c', 'f'],
+  },
 };
+const FOOD_PROMPT = 'นักโภชนาการไทย: แยกอาหาร/เครื่องดื่มทีละรายการ ประเมิน kcal และโปรตีน(p) คาร์บ(c) ไขมัน(f) เป็นกรัม ' +
+  'ถ้าไม่ระบุปริมาณใช้ 1 ที่มาตรฐานไทย ดูขนาดจาน/ภาชนะในรูปประกอบ ชื่อไทยสั้นพร้อมปริมาณ ไม่ใช่อาหารให้ตอบ []\n';
 
 const Gemini = {
-  async ask(text, img) {
-    const key = Store.get('gkey', '');
-    if (!key) throw new Error('ใส่ Gemini API key ในการตั้งค่าก่อน');
-    const model = Store.get('gmodel', 'gemini-2.5-flash');
-
-    // คำถามแบบข้อความซ้ำ → ใช้คำตอบเดิม ไม่เสียโทเคน
-    const cacheKey = 'ai:' + text.toLowerCase();
-    if (!img) { const hit = Store.get(cacheKey, null); if (hit) return hit; }
-
-    const parts = [{ text: PROMPT + text }];
-    if (img) parts.push({ inline_data: { mime_type: 'image/jpeg', data: img } });
-    const gen = { temperature: 0, maxOutputTokens: 400, responseMimeType: 'application/json', responseSchema: SCHEMA };
-    if (model.includes('2.5')) gen.thinkingConfig = { thinkingBudget: model.includes('pro') ? 128 : 0 };
-
+  async call(parts, gen) {
+    if (!CONFIG.GEMINI_KEY) throw new Error('ยังไม่ได้ใส่ Gemini key (หน้า "ฉัน")');
+    const model = CONFIG.GEMINI_MODEL;
+    const cfg = { temperature: 0, ...gen };
+    if (model.includes('2.5')) cfg.thinkingConfig = { thinkingBudget: model.includes('pro') ? 128 : 0 };
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
-    const body = JSON.stringify({ contents: [{ parts }], generationConfig: gen });
+    const body = JSON.stringify({ contents: [{ parts }], generationConfig: cfg });
     for (let i = 0; ; i++) {
-      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body });
+      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': CONFIG.GEMINI_KEY }, body });
       if ((res.status === 429 || res.status >= 500) && i < 2) { await new Promise(r => setTimeout(r, 2000 * (i + 1))); continue; }
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error?.message || 'เรียก API ไม่สำเร็จ');
-      const items = JSON.parse(data.candidates?.[0]?.content?.parts?.[0]?.text || '[]');
-      if (!img) Store.set(cacheKey, items);
-      return items;
+      if (!res.ok) throw new Error(res.status === 429 ? 'โควตา AI เต็ม ลองใหม่อีกสักครู่' : data.error?.message || 'เรียก AI ไม่สำเร็จ');
+      return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     }
   },
 
-  // ย่อรูปเหลือ 768px JPEG → ลดโทเคนรูปลงมาก
+  // ประเมินอาหารจากข้อความ/รูป → [{name,kcal,p,c,f}]
+  async estimate(text, img) {
+    const cacheKey = 'ai:' + text.toLowerCase().replace(/\s+/g, ' ');
+    const cache = Store.get('aiCache', {});
+    if (!img && cache[cacheKey]) return cache[cacheKey]; // ข้อความเดิม → ไม่เสียโทเคน
+    const parts = [{ text: FOOD_PROMPT + text }];
+    if (img) parts.push({ inline_data: { mime_type: 'image/jpeg', data: img } });
+    const items = JSON.parse(await this.call(parts, { maxOutputTokens: 500, responseMimeType: 'application/json', responseSchema: FOOD_SCHEMA }) || '[]');
+    if (!img) {
+      const keys = Object.keys(cache); if (keys.length > 200) delete cache[keys[0]];
+      cache[cacheKey] = items; Store.set('aiCache', cache);
+    }
+    return items;
+  },
+
+  // โค้ชสรุปวันนี้ (ส่งเฉพาะตัวเลขสรุป ไม่ส่งประวัติยาว)
+  async coach(summary) {
+    return (await this.call([{ text: 'โค้ชลดน้ำหนักภาษาไทย เป็นกันเอง ให้กำลังใจ ตอบ 2-3 ประโยคสั้น บอกสิ่งที่ควรทำต่อวันนี้แบบเจาะจง (เช่นมื้อถัดไปกินอะไร):\n' + summary }],
+      { maxOutputTokens: 200, temperature: 0.7 })).trim();
+  },
+
+  // ย่อรูปเหลือ 768px JPEG → ลดโทเคนรูป
   async shrink(file) {
     const bmp = await createImageBitmap(file);
     const s = Math.min(1, 768 / Math.max(bmp.width, bmp.height));
     const c = Object.assign(document.createElement('canvas'), { width: bmp.width * s, height: bmp.height * s });
     c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
-    return c.toDataURL('image/jpeg', 0.7).split(',')[1];
+    return c.toDataURL('image/jpeg', 0.75).split(',')[1];
   },
 };
