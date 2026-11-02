@@ -1,0 +1,31 @@
+/* ตัวแปรสี + โครงหน้า */
+:root {
+  --bg: #f3f6f5; --card: rgba(255,255,255,.82); --text: #14201c; --muted: #6a7a74;
+  --line: rgba(20,32,28,.08); --a1: #10b981; --a2: #06b6d4; --warn: #f59e0b; --bad: #ef4444;
+  --p: #8b5cf6; --c: #f59e0b; --f: #ec4899; --shadow: 0 8px 30px rgba(16,40,32,.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0b1210; --card: rgba(24,34,31,.78); --text: #e9f2ef; --muted: #8fa29b;
+    --line: rgba(255,255,255,.07); --shadow: 0 8px 30px rgba(0,0,0,.35); }
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--text); font: 15px/1.5 Prompt, system-ui, sans-serif; min-height: 100vh; }
+[hidden] { display: none !important; }
+main { max-width: 520px; margin: auto; padding: 0 16px 110px; }
+h1, h2, h3 { margin: 0; }
+h1 { font-size: 22px; } h3 { font-size: 16px; font-weight: 600; }
+.muted { color: var(--muted); }
+.row { display: flex; align-items: center; justify-content: space-between; }
+.gap { gap: 8px; margin-top: 10px; }
+.grow { flex: 1; min-width: 0; }
+
+.top { max-width: 520px; margin: auto; padding: 20px 16px 12px; display: flex; justify-content: space-between; align-items: center; }
+.top small { color: var(--muted); }
+
+/* พื้นหลังวงกลมเบลอเคลื่อนไหว */
+.blobs { position: fixed; inset: 0; z-index: -1; overflow: hidden; filter: blur(60px); opacity: .5; }
+.blobs i { position: absolute; width: 300px; height: 300px; border-radius: 50%; background: var(--a1); animation: float 18s ease-in-out infinite; }
+.blobs i:nth-child(1) { top: -80px; left: -80px; }
+.blobs i:nth-child(2) { top: 40%; right: -120px; background: var(--a2); animation-delay: -6s; }
+.blobs i:nth-child(3) { bottom: -100px; left: 20%; background: var(--p); opacity: .5; animation-delay: -12s; }
