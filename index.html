@@ -19,6 +19,16 @@
   </section>
 
   <section class="card">
+    <h2>ถาม AI 🤖</h2>
+    <input id="aiText" placeholder="เช่น ข้าวมันไก่ 1 จาน + ชาเย็น">
+    <div class="row">
+      <label class="btn ghost-btn">📷 ถ่ายรูป<input id="aiImg" type="file" accept="image/*" capture="environment" hidden></label>
+      <button id="aiGo">วิเคราะห์</button>
+    </div>
+    <div id="aiMsg" class="muted"></div>
+  </section>
+
+  <section class="card">
     <h2>เพิ่มอาหาร</h2>
     <input id="search" list="foods" placeholder="ค้นหาเมนู เช่น ข้าวผัด">
     <datalist id="foods"></datalist>
@@ -33,9 +43,16 @@
     <div class="row"><h2>วันนี้กินอะไรไป</h2><button id="clear" class="ghost">ล้างวันนี้</button></div>
     <ul id="list"></ul>
   </section>
+  <details class="card">
+    <summary>ตั้งค่า Gemini</summary>
+    <input id="gkey" type="password" placeholder="API key (เก็บไว้ในเครื่องนี้เท่านั้น)">
+    <input id="gmodel" placeholder="gemini-2.5-flash">
+    <p class="muted">ขอ key ฟรีที่ aistudio.google.com/apikey</p>
+  </details>
 </main>
 <script src="js/foods.js"></script>
 <script src="js/storage.js"></script>
+<script src="js/gemini.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
