@@ -1,0 +1,150 @@
+// แสดงผลตัวละครและป้อมด้วยโมเดล 3D (three.js) ซ้อนบนฉาก 2D
+// กล้องแบบ orthographic ให้พิกัด 1 หน่วย = 1 px ของเกม → ใช้ตำแหน่งเดียวกับระบบเกมได้ตรงๆ
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+
+const MODELS = ['miner', 'sword', 'archer', 'giant', 'horse', 'castle', 'ptower', 'tower', 'wall', 'banner'];
+const HEIGHT = { miner: 82, sword: 92, archer: 88, giant: 150, horse: 82, rider: 64 }; // ความสูงบนจอ (px)
+const TURN = .55; // หันเฉียง 3/4 ให้เห็นหน้า
+
+const R3 = {
+  ready: false, models: {}, units: new Map(), bases: [],
+
+  async load(onProgress) {
+    const canvas = document.getElementById('gl');
+    this.renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping; this.renderer.toneMappingExposure = 1.15;
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.OrthographicCamera(0, 960, 0, -VIEW_H, -3000, 3000);
+    this.scene.add(new THREE.HemisphereLight(0xfff1dc, 0x7a5638, 1.6));
+    const sun = new THREE.DirectionalLight(0xffffff, 2.2); sun.position.set(-400, 700, 900); this.scene.add(sun);
+    const rim = new THREE.DirectionalLight(0xffd6a0, .8); rim.position.set(500, 200, -600); this.scene.add(rim);
+
+    const loader = new GLTFLoader(); let done = 0;
+    await Promise.all(MODELS.map(async n => {
+      this.models[n] = await loader.loadAsync(`models/${n}.glb`);
+      onProgress?.(++done / MODELS.length);
+    }));
+    this.ready = true;
+  },
+
+  resize(w, h) { this.renderer?.setPixelRatio(Math.min(2, devicePixelRatio || 1)); this.renderer?.setSize(w, h, false); },
+
+  // โคลนโมเดล + ย้อมสีทีม (ทำวัสดุใหม่ต่อตัว เพื่อกระพริบตอนโดนตีได้)
+  clone(name, team, px) {
+    const src = this.models[name], obj = SkeletonUtils.clone(src.scene), col = new THREE.Color(TEAM[team].color), mats = [];
+    obj.traverse(c => {
+      if (!c.isMesh) return;
+      c.frustumCulled = false;
+      c.material = [].concat(c.material).map(m => {
+        m = m.clone();
+        if (m.name === 'TEAM') m.color.copy(col);
+        else if (m.name === 'TEX') m.color.lerp(col, .45).multiplyScalar(2.1); // เท็กซ์เจอร์เดิมมืด → ย้อมสีทีม + เพิ่มความสว่าง
+        m.roughness = .8; mats.push(m); return m;
+      });
+      if (c.material.length === 1) c.material = c.material[0];
+    });
+    obj.scale.setScalar(px);
+    const mixer = new THREE.AnimationMixer(obj), acts = {};
+    for (const clip of src.animations) acts[clip.name] = mixer.clipAction(clip);
+    return { obj, mixer, acts, mats, cur: null };
+  },
+
+  play(part, name, { once = false, speed = 1, fade = .15 } = {}) {
+    const a = part.acts[name]; if (!a) return;
+    a.timeScale = speed;
+    if (part.cur === name && !once) return;
+    const prev = part.acts[part.cur];
+    a.reset(); a.setLoop(once ? THREE.LoopOnce : THREE.LoopRepeat); a.clampWhenFinished = once; a.enabled = true;
+    a.play(); if (prev && prev !== a) a.crossFadeFrom(prev, fade, false);
+    part.cur = name; part.until = once ? performance.now() + a.getClip().duration / speed * 1000 : 0;
+  },
+  busy: part => part.until > performance.now(),
+
+  makeUnit(u) {
+    const g = new THREE.Group(), s = u.def.size, e = { g, parts: [], prevAtk: 0 };
+    if (u.type === 'cavalry') {
+      const horse = this.clone('horse', u.team, HEIGHT.horse * s * .8), rider = this.clone('sword', u.team, HEIGHT.rider * s * .8);
+      rider.obj.position.y = HEIGHT.horse * s * .8 * .42; rider.obj.position.z = -4;
+      g.add(horse.obj, rider.obj); e.horse = horse; e.body = rider; e.parts.push(horse, rider);
+    } else {
+      const p = this.clone(u.type, u.team, HEIGHT[u.type] * (u.type === 'giant' ? 1 : s));
+      g.add(p.obj); e.body = p; e.parts.push(p);
+    }
+    this.scene.add(g); this.units.set(u.id, e);
+    return e;
+  },
+
+  buildBases(game) {
+    for (const b of this.bases) this.scene.remove(b.g);
+    this.bases = game.bases.map((b, team) => {
+      const g = new THREE.Group(), d = TEAM[team].dir;
+      const wall = this.clone('castle', team, 190).obj;
+      const t1 = this.clone('ptower', team, 285).obj; t1.position.set(-82, 0, -20);
+      const t2 = this.clone('ptower', team, 285).obj; t2.position.set(82, 0, -20);
+      const flag = this.clone('banner', team, 70).obj; flag.position.set(0, 120, 14);
+      const top = this.clone('tower', team, 95).obj; top.position.set(0, 165, -10);          // อัปเกรดป้อมธนู
+      const front = this.clone('wall', team, 70).obj; front.position.set(140 * d, 0, 30);      // อัปเกรดกำแพง
+      front.rotation.y = Math.PI / 2;
+      g.add(wall, t1, t2, flag, top, front);
+      g.rotation.y = -.35 * d; g.position.set(b.x, -GROUND, -60);
+      this.scene.add(g);
+      return { g, top, front, x: b.x };
+    });
+  },
+
+  reset(game) {
+    for (const e of this.units.values()) this.scene.remove(e.g);
+    this.units.clear(); this.buildBases(game);
+  },
+
+  sync(game, dt) {
+    if (!this.ready) return;
+    if (this.bases.length !== 2 || this.game !== game) { this.game = game; this.reset(game); }
+    const seen = new Set();
+    for (const u of game.units) {
+      seen.add(u.id);
+      const e = this.units.get(u.id) || this.makeUnit(u);
+      e.g.position.set(u.x, -u.y, (u.y - GROUND) * 4);
+      const want = u.face > 0 ? Math.PI / 2 - TURN : -Math.PI / 2 + TURN;
+      e.g.rotation.y += (want - e.g.rotation.y) * Math.min(1, dt * 12);
+      const atkSpeed = clip => Math.max(1, (e.body.acts.attack?.getClip().duration || 1) / (u.def.rate * .9));
+      const attacked = u.atkAnim > e.prevAtk + .3; e.prevAtk = u.atkAnim;
+
+      if (u.type === 'miner' && u.state === 'mining') this.play(e.body, 'attack', { speed: 1.3 });
+      else if (attacked) this.play(e.body, 'attack', { once: true, speed: atkSpeed() });
+      else if (!this.busy(e.body)) this.play(e.body, u.moving ? (u.carry ? 'carry' : 'walk') : 'idle', { speed: u.moving ? u.def.speed / 75 : 1 });
+      if (e.horse) this.play(e.horse, u.moving ? 'walk' : 'idle', { speed: u.moving ? 1.1 : 1 });
+
+      const hit = u.flash > 0;
+      if (hit !== e.hit) { e.hit = hit; for (const p of e.parts) for (const m of p.mats) m.emissive.setHex(hit ? 0x884444 : 0x000000); }
+    }
+    // ตัวที่ตาย: เล่นท่าล้ม แล้วจมลงดินหายไป
+    for (const [id, e] of this.units) {
+      if (seen.has(id)) continue;
+      if (!e.dead) { e.dead = performance.now(); for (const p of e.parts) this.play(p, 'death', { once: true }); }
+      const k = (performance.now() - e.dead) / 1000;
+      if (k > 1.2) e.g.position.y -= dt * 60;
+      if (k > 2) { this.scene.remove(e.g); this.units.delete(id); }
+    }
+    for (const e of this.units.values()) for (const p of e.parts) p.mixer.update(dt);
+
+    this.bases.forEach((B, i) => {
+      const b = game.bases[i], up = game.upg[i];
+      B.g.position.x = b.x + (b.shake > 0 ? (Math.random() - .5) * 8 : 0);
+      B.top.visible = up.tower > 0; B.top.scale.setScalar(60 + up.tower * 14);
+      B.front.visible = up.wall > 0; B.front.scale.setScalar(55 + up.wall * 18);
+    });
+  },
+
+  render(cam, vw) {
+    if (!this.ready) return;
+    Object.assign(this.camera, { left: cam, right: cam + vw, top: 0, bottom: -VIEW_H }); this.camera.updateProjectionMatrix();
+    this.renderer.render(this.scene, this.camera);
+  },
+};
+
+window.R3 = R3;
+R3.load(k => window.onModelProgress?.(k)).then(() => window.onModelsReady?.()).catch(err => window.onModelsError?.(err));

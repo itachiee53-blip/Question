@@ -1,4 +1,4 @@
-// วาดทุกอย่างแบบ "ดินเหนียวการ์ตูน": ก้อนกลมมน ไล่เฉด ขอบเข้ม มีไฮไลต์มันวาว
+// วาดฉากหลัง เหมือง และเอฟเฟกต์แบบ 2D (ตัวละคร/ป้อมเป็นโมเดล 3D อยู่ใน render3d.js)
 const INK = 'rgba(42,23,12,.75)';
 const SKIN = '#f2c7a0';
 
@@ -70,66 +70,8 @@ const R = {
     }
   },
 
-  base(ctx, b, team, t, up) {
-    const T = TEAM[team], d = T.dir, dmg = 1 - b.hp / b.max, stone = '#a8998a';
-    ctx.save(); ctx.translate(b.x, GROUND);
-    if (b.shake > 0) ctx.translate((Math.random() - .5) * 6, 0);
-    ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.beginPath(); ctx.ellipse(0, -4, 130, 14, 0, 0, 7); ctx.fill();
-
-    // หอคอยข้าง 2 ข้าง
-    for (const sx of [-62, 62]) {
-      R.slab(ctx, sx - 26, -205, 52, 200, 14, stone);
-      R.bricks(ctx, sx - 24, -200, 48, 192);
-      ctx.fillStyle = T.color; ctx.strokeStyle = INK; ctx.lineWidth = 2.5; // หลังคากรวยสีทีม
-      ctx.beginPath(); ctx.moveTo(sx - 34, -200); ctx.quadraticCurveTo(sx, -215, sx + 34, -200); ctx.lineTo(sx, -265); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.beginPath(); ctx.moveTo(sx - 20, -205); ctx.lineTo(sx - 4, -255); ctx.lineTo(sx - 8, -205); ctx.fill();
-      R.slab(ctx, sx - 8, -170, 16, 24, [8, 8, 2, 2], '#ffd27a', 2); // หน้าต่างไฟ
-      ctx.fillStyle = `rgba(255,210,122,${.15 + Math.sin(t * 3 + sx) * .05})`; ctx.beginPath(); ctx.arc(sx, -158, 22, 0, 7); ctx.fill();
-    }
-    // ตัวป้อมกลาง
-    R.slab(ctx, -48, -165, 96, 160, 10, R.shade(stone, -.05));
-    R.bricks(ctx, -46, -160, 92, 152);
-    for (let i = -2; i <= 2; i++) R.slab(ctx, i * 19 - 8, -182, 16, 20, 4, stone, 2); // เชิงเทิน
-    // ประตูไม้โค้ง
-    R.slab(ctx, -26, -80, 52, 76, [26, 26, 2, 2], '#7a4f2a');
-    ctx.strokeStyle = 'rgba(42,23,12,.5)'; ctx.lineWidth = 2;
-    for (let i = -1; i <= 1; i++) { ctx.beginPath(); ctx.moveTo(i * 13, -72 + Math.abs(i) * 6); ctx.lineTo(i * 13, -6); ctx.stroke(); }
-    R.clay(ctx, 14 * d, -40, 3, 3, '#e0c060', 0, 1);
-    // ตราทีม
-    R.clay(ctx, 0, -125, 20, 22, T.color);
-    ctx.fillStyle = '#fff'; ctx.font = '600 20px Mitr, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(team ? '☠' : '★', 0, -124);
-    // ธงโบก
-    R.limb(ctx, 62 * d, -262, 62 * d, -310, '#6b4423', 4);
-    ctx.fillStyle = T.color; ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(62 * d, -310);
-    ctx.quadraticCurveTo(62 * d + 25 * d, -305 + Math.sin(t * 5) * 6, 62 * d + 48 * d, -298 + Math.sin(t * 5 + 1) * 4);
-    ctx.quadraticCurveTo(62 * d + 24 * d, -290 + Math.sin(t * 5) * 5, 62 * d, -284); ctx.fill(); ctx.stroke();
-
-    // อัปเกรดป้อมธนู: หน้าไม้ยักษ์บนเชิงเทิน
-    if (up.tower) {
-      R.slab(ctx, -14, -205, 28, 22, 6, '#7a5230', 2);
-      ctx.save(); ctx.translate(0, -205); ctx.rotate(-.25 * d);
-      R.limb(ctx, 0, 0, 34 * d, 0, '#5e3a20', 5);
-      ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(26 * d, 0, 14, -1.4, 1.4, d < 0); ctx.stroke();
-      ctx.restore();
-      for (let i = 0; i < up.tower; i++) R.clay(ctx, -10 + i * 10, -230, 4, 4, '#ffd84a', 0, 1); // ดาวระดับ
-    }
-    // อัปเกรดกำแพง: กำแพงหินหน้าฐาน หนาขึ้นตามระดับ
-    if (up.wall) {
-      const wx = 110 * d, h = 40 + up.wall * 16;
-      R.slab(ctx, wx - 16, -h, 32, h, 6, '#8f8273');
-      R.bricks(ctx, wx - 14, -h + 4, 28, h - 6);
-      for (let i = 0; i < 2; i++) R.slab(ctx, wx - 16 + i * 18, -h - 10, 14, 12, 3, '#8f8273', 2);
-    }
-    // รอยร้าว
-    ctx.strokeStyle = 'rgba(42,23,12,.7)'; ctx.lineWidth = 2.5;
-    for (let i = 0; i < dmg * 7; i++) {
-      const cx = ((i * 37) % 80) - 40, cy = -150 + ((i * 53) % 120);
-      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + 8, cy + 12); ctx.lineTo(cx + 2, cy + 22); ctx.lineTo(cx + 10, cy + 32); ctx.stroke();
-    }
-    ctx.restore();
-    R.hpBar(ctx, b.x, GROUND - 335, 120, b.hp / b.max, T.color);
-  },
+  // เงาใต้ตัวละคร/ฐาน (วาดบนพื้นก่อนโมเดล 3D)
+  shadow(ctx, x, y, rx) { ctx.fillStyle = 'rgba(0,0,0,.28)'; ctx.beginPath(); ctx.ellipse(x, y, rx, rx * .28, 0, 0, 7); ctx.fill(); },
 
   bricks(ctx, x, y, w, h) {
     ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
@@ -157,85 +99,6 @@ const R = {
   hpBar(ctx, x, y, w, k, color) {
     ctx.fillStyle = 'rgba(42,23,12,.7)'; ctx.beginPath(); ctx.roundRect(x - w / 2 - 2, y - 2, w + 4, 10, 5); ctx.fill();
     ctx.fillStyle = k > .3 ? color : '#ff7a3a'; ctx.beginPath(); ctx.roundRect(x - w / 2, y, w * Math.max(0, k), 6, 3); ctx.fill();
-  },
-
-  unit(ctx, u, t) {
-    const T = TEAM[u.team], s = u.def.size, d = u.face, type = u.type;
-    const walk = u.moving ? Math.sin(u.phase) : 0, bob = Math.abs(walk) * 3, breathe = Math.sin(t * 3 + u.ofs) * .8;
-    const atk = u.atkAnim > 0 ? Math.sin((1 - u.atkAnim) * Math.PI) : 0;
-    const body = u.flash > 0 ? '#ffffff' : type === 'giant' ? R.shade(T.color, -.15) : T.color;
-    const skin = u.flash > 0 ? '#ffffff' : type === 'giant' ? '#b59a86' : SKIN;
-    ctx.save(); ctx.translate(u.x, u.y); ctx.scale(s * (1 + atk * .07), s * (1 - atk * .07));
-    ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.beginPath(); ctx.ellipse(0, 0, 17, 5, 0, 0, 7); ctx.fill();
-
-    // ขา + รองเท้า
-    R.limb(ctx, -5, -16, -5 + walk * 6, -4, T.dark, 7); R.limb(ctx, 5, -16, 5 - walk * 6, -4, T.dark, 7);
-    R.clay(ctx, -5 + walk * 6 + 2 * d, -3, 7, 4, '#4a2e1a', 0, 1.5); R.clay(ctx, 5 - walk * 6 + 2 * d, -3, 7, 4, '#4a2e1a', 0, 1.5);
-
-    const by = -30 - bob + breathe * .3;
-    if (type === 'miner' && u.carry) { R.clay(ctx, -13 * d, by - 4, 11, 12, '#c9a25a'); R.clay(ctx, -13 * d, by - 15, 5, 3, '#f6c62e', 0, 1); }
-    if (type === 'archer') R.slab(ctx, -14 * d - 4, by - 18, 8, 24, 3, '#7a5230', 1.5); // กระบอกธนู
-    R.limb(ctx, -9 * d, by - 6, -12 * d, by + 8 + walk * 2, body, 6); // แขนหลัง
-
-    // ลำตัว
-    R.clay(ctx, 0, by, 14, 17, body);
-    ctx.fillStyle = '#5e3a20'; ctx.fillRect(-13, by + 4, 26, 4); R.clay(ctx, 0, by + 6, 3.5, 3, '#e0c060', 0, 1); // เข็มขัด
-    if (type === 'sword' || type === 'giant') R.clay(ctx, 2 * d, by - 6, 9, 8, '#c9d0d6', 0, 1.5); // เกราะอก
-
-    // หัว
-    const hx = 2 * d, hy = by - 24 + breathe * .4;
-    R.clay(ctx, hx, hy, 12, 12, skin);
-    ctx.fillStyle = 'rgba(255,120,120,.35)'; ctx.beginPath(); ctx.arc(hx + 7 * d, hy + 4, 3, 0, 7); ctx.fill(); // แก้มแดง
-    for (const ex of [1.5, 7]) { // ตา
-      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(hx + ex * d, hy - 1, 3, 3.6, 0, 0, 7); ctx.fill();
-      ctx.fillStyle = '#1f130b'; ctx.beginPath(); ctx.arc(hx + ex * d + d, hy - .5, 1.8, 0, 7); ctx.fill();
-    }
-    if (type !== 'miner') { ctx.strokeStyle = '#1f130b'; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(hx - .5 * d, hy - 7); ctx.lineTo(hx + 9 * d, hy - 5); ctx.stroke(); } // คิ้วดุ
-
-    // หมวกตามประเภท
-    if (type === 'miner') {
-      R.clay(ctx, hx, hy - 8, 13, 8, '#f2c230'); ctx.fillStyle = '#f2c230'; ctx.fillRect(hx - 15, hy - 5, 30, 3);
-      R.clay(ctx, hx + 8 * d, hy - 9, 3.5, 3.5, '#fff8c0', 0, 1);
-    } else if (type === 'sword') {
-      R.clay(ctx, hx, hy - 6, 13, 9, '#b8c0c8'); ctx.fillStyle = '#4a4f55'; ctx.fillRect(hx + 2 * d - (d < 0 ? 10 : 0), hy - 2, 10, 2);
-      R.clay(ctx, hx - 5 * d, hy - 18, 4, 8, T.color, -.6 * d, 1.5); // พู่
-    } else if (type === 'archer') {
-      ctx.fillStyle = T.dark; ctx.strokeStyle = INK; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(hx - 13, hy); ctx.quadraticCurveTo(hx - 12, hy - 18, hx + 2 * d, hy - 16); ctx.quadraticCurveTo(hx + 14, hy - 12, hx + 13, hy - 4); ctx.quadraticCurveTo(hx, hy - 10, hx - 13, hy); ctx.fill(); ctx.stroke();
-      R.clay(ctx, hx - 10 * d, hy - 16, 2.5, 8, '#f4f1e8', .7 * d, 1); // ขนนก
-    } else if (type === 'giant') {
-      R.clay(ctx, hx - 8, hy - 11, 3.5, 7, '#efe6d0', -.5, 1.5); R.clay(ctx, hx + 8, hy - 11, 3.5, 7, '#efe6d0', .5, 1.5); // เขา
-      ctx.fillStyle = '#fff'; ctx.fillRect(hx + 3 * d - 1, hy + 6, 2, 3); ctx.fillRect(hx + 7 * d - 1, hy + 6, 2, 3); // เขี้ยว
-    }
-
-    // แขนหน้า + อาวุธ
-    const sx = 9 * d, sy = by - 6, sw = (atk * 1.7 - .5) * d;
-    ctx.save(); ctx.translate(sx, sy);
-    if (type === 'miner') {
-      ctx.rotate(u.state === 'mining' ? (Math.sin(t * 12) * .9 - .3) * d : .4 * d);
-      R.limb(ctx, 0, 0, 0, 14, body, 6); R.limb(ctx, 0, 14, 0, -12, '#7a4f2a', 4);
-      ctx.strokeStyle = INK; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-10, -12); ctx.quadraticCurveTo(0, -18, 10, -12); ctx.stroke();
-      ctx.strokeStyle = '#a7adb3'; ctx.lineWidth = 3.5; ctx.stroke();
-    } else if (type === 'sword') {
-      ctx.rotate(sw); R.limb(ctx, 0, 0, 8 * d, 8, body, 6);
-      ctx.save(); ctx.translate(8 * d, 8); ctx.rotate(-.9 * d);
-      R.slab(ctx, d > 0 ? 2 : -30, -3, 28, 6, [1, 4, 4, 1], '#dfe5ea', 1.5);
-      R.slab(ctx, -2, -7, 4, 14, 2, '#8a6a2a', 1.5);
-      ctx.restore();
-    } else if (type === 'archer') {
-      R.limb(ctx, 0, 0, 12 * d, 2, body, 6);
-      ctx.strokeStyle = INK; ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(10 * d, 2, 16, d > 0 ? -1.2 : 1.94, d > 0 ? 1.2 : 4.34); ctx.stroke();
-      ctx.strokeStyle = '#8a5a30'; ctx.lineWidth = 3; ctx.stroke();
-      const pull = u.atkAnim > 0 ? 0 : 6;
-      ctx.strokeStyle = '#eee'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(10 * d + Math.cos(1.2) * 16 * d, 2 - 15); ctx.lineTo((4 - pull) * d, 2); ctx.lineTo(10 * d + Math.cos(1.2) * 16 * d, 2 + 15); ctx.stroke();
-    } else if (type === 'giant') {
-      ctx.rotate(sw * 1.2); R.limb(ctx, 0, 0, 10 * d, 8, body, 8);
-      R.limb(ctx, 10 * d, 8, 18 * d, -14, '#7a5230', 6); R.clay(ctx, 20 * d, -22, 10, 13, '#8a5a30', .4 * d);
-      for (const k of [-1, 1]) R.clay(ctx, 20 * d + k * 7, -24, 2, 2, '#ccc', 0, 1);
-    }
-    ctx.restore();
-    ctx.restore();
-    if (u.hp < u.maxHp) R.hpBar(ctx, u.x, u.y - 75 * s, 30 * s, u.hp / u.maxHp, T.color);
   },
 
   arrow(ctx, p) {

@@ -1,6 +1,6 @@
 // หน้าจอ, การหมุนจอ, การควบคุม, ลูปเกม
 const $ = id => document.getElementById(id);
-const cv = $('game'), ctx = cv.getContext('2d'), mini = $('mini').getContext('2d');
+const cv = $('fx'), bgc = $('bg'), ctx = cv.getContext('2d'), bg = bgc.getContext('2d'), mini = $('mini').getContext('2d');
 let game = null, paused = false, scale = 1, vw = 960, lvSel = 0;
 const unlocked = () => { try { return +localStorage.getItem('clay-unlock') || 0; } catch { return 0; } };
 const isPortrait = () => matchMedia('(orientation: portrait)').matches;
@@ -9,9 +9,10 @@ const isTouch = matchMedia('(pointer: coarse)').matches;
 // ---------- ขนาดจอ ----------
 function resize() {
   const dpr = Math.min(2, devicePixelRatio || 1), w = innerWidth, h = innerHeight;
-  cv.width = w * dpr; cv.height = h * dpr;
+  for (const c of [cv, bgc]) { c.width = w * dpr; c.height = h * dpr; }
   scale = h / VIEW_H; vw = w / scale;
-  ctx.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);
+  for (const c of [ctx, bg]) c.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);
+  window.R3?.resize(w, h);
 }
 addEventListener('resize', resize); resize();
 
@@ -31,9 +32,16 @@ $('permYes').onclick = async () => {
 };
 $('permNo').onclick = () => { $('perm').hidden = true; startGame(lvSel); };
 
+// ---------- โหลดโมเดล 3D ----------
+$('playBtn').disabled = true; $('playBtn').textContent = 'กำลังโหลด 0%';
+window.onModelProgress = k => ($('playBtn').textContent = `กำลังโหลด ${Math.round(k * 100)}%`);
+window.onModelsReady = () => { $('playBtn').disabled = false; $('playBtn').textContent = '▶ เริ่มเกม'; resize(); };
+window.onModelsError = () => { $('playBtn').textContent = 'โหลดโมเดลไม่สำเร็จ ลองรีเฟรช'; };
+if (window.R3?.ready) window.onModelsReady();
+
 // ---------- เริ่ม/จบเกม ----------
 function startGame(i) {
-  game = new Game(i); paused = false;
+  game = new Game(i); paused = false; Sfx.music(true);
   game.onEnd = showEnd;
   document.body.classList.add('playing');
   $('start').hidden = $('end').hidden = $('pause').hidden = true; $('hud').hidden = false;
@@ -41,6 +49,7 @@ function startGame(i) {
 }
 
 function showEnd(r) {
+  Sfx.music(false);
   const win = r === 'win', last = game.lvIdx >= LEVELS.length - 1;
   if (win) try { localStorage.setItem('clay-unlock', Math.max(unlocked(), game.lvIdx + 1)); } catch {}
   $('endIco').textContent = win ? '🏆' : '💥';
@@ -52,7 +61,7 @@ function showEnd(r) {
 }
 
 function toMenu() {
-  game = null; document.body.classList.remove('playing');
+  game = null; Sfx.music(false); document.body.classList.remove('playing');
   $('hud').hidden = $('end').hidden = $('pause').hidden = true; $('start').hidden = false;
   lvSel = Math.min(unlocked(), LEVELS.length - 1); renderLevels();
 }
@@ -78,7 +87,7 @@ $('upg').onclick = e => {
   if (Upg.buy(game, 0, b.dataset.k)) { Sfx.play('upgrade'); game.text(game.bases[0].x, GROUND - 240, 'อัปเกรด!', '#ffd84a'); } else Sfx.play('deny');
   renderUpg();
 };
-$('muteBtn').onclick = () => { $('muteBtn').textContent = Sfx.toggle() ? '🔊' : '🔇'; Sfx.play('click'); };
+$('muteBtn').onclick = () => { $('muteBtn').textContent = Sfx.toggle() ? '🔊' : '🔇'; Sfx.music(!!game && Sfx.on); Sfx.play('click'); };
 $('muteBtn').textContent = Sfx.on ? '🔊' : '🔇';
 addEventListener('pointerdown', () => Sfx.init(), { once: true });
 addEventListener('pointerdown', () => Sfx.ctx?.state === 'suspended' && Sfx.ctx.resume());
@@ -106,10 +115,10 @@ function updateHud() {
 
 // ---------- เลื่อนกล้อง: ลากจอ / แตะแผนที่ย่อ / ปุ่มลูกศร ----------
 let drag = null;
-cv.addEventListener('pointerdown', e => { drag = { x: e.clientX, cam: game?.cam }; });
+bgc.addEventListener('pointerdown', e => { drag = { x: e.clientX, cam: game?.cam }; });
 addEventListener('pointermove', e => { if (drag && game) game.cam = drag.cam - (e.clientX - drag.x) / scale; });
 addEventListener('pointerup', () => (drag = null));
-cv.addEventListener('wheel', e => { if (game) game.cam += (e.deltaY + e.deltaX) / scale; }, { passive: true });
+bgc.addEventListener('wheel', e => { if (game) game.cam += (e.deltaY + e.deltaX) / scale; }, { passive: true });
 $('mini').addEventListener('pointerdown', e => {
   const jump = ev => { const r = $('mini').getBoundingClientRect(); game.cam = (ev.clientX - r.left) / r.width * WORLD - vw / 2; };
   jump(e); const mv = ev => jump(ev); addEventListener('pointermove', mv); addEventListener('pointerup', () => removeEventListener('pointermove', mv), { once: true });
@@ -126,7 +135,7 @@ function loop(now) {
     const pan = (keys.ArrowRight || keys.d ? 1 : 0) - (keys.ArrowLeft || keys.a ? 1 : 0);
     game.cam += pan * 900 * dt;
     if (!paused && !(isPortrait() && isTouch)) game.update(dt);
-    game.draw(ctx, vw);
+    game.draw(bg, ctx, vw, dt);
     if ((hudT -= dt) <= 0) { hudT = .1; updateHud(); }
   }
   requestAnimationFrame(loop);

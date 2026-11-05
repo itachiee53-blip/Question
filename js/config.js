@@ -14,6 +14,7 @@ const UNITS = {
   miner:  { name: 'คนงาน', icon: '⛏️', cost: 50,  time: 2,   hp: 70,  dmg: 0,  range: 0,   rate: 1,   speed: 75, size: 0.85 },
   sword:  { name: 'นักดาบ', icon: '🗡️', cost: 90,  time: 3,   hp: 160, dmg: 18, range: 36,  rate: 0.9, speed: 85, size: 1 },
   archer: { name: 'นักธนู', icon: '🏹', cost: 120, time: 3.5, hp: 85,  dmg: 13, range: 280, rate: 1.4, speed: 70, size: 0.95 },
+  cavalry:{ name: 'ทหารม้า', icon: '🐎', cost: 220, time: 5,   hp: 420, dmg: 26, range: 44,  rate: 1.1, speed: 150, size: 1.3, charge: 2.5 },
   giant:  { name: 'ยักษ์', icon: '🗿', cost: 320, time: 7,   hp: 1000, dmg: 55, range: 50, rate: 1.8, speed: 42, size: 1.75, splash: 40 },
 };
 

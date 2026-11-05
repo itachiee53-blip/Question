@@ -9,9 +9,12 @@
 <title>Clay War</title>
 <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
 <body>
-<canvas id="game"></canvas>
+<canvas id="bg" class="layer"></canvas>
+<canvas id="gl" class="layer"></canvas>
+<canvas id="fx" class="layer"></canvas>
 
 <!-- HUD ระหว่างเล่น -->
 <div id="hud" hidden>
@@ -40,6 +43,7 @@
   <div id="levels" class="levels"></div>
   <button id="playBtn" class="big">▶ เริ่มเกม</button>
   <p class="hint">⛏️ ฟาร์มแร่ · 🗡️ สร้างกองทัพ · 🏰 ทำลายฐานศัตรู</p>
+  <p class="credit">โมเดล 3D: Quaternius (CC0)</p>
 </div>
 
 <!-- ขออนุญาตหมุนจอ -->
@@ -79,5 +83,6 @@
 <script src="js/ai.js"></script>
 <script src="js/game.js"></script>
 <script src="js/main.js"></script>
+<script type="module" src="js/render3d.js"></script>
 </body>
 </html>

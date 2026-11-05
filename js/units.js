@@ -1,7 +1,7 @@
 // ทหารแต่ละตัว: คนงานขุดแร่ / ทหารต่อสู้
 class Unit {
   constructor(type, team, x, hpMult = 1) {
-    Object.assign(this, { type, team, x, def: UNITS[type], face: TEAM[team].dir });
+    Object.assign(this, { id: Unit.n = (Unit.n || 0) + 1, type, team, x, def: UNITS[type], face: TEAM[team].dir });
     this.maxHp = this.hp = Math.round(UNITS[type].hp * hpMult);
     this.y = GROUND + 4 + Math.random() * 34; // กระจายความลึกให้ดูเป็นกองทัพ
     this.ofs = Math.random() * 70;            // ระยะเหลื่อมไม่ให้ยืนซ้อนกัน

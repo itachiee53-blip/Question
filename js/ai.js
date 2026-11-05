@@ -18,7 +18,7 @@ class AI {
     // 2) เลือกทหาร (เก็บเงินรอถ้ายังไม่พอ)
     if (!this.want) {
       const r = Math.random();
-      this.want = this.idx > 0 && r < .12 + this.idx * .04 ? 'giant' : r < .6 ? 'sword' : 'archer';
+      this.want = this.idx > 0 && r < .1 + this.idx * .04 ? 'giant' : this.idx > 0 && r < .28 ? 'cavalry' : r < .65 ? 'sword' : 'archer';
     }
     if (g.train(1, this.want)) this.want = null;
 
