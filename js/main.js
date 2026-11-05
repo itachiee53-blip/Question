@@ -302,3 +302,26 @@ try { // เพิ่งอัปเดตเสร็จ → บอกผู้
   const up = sessionStorage.getItem('clay-updated');
   if (up) { sessionStorage.removeItem('clay-updated'); setTimeout(() => announce(`✨ อัปเดตเป็นเวอร์ชัน ${VER.v} แล้ว!`), 800); }
 } catch {}
+
+// ---------- ข้อมูลหน้าจอ (แตะเลขเวอร์ชันมุมซ้ายบน) — ไว้ส่งให้ดูเวลาเต็มจอมีปัญหา ----------
+$('verLbl').onclick = () => {
+  const mm = q => matchMedia(q).matches, ins = getComputedStyle(document.documentElement);
+  const info = [
+    `เวอร์ชัน ${VER.v}`, navigator.userAgent,
+    `จอ ${screen.width}×${screen.height} · หน้าเว็บ ${innerWidth}×${innerHeight} · dpr ${devicePixelRatio}`,
+    `เต็มจอ: ${fsEl() ? 'ใช่' : 'ไม่'} · แอป: ${isApp() ? 'ใช่' : 'ไม่'} · display-mode: ${['fullscreen', 'standalone', 'minimal-ui', 'browser'].find(m => mm(`(display-mode: ${m})`))}`,
+    `ขอบรอยบาก L${ins.getPropertyValue('--sl')} R${ins.getPropertyValue('--sr')} T${ins.getPropertyValue('--st')} B${ins.getPropertyValue('--sb')}`,
+    `แนวจอ: ${screen.orientation?.type || '-'} · จำเต็มจอ: ${wantFS ? 'ใช่' : 'ไม่'} · รองรับเต็มจอ: ${document.fullscreenEnabled || document.webkitFullscreenEnabled ? 'ใช่' : 'ไม่'}`,
+  ].join('\n');
+  alert(info);
+};
+
+// เปิดลิงก์จากแอปแชท (LINE/Facebook/Messenger/Instagram) = เบราว์เซอร์ในแอป ซึ่งไม่ยอมให้เต็มจอ
+// → แนะนำให้เปิดในเบราว์เซอร์จริง (LINE เปิดออกไปให้เองด้วย ?openExternalBrowser=1)
+(() => {
+  const ua = navigator.userAgent, inLine = / Line\//i.test(ua), inApp = inLine || /FBAN|FBAV|FB_IAB|Instagram|Messenger|TikTok|KAKAOTALK/i.test(ua);
+  if (!inApp || isApp()) return;
+  const b = $('extBtn'); b.hidden = false;
+  if (inLine) { const u = new URL(location.href); u.searchParams.set('openExternalBrowser', '1'); b.href = u.href; }
+  else b.onclick = () => alert('กดปุ่ม ⋮ หรือ ⋯ มุมขวาบน แล้วเลือก "เปิดในเบราว์เซอร์" (Chrome/Safari) เพื่อเล่นแบบเต็มจอ');
+})();
