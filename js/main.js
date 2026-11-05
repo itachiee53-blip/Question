@@ -67,23 +67,50 @@ function demoUpdate(dt) {
   if (demoT > 180) { demoT = -1e9; startDemo(); }
 }
 
-$('playBtn').onclick = () => (isTouch && !document.fullscreenElement ? ($('perm').hidden = false) : startGame(lvSel));
+// ---------- เต็มจอ + ล็อกแนวนอน ----------
+// เบราว์เซอร์ยอมให้เข้าเต็มจอเฉพาะตอนผู้เล่นแตะจอ → จำไว้ว่าเคยอนุญาต แล้วขอใหม่ทุกครั้งที่แตะหลังจากหลุด
+// (ปัดออกจากแอป/สลับแอป/กดย้อนกลับ) · ถ้าติดตั้งเป็นแอปบนหน้าจอโฮม จะเต็มจอแนวนอนเองตั้งแต่เปิด
+const isApp = () => matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches || navigator.standalone === true;
+const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+let wantFS = (() => { try { return localStorage.getItem('clay-fs') === '1'; } catch { return false; } })();
+async function goFull() {
+  const el = document.documentElement;
+  try { if (!fsEl()) await (el.requestFullscreen?.({ navigationUI: 'hide' }) ?? el.webkitRequestFullscreen?.()); } catch {}
+  try { await screen.orientation?.lock?.('landscape'); } catch {}
+}
+const needFS = () => isTouch && !isApp() && !fsEl() && !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen);
+addEventListener('pointerdown', () => { if (wantFS && needFS()) goFull(); }, true); // แตะตรงไหนก็กลับเต็มจอ
+// ออกจากเกมกลางคัน (ปัดแอป/หลุดเต็มจอ) → หยุดเกมไว้ให้ก่อน กลับมาแตะ "เล่นต่อ" ก็เต็มจอใหม่
+const autoPause = () => { if (game && !game.over && !paused) { paused = true; $('pause').hidden = false; } };
+document.addEventListener('visibilitychange', () => document.hidden && autoPause());
+for (const ev of ['fullscreenchange', 'webkitfullscreenchange']) document.addEventListener(ev, () => !fsEl() && wantFS && isTouch && autoPause());
+
+$('playBtn').onclick = () => (needFS() && !wantFS ? ($('perm').hidden = false) : startGame(lvSel));
 $('permYes').onclick = async () => {
-  $('perm').hidden = true;
-  try { await document.documentElement.requestFullscreen?.({ navigationUI: 'hide' }); await screen.orientation?.lock?.('landscape'); } catch {}
+  $('perm').hidden = true; wantFS = true; try { localStorage.setItem('clay-fs', '1'); } catch {}
+  await goFull();
   startGame(lvSel); // ถ้าเครื่องไม่รองรับ (เช่น iPhone) จะมีหน้าเตือนให้หมุนจอเอง
 };
 $('permNo').onclick = () => { $('perm').hidden = true; startGame(lvSel); };
 
+// ติดตั้งเป็นแอป (Android/Chrome): เปิดจากหน้าจอโฮม = เต็มจอแนวนอนทุกครั้ง
+let installEv = null;
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEv = e; $('installBtn').hidden = false; });
+$('installBtn').onclick = async () => { if (!installEv) return; installEv.prompt(); await installEv.userChoice; installEv = null; $('installBtn').hidden = true; };
+addEventListener('appinstalled', () => ($('installBtn').hidden = true));
+
 // ---------- โหลดโมเดล 3D ----------
 $('playBtn').disabled = true; $('playBtn').textContent = 'กำลังโหลด 0%';
 window.onModelProgress = k => ($('playBtn').textContent = `กำลังโหลด ${Math.round(k * 100)}%`);
-window.onModelsReady = () => { document.body.classList.add('models-ready'); $('playBtn').disabled = false; $('playBtn').textContent = '▶ เริ่มเกม'; resize(); startDemo(); };
+window.onModelsReady = () => {
+  try { const a = sessionStorage.getItem('clay-autostart'); if (a != null) { sessionStorage.removeItem('clay-autostart'); setTimeout(() => startGame(+a), 0); } } catch {}
+  document.body.classList.add('models-ready'); $('playBtn').disabled = false; $('playBtn').textContent = '▶ เริ่มเกม'; resize(); startDemo(); };
 window.onModelsError = () => { $('playBtn').textContent = 'โหลดโมเดลไม่สำเร็จ ลองรีเฟรช'; };
 if (window.R3?.ready) window.onModelsReady();
 
 // ---------- เริ่ม/จบเกม ----------
 async function startGame(i) {
+  if (pendingVer) { try { sessionStorage.setItem('clay-autostart', i); } catch {} game = null; return applyUpdate(); } // อัปเดตก่อน แล้วเข้าด่านต่อให้เอง
   $('playBtn').disabled = true; $('nextBtn').disabled = true;
   try { await R3.prepare(i, k => ($('playBtn').textContent = `โหลดศัตรู ${Math.round(k * 100)}%`)); } catch {}
   $('playBtn').disabled = false; $('nextBtn').disabled = false; $('playBtn').textContent = '▶ เริ่มเกม';
@@ -124,6 +151,7 @@ function toMenu() {
   game = null; Sfx.music(false); document.body.classList.remove('playing');
   $('hud').hidden = $('end').hidden = $('pause').hidden = true; $('start').hidden = false;
   lvSel = Math.min(unlocked(), LEVELS.length - 1); renderLevels(); startDemo();
+  applyUpdate(); // มีอัปเดตค้างไว้ระหว่างเล่น → โหลดตอนกลับหน้าแรก
 }
 $('menuBtn').onclick = $('quitBtn').onclick = toMenu;
 $('pauseBtn').onclick = () => { paused = true; $('pause').hidden = false; };
@@ -249,12 +277,28 @@ $('resetYes').onclick = () => {
 // ถ้าบนเว็บมีเวอร์ชันใหม่กว่า → ขึ้นป้ายให้แตะโหลดใหม่ (ไม่รีเฟรชเองกลางเกม)
 const VER = window.GAME_VER || { v: 'dev' };
 $('verLbl').textContent = `เวอร์ชัน ${VER.v}${VER.date ? ' · ' + VER.date : ''}`;
+// อัปเดตอัตโนมัติ: อยู่หน้าเมนู/จบด่าน → โหลดเวอร์ชันใหม่เองทันที · กำลังเล่นอยู่ → รอจนกลับหน้าแรก (ไม่ตัดเกมกลางคัน)
+let pendingVer = null;
 async function checkUpdate() {
   try {
     const r = await (await fetch('version.json?t=' + Date.now(), { cache: 'no-store' })).json();
-    if (r.v && r.v !== VER.v) { $('updTxt').textContent = `เวอร์ชัน ${r.v}${r.notes ? ' — ' + r.notes : ''}`; $('updToast').hidden = false; }
+    if (!r.v || r.v === VER.v) return;
+    pendingVer = r;
+    $('updTxt').textContent = `เวอร์ชัน ${r.v}${r.notes ? ' — ' + r.notes : ''}`;
+    applyUpdate();
   } catch {}
+}
+function applyUpdate() {
+  if (!pendingVer) return;
+  const busy = !!game; // อยู่ในด่าน (รวมหน้าสรุปผล) → ยังไม่โหลด
+  $('updToast').hidden = false;
+  $('updToast').querySelector('em').textContent = busy ? 'อัปเดตเมื่อจบด่าน' : 'กำลังอัปเดต...';
+  if (!busy) { try { sessionStorage.setItem('clay-updated', pendingVer.v); } catch {} setTimeout(() => location.reload(), 1200); }
 }
 $('updToast').onclick = () => location.reload();
 setInterval(checkUpdate, 60000);
 document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && checkUpdate());
+try { // เพิ่งอัปเดตเสร็จ → บอกผู้เล่น
+  const up = sessionStorage.getItem('clay-updated');
+  if (up) { sessionStorage.removeItem('clay-updated'); setTimeout(() => announce(`✨ อัปเดตเป็นเวอร์ชัน ${VER.v} แล้ว!`), 800); }
+} catch {}
