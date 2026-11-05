@@ -1,4 +1,4 @@
-// วาดฉากหลัง เหมือง และเอฟเฟกต์แบบ 2D (ตัวละคร/ป้อมเป็นโมเดล 3D อยู่ใน render3d.js)
+// วาดฉากหลังและเอฟเฟกต์แบบ 2D (ตัวละคร/ป้อม/เหมืองเป็นโมเดล 3D อยู่ใน render3d.js, props3d.js)
 const INK = 'rgba(42,23,12,.75)';
 const SKIN = '#f2c7a0';
 
@@ -73,27 +73,18 @@ const R = {
   // เงาใต้ตัวละคร/ฐาน (วาดบนพื้นก่อนโมเดล 3D)
   shadow(ctx, x, y, rx) { ctx.fillStyle = 'rgba(0,0,0,.28)'; ctx.beginPath(); ctx.ellipse(x, y, rx, rx * .28, 0, 0, 7); ctx.fill(); },
 
-  bricks(ctx, x, y, w, h) {
-    ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
-    ctx.strokeStyle = 'rgba(42,23,12,.18)'; ctx.lineWidth = 1.5;
-    for (let r = 0, yy = y + 14; yy < y + h; yy += 14, r++) {
-      ctx.beginPath(); ctx.moveTo(x, yy); ctx.lineTo(x + w, yy); ctx.stroke();
-      for (let xx = x + (r % 2 ? 10 : 0); xx < x + w; xx += 20) { ctx.beginPath(); ctx.moveTo(xx, yy - 14); ctx.lineTo(xx, yy); ctx.stroke(); }
-    }
-    ctx.restore();
-  },
-
-  mine(ctx, m, t) {
-    const x = m.x;
-    ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.beginPath(); ctx.ellipse(x, GROUND, 80, 10, 0, 0, 7); ctx.fill();
-    R.clay(ctx, x, GROUND - 24, 72, 38, '#7d7068');
-    R.clay(ctx, x - 32, GROUND - 44, 36, 30, '#958880');
-    R.clay(ctx, x + 30, GROUND - 50, 32, 32, '#8a7d75');
-    for (let i = 0; i < 7; i++) {
-      const gx = x - 50 + i * 16, gy = GROUND - 28 - (i % 3) * 16;
-      R.clay(ctx, gx, gy, 8, 7, '#f6c62e', i, 1.5);
-      if ((t * 1.5 + i * .7) % 3 < .25) { ctx.fillStyle = '#fff'; ctx.save(); ctx.translate(gx, gy - 10); ctx.rotate(t); ctx.fillRect(-1, -6, 2, 12); ctx.fillRect(-6, -1, 12, 2); ctx.restore(); }
-    }
+  // ประกายระยิบบนผลึกทองของเหมือง (ตำแหน่งมาจากโมเดล 3D)
+  sparkles(ctx, x, sparks, t) {
+    if (!sparks) return;
+    ctx.fillStyle = '#fff';
+    sparks.forEach((s, i) => {
+      const k = (t * 1.3 + i * .77) % 3.2; if (k > .35) return;
+      const sz = Math.sin(k / .35 * Math.PI) * 8;
+      ctx.save(); ctx.translate(x + s.dx, GROUND - s.dy); ctx.rotate(.4);
+      ctx.beginPath(); ctx.moveTo(0, -sz); ctx.lineTo(sz * .22, 0); ctx.lineTo(0, sz); ctx.lineTo(-sz * .22, 0); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(-sz, 0); ctx.lineTo(0, sz * .22); ctx.lineTo(sz, 0); ctx.lineTo(0, -sz * .22); ctx.fill();
+      ctx.restore();
+    });
   },
 
   hpBar(ctx, x, y, w, k, color) {

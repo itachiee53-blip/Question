@@ -172,7 +172,7 @@ class Game {
     const cam = this.cam + (this.shake > 0 ? (Math.random() - .5) * 18 * this.shake : 0);
     R.background(bg, cam, vw, this.lv, this.t);
     bg.save(); bg.translate(-cam, 0);
-    this.mines.forEach(m => R.mine(bg, m, this.t));
+    this.mines.forEach((m, i) => R.shadow(bg, m.x + 70 * TEAM[i].dir, GROUND + 4, 120));
     this.bases.forEach(b => R.shadow(bg, b.x, GROUND - 2, 140));
     for (const u of this.units) R.shadow(bg, u.x, u.y, (u.type === 'cavalry' ? 30 : 16) * Math.max(.6, u.def.h / 90) * (u.def.fly ? .6 : 1));
     bg.restore();
@@ -181,6 +181,7 @@ class Game {
 
     fx.clearRect(-10, -10, vw + 20, VIEW_H + 20);
     fx.save(); fx.translate(-cam, 0);
+    this.mines.forEach((m, i) => R.sparkles(fx, m.x + 70 * TEAM[i].dir, window.R3?.sparks?.[i], this.t));
     this.projs.forEach(p => R.proj(fx, p));
     this.parts.forEach(p => R.part(fx, p));
     for (const u of this.units) {

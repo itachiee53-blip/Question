@@ -1,3 +1,5 @@
 โมเดล 3D ทั้งหมดในโฟลเดอร์นี้เป็นของ Quaternius (https://quaternius.com) สัญญาอนุญาต CC0 (ใช้ฟรี ไม่ต้องให้เครดิต)
-ดาวน์โหลดจาก OpenGameArt: Ultimate Animated Character Pack, RPG Characters, Farm Animals, Animated Monster Pack, Modular Medieval Pack
+ดาวน์โหลดจาก OpenGameArt: Ultimate Animated Character Pack, RPG Characters, Farm Animals, Animated Monster Pack
 แปลงจาก FBX เป็น GLB, ย่อเท็กซ์เจอร์, ตัดเฉพาะท่าที่ใช้ และบีบอัดด้วย meshopt
+
+ปราสาท เหมืองแร่ และจอบ สร้างด้วยโค้ดใน js/props3d.js (ไม่ใช้ไฟล์โมเดล)
