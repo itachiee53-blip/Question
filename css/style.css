@@ -57,6 +57,18 @@ button { font: inherit; cursor: pointer; border: 0; color: inherit; }
 .mode span { font-size: 12px; }
 .mode.on { border-color: var(--clay); background: rgba(232,164,92,.35); }
 
+/* แผงอัปเกรด */
+.upg { position: absolute; top: 48px; right: max(8px, env(safe-area-inset-right)); width: 250px; background: linear-gradient(#5a3f2c, #3b2a1e);
+  border: 3px solid #7a5638; border-radius: 18px; padding: 6px; display: grid; gap: 4px; box-shadow: 0 12px 30px rgba(0,0,0,.5); animation: pop .25s both;
+  max-height: calc(100vh - 140px); overflow-y: auto; }
+.up { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.08); border-radius: 12px; padding: 3px 8px; text-align: left; }
+.up .i { font-size: 20px; }
+.up div { flex: 1; line-height: 1.2; }
+.up small { display: block; opacity: .7; font-size: 10px; }
+.up .lvl { color: #ffd84a; font-size: 11px; letter-spacing: 1px; }
+.up b { font-size: 13px; white-space: nowrap; }
+.up.poor { opacity: .5; } .up.max b { color: #8fdc6a; }
+
 @keyframes wobble { 0%,100% { transform: rotate(-2deg) scale(1); } 50% { transform: rotate(2deg) scale(1.04, .97); } }
 @keyframes pop { from { transform: scale(.7); opacity: 0; } }
 @keyframes rot { 0%,30% { transform: rotate(0); } 60%,100% { transform: rotate(-90deg); } }

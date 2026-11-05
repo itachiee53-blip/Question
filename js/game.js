@@ -5,7 +5,8 @@ class Game {
     this.gold = [ECON.startGold, ECON.startGold];
     this.bases = [130, WORLD - 130].map(x => ({ x, hp: BASE.hp, max: BASE.hp, shake: 0, cd: 0 }));
     this.mines = [{ x: 470 }, { x: WORLD - 470 }];
-    this.mode = ['defend', 'defend'];
+    this.mode = ['defend', 'defend']; this.vw = 960;
+    this.upg = [0, 1].map(() => Object.fromEntries(Object.keys(UPGRADES).map(k => [k, 0])));
     this.queue = [[], []]; this.units = []; this.projs = []; this.parts = [];
     this.ai = new AI(this, lvIdx);
     for (const team of [0, 1]) for (let i = 0; i < 2; i++) this.units.push(new Unit('miner', team, this.bases[team].x + TEAM[team].dir * (50 + i * 20)));
@@ -30,7 +31,8 @@ class Game {
       if (q && (q.t += dt) >= UNITS[q.type].time) {
         this.queue[team].shift();
         const b = this.bases[team];
-        this.units.push(new Unit(q.type, team, b.x + TEAM[team].dir * 40));
+        this.units.push(new Unit(q.type, team, b.x + TEAM[team].dir * 40, Upg.mult(this, team, 'armor')));
+        if (team === 0) this.sfx('spawn', b.x);
         this.chunks(b.x + TEAM[team].dir * 40, GROUND - 20, TEAM[team].color, 6);
       }
       this.tower(team, dt);
@@ -53,36 +55,39 @@ class Game {
   tower(team, dt) {
     const b = this.bases[team];
     if ((b.cd -= dt) > 0) return;
-    const foe = this.units.find(u => u.team !== team && Math.abs(u.x - b.x) < BASE.towerRange);
-    if (foe) { b.cd = BASE.towerRate; this.shoot({ x: b.x, y: GROUND - 170 + 60, team }, foe, BASE.towerDmg); }
+    const l = this.upg[team].tower;
+    const foe = this.units.find(u => u.team !== team && Math.abs(u.x - b.x) < BASE.towerRange + l * 50);
+    if (foe) { b.cd = BASE.towerRate / (1 + l * .3); this.shoot({ x: b.x, y: GROUND - 170, team }, foe, BASE.towerDmg * (1 + l * .6)); }
   }
 
   shoot(from, target, dmg) {
     const tx = target.def ? target.x : target.x, ty = target.def ? target.y - 30 : GROUND - 90;
     const dist = Math.abs(tx - from.x);
+    this.sfx('shoot', from.x, .7);
     this.projs.push({ x0: from.x, y0: from.y - 40, x1: tx, y1: ty, t: 0, dur: .25 + dist / 700, arc: 20 + dist * .18, target, dmg, team: from.team });
   }
 
   land(p) {
     const t = p.target;
-    if (t.def ? t.hp > 0 && Math.abs(t.x - p.x1) < 40 : true) this.damage(t, p.dmg);
+    if (t.def ? t.hp > 0 && Math.abs(t.x - p.x1) < 40 : true) { this.damage(t, p.dmg); this.sfx('thud', p.x1, .8); }
     else this.chunks(p.x1, GROUND + 10, '#9a6538', 2);
   }
 
   strike(u, target) {
-    this.damage(target, u.def.dmg);
-    if (u.def.splash) for (const o of this.units) if (o !== target && o.team !== u.team && Math.abs(o.x - target.x) < u.def.splash) this.damage(o, u.def.dmg * .5);
+    const dmg = u.def.dmg * Upg.mult(this, u.team, 'weapon');
+    this.damage(target, dmg); this.sfx(u.def.splash ? 'smash' : 'hit', u.x);
+    if (u.def.splash) for (const o of this.units) if (o !== target && o.team !== u.team && Math.abs(o.x - target.x) < u.def.splash) this.damage(o, dmg * .5);
   }
 
   damage(t, dmg) {
     if (!t.def) { // ฐาน
-      t.hp = Math.max(0, t.hp - dmg); t.shake = .15;
+      t.hp = Math.max(0, t.hp - dmg); t.shake = .15; this.sfx('boom', t.x, .7);
       this.chunks(t.x + (Math.random() - .5) * 80, GROUND - 60 - Math.random() * 100, '#8a6a4e', 3);
       return;
     }
     t.hp -= dmg; t.flash = .1;
     this.chunks(t.x, t.y - 30, TEAM[t.team].color, 3);
-    if (t.hp <= 0) this.chunks(t.x, t.y - 25, TEAM[t.team].color, 14); // แตกเป็นก้อนดินเหนียว
+    if (t.hp <= 0) { this.chunks(t.x, t.y - 25, TEAM[t.team].color, 14); this.sfx('pop', t.x); } // แตกเป็นก้อนดินเหนียว
   }
 
   chunks(x, y, color, n) {
@@ -90,14 +95,17 @@ class Game {
   }
   text(x, y, text, color) { this.parts.push({ x, y, vx: 0, vy: -50, text, color, life: 1, rot: 0 }); }
 
-  end(result) { this.over = result; this.onEnd?.(result); }
+  end(result) { this.over = result; Sfx.play(result); this.onEnd?.(result); }
+
+  // เล่นเสียงเฉพาะเหตุการณ์ที่อยู่ในจอ (ไม่ให้เสียงรก)
+  sfx(name, x, vol = 1) { if (x > this.cam - 80 && x < this.cam + this.vw + 80) Sfx.play(name, vol); }
 
   draw(ctx, vw) {
-    this.cam = Math.max(0, Math.min(WORLD - vw, this.cam));
+    this.vw = vw; this.cam = Math.max(0, Math.min(WORLD - vw, this.cam));
     R.background(ctx, this.cam, vw, this.lv, this.t);
     ctx.save(); ctx.translate(-this.cam, 0);
     this.mines.forEach(m => R.mine(ctx, m, this.t));
-    this.bases.forEach((b, i) => R.base(ctx, b, i, this.t));
+    this.bases.forEach((b, i) => R.base(ctx, b, i, this.t, this.upg[i]));
     [...this.units].sort((a, b) => a.y - b.y).forEach(u => R.unit(ctx, u, this.t));
     this.projs.forEach(p => R.arrow(ctx, p));
     this.parts.forEach(p => R.part(ctx, p));

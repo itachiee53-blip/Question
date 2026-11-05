@@ -8,6 +8,11 @@ class AI {
     const g = this.g, mine = g.units.filter(u => u.team === 1), q = g.queue[1];
     const count = t => mine.filter(u => u.type === t).length + q.filter(x => x.type === t).length;
 
+    // 0) อัปเกรดฐานเมื่อมีเงินเหลือ
+    if (g.gold[1] > 350 && Math.random() < .25 + this.idx * .08) {
+      const opts = Object.keys(UPGRADES).filter(k => Upg.cost(g, 1, k) <= g.gold[1] - 100);
+      if (opts.length && Upg.buy(g, 1, opts[Math.random() * opts.length | 0])) return;
+    }
     // 1) คนงานก่อน
     if (count('miner') < 3 + this.idx) { g.train(1, 'miner'); return; }
     // 2) เลือกทหาร (เก็บเงินรอถ้ายังไม่พอ)
