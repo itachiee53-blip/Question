@@ -101,19 +101,37 @@ const R = {
     ctx.fillStyle = k > .3 ? color : '#ff7a3a'; ctx.beginPath(); ctx.roundRect(x - w / 2, y, w * Math.max(0, k), 6, 3); ctx.fill();
   },
 
-  arrow(ctx, p) {
+  // กระสุนทุกชนิด: ลูกธนู / หิน / ขวาน / ลูกไฟ / อุกกาบาต / ไฟมังกร
+  proj(ctx, p) {
+    if (p.t < 0) return;
     const k = p.t / p.dur, x = p.x0 + (p.x1 - p.x0) * k, y = p.y0 + (p.y1 - p.y0) * k - Math.sin(k * Math.PI) * p.arc;
     const ang = Math.atan2((p.y1 - p.y0) / p.dur - Math.cos(k * Math.PI) * Math.PI * p.arc / p.dur, (p.x1 - p.x0) / p.dur);
-    ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
-    R.limb(ctx, -12, 0, 8, 0, '#8a5a30', 2.5);
-    ctx.fillStyle = '#c9d0d6'; ctx.strokeStyle = INK; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(14, 0); ctx.lineTo(6, -4); ctx.lineTo(6, 4); ctx.closePath(); ctx.fill(); ctx.stroke();
-    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(-12, 0); ctx.lineTo(-16, -4); ctx.lineTo(-8, 0); ctx.lineTo(-16, 4); ctx.fill();
+    ctx.save(); ctx.translate(x, y);
+    if (p.kind === 'arrow') {
+      ctx.rotate(ang); R.limb(ctx, -12, 0, 8, 0, '#8a5a30', 2.5);
+      ctx.fillStyle = '#c9d0d6'; ctx.beginPath(); ctx.moveTo(14, 0); ctx.lineTo(6, -4); ctx.lineTo(6, 4); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(-12, 0); ctx.lineTo(-16, -4); ctx.lineTo(-8, 0); ctx.lineTo(-16, 4); ctx.fill();
+    } else if (p.kind === 'rock') R.clay(ctx, 0, 0, 6, 5, '#8a8078', p.t * 10, 1.5);
+    else if (p.kind === 'axe') { ctx.rotate(p.t * 18); R.limb(ctx, -9, 0, 9, 0, '#7a5230', 3); R.clay(ctx, 8, -4, 7, 5, '#c9d0d6', .3, 1.5); }
+    else { // ไฟ: ลูกไฟเรืองแสง + หาง
+      const big = p.kind === 'meteor' ? 16 : p.kind === 'flame' ? 14 : 10;
+      for (let i = 4; i >= 0; i--) {
+        const tx = -Math.cos(ang) * i * big * .7, ty = -Math.sin(ang) * i * big * .7;
+        ctx.fillStyle = `rgba(255,${120 + i * 20},40,${.5 - i * .09})`; ctx.beginPath(); ctx.arc(tx, ty, big * (1 - i * .15), 0, 7); ctx.fill();
+      }
+      const g = ctx.createRadialGradient(0, 0, 1, 0, 0, big);
+      g.addColorStop(0, '#fffbe0'); g.addColorStop(.4, '#ffc040'); g.addColorStop(1, 'rgba(255,80,20,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, big * 1.4, 0, 7); ctx.fill();
+    }
     ctx.restore();
   },
 
   part(ctx, p) {
     ctx.globalAlpha = Math.min(1, p.life * 2);
-    if (p.text) {
+    if (p.ring) { // วงคลื่นระเบิด
+      const r = (1 - p.life / .4) * 90; ctx.strokeStyle = p.color; ctx.lineWidth = 6 * p.life / .4;
+      ctx.beginPath(); ctx.ellipse(p.x, p.y, r, r * .45, 0, 0, 7); ctx.stroke();
+    } else if (p.text) {
       ctx.font = '600 20px Mitr, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.lineWidth = 4; ctx.strokeStyle = INK; ctx.strokeText(p.text, p.x, p.y); ctx.fillStyle = p.color; ctx.fillText(p.text, p.x, p.y);
     } else R.clay(ctx, p.x, p.y, p.r, p.r * .8, p.color, p.rot, 1.2);
