@@ -2,4 +2,4 @@
 ดาวน์โหลดจาก OpenGameArt: Ultimate Animated Character Pack, RPG Characters, Farm Animals, Animated Monster Pack
 แปลงจาก FBX เป็น GLB, ย่อเท็กซ์เจอร์, ตัดเฉพาะท่าที่ใช้ และบีบอัดด้วย meshopt
 
-ปราสาท เหมืองแร่ และจอบ สร้างด้วยโค้ดใน js/props3d.js (ไม่ใช้ไฟล์โมเดล)
+ปราสาท เหมืองแร่ จอบ (js/props3d.js) และต้นไม้/หิน/ฉาก (js/nature3d.js, js/scenery.js) สร้างด้วยโค้ด ไม่ใช้ไฟล์โมเดล

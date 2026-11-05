@@ -58,10 +58,10 @@ const ABILITIES = {
   rage: { name: 'ปลุกใจ', icon: '⚡', cd: 50, lv: 2, desc: 'ทหารแรง+เร็วขึ้น 10 วิ' },
 };
 
-// ด่าน: ai = ตัวคูณรายได้ศัตรู, think = ความถี่คิดของ AI, wave = ทุกกี่วิมีคลื่นบุก, bossAt = บอสมาวินาทีที่
+// ด่าน: theme = ฉาก (scenery.js), ai = ตัวคูณรายได้ศัตรู, think = ความถี่คิดของ AI, wave = ทุกกี่วิมีคลื่นบุก, bossAt = บอสมาวินาทีที่
 const LEVELS = [
-  { name: 'ป่าก็อบลิน', faction: 0, ai: .8, think: 1.5, wave: 75, bossAt: 150, sky: ['#9fd3ef', '#e8f4f8'], hill: '#8bbf6a' },
-  { name: 'สุสานผีดิบ', faction: 1, ai: 1.0, think: 1.2, wave: 65, bossAt: 130, sky: ['#6a5a8a', '#c9b6d6'], hill: '#5e6a5a' },
-  { name: 'ฝั่งทะเลไวกิ้ง', faction: 2, ai: 1.2, think: 1, wave: 60, bossAt: 120, sky: ['#f6c28b', '#fbe6c8'], hill: '#c98b4a' },
-  { name: 'รังมังกร', faction: 3, ai: 1.35, think: .8, wave: 60, bossAt: 110, sky: ['#3a3550', '#b0607a'], hill: '#4e3a33' },
+  { name: 'ป่าก็อบลิน', faction: 0, ai: .8, think: 1.5, wave: 75, bossAt: 150, theme: 'forest' },
+  { name: 'สุสานผีดิบ', faction: 1, ai: 1.0, think: 1.2, wave: 65, bossAt: 130, theme: 'grave' },
+  { name: 'ฝั่งทะเลไวกิ้ง', faction: 2, ai: 1.2, think: 1, wave: 60, bossAt: 120, theme: 'beach' },
+  { name: 'รังมังกร', faction: 3, ai: 1.35, think: .8, wave: 60, bossAt: 110, theme: 'lava' },
 ];

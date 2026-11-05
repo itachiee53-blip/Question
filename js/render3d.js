@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { buildNature } from './nature3d.js';
 import { buildCastle, buildArcherTower, buildFrontWall, buildMine, buildPickaxe, buildOre, waveFlag } from './props3d.js';
 
 // โหลดตอนเปิดเกม: ฝ่ายเรา (ป้อม/เหมืองสร้างด้วยโค้ดใน props3d.js) · โมเดลศัตรูโหลดเฉพาะด่านที่เล่น (ประหยัดเน็ต)
@@ -32,8 +33,8 @@ const R3 = {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping; this.renderer.toneMappingExposure = 1.15;
     this.scene = new THREE.Scene();
     this.camera = new THREE.OrthographicCamera(0, 960, 0, -VIEW_H, -3000, 3000);
-    this.scene.add(new THREE.HemisphereLight(0xfff1dc, 0x7a5638, 1.6));
-    const sun = new THREE.DirectionalLight(0xffffff, 2.2); sun.position.set(-400, 700, 900); this.scene.add(sun);
+    this.hemi = new THREE.HemisphereLight(0xfff1dc, 0x7a5638, 1.6); this.scene.add(this.hemi);
+    const sun = this.sun = new THREE.DirectionalLight(0xffffff, 2.2); sun.position.set(-400, 700, 900); this.scene.add(sun);
     const rim = new THREE.DirectionalLight(0xffd6a0, .8); rim.position.set(500, 200, -600); this.scene.add(rim);
 
     this.loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
@@ -140,6 +141,14 @@ const R3 = {
       this.scene.add(o.g); return o;
     });
     window.R3.sparks = this.mines.map(o => o.sparks);
+    // ฉากธรรมชาติ + แสงตามธีมด่าน (ไม่วางของชั้นกลางทับปราสาท/เหมือง)
+    for (const l of this.nature || []) this.scene.remove(l.g);
+    const th = game.lv.theme, keep = [[-200, 340], [WORLD - 340, WORLD + 200], ...game.mines.map((m, i) => { const c = m.x + MINE_OFS * TEAM[i].dir; return [c - 210, c + 190]; })];
+    this.nature = buildNature(th, WORLD, keep);
+    for (const l of this.nature) this.scene.add(l.g);
+    const L = THEMES[th].light;
+    this.hemi.color.setHex(L.sky); this.hemi.groundColor.setHex(L.ground); this.hemi.intensity = L.hemiI;
+    this.sun.color.setHex(L.sun); this.sun.intensity = L.sunI;
   },
 
   reset(game) {
@@ -201,6 +210,7 @@ const R3 = {
 
   render(cam, vw) {
     if (!this.ready) return;
+    for (const l of this.nature || []) l.g.position.x = cam * (1 - l.p); // parallax
     Object.assign(this.camera, { left: cam, right: cam + vw, top: 0, bottom: -VIEW_H }); this.camera.updateProjectionMatrix();
     this.renderer.render(this.scene, this.camera);
   },
