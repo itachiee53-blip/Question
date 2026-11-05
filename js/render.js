@@ -1,4 +1,4 @@
-// วาดฉากหลัง เหมือง และเอฟเฟกต์แบบ 2D (ตัวละคร/ป้อมเป็นโมเดล 3D อยู่ใน render3d.js)
+// วาดฉากหลังและเอฟเฟกต์แบบ 2D (ตัวละคร/ป้อม/เหมืองเป็นโมเดล 3D อยู่ใน render3d.js, props3d.js)
 const INK = 'rgba(42,23,12,.75)';
 const SKIN = '#f2c7a0';
 
@@ -36,64 +36,23 @@ const R = {
     ctx.strokeStyle = 'rgba(255,255,255,.3)'; ctx.lineWidth = w * .3; ctx.beginPath(); ctx.moveTo(x1, y1 - w * .2); ctx.lineTo(x2, y2 - w * .2); ctx.stroke();
   },
 
-  background(ctx, cam, vw, lv, t) {
-    const sky = ctx.createLinearGradient(0, 0, 0, GROUND);
-    sky.addColorStop(0, lv.sky[0]); sky.addColorStop(1, lv.sky[1]);
-    ctx.fillStyle = sky; ctx.fillRect(0, 0, vw, VIEW_H);
-    R.clay(ctx, vw * .8 - cam * .02, 70, 34, 34, '#fff3c4', 0, 0); // ดวงอาทิตย์
-    for (let i = 0; i < 6; i++) {
-      const x = ((i * 640 - cam * .15 + t * 6) % 3800 + 3800) % 3800 - 300, y = 50 + (i % 3) * 30;
-      R.clay(ctx, x, y, 55, 18, '#ffffff', 0, 0); R.clay(ctx, x + 35, y - 10, 36, 18, '#ffffff', 0, 0);
-    }
-    for (const [k, h, c] of [[.25, 150, R.shade(lv.hill, -.2)], [.5, 95, lv.hill]]) {
-      ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(0, GROUND);
-      for (let x = 0; x <= vw + 30; x += 30) {
-        const wx = x + cam * k;
-        ctx.lineTo(x, GROUND - h - Math.sin(wx * .004) * h * .45 - Math.sin(wx * .011) * h * .2);
-      }
-      ctx.lineTo(vw, GROUND); ctx.fill();
-    }
-    // ต้นไม้ดินเหนียวระยะกลาง
-    for (let i = 0; i < 14; i++) {
-      const x = ((i * 260 - cam * .75) % 3640 + 3640) % 3640 - 100, s = .7 + (i % 3) * .2;
-      R.slab(ctx, x - 4 * s, GROUND - 40 * s, 8 * s, 40 * s, 3, '#7a5230', 1.5);
-      R.clay(ctx, x, GROUND - 55 * s, 22 * s, 26 * s, R.shade(lv.hill, -.1), 0, 1.5);
-    }
-    const g = ctx.createLinearGradient(0, GROUND - 12, 0, VIEW_H);
-    g.addColorStop(0, '#b98250'); g.addColorStop(.15, '#9a6538'); g.addColorStop(1, '#4e2f1a');
-    ctx.fillStyle = g; ctx.fillRect(0, GROUND - 12, vw, VIEW_H);
-    ctx.fillStyle = '#7fb85a'; // ขอบหญ้า
-    for (let x = -(cam % 24); x < vw; x += 24) { ctx.beginPath(); ctx.ellipse(x, GROUND - 12, 16, 6, 0, 0, 7); ctx.fill(); }
-    for (let i = 0; i < 30; i++) { // ก้อนหินบนทาง
-      const x = ((i * 157 - cam) % 4710 + 4710) % 4710 - 50;
-      if (x < vw + 20) R.clay(ctx, x, GROUND + 50 + (i * 37 % 60), 5 + i % 4, 3 + i % 3, '#7d6a5a', 0, 1);
-    }
-  },
+  background(ctx, cam, vw, lv, t) { Scenery.draw(ctx, cam, vw, lv, t); },
 
   // เงาใต้ตัวละคร/ฐาน (วาดบนพื้นก่อนโมเดล 3D)
   shadow(ctx, x, y, rx) { ctx.fillStyle = 'rgba(0,0,0,.28)'; ctx.beginPath(); ctx.ellipse(x, y, rx, rx * .28, 0, 0, 7); ctx.fill(); },
 
-  bricks(ctx, x, y, w, h) {
-    ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
-    ctx.strokeStyle = 'rgba(42,23,12,.18)'; ctx.lineWidth = 1.5;
-    for (let r = 0, yy = y + 14; yy < y + h; yy += 14, r++) {
-      ctx.beginPath(); ctx.moveTo(x, yy); ctx.lineTo(x + w, yy); ctx.stroke();
-      for (let xx = x + (r % 2 ? 10 : 0); xx < x + w; xx += 20) { ctx.beginPath(); ctx.moveTo(xx, yy - 14); ctx.lineTo(xx, yy); ctx.stroke(); }
-    }
-    ctx.restore();
-  },
-
-  mine(ctx, m, t) {
-    const x = m.x;
-    ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.beginPath(); ctx.ellipse(x, GROUND, 80, 10, 0, 0, 7); ctx.fill();
-    R.clay(ctx, x, GROUND - 24, 72, 38, '#7d7068');
-    R.clay(ctx, x - 32, GROUND - 44, 36, 30, '#958880');
-    R.clay(ctx, x + 30, GROUND - 50, 32, 32, '#8a7d75');
-    for (let i = 0; i < 7; i++) {
-      const gx = x - 50 + i * 16, gy = GROUND - 28 - (i % 3) * 16;
-      R.clay(ctx, gx, gy, 8, 7, '#f6c62e', i, 1.5);
-      if ((t * 1.5 + i * .7) % 3 < .25) { ctx.fillStyle = '#fff'; ctx.save(); ctx.translate(gx, gy - 10); ctx.rotate(t); ctx.fillRect(-1, -6, 2, 12); ctx.fillRect(-6, -1, 12, 2); ctx.restore(); }
-    }
+  // ประกายระยิบบนผลึกทองของเหมือง (ตำแหน่งมาจากโมเดล 3D)
+  sparkles(ctx, x, sparks, t) {
+    if (!sparks) return;
+    ctx.fillStyle = '#fff';
+    sparks.forEach((s, i) => {
+      const k = (t * 1.3 + i * .77) % 3.2; if (k > .35) return;
+      const sz = Math.sin(k / .35 * Math.PI) * 8;
+      ctx.save(); ctx.translate(x + s.dx, GROUND - s.dy); ctx.rotate(.4);
+      ctx.beginPath(); ctx.moveTo(0, -sz); ctx.lineTo(sz * .22, 0); ctx.lineTo(0, sz); ctx.lineTo(-sz * .22, 0); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(-sz, 0); ctx.lineTo(0, sz * .22); ctx.lineTo(sz, 0); ctx.lineTo(0, -sz * .22); ctx.fill();
+      ctx.restore();
+    });
   },
 
   hpBar(ctx, x, y, w, k, color) {

@@ -10,6 +10,8 @@ class Unit {
     this.state = 'toMine'; this.carry = 0; this.timer = 0;
   }
   get miner() { return this.def.role === 'miner'; }
+  // จังหวะเหวี่ยงจอบ 0..1 (ฟาดโดนหินตอนวนกลับ 0) · ขุด 1 รอบ = 4 ครั้ง
+  swingK() { return ((ECON.mineTime - this.timer) / (ECON.mineTime / 4)) % 1; }
 
   moveTo(x, dt, g) {
     const dx = x - this.x;
@@ -29,7 +31,13 @@ class Unit {
   mine(g, dt) {
     const dir = TEAM[this.team].dir, mine = g.mines[this.team], base = g.bases[this.team];
     if (this.state === 'toMine' && this.moveTo(mine.x + (this.ofs - 35) * .8, dt, g)) { this.state = 'mining'; this.timer = ECON.mineTime; this.face = Math.sign(mine.x - base.x) || 1; }
-    else if (this.state === 'mining' && (this.timer -= dt) <= 0) {
+    else if (this.state === 'mining' && ((this.prevK = this.swingK()), (this.timer -= dt) > 0)) {
+      if (this.swingK() < this.prevK) { // จอบกระทบหิน: เศษหิน + ประกายทอง
+        const x = this.x + 22 * this.face, y = this.y - this.def.h * .35;
+        g.chunks(x, y, '#8a8078', 2); if (Math.random() < .4) g.chunks(x, y, '#f2c230', 1);
+        g.sfx('tick', this.x, .25);
+      }
+    } else if (this.state === 'mining') {
       this.carry = Math.round(ECON.load * g.income(this.team) * Upg.mult(g, this.team, 'mine')); this.state = 'toBase';
       g.chunks(this.x + 10 * this.face, this.y - 30, '#f2c230', 3);
     } else if (this.state === 'toBase' && this.moveTo(base.x + dir * 45, dt, g)) {

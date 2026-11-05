@@ -4,13 +4,27 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { buildNature } from './nature3d.js';
+import { buildCastle, buildArcherTower, buildFrontWall, buildMine, buildPickaxe, buildOre, waveFlag } from './props3d.js';
 
-// โหลดตอนเปิดเกม: ฝ่ายเรา + ป้อม · โมเดลศัตรูโหลดเฉพาะด่านที่เล่น (ประหยัดเน็ต)
-const COMMON = ['castle', 'ptower', 'tower', 'wall', 'banner', 'miner', 'sword', 'archer', 'wizard', 'horse', 'cleric', 'knight'];
+// โหลดตอนเปิดเกม: ฝ่ายเรา (ป้อม/เหมืองสร้างด้วยโค้ดใน props3d.js) · โมเดลศัตรูโหลดเฉพาะด่านที่เล่น (ประหยัดเน็ต)
+const COMMON = ['miner', 'sword', 'archer', 'wizard', 'horse', 'cleric', 'knight'];
 const TURN = .55; // หันเฉียง 3/4 ให้เห็นหน้า
+const MINE_OFS = 70; // เหมืองอยู่ถัดจากจุดยืนขุดไปทางศัตรู → คนงานหันหน้าเข้าหินพอดี
+const AX = new THREE.Vector3(-1, 0, 0); // แกนยกแขน (แกนข้างลำตัวของโมเดล)
+const PICK_ROT = [0, Math.PI / 2, 0];
+const _q = new THREE.Quaternion(), _p = new THREE.Quaternion(), _r = new THREE.Quaternion(), _a = new THREE.Vector3();
+// หมุนกระดูกรอบแกนที่กำหนดในพื้นที่ของตัวละคร
+function rotAround(bone, root, axis, ang) {
+  bone.parent.updateWorldMatrix(true, false);
+  bone.parent.getWorldQuaternion(_p); root.getWorldQuaternion(_r);
+  _p.premultiply(_r.invert());                       // parent เทียบกับตัว
+  _a.copy(axis).applyQuaternion(_p.invert());        // แกนในพื้นที่ parent
+  bone.quaternion.premultiply(_q.setFromAxisAngle(_a, ang));
+}
 
 const R3 = {
-  ready: false, models: {}, units: new Map(), bases: [],
+  ready: false, models: {}, units: new Map(), bases: [], mines: [],
 
   async load(onProgress) {
     const canvas = document.getElementById('gl');
@@ -19,12 +33,13 @@ const R3 = {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping; this.renderer.toneMappingExposure = 1.15;
     this.scene = new THREE.Scene();
     this.camera = new THREE.OrthographicCamera(0, 960, 0, -VIEW_H, -3000, 3000);
-    this.scene.add(new THREE.HemisphereLight(0xfff1dc, 0x7a5638, 1.6));
-    const sun = new THREE.DirectionalLight(0xffffff, 2.2); sun.position.set(-400, 700, 900); this.scene.add(sun);
+    this.hemi = new THREE.HemisphereLight(0xfff1dc, 0x7a5638, 1.6); this.scene.add(this.hemi);
+    const sun = this.sun = new THREE.DirectionalLight(0xffffff, 2.2); sun.position.set(-400, 700, 900); this.scene.add(sun);
     const rim = new THREE.DirectionalLight(0xffd6a0, .8); rim.position.set(500, 200, -600); this.scene.add(rim);
 
     this.loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
     await this.need(COMMON, onProgress);
+    try { this.makePortraits(); } catch (e) { console.warn(e); }
     this.ready = true;
   },
 
@@ -37,6 +52,36 @@ const R3 = {
   prepare(lvIdx, onProgress) {
     const f = FACTIONS[LEVELS[lvIdx].faction];
     return this.need([f.miner, ...Object.keys(f.roster), f.boss].map(k => UNITS[k].model), onProgress);
+  },
+
+  // รูปหน้าทหารสำหรับปุ่มร้าน: เรนเดอร์จากโมเดลจริง (ท่ายืน หันเฉียง)
+  makePortraits() {
+    const S = 160, rd = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
+    rd.setSize(S, S); rd.outputColorSpace = THREE.SRGBColorSpace; rd.toneMapping = THREE.ACESFilmicToneMapping; rd.toneMappingExposure = 1.2;
+    const sc = new THREE.Scene();
+    sc.add(new THREE.HemisphereLight(0xfff1dc, 0x6a4a30, 1.8));
+    const key = new THREE.DirectionalLight(0xffffff, 2.4); key.position.set(2, 3, 4); sc.add(key);
+    const rim = new THREE.DirectionalLight(0xbfd8ff, 1.6); rim.position.set(-3, 2, -2); sc.add(rim);
+    const cam = new THREE.PerspectiveCamera(26, 1, .1, 50);
+    this.portraits = {};
+    for (const [k, d] of Object.entries(UNITS)) {
+      if (!d.icon) continue;
+      const g = new THREE.Group(), parts = [];
+      if (k === 'cavalry') {
+        const horse = this.clone('horse', 0, 1), rider = this.clone('sword', 0, .8);
+        rider.obj.position.set(0, .42, -.05); g.add(horse.obj, rider.obj); parts.push(horse, rider);
+        cam.position.set(1.2, 1.15, 2.1); cam.lookAt(0, .8, 0);
+      } else {
+        const p = this.clone(d.model, 0, 1); g.add(p.obj); parts.push(p);
+        if (d.role === 'miner') { const e = {}; this.equipMiner(e, p.obj); }
+        cam.position.set(.42, .9, 1.55); cam.lookAt(0, .68, 0);
+      }
+      g.rotation.y = .45; sc.add(g);
+      for (const p of parts) { this.play(p, 'idle'); p.mixer.update(.4); }
+      rd.render(sc, cam); this.portraits[k] = rd.domElement.toDataURL('image/png');
+      sc.remove(g);
+    }
+    rd.dispose(); rd.forceContextLoss?.();
   },
 
   resize(w, h) { this.renderer?.setPixelRatio(Math.min(2, devicePixelRatio || 1)); this.renderer?.setSize(w, h, false); },
@@ -81,27 +126,60 @@ const R3 = {
     } else {
       const p = this.clone(d.model, u.team, d.h);
       g.add(p.obj); e.body = p; e.parts.push(p);
+      if (u.miner) this.equipMiner(e, p.obj);
     }
     this.scene.add(g); this.units.set(u.id, e);
     return e;
   },
 
+  // คนงาน: ถือจอบที่มือขวา + ก้อนแร่ตอนแบกกลับฐาน
+  equipMiner(e, obj) {
+    const bone = n => obj.getObjectByName(n);
+    e.bones = { arm: bone('UpperArmR'), fore: bone('LowerArmR'), torso: bone('Torso'), root: obj };
+    const fist = bone('FistR'); obj.updateMatrixWorld(true);
+    const ws = fist.getWorldScale(new THREE.Vector3()).x / obj.scale.x; // สเกลของกระดูกเทียบกับตัว
+    const pick = buildPickaxe(); pick.scale.setScalar(.5 / ws);
+    pick.rotation.set(...PICK_ROT); fist.add(pick); e.pick = pick;
+    const ore = buildOre(); ore.scale.setScalar(.11 / ws); fist.add(ore); ore.visible = false; e.ore = ore;
+  },
+
+  // ท่าเหวี่ยงจอบ: ยกแขนเหนือหัว → ฟาดลง (ทับท่า idle ของโมเดล)
+  swing(e, k) {
+    // k: 0→.65 ค่อยๆ ยกจอบขึ้นเหนือหัว · .65→1 ฟาดลงเร็ว (กระทบหินตอน k วนกลับ 0)
+    e.saved = [e.bones.arm, e.bones.fore, e.bones.torso].map(b => [b, b.quaternion.clone()]);
+    const up = k < .65 ? k / .65 : 1 - (k - .65) / .35;
+    const ease = k < .65 ? up * up * (3 - 2 * up) : 1 - Math.pow(1 - up, 2);
+    const lift = .9 + ease * 2.1;                                          // มุมยกแขนไปข้างหน้า (เรเดียน)
+    rotAround(e.bones.arm, e.bones.root, AX, lift);
+    rotAround(e.bones.fore, e.bones.root, AX, .15 + ease * .5);
+    rotAround(e.bones.torso, e.bones.root, AX, .3 - ease * .38);
+  },
+
   buildBases(game) {
     for (const b of this.bases) this.scene.remove(b.g);
     this.bases = game.bases.map((b, team) => {
-      const g = new THREE.Group(), d = TEAM[team].dir;
-      const wall = this.clone('castle', team, 190).obj;
-      const t1 = this.clone('ptower', team, 285).obj; t1.position.set(-82, 0, -20);
-      const t2 = this.clone('ptower', team, 285).obj; t2.position.set(82, 0, -20);
-      const flag = this.clone('banner', team, 70).obj; flag.position.set(0, 120, 14);
-      const top = this.clone('tower', team, 95).obj; top.position.set(0, 165, -10);          // อัปเกรดป้อมธนู
-      const front = this.clone('wall', team, 70).obj; front.position.set(140 * d, 0, 30);      // อัปเกรดกำแพง
-      front.rotation.y = Math.PI / 2;
-      g.add(wall, t1, t2, flag, top, front);
-      g.rotation.y = -.35 * d; g.position.set(b.x, -GROUND, -60);
+      const d = TEAM[team].dir, c = buildCastle(TEAM[team].color), g = c.g;
+      const top = buildArcherTower(TEAM[team].color); top.position.set(0, c.top, -12);          // อัปเกรดป้อมธนู
+      const front = buildFrontWall(); front.position.set(175 * d, 0, 20); front.scale.x = d;    // อัปเกรดกำแพง
+      g.add(top, front);
+      g.rotation.y = -.3 * d; g.scale.setScalar(.8); g.position.set(b.x, -GROUND, -70);
       this.scene.add(g);
-      return { g, top, front, x: b.x };
+      return { g, top, front, flags: c.flags, fires: c.fires, x: b.x };
     });
+    for (const m of this.mines) this.scene.remove(m.g);
+    this.mines = game.mines.map((m, team) => {
+      const o = buildMine(TEAM[team].dir); o.g.position.set(m.x + MINE_OFS * TEAM[team].dir, -GROUND, -60);
+      this.scene.add(o.g); return o;
+    });
+    window.R3.sparks = this.mines.map(o => o.sparks);
+    // ฉากธรรมชาติ + แสงตามธีมด่าน (ไม่วางของชั้นกลางทับปราสาท/เหมือง)
+    for (const l of this.nature || []) this.scene.remove(l.g);
+    const th = game.lv.theme, keep = [[-200, 340], [WORLD - 340, WORLD + 200], ...game.mines.map((m, i) => { const c = m.x + MINE_OFS * TEAM[i].dir; return [c - 210, c + 190]; })];
+    this.nature = buildNature(th, WORLD, keep);
+    for (const l of this.nature) this.scene.add(l.g);
+    const L = THEMES[th].light;
+    this.hemi.color.setHex(L.sky); this.hemi.groundColor.setHex(L.ground); this.hemi.intensity = L.hemiI;
+    this.sun.color.setHex(L.sun); this.sun.intensity = L.sunI;
   },
 
   reset(game) {
@@ -123,7 +201,7 @@ const R3 = {
       const atkSpeed = () => Math.max(1, (e.body.acts[atkName]?.getClip().duration || 1) / (u.def.rate * .9));
       const attacked = u.atkAnim > e.prevAtk + .3; e.prevAtk = u.atkAnim;
 
-      if (u.miner && u.state === 'mining') this.play(e.body, A.mine || 'attack', { speed: 1.3 });
+      if (u.miner && u.state === 'mining') this.play(e.body, 'idle');
       else if (attacked) this.play(e.body, atkName, { once: true, speed: atkSpeed() });
       else if (!this.busy(e.body)) this.play(e.body, u.moving ? (u.carry && e.body.acts.carry ? 'carry' : 'walk') : 'idle', { speed: u.moving ? Math.min(2, u.def.speed / 80) : 1 });
       if (e.horse) this.play(e.horse, u.moving ? 'walk' : 'idle', { speed: u.moving ? 1.1 : 1 });
@@ -139,18 +217,31 @@ const R3 = {
       if (k > 1.2) e.g.position.y -= dt * 60;
       if (k > 2) { this.scene.remove(e.g); this.units.delete(id); }
     }
-    for (const e of this.units.values()) for (const p of e.parts) p.mixer.update(dt);
+    for (const e of this.units.values()) {
+      if (e.saved) { for (const [b, q] of e.saved) b.quaternion.copy(q); e.saved = null; } // คืนท่าก่อนเหวี่ยง
+      for (const p of e.parts) p.mixer.update(dt);
+    }
+    for (const u of game.units) { // คนงาน: เหวี่ยงจอบตามจังหวะขุด, ถือแร่ตอนเดินกลับ
+      const e = this.units.get(u.id); if (!e?.pick) continue;
+      if (u.state === 'mining') this.swing(e, u.swingK());
+      e.pick.visible = !u.carry; e.ore.visible = !!u.carry;
+    }
+    const now = performance.now() / 1000;
 
     this.bases.forEach((B, i) => {
       const b = game.bases[i], up = game.upg[i];
       B.g.position.x = b.x + (b.shake > 0 ? (Math.random() - .5) * 8 : 0);
-      B.top.visible = up.tower > 0; B.top.scale.setScalar(60 + up.tower * 14);
-      B.front.visible = up.wall > 0; B.front.scale.setScalar(55 + up.wall * 18);
+      B.top.visible = up.tower > 0; B.top.scale.setScalar(.75 + up.tower * .15);
+      B.front.visible = up.wall > 0; B.front.scale.set(TEAM[i].dir * (.8 + up.wall * .15), .8 + up.wall * .15, 1);
+      B.flags.forEach((f, j) => waveFlag(f, now + j));
+      B.fires.forEach((f, j) => { const s = 1 + Math.sin(now * 17 + j * 2) * .15 + Math.sin(now * 29 + j) * .1; f.scale.set(1 / s, s, 1 / s); });
     });
+    this.mines.forEach(o => o.crystals.forEach((c, j) => { const k = .5 + Math.sin(now * 2 + j * 1.7) * .5; c.children[0].material.emissiveIntensity = .35 + k * .5; }));
   },
 
   render(cam, vw) {
     if (!this.ready) return;
+    for (const l of this.nature || []) l.g.position.x = cam * (1 - l.p); // parallax
     Object.assign(this.camera, { left: cam, right: cam + vw, top: 0, bottom: -VIEW_H }); this.camera.updateProjectionMatrix();
     this.renderer.render(this.scene, this.camera);
   },

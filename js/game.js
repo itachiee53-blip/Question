@@ -132,12 +132,12 @@ class Game {
         const x = foes.length ? foes[i % foes.length].x + (Math.random() - .5) * 60 : this.cam + Math.random() * this.vw;
         this.projs.push({ kind: 'meteor', x0: x - 260, y0: -60, x1: x, y1: GROUND + 10, t: -i * .12, dur: .7, arc: 0, dmg: 75, splash: 65, team: 0 });
       }
-      this.shake = .6; Sfx.play('meteor');
+      this.shake = .6; this.play('meteor');
     } else if (k === 'heal') {
       for (const u of this.units) if (u.team === 0) { u.hp = Math.min(u.maxHp, u.hp + u.maxHp * .6); this.sparkle(u.x, u.y - 40, '#8dff8a'); }
-      const b = this.bases[0]; b.hp = Math.min(b.max, b.hp + 250); Sfx.play('heal');
+      const b = this.bases[0]; b.hp = Math.min(b.max, b.hp + 250); this.play('heal');
     } else if (k === 'rage') {
-      this.rage[0] = 10; for (const u of this.units) if (u.team === 0) this.sparkle(u.x, u.y - 40, '#ff5a3a'); Sfx.play('horn');
+      this.rage[0] = 10; for (const u of this.units) if (u.team === 0) this.sparkle(u.x, u.y - 40, '#ff5a3a'); this.play('horn');
     }
     this.announce(`${ABILITIES[k].icon} ${ABILITIES[k].name}!`);
     return true;
@@ -154,17 +154,18 @@ class Game {
     this.shake = Math.max(this.shake, .2); this.sfx('boom', x, .5);
   }
   text(x, y, text, color) { this.parts.push({ x, y, vx: 0, vy: -50, text, color, life: 1, rot: 0 }); }
-  announce(msg, big) { this.onAnnounce?.(msg, big); }
+  announce(msg, big) { if (!this.demo) this.onAnnounce?.(msg, big); }
 
   end(result) {
-    this.over = result; Sfx.play(result);
+    this.over = result; this.play(result);
     const k = this.bases[0].hp / this.bases[0].max;
     this.stars = result === 'win' ? (k > .7 ? 3 : k > .35 ? 2 : 1) : 0;
     this.onEnd?.(result);
   }
 
   // เล่นเสียงเฉพาะเหตุการณ์ที่อยู่ในจอ (ไม่ให้เสียงรก)
-  sfx(name, x, vol = 1) { if (x > this.cam - 80 && x < this.cam + this.vw + 80) Sfx.play(name, vol); }
+  play(name, vol) { if (!this.demo) Sfx.play(name, vol); }
+  sfx(name, x, vol = 1) { if (!this.demo && x > this.cam - 80 && x < this.cam + this.vw + 80) Sfx.play(name, vol); }
 
   // วาด 3 ชั้น: ฉาก 2D (bg) → โมเดล 3D (R3) → เอฟเฟกต์ 2D (fx)
   draw(bg, fx, vw, dt) {
@@ -172,7 +173,7 @@ class Game {
     const cam = this.cam + (this.shake > 0 ? (Math.random() - .5) * 18 * this.shake : 0);
     R.background(bg, cam, vw, this.lv, this.t);
     bg.save(); bg.translate(-cam, 0);
-    this.mines.forEach(m => R.mine(bg, m, this.t));
+    this.mines.forEach((m, i) => R.shadow(bg, m.x + 70 * TEAM[i].dir, GROUND + 4, 120));
     this.bases.forEach(b => R.shadow(bg, b.x, GROUND - 2, 140));
     for (const u of this.units) R.shadow(bg, u.x, u.y, (u.type === 'cavalry' ? 30 : 16) * Math.max(.6, u.def.h / 90) * (u.def.fly ? .6 : 1));
     bg.restore();
@@ -181,6 +182,7 @@ class Game {
 
     fx.clearRect(-10, -10, vw + 20, VIEW_H + 20);
     fx.save(); fx.translate(-cam, 0);
+    this.mines.forEach((m, i) => R.sparkles(fx, m.x + 70 * TEAM[i].dir, window.R3?.sparks?.[i], this.t));
     this.projs.forEach(p => R.proj(fx, p));
     this.parts.forEach(p => R.part(fx, p));
     for (const u of this.units) {
@@ -189,16 +191,25 @@ class Game {
       else if (u.hp < u.maxHp) R.hpBar(fx, u.x, y, 30, u.hp / u.maxHp, TEAM[u.team].color);
       if (this.rage[u.team] > 0 && !u.miner) R.part(fx, { x: u.x, y: y - 10, text: '⚡', color: '#ffcf3a', life: 1 });
     }
-    this.bases.forEach((b, i) => R.hpBar(fx, b.x, GROUND - 330, 130, b.hp / b.max, TEAM[i].color));
     fx.restore();
   }
 
+  // แผนที่ย่อ: ถนน · ปราสาท · เหมือง · ทหาร (ศัตรูสูงกว่า/ต่ำกว่าเส้น) · กรอบมุมกล้อง
   drawMini(ctx, vw) {
-    const w = ctx.canvas.width, h = ctx.canvas.height, k = w / WORLD;
+    const w = ctx.canvas.width, h = ctx.canvas.height, k = (w - 40) / WORLD, X = x => 20 + x * k, mid = h / 2 + 2;
     ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = 'rgba(255,255,255,.18)'; ctx.fillRect(this.cam * k, 0, vw * k, h);
-    this.bases.forEach((b, i) => { ctx.fillStyle = TEAM[i].color; ctx.fillRect(b.x * k - 4, 3, 8, h - 6); });
-    ctx.fillStyle = '#f2c230'; this.mines.forEach(m => ctx.fillRect(m.x * k - 2, h - 7, 4, 4));
-    for (const u of this.units) { ctx.fillStyle = TEAM[u.team].color; const s = u.def.boss ? 6 : 3; ctx.fillRect(u.x * k - s / 2, 12 - s, s, s * 2); }
+    ctx.fillStyle = 'rgba(120,80,40,.55)'; ctx.beginPath(); ctx.roundRect(14, mid - 3, w - 28, 6, 3); ctx.fill();
+    ctx.fillStyle = '#ffd45a'; this.mines.forEach((m, i) => { const x = X(m.x + 70 * TEAM[i].dir); ctx.beginPath(); ctx.moveTo(x, mid - 7); ctx.lineTo(x + 5, mid); ctx.lineTo(x, mid + 7); ctx.lineTo(x - 5, mid); ctx.fill(); });
+    for (const u of this.units) {
+      const s = u.def.boss ? 7 : u.miner ? 3 : 4;
+      ctx.fillStyle = TEAM[u.team].color; ctx.strokeStyle = 'rgba(20,10,5,.8)'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(X(u.x), mid + (u.team ? 1 : -1) * (u.miner ? 9 : 10), s, 0, 7); ctx.fill(); ctx.stroke();
+    }
+    this.bases.forEach((b, i) => { // ปราสาทจิ๋ว
+      const x = X(b.x); ctx.fillStyle = TEAM[i].color; ctx.strokeStyle = '#2a160a'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x - 9, mid + 9); ctx.lineTo(x - 9, mid - 6); ctx.lineTo(x - 5, mid - 12); ctx.lineTo(x - 1, mid - 6); ctx.lineTo(x + 1, mid - 6); ctx.lineTo(x + 5, mid - 12); ctx.lineTo(x + 9, mid - 6); ctx.lineTo(x + 9, mid + 9); ctx.closePath(); ctx.fill(); ctx.stroke();
+    });
+    ctx.strokeStyle = 'rgba(255,240,200,.9)'; ctx.lineWidth = 2.5; ctx.fillStyle = 'rgba(255,240,200,.12)';
+    ctx.beginPath(); ctx.roundRect(X(this.cam), 3, vw * k, h - 6, 6); ctx.fill(); ctx.stroke();
   }
 }

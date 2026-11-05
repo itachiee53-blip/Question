@@ -18,12 +18,54 @@ function resize() {
 addEventListener('resize', resize); resize();
 
 // ---------- หน้าเริ่ม ----------
+// รูปตัวอย่างฉากของแต่ละด่าน (วาดจาก scenery.js ลงแคนวาสเล็ก)
+const thumbs = LEVELS.map((l, i) => {
+  try {
+    const big = document.createElement('canvas'); big.width = 760; big.height = VIEW_H;
+    Scenery.draw(big.getContext('2d'), 300 + i * 500, 760, l, 3);
+    const c = document.createElement('canvas'); c.width = 228; c.height = 112;
+    c.getContext('2d').drawImage(big, 0, 150, 760, 374, 0, 0, 228, 112);
+    return c.toDataURL('image/jpeg', .85);
+  } catch { return ''; }
+});
 function renderLevels() {
-  $('levels').innerHTML = LEVELS.map((l, i) =>
-    `<button class="lv${i === lvSel ? ' sel' : ''}" data-i="${i}" ${i > unlocked() ? 'disabled' : ''}>${i > unlocked() ? '🔒 ' : ''}<small>ด่าน ${i + 1} · ${FACTIONS[l.faction].name}</small>${l.name}<span class="st">${'★'.repeat(starsOf()[i] || 0)}${'☆'.repeat(3 - (starsOf()[i] || 0))}</span></button>`).join('');
+  const st = starsOf();
+  $('levels').innerHTML = LEVELS.map((l, i) => {
+    const lock = i > unlocked(), n = st[i] || 0;
+    return `<button class="lv${i === lvSel ? ' sel' : ''}${lock ? ' locked' : ''}" data-i="${i}" ${lock ? 'disabled' : ''}>
+      <span class="thumb" style="background-image:url(${thumbs[i]})"><span class="no">${i + 1}</span>${lock ? `<span class="lk"><i class="ic">${ICON.lock}</i></span>` : ''}</span>
+      <span class="nm">${l.name}</span><small>${FACTIONS[l.faction].name}</small>
+      <span class="st">${[0, 1, 2].map(k => `<i class="ic">${ICON.star(k < n)}</i>`).join('')}</span></button>`;
+  }).join('');
 }
-$('levels').onclick = e => { const b = e.target.closest('.lv'); if (b && !b.disabled) { Sfx.init(); Sfx.play('click'); lvSel = +b.dataset.i; renderLevels(); } };
+$('levels').onclick = e => { const b = e.target.closest('.lv'); if (b && !b.disabled) { Sfx.init(); Sfx.play('click'); lvSel = +b.dataset.i; renderLevels(); startDemo(); } };
 lvSel = Math.min(unlocked(), LEVELS.length - 1); renderLevels();
+
+// ฉากสนามรบจำลองด้านหลังเมนู: ทั้งสองฝ่ายเล่นเองแบบเงียบๆ กล้องเลื่อนช้าๆ
+let demo = null, demoT = 0;
+async function startDemo() {
+  if (!window.R3?.ready || game) return;
+  const i = lvSel; try { await R3.prepare(i); } catch {}
+  if (game || i !== lvSel) return;
+  demo = new Game(i); demo.demo = true; demo.onEnd = () => setTimeout(startDemo, 1500); demoT = 0;
+  demo.gold = [600, 600]; demo.ai2 = { t: 0 };
+}
+function demoUpdate(dt) {
+  const d = demo, a = d.ai2;
+  if ((a.t -= dt) <= 0) { // สมองฝ่ายเราแบบง่าย
+    a.t = 1.2; const n = d.units.filter(u => u.team === 0 && u.miner).length;
+    const pool = Object.keys(UNITS).filter(k => UNITS[k].icon && k !== 'miner' && d.unlocked(k));
+    d.train(0, n < 3 ? 'miner' : pool[Math.random() * pool.length | 0]);
+    d.mode[0] = d.units.filter(u => u.team === 0 && !u.miner).length > 6 ? 'attack' : 'defend';
+  }
+  d.update(dt);
+  demoT += dt; // กล้องตามแนวรบถ้าสองทัพเข้าใกล้กัน ไม่งั้นโชว์ปราสาทกับเหมืองฝั่งเรา
+  const army = t => d.units.filter(u => u.team === t && !u.miner).map(u => u.x);
+  const f0 = Math.max(0, ...army(0)), f1 = Math.min(WORLD, ...army(1));
+  const tx = f1 - f0 < vw * .9 ? (f0 + f1) / 2 - vw / 2 : 120 + Math.sin(demoT * .08) * 140;
+  d.cam += (tx - d.cam) * Math.min(1, dt * .6);
+  if (demoT > 180) { demoT = -1e9; startDemo(); }
+}
 
 $('playBtn').onclick = () => (isTouch && !document.fullscreenElement ? ($('perm').hidden = false) : startGame(lvSel));
 $('permYes').onclick = async () => {
@@ -36,7 +78,7 @@ $('permNo').onclick = () => { $('perm').hidden = true; startGame(lvSel); };
 // ---------- โหลดโมเดล 3D ----------
 $('playBtn').disabled = true; $('playBtn').textContent = 'กำลังโหลด 0%';
 window.onModelProgress = k => ($('playBtn').textContent = `กำลังโหลด ${Math.round(k * 100)}%`);
-window.onModelsReady = () => { $('playBtn').disabled = false; $('playBtn').textContent = '▶ เริ่มเกม'; resize(); };
+window.onModelsReady = () => { document.body.classList.add('models-ready'); $('playBtn').disabled = false; $('playBtn').textContent = '▶ เริ่มเกม'; resize(); startDemo(); };
 window.onModelsError = () => { $('playBtn').textContent = 'โหลดโมเดลไม่สำเร็จ ลองรีเฟรช'; };
 if (window.R3?.ready) window.onModelsReady();
 
@@ -45,7 +87,7 @@ async function startGame(i) {
   $('playBtn').disabled = true; $('nextBtn').disabled = true;
   try { await R3.prepare(i, k => ($('playBtn').textContent = `โหลดศัตรู ${Math.round(k * 100)}%`)); } catch {}
   $('playBtn').disabled = false; $('nextBtn').disabled = false; $('playBtn').textContent = '▶ เริ่มเกม';
-  game = new Game(i); paused = false; Sfx.music(true);
+  demo = null; game = new Game(i); paused = false; Sfx.music(true);
   game.onEnd = showEnd; game.onAnnounce = announce;
   announce(`ด่าน ${i + 1}: ${LEVELS[i].name}`, false, `ศัตรู: ${FACTIONS[LEVELS[i].faction].name}`);
   hints = i === 0 ? [[4, '⛏️ สร้างคนงานเพิ่ม = ได้ทองเร็วขึ้น'], [16, '🛡️ ตั้งรับไว้ก่อน รวมทัพให้เยอะแล้วกด ⚔️ บุก'], [32, '☄️ กดสกิลฝนดาวตกตอนศัตรูมาเป็นกลุ่ม'], [55, '🏰 อย่าลืมอัปเกรดฐานเมื่อทองเหลือ']] : [];
@@ -61,12 +103,18 @@ function showEnd(r) {
     localStorage.setItem('clay-unlock', Math.max(unlocked(), game.lvIdx + 1));
     const st = starsOf(); st[game.lvIdx] = Math.max(st[game.lvIdx] || 0, game.stars); localStorage.setItem('clay-stars', JSON.stringify(st));
   } catch {}
-  $('endStars').textContent = win ? '★'.repeat(game.stars) + '☆'.repeat(3 - game.stars) : '';
-  const newUnits = Object.values(UNITS).filter(u => u.lv === game.lvIdx + 1).map(u => u.icon + ' ' + u.name);
-  const newSkill = Object.values(ABILITIES).filter(a => a.lv === game.lvIdx + 1).map(a => a.icon + ' ' + a.name);
-  $('endIco').textContent = win ? '🏆' : '💥';
-  $('endTitle').textContent = win ? 'ชนะแล้ว!' : 'ฐานแตก...';
-  $('endText').textContent = win ? (last ? `คุณพิชิตทุกด่านแล้ว สุดยอด! (กำจัดศัตรู ${game.kills} ตัว)` : `ปลดล็อก: ${[...newUnits, ...newSkill].join(', ') || 'ด่านถัดไป'}`) : 'ลองเพิ่มคนงานให้ฟาร์มแร่เร็วขึ้น แล้วตั้งรับก่อนบุก';
+  $('endPanel').className = 'panel end ' + (win ? 'win' : 'lose');
+  $('endTitle').textContent = win ? (last ? 'พิชิตทุกด่าน!' : 'ชัยชนะ!') : 'พ่ายแพ้...';
+  $('endStars').innerHTML = win ? [0, 1, 2].map(k => `<i class="ic${k === 1 ? ' mid' : ''}" style="animation-delay:${.5 + k * .35}s">${ICON.star(k < game.stars)}</i>`).join('') : `<i class="ic skl">${ICON.skull}</i>`;
+  const m = Math.floor(game.t / 60), sec = String(Math.floor(game.t % 60)).padStart(2, '0'), hp = Math.round(game.bases[0].hp / game.bases[0].max * 100);
+  $('endStats').innerHTML = [[ICON.skull, game.kills, 'กำจัดศัตรู'], [ICON.clock, `${m}:${sec}`, 'เวลา'], [ICON.castle, hp + '%', 'เลือดฐาน']]
+    .map(([ic, v, l]) => `<div><i class="ic">${ic}</i><b>${v}</b><small>${l}</small></div>`).join('');
+  const newUnits = Object.keys(UNITS).filter(k => UNITS[k].lv === game.lvIdx + 1), newSkill = Object.keys(ABILITIES).filter(k => ABILITIES[k].lv === game.lvIdx + 1);
+  $('endUnlock').innerHTML = win && (newUnits.length || newSkill.length) ? `<div class="ul-h">ปลดล็อกใหม่!</div><div class="ul">${
+    newUnits.map(k => `<div class="nu"><span class="pic">${R3.portraits?.[k] ? `<img src="${R3.portraits[k]}" alt="">` : UNITS[k].icon}</span><small>${UNITS[k].name}</small></div>`).join('') +
+    newSkill.map(k => `<div class="nu"><span class="pic sk s-${k}"><i class="ic">${ICON[k]}</i></span><small>${ABILITIES[k].name}</small></div>`).join('')}</div>` : '';
+  $('endText').textContent = win ? (last ? 'สุดยอด! คุณปกป้องอาณาจักรดินเหนียวได้สำเร็จ' : '') : 'ลองเพิ่มคนงานให้ฟาร์มแร่เร็วขึ้น แล้วตั้งรับก่อนบุก';
+  $('endText').hidden = !$('endText').textContent;
   $('nextBtn').textContent = win && !last ? '▶ ด่านถัดไป' : '↻ เล่นอีกครั้ง';
   $('nextBtn').onclick = () => startGame(win && !last ? game.lvIdx + 1 : game.lvIdx);
   setTimeout(() => ($('end').hidden = false), 900);
@@ -75,7 +123,7 @@ function showEnd(r) {
 function toMenu() {
   game = null; Sfx.music(false); document.body.classList.remove('playing');
   $('hud').hidden = $('end').hidden = $('pause').hidden = true; $('start').hidden = false;
-  lvSel = Math.min(unlocked(), LEVELS.length - 1); renderLevels();
+  lvSel = Math.min(unlocked(), LEVELS.length - 1); renderLevels(); startDemo();
 }
 $('menuBtn').onclick = $('quitBtn').onclick = toMenu;
 $('pauseBtn').onclick = () => { paused = true; $('pause').hidden = false; };
@@ -99,17 +147,23 @@ $('upg').onclick = e => {
   if (Upg.buy(game, 0, b.dataset.k)) { Sfx.play('upgrade'); game.text(game.bases[0].x, GROUND - 240, 'อัปเกรด!', '#ffd84a'); } else Sfx.play('deny');
   renderUpg();
 };
-$('muteBtn').onclick = () => { $('muteBtn').textContent = Sfx.toggle() ? '🔊' : '🔇'; Sfx.music(!!game && Sfx.on); Sfx.play('click'); };
-$('muteBtn').textContent = Sfx.on ? '🔊' : '🔇';
+const muteIcon = () => ($('muteBtn').innerHTML = `<i class="ic">${Sfx.on ? ICON.sound : ICON.mute}</i>`);
+$('muteBtn').onclick = () => { Sfx.toggle(); muteIcon(); Sfx.music(!!game && Sfx.on); Sfx.play('click'); };
+muteIcon();
+document.querySelectorAll('[data-ic]').forEach(e => (e.innerHTML = ICON[e.dataset.ic]));
 addEventListener('pointerdown', () => Sfx.init(), { once: true });
 addEventListener('pointerdown', () => Sfx.ctx?.state === 'suspended' && Sfx.ctx.resume());
 
 const PLAYER_UNITS = Object.keys(UNITS).filter(k => UNITS[k].icon);
 function buildShop() {
-  $('shop').innerHTML = PLAYER_UNITS.map(k => { const u = UNITS[k], lock = !game.unlocked(k);
-    return `<button class="unit${lock ? ' lock' : ''}" data-u="${k}" title="${u.name}"><span class="i">${u.icon}</span><small>🪙${u.cost}</small><span class="q" hidden></span><span class="prog"></span>${lock ? `<span class="lk">🔒ด่าน ${u.lv + 1}</span>` : ''}</button>`; }).join('');
+  const pic = k => window.R3?.portraits?.[k] ? `<img src="${R3.portraits[k]}" alt="">` : `<span class="emo">${UNITS[k].icon}</span>`;
+  $('shop').innerHTML = PLAYER_UNITS.map((k, i) => { const u = UNITS[k], lock = !game.unlocked(k);
+    return `<button class="unit${lock ? ' lock' : ''}" data-u="${k}" title="${u.name}"><span class="pic">${pic(k)}</span><span class="cost"><i class="ic">${ICON.coin}</i>${u.cost}</span><span class="key">${i + 1}</span><span class="q" hidden></span><span class="prog"></span>${lock ? `<span class="lk"><i class="ic">${ICON.lock}</i>ด่าน ${u.lv + 1}</span>` : ''}</button>`; }).join('');
   $('skills').innerHTML = Object.entries(ABILITIES).map(([k, a]) =>
-    `<button class="skill${a.lv > game.lvIdx ? ' lock' : ''}" data-s="${k}" title="${a.name}: ${a.desc}">${a.icon}<span class="cd" hidden></span></button>`).join('');
+    `<button class="skill s-${k}${a.lv > game.lvIdx ? ' lock' : ''}" data-s="${k}" title="${a.name}: ${a.desc}"><i class="ic">${ICON[k]}</i><span class="cd" hidden></span>${a.lv > game.lvIdx ? `<span class="lk"><i class="ic">${ICON.lock}</i></span>` : ''}</button>`).join('');
+  $('shMe').innerHTML = ICON.shield(TEAM[0].color); $('shFoe').innerHTML = ICON.shield(TEAM[1].color);
+  const c = TEAM[1].color, lum = [1, 3, 5].reduce((a, i, j) => a + parseInt(c.slice(i, i + 2), 16) * [.3, .59, .11][j], 0);
+  $('hpFoe').style.backgroundColor = lum < 90 ? '#c0504a' : c; // สีเผ่ามืดเกิน → ใช้แดง
 }
 $('skills').onclick = e => {
   const b = e.target.closest('.skill'); if (!b || !game) return;
@@ -136,12 +190,15 @@ function updateHud() {
     const k = b.dataset.u, n = q.filter(x => x.type === k).length, qe = b.querySelector('.q');
     b.classList.toggle('poor', game.gold[0] < UNITS[k].cost);
     qe.hidden = !n; qe.textContent = n;
-    b.querySelector('.prog').style.width = q[0]?.type === k ? q[0].t / UNITS[k].time * 100 + '%' : 0;
+    b.querySelector('.prog').style.height = q[0]?.type === k ? q[0].t / UNITS[k].time * 100 + '%' : 0;
   });
   document.querySelectorAll('.skill').forEach(b => {
     const cd = game.abil[b.dataset.s], el = b.querySelector('.cd');
     el.hidden = !cd; el.textContent = Math.ceil(cd); b.classList.toggle('ready', !cd && !b.classList.contains('lock'));
+    b.style.setProperty('--cd', cd / ABILITIES[b.dataset.s].cd);
   });
+  $('hpMe').style.width = game.bases[0].hp / game.bases[0].max * 100 + '%';
+  $('hpFoe').style.width = game.bases[1].hp / game.bases[1].max * 100 + '%';
   while (hints.length && game.t > hints[0][0]) announce(hints.shift()[1]);
   game.drawMini(mini, vw); renderUpg();
 }
@@ -153,11 +210,14 @@ addEventListener('pointermove', e => { if (drag && game) game.cam = drag.cam - (
 addEventListener('pointerup', () => (drag = null));
 bgc.addEventListener('wheel', e => { if (game) game.cam += (e.deltaY + e.deltaX) / scale; }, { passive: true });
 $('mini').addEventListener('pointerdown', e => {
-  const jump = ev => { const r = $('mini').getBoundingClientRect(); game.cam = (ev.clientX - r.left) / r.width * WORLD - vw / 2; };
+  const jump = ev => { const r = $('mini').getBoundingClientRect(), w = $('mini').width; game.cam = ((ev.clientX - r.left) / r.width * w - 20) / ((w - 40) / WORLD) - vw / 2; };
   jump(e); const mv = ev => jump(ev); addEventListener('pointermove', mv); addEventListener('pointerup', () => removeEventListener('pointermove', mv), { once: true });
 });
 const keys = {};
-addEventListener('keydown', e => { keys[e.key] = true; if (e.key === 'Escape' && game) $('pauseBtn').click(); });
+addEventListener('keydown', e => {
+  keys[e.key] = true; if (e.key === 'Escape' && game) $('pauseBtn').click();
+  const n = +e.key; if (game && n >= 1 && n <= PLAYER_UNITS.length) document.querySelector(`.unit[data-u="${PLAYER_UNITS[n - 1]}"]`)?.click(); // ปุ่มลัด 1-7
+});
 addEventListener('keyup', e => (keys[e.key] = false));
 
 // ---------- ลูปหลัก ----------
@@ -170,7 +230,31 @@ function loop(now) {
     if (!paused && !(isPortrait() && isTouch)) game.update(dt);
     game.draw(bg, ctx, vw, dt);
     if ((hudT -= dt) <= 0) { hudT = .1; updateHud(); }
-  }
+  } else if (demo) { demoUpdate(dt); demo.draw(bg, ctx, vw, dt); }
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
+
+// ---------- เริ่มใหม่ทั้งหมด (ล้างด่าน/ดาวที่บันทึกไว้) ----------
+$('resetBtn').onclick = () => { Sfx.play('click'); $('resetDlg').hidden = false; };
+$('resetNo').onclick = () => { Sfx.play('click'); $('resetDlg').hidden = true; };
+$('resetYes').onclick = () => {
+  try { localStorage.removeItem('clay-unlock'); localStorage.removeItem('clay-stars'); } catch {}
+  $('resetDlg').hidden = true; lvSel = 0; renderLevels(); startDemo(); Sfx.play('upgrade');
+  announce('↺ เริ่มใหม่จากด่าน 1 แล้ว!');
+};
+
+// ---------- เวอร์ชันเกม + แจ้งเตือนอัปเดต ----------
+// ตัวโหลดใน index.html อ่าน version.json ตอนเปิดเกม · ตรงนี้คอยเช็คทุก 1 นาที (และตอนกลับมาที่แท็บ)
+// ถ้าบนเว็บมีเวอร์ชันใหม่กว่า → ขึ้นป้ายให้แตะโหลดใหม่ (ไม่รีเฟรชเองกลางเกม)
+const VER = window.GAME_VER || { v: 'dev' };
+$('verLbl').textContent = `เวอร์ชัน ${VER.v}${VER.date ? ' · ' + VER.date : ''}`;
+async function checkUpdate() {
+  try {
+    const r = await (await fetch('version.json?t=' + Date.now(), { cache: 'no-store' })).json();
+    if (r.v && r.v !== VER.v) { $('updTxt').textContent = `เวอร์ชัน ${r.v}${r.notes ? ' — ' + r.notes : ''}`; $('updToast').hidden = false; }
+  } catch {}
+}
+$('updToast').onclick = () => location.reload();
+setInterval(checkUpdate, 60000);
+document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && checkUpdate());
