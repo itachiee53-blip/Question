@@ -234,3 +234,27 @@ function loop(now) {
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
+
+// ---------- เริ่มใหม่ทั้งหมด (ล้างด่าน/ดาวที่บันทึกไว้) ----------
+$('resetBtn').onclick = () => { Sfx.play('click'); $('resetDlg').hidden = false; };
+$('resetNo').onclick = () => { Sfx.play('click'); $('resetDlg').hidden = true; };
+$('resetYes').onclick = () => {
+  try { localStorage.removeItem('clay-unlock'); localStorage.removeItem('clay-stars'); } catch {}
+  $('resetDlg').hidden = true; lvSel = 0; renderLevels(); startDemo(); Sfx.play('upgrade');
+  announce('↺ เริ่มใหม่จากด่าน 1 แล้ว!');
+};
+
+// ---------- เวอร์ชันเกม + แจ้งเตือนอัปเดต ----------
+// ตัวโหลดใน index.html อ่าน version.json ตอนเปิดเกม · ตรงนี้คอยเช็คทุก 1 นาที (และตอนกลับมาที่แท็บ)
+// ถ้าบนเว็บมีเวอร์ชันใหม่กว่า → ขึ้นป้ายให้แตะโหลดใหม่ (ไม่รีเฟรชเองกลางเกม)
+const VER = window.GAME_VER || { v: 'dev' };
+$('verLbl').textContent = `เวอร์ชัน ${VER.v}${VER.date ? ' · ' + VER.date : ''}`;
+async function checkUpdate() {
+  try {
+    const r = await (await fetch('version.json?t=' + Date.now(), { cache: 'no-store' })).json();
+    if (r.v && r.v !== VER.v) { $('updTxt').textContent = `เวอร์ชัน ${r.v}${r.notes ? ' — ' + r.notes : ''}`; $('updToast').hidden = false; }
+  } catch {}
+}
+$('updToast').onclick = () => location.reload();
+setInterval(checkUpdate, 60000);
+document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && checkUpdate());

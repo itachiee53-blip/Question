@@ -8,8 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Clay War</title>
 <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<style>html, body { background: #3b2a1e; margin: 0; }</style>
 </head>
 <body>
 <canvas id="bg" class="layer"></canvas>
@@ -59,7 +58,21 @@
     <span><i class="ic" data-ic="coin"></i>ฟาร์มแร่</span><span><i class="ic" data-ic="pop"></i>สร้างกองทัพ</span><span><i class="ic" data-ic="castle"></i>ทำลายฐานศัตรู</span>
   </div>
   <p class="credit">โมเดล 3D ตัวละคร: Quaternius (CC0)</p>
+  <button id="resetBtn" class="ghost corner">↺ เริ่มใหม่ทั้งหมด</button>
+  <span id="verLbl" class="ver"></span>
 </div>
+
+<!-- ยืนยันล้างความคืบหน้า -->
+<div id="resetDlg" class="screen dim" hidden>
+  <div class="panel"><div class="ph red">เริ่มใหม่ทั้งหมด?</div>
+    <div class="ico"><i class="ic" data-ic="skull"></i></div>
+    <p>ด่านที่ปลดล็อกและดาวทั้งหมดจะถูกลบ<br>แล้วเริ่มเล่นจากด่าน 1 ใหม่</p>
+    <div class="row"><button id="resetNo" class="ghost">ยกเลิก</button><button id="resetYes" class="big sm red-btn">ลบแล้วเริ่มใหม่</button></div>
+  </div>
+</div>
+
+<!-- แจ้งเตือนเวอร์ชันใหม่ -->
+<button id="updToast" class="upd" hidden><i class="ic" data-ic="rage"></i><span><b>มีอัปเดตใหม่!</b><small id="updTxt"></small></span><em>แตะเพื่อโหลด</em></button>
 
 <!-- ขออนุญาตหมุนจอ -->
 <div id="perm" class="screen dim" hidden>
@@ -95,16 +108,23 @@
   </div>
 </div>
 
-<script src="js/config.js"></script>
-<script src="js/icons.js"></script>
-<script src="js/audio.js"></script>
-<script src="js/upgrades.js"></script>
-<script src="js/scenery.js"></script>
-<script src="js/render.js"></script>
-<script src="js/units.js"></script>
-<script src="js/ai.js"></script>
-<script src="js/game.js"></script>
-<script src="js/main.js"></script>
-<script type="module" src="js/render3d.js"></script>
+<!-- ตัวโหลดเกม: อ่าน version.json (ไม่ใช้แคช) แล้วโหลดทุกไฟล์พร้อม ?v=เวอร์ชัน
+     → พออัปเดตเกม รีเฟรชครั้งเดียวได้ไฟล์ใหม่ทั้งหมดแน่นอน (ไม่ติดแคชเบราว์เซอร์/GitHub Pages) -->
+<script>
+(async () => {
+  let ver = { v: 'dev' };
+  try { ver = await (await fetch('version.json?t=' + Date.now(), { cache: 'no-store' })).json(); } catch {}
+  window.GAME_VER = ver;
+  const q = '?v=' + encodeURIComponent(ver.v), js = new URL('js/', location.href).href;
+  const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'css/style.css' + q; document.head.appendChild(css);
+  const map = { imports: { three: 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js', 'three/addons/': 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/' } };
+  for (const f of ['props3d', 'nature3d']) map.imports[js + f + '.js'] = js + f + '.js' + q; // โมดูลที่ render3d.js import
+  const im = document.createElement('script'); im.type = 'importmap'; im.textContent = JSON.stringify(map); document.head.appendChild(im);
+  const load = (src, mod) => new Promise((ok, err) => { const s = document.createElement('script'); if (mod) s.type = 'module'; s.src = src + q; s.onload = ok; s.onerror = err; document.body.appendChild(s); });
+  await new Promise(ok => (css.onload = css.onerror = ok));
+  for (const f of ['config', 'icons', 'audio', 'upgrades', 'scenery', 'render', 'units', 'ai', 'game', 'main']) await load('js/' + f + '.js');
+  load('js/render3d.js', true);
+})();
+</script>
 </body>
 </html>

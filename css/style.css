@@ -250,3 +250,19 @@ body:not(.models-ready) .menu-screen { background: radial-gradient(ellipse at 50
   .nu .pic { width: 40px; height: 40px; } .nu .pic.sk { width: 38px; height: 38px; } .nu .pic.sk .ic { font-size: 22px; } .nu small { font-size: 10px; }
   .panel .ico .ic { font-size: 40px; } .panel p { font-size: 13px; } .big.sm { padding: 6px 22px; font-size: 16px; } .ghost { padding: 6px 18px; }
 }
+
+/* ปุ่มเริ่มใหม่ / เลขเวอร์ชัน / ป้ายอัปเดต */
+.corner { position: absolute; left: max(12px, env(safe-area-inset-left)); bottom: max(10px, env(safe-area-inset-bottom)); font-size: 13px; padding: 6px 14px; }
+.ver { position: absolute; left: max(12px, env(safe-area-inset-left)); top: max(10px, env(safe-area-inset-top)); font-size: 12px; opacity: .75; text-shadow: 0 1px 2px #000; }
+.ph.red { background: linear-gradient(#d1544a, #8f2a22); }
+.red-btn { background: linear-gradient(#ff8a6a, #d1544a 50%, #9a2e26); color: #fff4dc; border: 3px solid var(--ink); border-radius: 18px; text-shadow: 0 2px 0 var(--ink);
+  box-shadow: inset 0 3px 0 rgba(255,255,255,.4), 0 6px 0 #5a1a14, 0 10px 20px rgba(0,0,0,.45); }
+.upd { position: fixed; z-index: 30; top: max(10px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 10px;
+  padding: 8px 16px 8px 10px; border-radius: 16px; max-width: calc(100vw - 24px); text-align: left; animation: dropIn .5s cubic-bezier(.2,.9,.3,1.4) both;
+  background: linear-gradient(#ffe08a, #f2b632 55%, #d4861e); color: var(--ink); border: 3px solid var(--ink);
+  box-shadow: inset 0 3px 0 rgba(255,255,255,.6), 0 5px 0 #6a3a10, 0 10px 24px rgba(0,0,0,.5); }
+.upd .ic { font-size: 30px; animation: wobble 1.5s ease-in-out infinite; }
+.upd b { display: block; font-size: 16px; } .upd small { display: block; font-size: 11px; opacity: .85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 50vw; }
+.upd em { font-style: normal; font-weight: 600; font-size: 13px; background: var(--ink); color: #ffe08a; border-radius: 10px; padding: 4px 10px; white-space: nowrap; }
+@keyframes dropIn { from { transform: translate(-50%, -120%); } }
+@media (max-height: 420px) { .ver { font-size: 10px; } .corner { font-size: 11px; padding: 4px 10px; } }
