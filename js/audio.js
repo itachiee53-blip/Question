@@ -66,6 +66,11 @@ const Sfx = {
       deny: () => S.tone(160, .15, 'square', .08 * v),
       upgrade: () => [523, 659, 784, 1047].forEach((f, i) => S.tone(f, .18, 'triangle', .12 * v, 1, i * .08)),
       horn: () => { S.tone(220, .5, 'sawtooth', .08 * v); S.tone(330, .6, 'sawtooth', .06 * v, 1, .15); }, // สั่งบุก
+      heal: () => [660, 880, 1320].forEach((f, i) => S.tone(f, .2, 'sine', .07 * v, 1, i * .06)),
+      fire: () => { S.noise(.4, .25 * v, 900); S.tone(160, .4, 'sawtooth', .05 * v, .5); },
+      whoosh: () => S.noise(.18, .12 * v, 1500),
+      meteor: () => { S.tone(800, 1.2, 'sawtooth', .05, .1); S.noise(1.4, .2, 600, .3); },
+      boss: () => { S.tone(55, 1.2, 'sawtooth', .12, 1); S.tone(58, 1.2, 'sawtooth', .1, 1); S.noise(1, .2, 300, .2); },
       win: () => [523, 659, 784, 659, 1047].forEach((f, i) => S.tone(f, .3, 'triangle', .15, 1, i * .15)),
       lose: () => [392, 330, 262, 196].forEach((f, i) => S.tone(f, .4, 'sawtooth', .07, 1, i * .22)),
     })[name]?.();

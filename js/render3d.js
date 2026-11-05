@@ -3,9 +3,10 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
-const MODELS = ['miner', 'sword', 'archer', 'giant', 'horse', 'castle', 'ptower', 'tower', 'wall', 'banner'];
-const HEIGHT = { miner: 82, sword: 92, archer: 88, giant: 150, horse: 82, rider: 64 }; // ความสูงบนจอ (px)
+// โหลดตอนเปิดเกม: ฝ่ายเรา + ป้อม · โมเดลศัตรูโหลดเฉพาะด่านที่เล่น (ประหยัดเน็ต)
+const COMMON = ['castle', 'ptower', 'tower', 'wall', 'banner', 'miner', 'sword', 'archer', 'wizard', 'horse', 'cleric', 'knight'];
 const TURN = .55; // หันเฉียง 3/4 ให้เห็นหน้า
 
 const R3 = {
@@ -22,12 +23,20 @@ const R3 = {
     const sun = new THREE.DirectionalLight(0xffffff, 2.2); sun.position.set(-400, 700, 900); this.scene.add(sun);
     const rim = new THREE.DirectionalLight(0xffd6a0, .8); rim.position.set(500, 200, -600); this.scene.add(rim);
 
-    const loader = new GLTFLoader(); let done = 0;
-    await Promise.all(MODELS.map(async n => {
-      this.models[n] = await loader.loadAsync(`models/${n}.glb`);
-      onProgress?.(++done / MODELS.length);
-    }));
+    this.loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+    await this.need(COMMON, onProgress);
     this.ready = true;
+  },
+
+  async need(names, onProgress) {
+    const todo = [...new Set(names)].filter(n => !this.models[n]); let done = 0;
+    await Promise.all(todo.map(async n => { this.models[n] = await this.loader.loadAsync(`models/${n}.glb`); onProgress?.(++done / todo.length); }));
+  },
+
+  // โหลดโมเดลเผ่าศัตรูของด่านนั้น
+  prepare(lvIdx, onProgress) {
+    const f = FACTIONS[LEVELS[lvIdx].faction];
+    return this.need([f.miner, ...Object.keys(f.roster), f.boss].map(k => UNITS[k].model), onProgress);
   },
 
   resize(w, h) { this.renderer?.setPixelRatio(Math.min(2, devicePixelRatio || 1)); this.renderer?.setSize(w, h, false); },
@@ -64,13 +73,13 @@ const R3 = {
   busy: part => part.until > performance.now(),
 
   makeUnit(u) {
-    const g = new THREE.Group(), s = u.def.size, e = { g, parts: [], prevAtk: 0 };
+    const g = new THREE.Group(), d = u.def, e = { g, parts: [], prevAtk: 0 };
     if (u.type === 'cavalry') {
-      const horse = this.clone('horse', u.team, HEIGHT.horse * s * .8), rider = this.clone('sword', u.team, HEIGHT.rider * s * .8);
-      rider.obj.position.y = HEIGHT.horse * s * .8 * .42; rider.obj.position.z = -4;
+      const horse = this.clone('horse', u.team, d.h), rider = this.clone('sword', u.team, d.h * .8);
+      rider.obj.position.y = d.h * .42; rider.obj.position.z = -4;
       g.add(horse.obj, rider.obj); e.horse = horse; e.body = rider; e.parts.push(horse, rider);
     } else {
-      const p = this.clone(u.type, u.team, HEIGHT[u.type] * (u.type === 'giant' ? 1 : s));
+      const p = this.clone(d.model, u.team, d.h);
       g.add(p.obj); e.body = p; e.parts.push(p);
     }
     this.scene.add(g); this.units.set(u.id, e);
@@ -107,19 +116,20 @@ const R3 = {
     for (const u of game.units) {
       seen.add(u.id);
       const e = this.units.get(u.id) || this.makeUnit(u);
-      e.g.position.set(u.x, -u.y, (u.y - GROUND) * 4);
+      e.g.position.set(u.x, -u.y + (u.def.fly ? u.def.fly + Math.sin(performance.now() / 300 + u.id) * 6 : 0), (u.y - GROUND) * 4);
       const want = u.face > 0 ? Math.PI / 2 - TURN : -Math.PI / 2 + TURN;
       e.g.rotation.y += (want - e.g.rotation.y) * Math.min(1, dt * 12);
-      const atkSpeed = clip => Math.max(1, (e.body.acts.attack?.getClip().duration || 1) / (u.def.rate * .9));
+      const A = u.def.anim || {}, atkName = A.atk || 'attack';
+      const atkSpeed = () => Math.max(1, (e.body.acts[atkName]?.getClip().duration || 1) / (u.def.rate * .9));
       const attacked = u.atkAnim > e.prevAtk + .3; e.prevAtk = u.atkAnim;
 
-      if (u.type === 'miner' && u.state === 'mining') this.play(e.body, 'attack', { speed: 1.3 });
-      else if (attacked) this.play(e.body, 'attack', { once: true, speed: atkSpeed() });
-      else if (!this.busy(e.body)) this.play(e.body, u.moving ? (u.carry ? 'carry' : 'walk') : 'idle', { speed: u.moving ? u.def.speed / 75 : 1 });
+      if (u.miner && u.state === 'mining') this.play(e.body, A.mine || 'attack', { speed: 1.3 });
+      else if (attacked) this.play(e.body, atkName, { once: true, speed: atkSpeed() });
+      else if (!this.busy(e.body)) this.play(e.body, u.moving ? (u.carry && e.body.acts.carry ? 'carry' : 'walk') : 'idle', { speed: u.moving ? Math.min(2, u.def.speed / 80) : 1 });
       if (e.horse) this.play(e.horse, u.moving ? 'walk' : 'idle', { speed: u.moving ? 1.1 : 1 });
 
-      const hit = u.flash > 0;
-      if (hit !== e.hit) { e.hit = hit; for (const p of e.parts) for (const m of p.mats) m.emissive.setHex(hit ? 0x884444 : 0x000000); }
+      const glow = u.flash > 0 ? 0x884444 : game.rage[u.team] > 0 && !u.miner ? 0x442200 : 0;
+      if (glow !== e.glow) { e.glow = glow; for (const p of e.parts) for (const m of p.mats) m.emissive.setHex(glow); }
     }
     // ตัวที่ตาย: เล่นท่าล้ม แล้วจมลงดินหายไป
     for (const [id, e] of this.units) {

@@ -1,40 +1,50 @@
-// สถานะเกม 1 ด่าน: เศรษฐกิจ ฝึกทหาร การต่อสู้ เอฟเฟกต์
+// สถานะเกม 1 ด่าน: เศรษฐกิจ ฝึกทหาร การต่อสู้ สกิล เอฟเฟกต์
 class Game {
   constructor(lvIdx) {
-    this.lvIdx = lvIdx; this.lv = LEVELS[lvIdx]; this.t = 0; this.cam = 0; this.over = null;
+    this.lvIdx = lvIdx; this.lv = LEVELS[lvIdx]; this.fac = FACTIONS[this.lv.faction];
+    TEAM[1].color = this.fac.color; TEAM[1].name = this.fac.name;
+    this.t = 0; this.cam = 0; this.over = null; this.shake = 0; this.vw = 960; this.kills = 0;
     this.gold = [ECON.startGold, ECON.startGold];
     this.bases = [130, WORLD - 130].map(x => ({ x, hp: BASE.hp, max: BASE.hp, shake: 0, cd: 0 }));
     this.mines = [{ x: 470 }, { x: WORLD - 470 }];
-    this.mode = ['defend', 'defend']; this.vw = 960;
+    this.mode = ['defend', 'defend'];
     this.upg = [0, 1].map(() => Object.fromEntries(Object.keys(UPGRADES).map(k => [k, 0])));
     this.queue = [[], []]; this.units = []; this.projs = []; this.parts = [];
+    this.abil = Object.fromEntries(Object.keys(ABILITIES).map(k => [k, 0])); this.rage = [0, 0];
     this.ai = new AI(this, lvIdx);
-    for (const team of [0, 1]) for (let i = 0; i < 2; i++) this.units.push(new Unit('miner', team, this.bases[team].x + TEAM[team].dir * (50 + i * 20)));
+    for (let i = 0; i < 2; i++) { this.spawn(0, 'miner', i * 20); this.spawn(1, this.fac.miner, i * 20); }
   }
 
   income(team) { return team === 1 ? this.lv.ai : 1; }
-  pop(team) { return this.units.filter(u => u.team === team).length + this.queue[team].length; }
+  pop(team) { return this.units.filter(u => u.team === team && !u.def.boss).length + this.queue[team].length; }
+  dmgMult(team) { return Upg.mult(this, team, 'weapon') * (this.rage[team] > 0 ? 1.5 : 1); }
+  speedMult(team) { return this.rage[team] > 0 ? 1.4 : 1; }
+  unlocked(type) { return (UNITS[type].lv || 0) <= this.lvIdx; }
 
   train(team, type) {
     const d = UNITS[type];
+    if (team === 0 && !this.unlocked(type)) return false;
     if (this.gold[team] < d.cost || this.pop(team) >= POP_CAP) return false;
     this.gold[team] -= d.cost; this.queue[team].push({ type, t: 0 });
     return true;
   }
 
+  spawn(team, type, ofs = 0) {
+    const b = this.bases[team], x = b.x + TEAM[team].dir * (40 + ofs);
+    const u = new Unit(type, team, x, Upg.mult(this, team, 'armor'));
+    this.units.push(u); this.chunks(x, GROUND - 20, TEAM[team].color, 6);
+    return u;
+  }
+
   update(dt) {
     if (this.over) return;
     this.t += dt;
+    for (const k in this.abil) this.abil[k] = Math.max(0, this.abil[k] - dt);
     for (const team of [0, 1]) {
+      this.rage[team] -= dt;
       this.gold[team] += ECON.passive * this.income(team) * dt;
       const q = this.queue[team][0];
-      if (q && (q.t += dt) >= UNITS[q.type].time) {
-        this.queue[team].shift();
-        const b = this.bases[team];
-        this.units.push(new Unit(q.type, team, b.x + TEAM[team].dir * 40, Upg.mult(this, team, 'armor')));
-        if (team === 0) this.sfx('spawn', b.x);
-        this.chunks(b.x + TEAM[team].dir * 40, GROUND - 20, TEAM[team].color, 6);
-      }
+      if (q && (q.t += dt) >= UNITS[q.type].time) { this.queue[team].shift(); this.spawn(team, q.type); if (team === 0) this.sfx('spawn', this.bases[0].x); }
       this.tower(team, dt);
     }
     for (const u of this.units) u.update(this, dt);
@@ -42,9 +52,13 @@ class Game {
 
     for (const p of this.projs) if ((p.t += dt) >= p.dur) this.land(p);
     this.projs = this.projs.filter(p => p.t < p.dur);
-    for (const p of this.parts) { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += (p.text ? 0 : 900) * dt; p.rot += dt * 5; p.life -= dt; if (!p.text && p.y > GROUND + 30) { p.y = GROUND + 30; p.vy *= -.3; p.vx *= .6; } }
+    for (const p of this.parts) {
+      p.x += p.vx * dt; p.y += p.vy * dt; p.vy += (p.text || p.float ? 0 : 900) * dt; p.rot += dt * 5; p.life -= dt;
+      if (!p.text && !p.float && p.y > GROUND + 30) { p.y = GROUND + 30; p.vy *= -.3; p.vx *= .6; }
+    }
     this.parts = this.parts.filter(p => p.life > 0);
     for (const b of this.bases) b.shake -= dt;
+    this.shake = Math.max(0, this.shake - dt * 2);
 
     this.ai.update(dt);
     if (this.bases[1].hp <= 0) this.end('win');
@@ -57,46 +71,97 @@ class Game {
     if ((b.cd -= dt) > 0) return;
     const l = this.upg[team].tower;
     const foe = this.units.find(u => u.team !== team && Math.abs(u.x - b.x) < BASE.towerRange + l * 50);
-    if (foe) { b.cd = BASE.towerRate / (1 + l * .3); this.shoot({ x: b.x, y: GROUND - 170, team }, foe, BASE.towerDmg * (1 + l * .6)); }
+    if (foe) { b.cd = BASE.towerRate / (1 + l * .3); this.shoot({ x: b.x, y: GROUND - 150, team }, foe, BASE.towerDmg * (1 + l * .6), 'arrow'); }
   }
 
-  shoot(from, target, dmg) {
-    const tx = target.def ? target.x : target.x, ty = target.def ? target.y - 30 : GROUND - 90;
-    const dist = Math.abs(tx - from.x);
-    this.sfx('shoot', from.x, .7);
-    this.projs.push({ x0: from.x, y0: from.y - 40, x1: tx, y1: ty, t: 0, dur: .25 + dist / 700, arc: 20 + dist * .18, target, dmg, team: from.team });
+  aimY(t) { return t.def ? t.y - (t.def.fly || 0) - t.def.h * .45 : GROUND - 90; }
+
+  shoot(from, target, dmg, kind = 'arrow', splash = 0) {
+    const x0 = from.x + (from.face || 0) * 20, y0 = from.def ? this.aimY(from) - 10 : from.y;
+    const x1 = target.x, y1 = this.aimY(target), dist = Math.abs(x1 - x0);
+    const fast = kind === 'flame';
+    this.sfx(kind === 'arrow' ? 'shoot' : kind === 'flame' ? 'fire' : 'whoosh', from.x, .7);
+    this.projs.push({ kind, x0, y0, x1, y1, t: 0, dur: fast ? .35 : .25 + dist / 650, arc: fast ? 0 : 20 + dist * .18, target, dmg, splash, team: from.team });
   }
 
   land(p) {
+    if (p.splash) {
+      for (const o of this.units) if (o.team !== p.team && Math.abs(o.x - p.x1) < p.splash) this.damage(o, p.dmg);
+      const eb = this.bases[1 - p.team]; if (Math.abs(eb.x - p.x1) < p.splash + 60) this.damage(eb, p.dmg * .6);
+      this.explode(p.x1, Math.min(p.y1, GROUND), p.kind === 'flame' ? '#ff7a2a' : '#ffb03a', p.kind === 'meteor' ? 16 : 10);
+      return;
+    }
     const t = p.target;
-    if (t.def ? t.hp > 0 && Math.abs(t.x - p.x1) < 40 : true) { this.damage(t, p.dmg); this.sfx('thud', p.x1, .8); }
+    if (t.def ? t.hp > 0 && Math.abs(t.x - p.x1) < 45 : true) { this.damage(t, p.dmg); this.sfx('thud', p.x1, .8); }
     else this.chunks(p.x1, GROUND + 10, '#9a6538', 2);
   }
 
   strike(u, target) {
-    let dmg = u.def.dmg * Upg.mult(this, u.team, 'weapon');
-    if (u.def.charge && !u.charged) { dmg *= u.def.charge; u.charged = true; this.text(target.x, (target.y || GROUND) - 90, 'ชาร์จ!', '#ffd84a'); } // ทหารม้าพุ่งชนครั้งแรกแรงพิเศษ
-    this.damage(target, dmg); this.sfx(u.def.splash ? 'smash' : 'hit', u.x);
-    if (u.def.splash) for (const o of this.units) if (o !== target && o.team !== u.team && Math.abs(o.x - target.x) < u.def.splash) this.damage(o, dmg * .5);
+    if (target.def && target.hp <= 0) return;
+    let dmg = (u.def.dmg || 0) * this.dmgMult(u.team), crit = Math.random() < .1;
+    if (u.def.charge && !u.charged) { dmg *= u.def.charge; u.charged = true; crit = true; this.shake = Math.max(this.shake, .3); } // ทหารม้าพุ่งชน
+    if (crit) dmg *= 1.6;
+    this.damage(target, dmg, crit); this.sfx(u.def.splash ? 'smash' : 'hit', u.x);
+    if (u.def.splash) { for (const o of this.units) if (o !== target && o.team !== u.team && Math.abs(o.x - target.x) < u.def.splash) this.damage(o, dmg * .5); if (u.def.boss || u.def.h > 120) this.shake = Math.max(this.shake, .25); }
   }
 
-  damage(t, dmg) {
+  damage(t, dmg, crit) {
     if (!t.def) { // ฐาน
       t.hp = Math.max(0, t.hp - dmg); t.shake = .15; this.sfx('boom', t.x, .7);
-      this.chunks(t.x + (Math.random() - .5) * 80, GROUND - 60 - Math.random() * 100, '#8a6a4e', 3);
+      this.chunks(t.x + (Math.random() - .5) * 80, GROUND - 60 - Math.random() * 100, '#8a8070', 3);
       return;
     }
+    dmg *= 1 - (t.def.armor || 0);
     t.hp -= dmg; t.flash = .1;
-    this.chunks(t.x, t.y - 30, TEAM[t.team].color, 3);
-    if (t.hp <= 0) { t.dieX = t.x; this.chunks(t.x, t.y - 25, TEAM[t.team].color, 14); this.sfx('pop', t.x); } // แตกเป็นก้อนดินเหนียว
+    this.chunks(t.x, this.aimY(t), TEAM[t.team].color, 2);
+    if (crit) this.text(t.x, this.aimY(t) - 40, Math.round(dmg) + '!', '#ffcf3a');
+    if (t.hp <= 0) {
+      this.chunks(t.x, this.aimY(t), TEAM[t.team].color, 12); this.sfx('pop', t.x);
+      if (t.team === 1) this.kills++;
+      if (t.def.boss) { this.shake = 1; this.announce(t.team === 1 ? `🎉 ล้ม${t.def.name}ได้แล้ว! +300 ทอง` : `${t.def.name}ล้มแล้ว`); if (t.team === 1) this.gold[0] += 300; }
+    }
   }
 
+  // ---------- สกิลผู้เล่น ----------
+  useAbility(k) {
+    if (this.abil[k] > 0 || (ABILITIES[k].lv || 0) > this.lvIdx) return false;
+    this.abil[k] = ABILITIES[k].cd;
+    if (k === 'rain') {
+      const foes = this.units.filter(u => u.team === 1 && u.x > this.cam && u.x < this.cam + this.vw);
+      for (let i = 0; i < 14; i++) {
+        const x = foes.length ? foes[i % foes.length].x + (Math.random() - .5) * 60 : this.cam + Math.random() * this.vw;
+        this.projs.push({ kind: 'meteor', x0: x - 260, y0: -60, x1: x, y1: GROUND + 10, t: -i * .12, dur: .7, arc: 0, dmg: 75, splash: 65, team: 0 });
+      }
+      this.shake = .6; Sfx.play('meteor');
+    } else if (k === 'heal') {
+      for (const u of this.units) if (u.team === 0) { u.hp = Math.min(u.maxHp, u.hp + u.maxHp * .6); this.sparkle(u.x, u.y - 40, '#8dff8a'); }
+      const b = this.bases[0]; b.hp = Math.min(b.max, b.hp + 250); Sfx.play('heal');
+    } else if (k === 'rage') {
+      this.rage[0] = 10; for (const u of this.units) if (u.team === 0) this.sparkle(u.x, u.y - 40, '#ff5a3a'); Sfx.play('horn');
+    }
+    this.announce(`${ABILITIES[k].icon} ${ABILITIES[k].name}!`);
+    return true;
+  }
+
+  // ---------- เอฟเฟกต์ ----------
   chunks(x, y, color, n) {
     for (let i = 0; i < n; i++) this.parts.push({ x, y, vx: (Math.random() - .5) * 320, vy: -150 - Math.random() * 280, r: 3 + Math.random() * 4, color, rot: Math.random() * 6, life: .9 + Math.random() * .6 });
   }
+  sparkle(x, y, color) { for (let i = 0; i < 6; i++) this.parts.push({ x: x + (Math.random() - .5) * 30, y, vx: 0, vy: -40 - Math.random() * 60, r: 3, color, rot: 0, life: .8, float: true }); }
+  explode(x, y, color, n) {
+    this.chunks(x, y, color, n); this.chunks(x, y, '#5a4030', n / 2);
+    this.parts.push({ x, y, vx: 0, vy: 0, ring: 1, color, life: .4, rot: 0, float: true });
+    this.shake = Math.max(this.shake, .2); this.sfx('boom', x, .5);
+  }
   text(x, y, text, color) { this.parts.push({ x, y, vx: 0, vy: -50, text, color, life: 1, rot: 0 }); }
+  announce(msg, big) { this.onAnnounce?.(msg, big); }
 
-  end(result) { this.over = result; Sfx.play(result); this.onEnd?.(result); }
+  end(result) {
+    this.over = result; Sfx.play(result);
+    const k = this.bases[0].hp / this.bases[0].max;
+    this.stars = result === 'win' ? (k > .7 ? 3 : k > .35 ? 2 : 1) : 0;
+    this.onEnd?.(result);
+  }
 
   // เล่นเสียงเฉพาะเหตุการณ์ที่อยู่ในจอ (ไม่ให้เสียงรก)
   sfx(name, x, vol = 1) { if (x > this.cam - 80 && x < this.cam + this.vw + 80) Sfx.play(name, vol); }
@@ -104,20 +169,26 @@ class Game {
   // วาด 3 ชั้น: ฉาก 2D (bg) → โมเดล 3D (R3) → เอฟเฟกต์ 2D (fx)
   draw(bg, fx, vw, dt) {
     this.vw = vw; this.cam = Math.max(0, Math.min(WORLD - vw, this.cam));
-    R.background(bg, this.cam, vw, this.lv, this.t);
-    bg.save(); bg.translate(-this.cam, 0);
+    const cam = this.cam + (this.shake > 0 ? (Math.random() - .5) * 18 * this.shake : 0);
+    R.background(bg, cam, vw, this.lv, this.t);
+    bg.save(); bg.translate(-cam, 0);
     this.mines.forEach(m => R.mine(bg, m, this.t));
     this.bases.forEach(b => R.shadow(bg, b.x, GROUND - 2, 140));
-    for (const u of this.units) R.shadow(bg, u.x, u.y, (u.type === 'cavalry' ? 30 : 16) * u.def.size);
+    for (const u of this.units) R.shadow(bg, u.x, u.y, (u.type === 'cavalry' ? 30 : 16) * Math.max(.6, u.def.h / 90) * (u.def.fly ? .6 : 1));
     bg.restore();
 
-    window.R3?.sync(this, dt); window.R3?.render(this.cam, vw);
+    window.R3?.sync(this, dt); window.R3?.render(cam, vw);
 
     fx.clearRect(-10, -10, vw + 20, VIEW_H + 20);
-    fx.save(); fx.translate(-this.cam, 0);
-    this.projs.forEach(p => R.arrow(fx, p));
+    fx.save(); fx.translate(-cam, 0);
+    this.projs.forEach(p => R.proj(fx, p));
     this.parts.forEach(p => R.part(fx, p));
-    for (const u of this.units) if (u.hp < u.maxHp) R.hpBar(fx, u.x, u.y - (u.type === 'giant' ? 160 : u.type === 'cavalry' ? 150 : 100) * (u.type === 'giant' ? 1 : u.def.size), 30, u.hp / u.maxHp, TEAM[u.team].color);
+    for (const u of this.units) {
+      const y = u.y - (u.def.fly || 0) - u.def.h * (u.type === 'cavalry' ? 1.75 : 1.1);
+      if (u.def.boss) R.hpBar(fx, u.x, y, 90, u.hp / u.maxHp, TEAM[u.team].color);
+      else if (u.hp < u.maxHp) R.hpBar(fx, u.x, y, 30, u.hp / u.maxHp, TEAM[u.team].color);
+      if (this.rage[u.team] > 0 && !u.miner) R.part(fx, { x: u.x, y: y - 10, text: '⚡', color: '#ffcf3a', life: 1 });
+    }
     this.bases.forEach((b, i) => R.hpBar(fx, b.x, GROUND - 330, 130, b.hp / b.max, TEAM[i].color));
     fx.restore();
   }
@@ -128,6 +199,6 @@ class Game {
     ctx.fillStyle = 'rgba(255,255,255,.18)'; ctx.fillRect(this.cam * k, 0, vw * k, h);
     this.bases.forEach((b, i) => { ctx.fillStyle = TEAM[i].color; ctx.fillRect(b.x * k - 4, 3, 8, h - 6); });
     ctx.fillStyle = '#f2c230'; this.mines.forEach(m => ctx.fillRect(m.x * k - 2, h - 7, 4, 4));
-    for (const u of this.units) { ctx.fillStyle = TEAM[u.team].color; ctx.fillRect(u.x * k - 1, 9, 3, 6); }
+    for (const u of this.units) { ctx.fillStyle = TEAM[u.team].color; const s = u.def.boss ? 6 : 3; ctx.fillRect(u.x * k - s / 2, 12 - s, s, s * 2); }
   }
 }

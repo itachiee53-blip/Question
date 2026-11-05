@@ -3,6 +3,7 @@ const $ = id => document.getElementById(id);
 const cv = $('fx'), bgc = $('bg'), ctx = cv.getContext('2d'), bg = bgc.getContext('2d'), mini = $('mini').getContext('2d');
 let game = null, paused = false, scale = 1, vw = 960, lvSel = 0;
 const unlocked = () => { try { return +localStorage.getItem('clay-unlock') || 0; } catch { return 0; } };
+const starsOf = () => { try { return JSON.parse(localStorage.getItem('clay-stars')) || []; } catch { return []; } };
 const isPortrait = () => matchMedia('(orientation: portrait)').matches;
 const isTouch = matchMedia('(pointer: coarse)').matches;
 
@@ -19,9 +20,9 @@ addEventListener('resize', resize); resize();
 // ---------- หน้าเริ่ม ----------
 function renderLevels() {
   $('levels').innerHTML = LEVELS.map((l, i) =>
-    `<button class="lv${i === lvSel ? ' sel' : ''}" data-i="${i}" ${i > unlocked() ? 'disabled' : ''}>${i > unlocked() ? '🔒' : '⭐'.repeat(i + 1)}<small>ด่าน ${i + 1}</small>${l.name}</button>`).join('');
+    `<button class="lv${i === lvSel ? ' sel' : ''}" data-i="${i}" ${i > unlocked() ? 'disabled' : ''}>${i > unlocked() ? '🔒 ' : ''}<small>ด่าน ${i + 1} · ${FACTIONS[l.faction].name}</small>${l.name}<span class="st">${'★'.repeat(starsOf()[i] || 0)}${'☆'.repeat(3 - (starsOf()[i] || 0))}</span></button>`).join('');
 }
-$('levels').onclick = e => { const b = e.target.closest('.lv'); if (b && !b.disabled) { lvSel = +b.dataset.i; renderLevels(); } };
+$('levels').onclick = e => { const b = e.target.closest('.lv'); if (b && !b.disabled) { Sfx.init(); Sfx.play('click'); lvSel = +b.dataset.i; renderLevels(); } };
 lvSel = Math.min(unlocked(), LEVELS.length - 1); renderLevels();
 
 $('playBtn').onclick = () => (isTouch && !document.fullscreenElement ? ($('perm').hidden = false) : startGame(lvSel));
@@ -40,9 +41,14 @@ window.onModelsError = () => { $('playBtn').textContent = 'โหลดโมเ
 if (window.R3?.ready) window.onModelsReady();
 
 // ---------- เริ่ม/จบเกม ----------
-function startGame(i) {
+async function startGame(i) {
+  $('playBtn').disabled = true; $('nextBtn').disabled = true;
+  try { await R3.prepare(i, k => ($('playBtn').textContent = `โหลดศัตรู ${Math.round(k * 100)}%`)); } catch {}
+  $('playBtn').disabled = false; $('nextBtn').disabled = false; $('playBtn').textContent = '▶ เริ่มเกม';
   game = new Game(i); paused = false; Sfx.music(true);
-  game.onEnd = showEnd;
+  game.onEnd = showEnd; game.onAnnounce = announce;
+  announce(`ด่าน ${i + 1}: ${LEVELS[i].name}`, false, `ศัตรู: ${FACTIONS[LEVELS[i].faction].name}`);
+  hints = i === 0 ? [[4, '⛏️ สร้างคนงานเพิ่ม = ได้ทองเร็วขึ้น'], [16, '🛡️ ตั้งรับไว้ก่อน รวมทัพให้เยอะแล้วกด ⚔️ บุก'], [32, '☄️ กดสกิลฝนดาวตกตอนศัตรูมาเป็นกลุ่ม'], [55, '🏰 อย่าลืมอัปเกรดฐานเมื่อทองเหลือ']] : [];
   document.body.classList.add('playing');
   $('start').hidden = $('end').hidden = $('pause').hidden = true; $('hud').hidden = false;
   setMode('defend'); buildShop(); $('upg').hidden = true; Sfx.init();
@@ -51,10 +57,16 @@ function startGame(i) {
 function showEnd(r) {
   Sfx.music(false);
   const win = r === 'win', last = game.lvIdx >= LEVELS.length - 1;
-  if (win) try { localStorage.setItem('clay-unlock', Math.max(unlocked(), game.lvIdx + 1)); } catch {}
+  if (win) try {
+    localStorage.setItem('clay-unlock', Math.max(unlocked(), game.lvIdx + 1));
+    const st = starsOf(); st[game.lvIdx] = Math.max(st[game.lvIdx] || 0, game.stars); localStorage.setItem('clay-stars', JSON.stringify(st));
+  } catch {}
+  $('endStars').textContent = win ? '★'.repeat(game.stars) + '☆'.repeat(3 - game.stars) : '';
+  const newUnits = Object.values(UNITS).filter(u => u.lv === game.lvIdx + 1).map(u => u.icon + ' ' + u.name);
+  const newSkill = Object.values(ABILITIES).filter(a => a.lv === game.lvIdx + 1).map(a => a.icon + ' ' + a.name);
   $('endIco').textContent = win ? '🏆' : '💥';
   $('endTitle').textContent = win ? 'ชนะแล้ว!' : 'ฐานแตก...';
-  $('endText').textContent = win ? (last ? 'คุณพิชิตทุกด่านแล้ว สุดยอด!' : 'ปลดล็อกด่านถัดไปแล้ว') : 'ลองเพิ่มคนงานให้ฟาร์มแร่เร็วขึ้น แล้วตั้งรับก่อนบุก';
+  $('endText').textContent = win ? (last ? `คุณพิชิตทุกด่านแล้ว สุดยอด! (กำจัดศัตรู ${game.kills} ตัว)` : `ปลดล็อก: ${[...newUnits, ...newSkill].join(', ') || 'ด่านถัดไป'}`) : 'ลองเพิ่มคนงานให้ฟาร์มแร่เร็วขึ้น แล้วตั้งรับก่อนบุก';
   $('nextBtn').textContent = win && !last ? '▶ ด่านถัดไป' : '↻ เล่นอีกครั้ง';
   $('nextBtn').onclick = () => startGame(win && !last ? game.lvIdx + 1 : game.lvIdx);
   setTimeout(() => ($('end').hidden = false), 900);
@@ -92,11 +104,27 @@ $('muteBtn').textContent = Sfx.on ? '🔊' : '🔇';
 addEventListener('pointerdown', () => Sfx.init(), { once: true });
 addEventListener('pointerdown', () => Sfx.ctx?.state === 'suspended' && Sfx.ctx.resume());
 
+const PLAYER_UNITS = Object.keys(UNITS).filter(k => UNITS[k].icon);
 function buildShop() {
-  $('shop').innerHTML = Object.entries(UNITS).map(([k, u]) =>
-    `<button class="unit" data-u="${k}"><span class="i">${u.icon}</span><small>🪙${u.cost}</small><span class="q" hidden></span><span class="prog"></span></button>`).join('');
+  $('shop').innerHTML = PLAYER_UNITS.map(k => { const u = UNITS[k], lock = !game.unlocked(k);
+    return `<button class="unit${lock ? ' lock' : ''}" data-u="${k}" title="${u.name}"><span class="i">${u.icon}</span><small>🪙${u.cost}</small><span class="q" hidden></span><span class="prog"></span>${lock ? `<span class="lk">🔒ด่าน ${u.lv + 1}</span>` : ''}</button>`; }).join('');
+  $('skills').innerHTML = Object.entries(ABILITIES).map(([k, a]) =>
+    `<button class="skill${a.lv > game.lvIdx ? ' lock' : ''}" data-s="${k}" title="${a.name}: ${a.desc}">${a.icon}<span class="cd" hidden></span></button>`).join('');
 }
-$('shop').onclick = e => { const b = e.target.closest('.unit'); if (!b || !game) return; if (game.train(0, b.dataset.u)) Sfx.play('click'); else { Sfx.play('deny'); b.animate([{ transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'none' }], 200); } };
+$('skills').onclick = e => {
+  const b = e.target.closest('.skill'); if (!b || !game) return;
+  if (b.classList.contains('lock')) return UI_toast(`ปลดล็อกที่ด่าน ${ABILITIES[b.dataset.s].lv + 1}`);
+  if (!game.useAbility(b.dataset.s)) Sfx.play('deny');
+};
+
+// ---------- ประกาศกลางจอ / คำแนะนำ ----------
+let hints = [], bannerT;
+function announce(msg, big, sub) {
+  const b = $('banner'); b.innerHTML = msg + (sub ? `<div style="font-size:.5em;opacity:.85">${sub}</div>` : '');
+  b.className = 'banner show' + (big ? ' big' : ''); clearTimeout(bannerT); bannerT = setTimeout(() => (b.className = 'banner' + (big ? ' big' : '')), 2600);
+}
+const UI_toast = msg => announce(msg);
+$('shop').onclick = e => { const b = e.target.closest('.unit'); if (!b || !game) return; if (b.classList.contains('lock')) return UI_toast(`🔒 ${UNITS[b.dataset.u].name} ปลดล็อกที่ด่าน ${UNITS[b.dataset.u].lv + 1}`); if (game.train(0, b.dataset.u)) Sfx.play('click'); else { Sfx.play('deny'); b.animate([{ transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'none' }], 200); } };
 function setMode(m) { if (game && game.mode[0] !== m && m === 'attack') Sfx.play('horn'); if (game) game.mode[0] = m; document.querySelectorAll('.mode').forEach(b => b.classList.toggle('on', b.dataset.mode === m)); }
 document.querySelector('.modes').onclick = e => { const b = e.target.closest('.mode'); if (b) setMode(b.dataset.mode); };
 
@@ -110,6 +138,11 @@ function updateHud() {
     qe.hidden = !n; qe.textContent = n;
     b.querySelector('.prog').style.width = q[0]?.type === k ? q[0].t / UNITS[k].time * 100 + '%' : 0;
   });
+  document.querySelectorAll('.skill').forEach(b => {
+    const cd = game.abil[b.dataset.s], el = b.querySelector('.cd');
+    el.hidden = !cd; el.textContent = Math.ceil(cd); b.classList.toggle('ready', !cd && !b.classList.contains('lock'));
+  });
+  while (hints.length && game.t > hints[0][0]) announce(hints.shift()[1]);
   game.drawMini(mini, vw); renderUpg();
 }
 
