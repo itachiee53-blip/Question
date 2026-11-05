@@ -2,138 +2,77 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#10b981">
-<title>FitCal</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/ui.css">
-<link rel="stylesheet" href="css/anim.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#3b2a1e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Clay War</title>
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div class="blobs"><i></i><i></i><i></i></div>
+<canvas id="game"></canvas>
 
-<!-- แบบสอบถามตอนเริ่มใช้ -->
-<div id="onboard" class="onboard" hidden>
-  <div class="ob-progress"><div id="obBar"></div></div>
-  <div id="obStep" class="ob-step"></div>
-  <div class="ob-nav">
-    <button id="obBack" class="btn ghost">ย้อนกลับ</button>
-    <button id="obNext" class="btn">ถัดไป</button>
+<!-- HUD ระหว่างเล่น -->
+<div id="hud" hidden>
+  <div class="top">
+    <div class="pill">🪙 <b id="gold">0</b></div>
+    <div class="pill">👥 <b id="pop">0</b></div>
+    <canvas id="mini" width="300" height="24"></canvas>
+    <button id="pauseBtn" class="pill btn-i">⏸</button>
+  </div>
+  <div class="bottom">
+    <div id="shop" class="shop"></div>
+    <div class="modes">
+      <button data-mode="defend" class="mode on">🛡️<span>ตั้งรับ</span></button>
+      <button data-mode="attack" class="mode">⚔️<span>บุก!</span></button>
+    </div>
   </div>
 </div>
 
-<div id="app" hidden>
-  <header class="top">
-    <div><small id="hello"></small><h1 id="dateText"></h1></div>
-    <div class="streak" title="บันทึกต่อเนื่อง">🔥 <b id="streak">0</b></div>
-  </header>
-
-  <main>
-    <!-- หน้าวันนี้ -->
-    <section id="tab-home" class="tab active">
-      <div class="card ring-card">
-        <div class="ring">
-          <svg viewBox="0 0 120 120">
-            <defs><linearGradient id="grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--a1)"/><stop offset="1" stop-color="var(--a2)"/></linearGradient></defs>
-            <circle class="ring-bg" cx="60" cy="60" r="52"/>
-            <circle id="ringFg" class="ring-fg" cx="60" cy="60" r="52" pathLength="100"/>
-          </svg>
-          <div class="ring-center"><b id="leftNum">0</b><small id="leftLabel">เหลือ kcal</small></div>
-        </div>
-        <div class="ring-side">
-          <div><small>เป้าหมาย</small><b id="targetNum">0</b></div>
-          <div><small>กินแล้ว</small><b id="eatenNum">0</b></div>
-        </div>
-      </div>
-
-      <div class="card macros" id="macros"></div>
-
-      <div class="card water">
-        <div class="row"><h3>💧 น้ำ</h3><span id="waterText"></span></div>
-        <div id="cups" class="cups"></div>
-      </div>
-
-      <div class="card coach">
-        <div class="row"><h3>🧠 โค้ช AI</h3><button id="coachBtn" class="btn sm">ขอคำแนะนำ</button></div>
-        <p id="coachText" class="muted">กดเพื่อให้ AI วิเคราะห์วันนี้ของคุณ</p>
-      </div>
-
-      <div id="meals"></div>
-    </section>
-
-    <!-- หน้าเพิ่มอาหาร -->
-    <section id="tab-add" class="tab">
-      <div class="card ai-card">
-        <h3>🤖 บอก AI ว่ากินอะไร</h3>
-        <textarea id="aiText" rows="2" placeholder="เช่น ข้าวมันไก่ 1 จาน กับชาเย็นหวานน้อย"></textarea>
-        <img id="aiPreview" class="preview" alt="" hidden>
-        <div class="row gap">
-          <label class="btn ghost grow">📷 ถ่าย/เลือกรูป<input id="aiImg" type="file" accept="image/*" capture="environment" hidden></label>
-          <button id="aiGo" class="btn grow">✨ วิเคราะห์</button>
-        </div>
-        <div id="aiResult"></div>
-      </div>
-
-      <div class="card">
-        <h3>✍️ เพิ่มเอง</h3>
-        <input id="search" list="foods" placeholder="ค้นหาเมนู">
-        <datalist id="foods"></datalist>
-        <div class="row gap">
-          <input id="kcal" type="number" min="0" placeholder="kcal" class="grow">
-          <select id="meal"></select>
-          <button id="addBtn" class="btn">เพิ่ม</button>
-        </div>
-        <div id="recent" class="chips"></div>
-      </div>
-    </section>
-
-    <!-- หน้าสถิติ -->
-    <section id="tab-stats" class="tab">
-      <div class="card">
-        <div class="row"><h3>⚖️ น้ำหนัก</h3><span id="goalProg" class="muted"></span></div>
-        <div class="bar big"><div id="goalBar"></div></div>
-        <svg id="weightChart" class="chart" viewBox="0 0 300 120" preserveAspectRatio="none"></svg>
-        <div class="row gap">
-          <input id="weightIn" type="number" step="0.1" placeholder="น้ำหนักวันนี้ (kg)" class="grow">
-          <button id="weightBtn" class="btn">บันทึก</button>
-        </div>
-      </div>
-      <div class="card">
-        <h3>📊 7 วันล่าสุด</h3>
-        <div id="week" class="week"></div>
-      </div>
-      <div class="card stats-grid" id="statsGrid"></div>
-    </section>
-
-    <!-- หน้าโปรไฟล์ -->
-    <section id="tab-profile" class="tab">
-      <div class="card" id="profileCard"></div>
-      <div class="card">
-        <button id="editProfile" class="btn full">✏️ แก้ไขข้อมูล/เป้าหมาย</button>
-        <button id="resetAll" class="btn ghost full danger">ลบข้อมูลทั้งหมด</button>
-      </div>
-    </section>
-  </main>
-
-  <nav class="tabs">
-    <button data-tab="home" class="on"><span>🏠</span>วันนี้</button>
-    <button data-tab="add" class="add-tab"><span>＋</span>เพิ่ม</button>
-    <button data-tab="stats"><span>📈</span>สถิติ</button>
-    <button data-tab="profile"><span>👤</span>ฉัน</button>
-  </nav>
+<!-- หน้าเริ่มเกม -->
+<div id="start" class="screen">
+  <h1 class="title">CLAY<span>WAR</span></h1>
+  <p class="sub">สงครามทหารดินเหนียว</p>
+  <div id="levels" class="levels"></div>
+  <button id="playBtn" class="big">▶ เริ่มเกม</button>
+  <p class="hint">⛏️ ฟาร์มแร่ · 🗡️ สร้างกองทัพ · 🏰 ทำลายฐานศัตรู</p>
 </div>
 
-<div id="toast" class="toast"></div>
+<!-- ขออนุญาตหมุนจอ -->
+<div id="perm" class="screen dim" hidden>
+  <div class="panel">
+    <div class="ico rot">📱</div>
+    <h2>เกมนี้เล่นแนวนอน</h2>
+    <p>ขออนุญาตเปิดเต็มจอและหมุนหน้าจอเป็นแนวนอนนะครับ</p>
+    <div class="row"><button id="permNo" class="ghost">ไม่เป็นไร</button><button id="permYes" class="big sm">อนุญาต</button></div>
+  </div>
+</div>
+
+<!-- เตือนให้หมุนจอ (ถ้าเครื่องหมุนให้อัตโนมัติไม่ได้) -->
+<div id="rotate" class="screen dim">
+  <div class="ico rot">📱</div><h2>หมุนจอเป็นแนวนอน</h2><p>เพื่อเล่นต่อ</p>
+</div>
+
+<!-- หยุดชั่วคราว -->
+<div id="pause" class="screen dim" hidden>
+  <div class="panel"><h2>หยุดชั่วคราว</h2>
+    <div class="col"><button id="resumeBtn" class="big sm">▶ เล่นต่อ</button><button id="quitBtn" class="ghost">ออกไปหน้าแรก</button></div>
+  </div>
+</div>
+
+<!-- จบเกม -->
+<div id="end" class="screen dim" hidden>
+  <div class="panel"><div id="endIco" class="ico"></div><h2 id="endTitle"></h2><p id="endText"></p>
+    <div class="col"><button id="nextBtn" class="big sm"></button><button id="menuBtn" class="ghost">หน้าแรก</button></div>
+  </div>
+</div>
 
 <script src="js/config.js"></script>
-<script src="js/storage.js"></script>
-<script src="js/foods.js"></script>
-<script src="js/profile.js"></script>
-<script src="js/gemini.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/onboard.js"></script>
-<script src="js/app.js"></script>
+<script src="js/render.js"></script>
+<script src="js/units.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/game.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
