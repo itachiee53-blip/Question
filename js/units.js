@@ -1,7 +1,8 @@
 // ทหารแต่ละตัว: คนงานขุดแร่ / ทหารต่อสู้
 class Unit {
-  constructor(type, team, x) {
-    Object.assign(this, { type, team, x, def: UNITS[type], hp: UNITS[type].hp, face: TEAM[team].dir });
+  constructor(type, team, x, hpMult = 1) {
+    Object.assign(this, { type, team, x, def: UNITS[type], face: TEAM[team].dir });
+    this.maxHp = this.hp = Math.round(UNITS[type].hp * hpMult);
     this.y = GROUND + 4 + Math.random() * 34; // กระจายความลึกให้ดูเป็นกองทัพ
     this.ofs = Math.random() * 70;            // ระยะเหลื่อมไม่ให้ยืนซ้อนกัน
     this.phase = Math.random() * 6; this.cd = 0; this.flash = 0; this.atkAnim = 0;
@@ -27,11 +28,11 @@ class Unit {
     const dir = TEAM[this.team].dir, mine = g.mines[this.team], base = g.bases[this.team];
     if (this.state === 'toMine' && this.moveTo(mine.x + (this.ofs - 35) * .8, dt)) { this.state = 'mining'; this.timer = ECON.mineTime; this.face = Math.sign(mine.x - base.x) || 1; }
     else if (this.state === 'mining' && (this.timer -= dt) <= 0) {
-      this.carry = Math.round(ECON.load * g.income(this.team)); this.state = 'toBase';
+      this.carry = Math.round(ECON.load * g.income(this.team) * Upg.mult(g, this.team, 'mine')); this.state = 'toBase';
       g.chunks(this.x + 10 * this.face, this.y - 30, '#f2c230', 3);
     } else if (this.state === 'toBase' && this.moveTo(base.x + dir * 45, dt)) {
       g.gold[this.team] += this.carry;
-      if (this.team === 0) g.text(this.x, this.y - 70, '+' + this.carry, '#ffd84a');
+      if (this.team === 0) { g.text(this.x, this.y - 70, '+' + this.carry, '#ffd84a'); g.sfx('coin', this.x, .6); }
       this.carry = 0; this.state = 'toMine';
     }
   }
@@ -47,7 +48,7 @@ class Unit {
       this.face = Math.sign(target.x - this.x) || dir;
       if (this.cd <= 0) {
         this.cd = def.rate; this.atkAnim = 1;
-        if (this.type === 'archer') g.shoot(this, target, def.dmg);
+        if (this.type === 'archer') g.shoot(this, target, def.dmg * Upg.mult(g, this.team, 'weapon'));
         else this.pending = { target, t: .14 }; // ตีโดนตอนเหวี่ยงสุด
       }
       return;

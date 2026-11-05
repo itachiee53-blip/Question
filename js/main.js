@@ -37,7 +37,7 @@ function startGame(i) {
   game.onEnd = showEnd;
   document.body.classList.add('playing');
   $('start').hidden = $('end').hidden = $('pause').hidden = true; $('hud').hidden = false;
-  setMode('defend'); buildShop();
+  setMode('defend'); buildShop(); $('upg').hidden = true; Sfx.init();
 }
 
 function showEnd(r) {
@@ -61,12 +61,34 @@ $('pauseBtn').onclick = () => { paused = true; $('pause').hidden = false; };
 $('resumeBtn').onclick = () => { paused = false; $('pause').hidden = true; };
 
 // ---------- ร้านทหาร + คำสั่ง ----------
+// ---------- อัปเกรด ----------
+function renderUpg() {
+  if ($('upg').hidden || !game) return;
+  const sig = JSON.stringify(game.upg[0]) + Object.keys(UPGRADES).map(k => game.gold[0] >= (Upg.cost(game, 0, k) ?? 1e9)).join();
+  if (sig === renderUpg.sig) return; renderUpg.sig = sig; // สร้างใหม่เฉพาะตอนเปลี่ยน → ปุ่มกดติดชัวร์
+  $('upg').innerHTML = Object.entries(UPGRADES).map(([k, u]) => {
+    const l = game.upg[0][k], c = Upg.cost(game, 0, k);
+    return `<button class="up${c == null ? ' max' : game.gold[0] < c ? ' poor' : ''}" data-k="${k}"><span class="i">${u.icon}</span>
+      <div>${u.name} <span class="lvl">${'★'.repeat(l)}${'☆'.repeat(3 - l)}</span><small>${u.desc}</small></div><b>${c == null ? 'เต็ม' : '🪙' + c}</b></button>`;
+  }).join('');
+}
+$('upgBtn').onclick = () => { Sfx.play('click'); $('upg').hidden = !$('upg').hidden; renderUpg.sig = ''; renderUpg(); };
+$('upg').onclick = e => {
+  const b = e.target.closest('.up'); if (!b) return;
+  if (Upg.buy(game, 0, b.dataset.k)) { Sfx.play('upgrade'); game.text(game.bases[0].x, GROUND - 240, 'อัปเกรด!', '#ffd84a'); } else Sfx.play('deny');
+  renderUpg();
+};
+$('muteBtn').onclick = () => { $('muteBtn').textContent = Sfx.toggle() ? '🔊' : '🔇'; Sfx.play('click'); };
+$('muteBtn').textContent = Sfx.on ? '🔊' : '🔇';
+addEventListener('pointerdown', () => Sfx.init(), { once: true });
+addEventListener('pointerdown', () => Sfx.ctx?.state === 'suspended' && Sfx.ctx.resume());
+
 function buildShop() {
   $('shop').innerHTML = Object.entries(UNITS).map(([k, u]) =>
     `<button class="unit" data-u="${k}"><span class="i">${u.icon}</span><small>🪙${u.cost}</small><span class="q" hidden></span><span class="prog"></span></button>`).join('');
 }
-$('shop').onclick = e => { const b = e.target.closest('.unit'); if (b && game && !game.train(0, b.dataset.u)) { b.animate([{ transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'none' }], 200); } };
-function setMode(m) { if (game) game.mode[0] = m; document.querySelectorAll('.mode').forEach(b => b.classList.toggle('on', b.dataset.mode === m)); }
+$('shop').onclick = e => { const b = e.target.closest('.unit'); if (!b || !game) return; if (game.train(0, b.dataset.u)) Sfx.play('click'); else { Sfx.play('deny'); b.animate([{ transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'none' }], 200); } };
+function setMode(m) { if (game && game.mode[0] !== m && m === 'attack') Sfx.play('horn'); if (game) game.mode[0] = m; document.querySelectorAll('.mode').forEach(b => b.classList.toggle('on', b.dataset.mode === m)); }
 document.querySelector('.modes').onclick = e => { const b = e.target.closest('.mode'); if (b) setMode(b.dataset.mode); };
 
 function updateHud() {
@@ -79,7 +101,7 @@ function updateHud() {
     qe.hidden = !n; qe.textContent = n;
     b.querySelector('.prog').style.width = q[0]?.type === k ? q[0].t / UNITS[k].time * 100 + '%' : 0;
   });
-  game.drawMini(mini, vw);
+  game.drawMini(mini, vw); renderUpg();
 }
 
 // ---------- เลื่อนกล้อง: ลากจอ / แตะแผนที่ย่อ / ปุ่มลูกศร ----------
