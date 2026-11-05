@@ -15,7 +15,7 @@ class AI {
   update(dt) {
     const g = this.g, t = g.t;
     // ---------- คลื่นบุกใหญ่: ส่งทหารฟรีชุดหนึ่ง แล้วสั่งบุก ----------
-    if (!this.warned && t > this.nextWave - 5) { this.warned = true; g.announce('⚠️ คลื่นศัตรูกำลังมา!'); Sfx.play('horn'); }
+    if (!this.warned && t > this.nextWave - 5) { this.warned = true; g.announce('⚠️ คลื่นศัตรูกำลังมา!'); g.play('horn'); }
     if (t > this.nextWave) {
       const n = 2 + this.idx + Math.floor(t / 120);
       for (let i = 0; i < n; i++) g.spawn(1, this.pick(), i * 25);
@@ -23,7 +23,7 @@ class AI {
       this.nextWave += this.lv.wave; this.warned = false;
     }
     // ---------- บอส ----------
-    if (!this.bossWarned && t > this.nextBoss - 6) { this.bossWarned = true; g.announce(`💀 ${UNITS[this.fac.boss].name} ปรากฏตัว!`, true); Sfx.play('boss'); }
+    if (!this.bossWarned && t > this.nextBoss - 6) { this.bossWarned = true; g.announce(`💀 ${UNITS[this.fac.boss].name} ปรากฏตัว!`, true); g.play('boss'); }
     if (t > this.nextBoss) {
       g.spawn(1, this.fac.boss); g.mode[1] = 'attack'; this.attackUntil = t + 25;
       this.nextBoss += 150; this.bossWarned = false;

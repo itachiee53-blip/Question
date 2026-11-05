@@ -23,5 +23,8 @@ const ICON = {
     <circle cx="12" cy="38" r="3.5" fill="#d1544a" ${OL}/><circle cx="36" cy="38" r="3.5" fill="#d1544a" ${OL}/>`),
   lock: svg(`<path d="M16 22v-6a8 8 0 0 1 16 0v6" fill="none" stroke="#2a160a" stroke-width="7"/><path d="M16 22v-6a8 8 0 0 1 16 0v6" fill="none" stroke="#c9d2dc" stroke-width="3.5"/>
     <rect x="11" y="21" width="26" height="20" rx="4" fill="#f2b632" ${OL}/><circle cx="24" cy="30" r="3" fill="#2a160a"/><path d="M24 31v5" stroke="#2a160a" stroke-width="3"/>`),
+  star: on => svg(`<path d="M24 4l6 12.5 13.6 1.9-9.9 9.5 2.4 13.6L24 35l-12.1 6.5 2.4-13.6-9.9-9.5L18 16.5z" fill="${on ? '#ffd23a' : '#5a4232'}" ${OL}/>${on ? '<path d="M17 19l5-1 2-5" stroke="#fff6c8" stroke-width="2.6" fill="none" stroke-linecap="round"/>' : ''}`),
+  skull: svg(`<path d="M24 6c-9 0-15 6-15 14 0 5 2 8 5 10v6h20v-6c3-2 5-5 5-10 0-8-6-14-15-14z" fill="#efe6d2" ${OL}/><circle cx="18" cy="22" r="4" fill="#2a160a"/><circle cx="30" cy="22" r="4" fill="#2a160a"/><path d="M24 27l-2 4h4z" fill="#2a160a"/><path d="M19 36v4M24 36v4M29 36v4" stroke="#2a160a" stroke-width="2.4"/>`),
+  clock: svg(`<circle cx="24" cy="25" r="16" fill="#f2e6cc" ${OL}/><path d="M24 15v10l7 4" stroke="#2a160a" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M20 5h8" stroke="#2a160a" stroke-width="4" stroke-linecap="round"/>`),
   shield: c => svg(`<path d="M24 5l15 5v12c0 10-7 17-15 21C16 39 9 32 9 22V10z" fill="${c}" ${OL}/><path d="M24 9v30c6-3 11-9 11-17V13z" fill="rgba(0,0,0,.2)"/><path d="M17 20h14M24 14v18" stroke="#ffd45a" stroke-width="3.5" stroke-linecap="round"/>`),
 };

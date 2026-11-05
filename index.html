@@ -47,42 +47,51 @@
 
 <div id="banner" class="banner"></div>
 
-<!-- หน้าเริ่มเกม -->
-<div id="start" class="screen">
-  <h1 class="title">CLAY<span>WAR</span></h1>
-  <p class="sub">สงครามทหารดินเหนียว</p>
+<!-- หน้าเริ่มเกม (ฉากสนามรบจริงเล่นอยู่ด้านหลัง) -->
+<div id="start" class="screen menu-screen">
+  <div class="logo">
+    <div class="logo-plate"><span class="w1">CLAY</span><i class="ic" data-ic="attack"></i><span class="w2">WAR</span></div>
+    <div class="ribbon">สงครามทหารดินเหนียว</div>
+  </div>
   <div id="levels" class="levels"></div>
-  <button id="playBtn" class="big">▶ เริ่มเกม</button>
-  <p class="hint">⛏️ ฟาร์มแร่ · 🗡️ สร้างกองทัพ · 🏰 ทำลายฐานศัตรู</p>
-  <p class="credit">โมเดล 3D: Quaternius (CC0)</p>
+  <button id="playBtn" class="big gold-btn">▶ เริ่มเกม</button>
+  <div class="tips">
+    <span><i class="ic" data-ic="coin"></i>ฟาร์มแร่</span><span><i class="ic" data-ic="pop"></i>สร้างกองทัพ</span><span><i class="ic" data-ic="castle"></i>ทำลายฐานศัตรู</span>
+  </div>
+  <p class="credit">โมเดล 3D ตัวละคร: Quaternius (CC0)</p>
 </div>
 
 <!-- ขออนุญาตหมุนจอ -->
 <div id="perm" class="screen dim" hidden>
-  <div class="panel">
+  <div class="panel"><div class="ph">เล่นแนวนอน</div>
     <div class="ico rot">📱</div>
-    <h2>เกมนี้เล่นแนวนอน</h2>
     <p>ขออนุญาตเปิดเต็มจอและหมุนหน้าจอเป็นแนวนอนนะครับ</p>
-    <div class="row"><button id="permNo" class="ghost">ไม่เป็นไร</button><button id="permYes" class="big sm">อนุญาต</button></div>
+    <div class="row"><button id="permNo" class="ghost">ไม่เป็นไร</button><button id="permYes" class="big sm gold-btn">อนุญาต</button></div>
   </div>
 </div>
 
 <!-- เตือนให้หมุนจอ (ถ้าเครื่องหมุนให้อัตโนมัติไม่ได้) -->
 <div id="rotate" class="screen dim">
-  <div class="ico rot">📱</div><h2>หมุนจอเป็นแนวนอน</h2><p>เพื่อเล่นต่อ</p>
+  <div class="panel"><div class="ph">หมุนจอ</div><div class="ico rot">📱</div><p>หมุนจอเป็นแนวนอนเพื่อเล่นต่อ</p></div>
 </div>
 
 <!-- หยุดชั่วคราว -->
 <div id="pause" class="screen dim" hidden>
-  <div class="panel"><h2>หยุดชั่วคราว</h2>
-    <div class="col"><button id="resumeBtn" class="big sm">▶ เล่นต่อ</button><button id="quitBtn" class="ghost">ออกไปหน้าแรก</button></div>
+  <div class="panel"><div class="ph">หยุดชั่วคราว</div>
+    <div class="ico"><i class="ic" data-ic="pause"></i></div>
+    <div class="col"><button id="resumeBtn" class="big sm gold-btn">▶ เล่นต่อ</button><button id="quitBtn" class="ghost">ออกไปหน้าแรก</button></div>
   </div>
 </div>
 
 <!-- จบเกม -->
 <div id="end" class="screen dim" hidden>
-  <div class="panel"><div id="endIco" class="ico"></div><h2 id="endTitle"></h2><p id="endStars" class="stars"></p><p id="endText"></p>
-    <div class="col"><button id="nextBtn" class="big sm"></button><button id="menuBtn" class="ghost">หน้าแรก</button></div>
+  <div id="endPanel" class="panel end">
+    <div id="endTitle" class="ph"></div>
+    <div id="endStars" class="stars3"></div>
+    <div id="endStats" class="stats"></div>
+    <div id="endUnlock" class="unlock"></div>
+    <p id="endText"></p>
+    <div class="row"><button id="menuBtn" class="ghost">หน้าแรก</button><button id="nextBtn" class="big sm gold-btn"></button></div>
   </div>
 </div>
 

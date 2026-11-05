@@ -132,12 +132,12 @@ class Game {
         const x = foes.length ? foes[i % foes.length].x + (Math.random() - .5) * 60 : this.cam + Math.random() * this.vw;
         this.projs.push({ kind: 'meteor', x0: x - 260, y0: -60, x1: x, y1: GROUND + 10, t: -i * .12, dur: .7, arc: 0, dmg: 75, splash: 65, team: 0 });
       }
-      this.shake = .6; Sfx.play('meteor');
+      this.shake = .6; this.play('meteor');
     } else if (k === 'heal') {
       for (const u of this.units) if (u.team === 0) { u.hp = Math.min(u.maxHp, u.hp + u.maxHp * .6); this.sparkle(u.x, u.y - 40, '#8dff8a'); }
-      const b = this.bases[0]; b.hp = Math.min(b.max, b.hp + 250); Sfx.play('heal');
+      const b = this.bases[0]; b.hp = Math.min(b.max, b.hp + 250); this.play('heal');
     } else if (k === 'rage') {
-      this.rage[0] = 10; for (const u of this.units) if (u.team === 0) this.sparkle(u.x, u.y - 40, '#ff5a3a'); Sfx.play('horn');
+      this.rage[0] = 10; for (const u of this.units) if (u.team === 0) this.sparkle(u.x, u.y - 40, '#ff5a3a'); this.play('horn');
     }
     this.announce(`${ABILITIES[k].icon} ${ABILITIES[k].name}!`);
     return true;
@@ -154,17 +154,18 @@ class Game {
     this.shake = Math.max(this.shake, .2); this.sfx('boom', x, .5);
   }
   text(x, y, text, color) { this.parts.push({ x, y, vx: 0, vy: -50, text, color, life: 1, rot: 0 }); }
-  announce(msg, big) { this.onAnnounce?.(msg, big); }
+  announce(msg, big) { if (!this.demo) this.onAnnounce?.(msg, big); }
 
   end(result) {
-    this.over = result; Sfx.play(result);
+    this.over = result; this.play(result);
     const k = this.bases[0].hp / this.bases[0].max;
     this.stars = result === 'win' ? (k > .7 ? 3 : k > .35 ? 2 : 1) : 0;
     this.onEnd?.(result);
   }
 
   // เล่นเสียงเฉพาะเหตุการณ์ที่อยู่ในจอ (ไม่ให้เสียงรก)
-  sfx(name, x, vol = 1) { if (x > this.cam - 80 && x < this.cam + this.vw + 80) Sfx.play(name, vol); }
+  play(name, vol) { if (!this.demo) Sfx.play(name, vol); }
+  sfx(name, x, vol = 1) { if (!this.demo && x > this.cam - 80 && x < this.cam + this.vw + 80) Sfx.play(name, vol); }
 
   // วาด 3 ชั้น: ฉาก 2D (bg) → โมเดล 3D (R3) → เอฟเฟกต์ 2D (fx)
   draw(bg, fx, vw, dt) {
