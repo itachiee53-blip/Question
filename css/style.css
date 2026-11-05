@@ -268,3 +268,8 @@ body:not(.models-ready) .menu-screen { background: radial-gradient(ellipse at 50
 .upd em { font-style: normal; font-weight: 600; font-size: 13px; background: var(--ink); color: #ffe08a; border-radius: 10px; padding: 4px 10px; white-space: nowrap; }
 @keyframes dropIn { from { transform: translate(-50%, -120%); } }
 @media (max-height: 420px) { .ver { font-size: 10px; } .corner .ghost { font-size: 11px; padding: 4px 10px; } }
+
+:root { --sl: env(safe-area-inset-left); --sr: env(safe-area-inset-right); --st: env(safe-area-inset-top); --sb: env(safe-area-inset-bottom); }
+.ver { cursor: pointer; pointer-events: auto; }
+.ext { position: absolute; bottom: max(10px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); z-index: 2; padding: 6px 14px; border-radius: 12px; font-size: 13px;
+  background: linear-gradient(#ffe08a, #f2b632); color: var(--ink); border: 2.5px solid var(--ink); box-shadow: 0 4px 0 #6a3a10; text-decoration: none; white-space: nowrap; }
