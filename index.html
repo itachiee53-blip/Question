@@ -6,6 +6,11 @@
 <meta name="theme-color" content="#3b2a1e">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Clay War">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png">
 <title>Clay War</title>
 <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;600&display=swap" rel="stylesheet">
 <style>html, body { background: #3b2a1e; margin: 0; }</style>
@@ -58,7 +63,7 @@
     <span><i class="ic" data-ic="coin"></i>ฟาร์มแร่</span><span><i class="ic" data-ic="pop"></i>สร้างกองทัพ</span><span><i class="ic" data-ic="castle"></i>ทำลายฐานศัตรู</span>
   </div>
   <p class="credit">โมเดล 3D ตัวละคร: Quaternius (CC0)</p>
-  <button id="resetBtn" class="ghost corner">↺ เริ่มใหม่ทั้งหมด</button>
+  <div class="corner"><button id="resetBtn" class="ghost">↺ เริ่มใหม่ทั้งหมด</button><button id="installBtn" class="ghost" hidden>📲 ติดตั้งเป็นแอป</button></div>
   <span id="verLbl" class="ver"></span>
 </div>
 
@@ -79,6 +84,7 @@
   <div class="panel"><div class="ph">เล่นแนวนอน</div>
     <div class="ico rot">📱</div>
     <p>ขออนุญาตเปิดเต็มจอและหมุนหน้าจอเป็นแนวนอนนะครับ</p>
+    <p class="tip">💡 ถ้าออกจากเกมแล้วกลับมา แตะจอครั้งเดียวก็กลับเต็มจอ<br>หรือ "เพิ่มไปยังหน้าจอโฮม" เพื่อเปิดเต็มจอแนวนอนทุกครั้ง</p>
     <div class="row"><button id="permNo" class="ghost">ไม่เป็นไร</button><button id="permYes" class="big sm gold-btn">อนุญาต</button></div>
   </div>
 </div>
