@@ -3,7 +3,7 @@ const Sfx = {
   ctx: null, on: (() => { try { return localStorage.getItem('clay-mute') !== '1'; } catch { return true; } })(), last: {},
 
   init() { if (!this.ctx) try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch {} this.ctx?.resume?.(); },
-  toggle() { this.on = !this.on; try { localStorage.setItem('clay-mute', this.on ? '0' : '1'); } catch {} return this.on; },
+  toggle() { this.on = !this.on; if (!this.on) this.music(false); try { localStorage.setItem('clay-mute', this.on ? '0' : '1'); } catch {} return this.on; },
 
   tone(f, dur, type = 'sine', vol = .2, slide = 0, delay = 0) {
     const c = this.ctx, t = c.currentTime + delay, o = c.createOscillator(), g = c.createGain();
@@ -18,6 +18,34 @@ const Sfx = {
     const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
     s.buffer = buf; f.type = 'lowpass'; f.frequency.value = freq; g.gain.value = vol;
     s.connect(f).connect(g).connect(c.destination); s.start(t);
+  },
+
+  // ---------- เพลงประกอบ: มาร์ชยุคกลางสั้นๆ วนลูป (สร้างสดด้วยโค้ด) ----------
+  music(on) {
+    clearInterval(this.mTimer); this.mTimer = null;
+    if (!on || !this.on || !this.ctx) return;
+    const c = this.ctx, bpm = 112, step = 60 / bpm / 2; // โน้ตเขบ็ตหนึ่งชั้น
+    const N = n => 220 * 2 ** (n / 12); // n = ครึ่งเสียงจาก A3
+    const bass = [-12, -12, -5, -5, -9, -9, -7, -7];               // A E F G
+    const mel = [0, 3, 7, 3, 5, 7, 10, 7, 12, 10, 7, 5, 3, 5, 7, null,
+                 0, 3, 7, 12, 10, 7, 5, 3, 5, 3, 0, -2, 0, null, 0, null];
+    let i = 0, t = c.currentTime + .1;
+    const note = (f, at, dur, type, vol) => {
+      const o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.value = f;
+      g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(vol, at + .02); g.gain.exponentialRampToValueAtTime(.001, at + dur);
+      o.connect(g).connect(c.destination); o.start(at); o.stop(at + dur + .05);
+    };
+    this.mTimer = setInterval(() => {
+      while (t < c.currentTime + .3) {
+        const m = mel[i % mel.length], bar = Math.floor(i / 4) % bass.length;
+        if (m != null) note(N(m), t, step * 1.6, 'triangle', .045);
+        if (i % 2 === 0) note(N(bass[bar]), t, step * 1.8, 'sine', .09);
+        if (i % 4 === 0) { this.tone(110, .15, 'sine', .14, .4, t - c.currentTime); }          // กลองเบส
+        if (i % 4 === 2) this.noise(.08, .06, 3000, t - c.currentTime);                          // สแนร์
+        if (i % 8 === 7) this.noise(.03, .03, 6000, t - c.currentTime);
+        t += step; i++;
+      }
+    }, 100);
   },
 
   play(name, vol = 1) {

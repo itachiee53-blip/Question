@@ -74,7 +74,8 @@ class Game {
   }
 
   strike(u, target) {
-    const dmg = u.def.dmg * Upg.mult(this, u.team, 'weapon');
+    let dmg = u.def.dmg * Upg.mult(this, u.team, 'weapon');
+    if (u.def.charge && !u.charged) { dmg *= u.def.charge; u.charged = true; this.text(target.x, (target.y || GROUND) - 90, 'ชาร์จ!', '#ffd84a'); } // ทหารม้าพุ่งชนครั้งแรกแรงพิเศษ
     this.damage(target, dmg); this.sfx(u.def.splash ? 'smash' : 'hit', u.x);
     if (u.def.splash) for (const o of this.units) if (o !== target && o.team !== u.team && Math.abs(o.x - target.x) < u.def.splash) this.damage(o, dmg * .5);
   }
@@ -87,7 +88,7 @@ class Game {
     }
     t.hp -= dmg; t.flash = .1;
     this.chunks(t.x, t.y - 30, TEAM[t.team].color, 3);
-    if (t.hp <= 0) { this.chunks(t.x, t.y - 25, TEAM[t.team].color, 14); this.sfx('pop', t.x); } // แตกเป็นก้อนดินเหนียว
+    if (t.hp <= 0) { t.dieX = t.x; this.chunks(t.x, t.y - 25, TEAM[t.team].color, 14); this.sfx('pop', t.x); } // แตกเป็นก้อนดินเหนียว
   }
 
   chunks(x, y, color, n) {
@@ -100,16 +101,25 @@ class Game {
   // เล่นเสียงเฉพาะเหตุการณ์ที่อยู่ในจอ (ไม่ให้เสียงรก)
   sfx(name, x, vol = 1) { if (x > this.cam - 80 && x < this.cam + this.vw + 80) Sfx.play(name, vol); }
 
-  draw(ctx, vw) {
+  // วาด 3 ชั้น: ฉาก 2D (bg) → โมเดล 3D (R3) → เอฟเฟกต์ 2D (fx)
+  draw(bg, fx, vw, dt) {
     this.vw = vw; this.cam = Math.max(0, Math.min(WORLD - vw, this.cam));
-    R.background(ctx, this.cam, vw, this.lv, this.t);
-    ctx.save(); ctx.translate(-this.cam, 0);
-    this.mines.forEach(m => R.mine(ctx, m, this.t));
-    this.bases.forEach((b, i) => R.base(ctx, b, i, this.t, this.upg[i]));
-    [...this.units].sort((a, b) => a.y - b.y).forEach(u => R.unit(ctx, u, this.t));
-    this.projs.forEach(p => R.arrow(ctx, p));
-    this.parts.forEach(p => R.part(ctx, p));
-    ctx.restore();
+    R.background(bg, this.cam, vw, this.lv, this.t);
+    bg.save(); bg.translate(-this.cam, 0);
+    this.mines.forEach(m => R.mine(bg, m, this.t));
+    this.bases.forEach(b => R.shadow(bg, b.x, GROUND - 2, 140));
+    for (const u of this.units) R.shadow(bg, u.x, u.y, (u.type === 'cavalry' ? 30 : 16) * u.def.size);
+    bg.restore();
+
+    window.R3?.sync(this, dt); window.R3?.render(this.cam, vw);
+
+    fx.clearRect(-10, -10, vw + 20, VIEW_H + 20);
+    fx.save(); fx.translate(-this.cam, 0);
+    this.projs.forEach(p => R.arrow(fx, p));
+    this.parts.forEach(p => R.part(fx, p));
+    for (const u of this.units) if (u.hp < u.maxHp) R.hpBar(fx, u.x, u.y - (u.type === 'giant' ? 160 : u.type === 'cavalry' ? 150 : 100) * (u.type === 'giant' ? 1 : u.def.size), 30, u.hp / u.maxHp, TEAM[u.team].color);
+    this.bases.forEach((b, i) => R.hpBar(fx, b.x, GROUND - 330, 130, b.hp / b.max, TEAM[i].color));
+    fx.restore();
   }
 
   drawMini(ctx, vw) {
