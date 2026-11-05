@@ -19,20 +19,28 @@
 <!-- HUD ระหว่างเล่น -->
 <div id="hud" hidden>
   <div class="top">
-    <div class="pill">🪙 <b id="gold">0</b></div>
-    <div class="pill">👥 <b id="pop">0</b></div>
-    <canvas id="mini" width="300" height="24"></canvas>
-    <button id="upgBtn" class="pill btn-i">🏰 อัปเกรด</button>
-    <button id="muteBtn" class="pill btn-i">🔊</button>
-    <button id="pauseBtn" class="pill btn-i">⏸</button>
+    <div class="res">
+      <div class="stat"><i class="ic" data-ic="coin"></i><b id="gold">0</b></div>
+      <div class="stat"><i class="ic" data-ic="pop"></i><b id="pop">0</b></div>
+    </div>
+    <div class="field">
+      <div class="side me"><i class="ic sh" id="shMe"></i><div class="hp"><i id="hpMe"></i></div></div>
+      <canvas id="mini" width="600" height="44"></canvas>
+      <div class="side foe"><div class="hp"><i id="hpFoe"></i></div><i class="ic sh" id="shFoe"></i></div>
+    </div>
+    <div class="menu">
+      <button id="upgBtn" class="rb up-b" title="อัปเกรดฐาน"><i class="ic" data-ic="castle"></i><span>อัปเกรด</span></button>
+      <button id="muteBtn" class="rb" title="เสียง"></button>
+      <button id="pauseBtn" class="rb" title="หยุด"><i class="ic" data-ic="pause"></i></button>
+    </div>
   </div>
   <div id="upg" class="upg" hidden></div>
   <div class="bottom">
     <div id="shop" class="shop"></div>
     <div class="skills" id="skills"></div>
     <div class="modes">
-      <button data-mode="defend" class="mode on">🛡️<span>ตั้งรับ</span></button>
-      <button data-mode="attack" class="mode">⚔️<span>บุก!</span></button>
+      <button data-mode="defend" class="mode on"><i class="ic" data-ic="defend"></i><span>ตั้งรับ</span></button>
+      <button data-mode="attack" class="mode"><i class="ic" data-ic="attack"></i><span>บุก!</span></button>
     </div>
   </div>
 </div>
@@ -79,6 +87,7 @@
 </div>
 
 <script src="js/config.js"></script>
+<script src="js/icons.js"></script>
 <script src="js/audio.js"></script>
 <script src="js/upgrades.js"></script>
 <script src="js/scenery.js"></script>

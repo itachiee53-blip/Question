@@ -99,17 +99,23 @@ $('upg').onclick = e => {
   if (Upg.buy(game, 0, b.dataset.k)) { Sfx.play('upgrade'); game.text(game.bases[0].x, GROUND - 240, 'อัปเกรด!', '#ffd84a'); } else Sfx.play('deny');
   renderUpg();
 };
-$('muteBtn').onclick = () => { $('muteBtn').textContent = Sfx.toggle() ? '🔊' : '🔇'; Sfx.music(!!game && Sfx.on); Sfx.play('click'); };
-$('muteBtn').textContent = Sfx.on ? '🔊' : '🔇';
+const muteIcon = () => ($('muteBtn').innerHTML = `<i class="ic">${Sfx.on ? ICON.sound : ICON.mute}</i>`);
+$('muteBtn').onclick = () => { Sfx.toggle(); muteIcon(); Sfx.music(!!game && Sfx.on); Sfx.play('click'); };
+muteIcon();
+document.querySelectorAll('[data-ic]').forEach(e => (e.innerHTML = ICON[e.dataset.ic]));
 addEventListener('pointerdown', () => Sfx.init(), { once: true });
 addEventListener('pointerdown', () => Sfx.ctx?.state === 'suspended' && Sfx.ctx.resume());
 
 const PLAYER_UNITS = Object.keys(UNITS).filter(k => UNITS[k].icon);
 function buildShop() {
-  $('shop').innerHTML = PLAYER_UNITS.map(k => { const u = UNITS[k], lock = !game.unlocked(k);
-    return `<button class="unit${lock ? ' lock' : ''}" data-u="${k}" title="${u.name}"><span class="i">${u.icon}</span><small>🪙${u.cost}</small><span class="q" hidden></span><span class="prog"></span>${lock ? `<span class="lk">🔒ด่าน ${u.lv + 1}</span>` : ''}</button>`; }).join('');
+  const pic = k => window.R3?.portraits?.[k] ? `<img src="${R3.portraits[k]}" alt="">` : `<span class="emo">${UNITS[k].icon}</span>`;
+  $('shop').innerHTML = PLAYER_UNITS.map((k, i) => { const u = UNITS[k], lock = !game.unlocked(k);
+    return `<button class="unit${lock ? ' lock' : ''}" data-u="${k}" title="${u.name}"><span class="pic">${pic(k)}</span><span class="cost"><i class="ic">${ICON.coin}</i>${u.cost}</span><span class="key">${i + 1}</span><span class="q" hidden></span><span class="prog"></span>${lock ? `<span class="lk"><i class="ic">${ICON.lock}</i>ด่าน ${u.lv + 1}</span>` : ''}</button>`; }).join('');
   $('skills').innerHTML = Object.entries(ABILITIES).map(([k, a]) =>
-    `<button class="skill${a.lv > game.lvIdx ? ' lock' : ''}" data-s="${k}" title="${a.name}: ${a.desc}">${a.icon}<span class="cd" hidden></span></button>`).join('');
+    `<button class="skill s-${k}${a.lv > game.lvIdx ? ' lock' : ''}" data-s="${k}" title="${a.name}: ${a.desc}"><i class="ic">${ICON[k]}</i><span class="cd" hidden></span>${a.lv > game.lvIdx ? `<span class="lk"><i class="ic">${ICON.lock}</i></span>` : ''}</button>`).join('');
+  $('shMe').innerHTML = ICON.shield(TEAM[0].color); $('shFoe').innerHTML = ICON.shield(TEAM[1].color);
+  const c = TEAM[1].color, lum = [1, 3, 5].reduce((a, i, j) => a + parseInt(c.slice(i, i + 2), 16) * [.3, .59, .11][j], 0);
+  $('hpFoe').style.backgroundColor = lum < 90 ? '#c0504a' : c; // สีเผ่ามืดเกิน → ใช้แดง
 }
 $('skills').onclick = e => {
   const b = e.target.closest('.skill'); if (!b || !game) return;
@@ -136,12 +142,15 @@ function updateHud() {
     const k = b.dataset.u, n = q.filter(x => x.type === k).length, qe = b.querySelector('.q');
     b.classList.toggle('poor', game.gold[0] < UNITS[k].cost);
     qe.hidden = !n; qe.textContent = n;
-    b.querySelector('.prog').style.width = q[0]?.type === k ? q[0].t / UNITS[k].time * 100 + '%' : 0;
+    b.querySelector('.prog').style.height = q[0]?.type === k ? q[0].t / UNITS[k].time * 100 + '%' : 0;
   });
   document.querySelectorAll('.skill').forEach(b => {
     const cd = game.abil[b.dataset.s], el = b.querySelector('.cd');
     el.hidden = !cd; el.textContent = Math.ceil(cd); b.classList.toggle('ready', !cd && !b.classList.contains('lock'));
+    b.style.setProperty('--cd', cd / ABILITIES[b.dataset.s].cd);
   });
+  $('hpMe').style.width = game.bases[0].hp / game.bases[0].max * 100 + '%';
+  $('hpFoe').style.width = game.bases[1].hp / game.bases[1].max * 100 + '%';
   while (hints.length && game.t > hints[0][0]) announce(hints.shift()[1]);
   game.drawMini(mini, vw); renderUpg();
 }
@@ -153,11 +162,14 @@ addEventListener('pointermove', e => { if (drag && game) game.cam = drag.cam - (
 addEventListener('pointerup', () => (drag = null));
 bgc.addEventListener('wheel', e => { if (game) game.cam += (e.deltaY + e.deltaX) / scale; }, { passive: true });
 $('mini').addEventListener('pointerdown', e => {
-  const jump = ev => { const r = $('mini').getBoundingClientRect(); game.cam = (ev.clientX - r.left) / r.width * WORLD - vw / 2; };
+  const jump = ev => { const r = $('mini').getBoundingClientRect(), w = $('mini').width; game.cam = ((ev.clientX - r.left) / r.width * w - 20) / ((w - 40) / WORLD) - vw / 2; };
   jump(e); const mv = ev => jump(ev); addEventListener('pointermove', mv); addEventListener('pointerup', () => removeEventListener('pointermove', mv), { once: true });
 });
 const keys = {};
-addEventListener('keydown', e => { keys[e.key] = true; if (e.key === 'Escape' && game) $('pauseBtn').click(); });
+addEventListener('keydown', e => {
+  keys[e.key] = true; if (e.key === 'Escape' && game) $('pauseBtn').click();
+  const n = +e.key; if (game && n >= 1 && n <= PLAYER_UNITS.length) document.querySelector(`.unit[data-u="${PLAYER_UNITS[n - 1]}"]`)?.click(); // ปุ่มลัด 1-7
+});
 addEventListener('keyup', e => (keys[e.key] = false));
 
 // ---------- ลูปหลัก ----------

@@ -190,16 +190,25 @@ class Game {
       else if (u.hp < u.maxHp) R.hpBar(fx, u.x, y, 30, u.hp / u.maxHp, TEAM[u.team].color);
       if (this.rage[u.team] > 0 && !u.miner) R.part(fx, { x: u.x, y: y - 10, text: '⚡', color: '#ffcf3a', life: 1 });
     }
-    this.bases.forEach((b, i) => R.hpBar(fx, b.x, GROUND - 330, 130, b.hp / b.max, TEAM[i].color));
     fx.restore();
   }
 
+  // แผนที่ย่อ: ถนน · ปราสาท · เหมือง · ทหาร (ศัตรูสูงกว่า/ต่ำกว่าเส้น) · กรอบมุมกล้อง
   drawMini(ctx, vw) {
-    const w = ctx.canvas.width, h = ctx.canvas.height, k = w / WORLD;
+    const w = ctx.canvas.width, h = ctx.canvas.height, k = (w - 40) / WORLD, X = x => 20 + x * k, mid = h / 2 + 2;
     ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = 'rgba(255,255,255,.18)'; ctx.fillRect(this.cam * k, 0, vw * k, h);
-    this.bases.forEach((b, i) => { ctx.fillStyle = TEAM[i].color; ctx.fillRect(b.x * k - 4, 3, 8, h - 6); });
-    ctx.fillStyle = '#f2c230'; this.mines.forEach(m => ctx.fillRect(m.x * k - 2, h - 7, 4, 4));
-    for (const u of this.units) { ctx.fillStyle = TEAM[u.team].color; const s = u.def.boss ? 6 : 3; ctx.fillRect(u.x * k - s / 2, 12 - s, s, s * 2); }
+    ctx.fillStyle = 'rgba(120,80,40,.55)'; ctx.beginPath(); ctx.roundRect(14, mid - 3, w - 28, 6, 3); ctx.fill();
+    ctx.fillStyle = '#ffd45a'; this.mines.forEach((m, i) => { const x = X(m.x + 70 * TEAM[i].dir); ctx.beginPath(); ctx.moveTo(x, mid - 7); ctx.lineTo(x + 5, mid); ctx.lineTo(x, mid + 7); ctx.lineTo(x - 5, mid); ctx.fill(); });
+    for (const u of this.units) {
+      const s = u.def.boss ? 7 : u.miner ? 3 : 4;
+      ctx.fillStyle = TEAM[u.team].color; ctx.strokeStyle = 'rgba(20,10,5,.8)'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(X(u.x), mid + (u.team ? 1 : -1) * (u.miner ? 9 : 10), s, 0, 7); ctx.fill(); ctx.stroke();
+    }
+    this.bases.forEach((b, i) => { // ปราสาทจิ๋ว
+      const x = X(b.x); ctx.fillStyle = TEAM[i].color; ctx.strokeStyle = '#2a160a'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x - 9, mid + 9); ctx.lineTo(x - 9, mid - 6); ctx.lineTo(x - 5, mid - 12); ctx.lineTo(x - 1, mid - 6); ctx.lineTo(x + 1, mid - 6); ctx.lineTo(x + 5, mid - 12); ctx.lineTo(x + 9, mid - 6); ctx.lineTo(x + 9, mid + 9); ctx.closePath(); ctx.fill(); ctx.stroke();
+    });
+    ctx.strokeStyle = 'rgba(255,240,200,.9)'; ctx.lineWidth = 2.5; ctx.fillStyle = 'rgba(255,240,200,.12)';
+    ctx.beginPath(); ctx.roundRect(X(this.cam), 3, vw * k, h - 6, 6); ctx.fill(); ctx.stroke();
   }
 }

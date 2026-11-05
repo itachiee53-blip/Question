@@ -39,6 +39,7 @@ const R3 = {
 
     this.loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
     await this.need(COMMON, onProgress);
+    try { this.makePortraits(); } catch (e) { console.warn(e); }
     this.ready = true;
   },
 
@@ -51,6 +52,36 @@ const R3 = {
   prepare(lvIdx, onProgress) {
     const f = FACTIONS[LEVELS[lvIdx].faction];
     return this.need([f.miner, ...Object.keys(f.roster), f.boss].map(k => UNITS[k].model), onProgress);
+  },
+
+  // รูปหน้าทหารสำหรับปุ่มร้าน: เรนเดอร์จากโมเดลจริง (ท่ายืน หันเฉียง)
+  makePortraits() {
+    const S = 160, rd = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
+    rd.setSize(S, S); rd.outputColorSpace = THREE.SRGBColorSpace; rd.toneMapping = THREE.ACESFilmicToneMapping; rd.toneMappingExposure = 1.2;
+    const sc = new THREE.Scene();
+    sc.add(new THREE.HemisphereLight(0xfff1dc, 0x6a4a30, 1.8));
+    const key = new THREE.DirectionalLight(0xffffff, 2.4); key.position.set(2, 3, 4); sc.add(key);
+    const rim = new THREE.DirectionalLight(0xbfd8ff, 1.6); rim.position.set(-3, 2, -2); sc.add(rim);
+    const cam = new THREE.PerspectiveCamera(26, 1, .1, 50);
+    this.portraits = {};
+    for (const [k, d] of Object.entries(UNITS)) {
+      if (!d.icon) continue;
+      const g = new THREE.Group(), parts = [];
+      if (k === 'cavalry') {
+        const horse = this.clone('horse', 0, 1), rider = this.clone('sword', 0, .8);
+        rider.obj.position.set(0, .42, -.05); g.add(horse.obj, rider.obj); parts.push(horse, rider);
+        cam.position.set(1.2, 1.15, 2.1); cam.lookAt(0, .8, 0);
+      } else {
+        const p = this.clone(d.model, 0, 1); g.add(p.obj); parts.push(p);
+        if (d.role === 'miner') { const e = {}; this.equipMiner(e, p.obj); }
+        cam.position.set(.42, .9, 1.55); cam.lookAt(0, .68, 0);
+      }
+      g.rotation.y = .45; sc.add(g);
+      for (const p of parts) { this.play(p, 'idle'); p.mixer.update(.4); }
+      rd.render(sc, cam); this.portraits[k] = rd.domElement.toDataURL('image/png');
+      sc.remove(g);
+    }
+    rd.dispose(); rd.forceContextLoss?.();
   },
 
   resize(w, h) { this.renderer?.setPixelRatio(Math.min(2, devicePixelRatio || 1)); this.renderer?.setSize(w, h, false); },
