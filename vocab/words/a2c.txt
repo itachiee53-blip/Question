@@ -1,0 +1,30 @@
+# อาชีพและสถานที่ทำงาน A2
+baker|คนทำขนมปัง;cook|พ่อครัว แม่ครัว ทำอาหาร;gardener|คนสวน;hairstylist|ช่างทำผม (สไตลิสต์);fisherman|ชาวประมง;postman|บุรุษไปรษณีย์;guard|ยาม;librarian|บรรณารักษ์;tailor|ช่างตัดเสื้อ;sailor|กะลาสี
+astronaut|นักบินอวกาศ;inventor|นักประดิษฐ์;musician|นักดนตรี;painter|จิตรกร ช่างทาสี;writer|นักเขียน;model|นางแบบ แบบจำลอง;reporter job|งานนักข่าว;taxi driver|คนขับแท็กซี่;bus driver|คนขับรถบัส;shop assistant|พนักงานขาย
+# สัตว์และธรรมชาติ A2
+parrot talk|นกแก้วพูด;goldfish|ปลาทอง;hamster|แฮมสเตอร์;lizard|จิ้งจก;gecko|ตุ๊กแก;buffalo|ควาย;donkey|ลา;camel ride|การขี่อูฐ;rhino|แรด;hippo|ฮิปโป
+leopard|เสือดาว;cheetah|เสือชีตาห์;gorilla|กอริลลา;koala|โคอาลา;seal|แมวน้ำ;jellyfish|แมงกะพรุน;starfish|ปลาดาว;swan|หงส์;pigeon|นกพิราบ;crow|อีกา
+cockroach|แมลงสาบ;ladybird|เต่าทอง;dragonfly|แมลงปอ;grasshopper|ตั๊กแตน;caterpillar|หนอนผีเสื้อ;shell|เปลือกหอย;paw|อุ้งเท้า;claw|กรงเล็บ;horn|เขาสัตว์ แตร;beak|จะงอยปาก
+# ร่างกายและการแต่งตัว A2
+eyebrow|คิ้ว;eyelash|ขนตา;forehead|หน้าผาก;wrist|ข้อมือ;ankle|ข้อเท้า;heel|ส้นเท้า;hip|สะโพก;waist|เอว;chest|หน้าอก;throat|ลำคอ
+necklace|สร้อยคอ;earring|ต่างหู;bracelet|สร้อยข้อมือ;ring finger|นิ้วนาง;scarf|ผ้าพันคอ;gloves|ถุงมือ;boots|รองเท้าบูท;sandals|รองเท้าแตะ;trainers|รองเท้าผ้าใบ;pyjamas|ชุดนอน
+sweater|เสื้อไหมพรม;hoodie|เสื้อฮู้ด;jeans|กางเกงยีนส์;tie (clothes)|เนกไท;button|กระดุม;zip|ซิป;sleeve|แขนเสื้อ;collar|ปกเสื้อ;fashion|แฟชั่น;style|สไตล์
+# ประเทศและภาษา
+Thailand|ประเทศไทย;Japan|ญี่ปุ่น;China|จีน;Korea|เกาหลี;India|อินเดีย;England|อังกฤษ (ประเทศ);France|ฝรั่งเศส;Germany|เยอรมนี;America|อเมริกา;Australia|ออสเตรเลีย
+Japanese|ภาษาญี่ปุ่น;Chinese|ภาษาจีน;Korean|ภาษาเกาหลี;French|ภาษาฝรั่งเศส;German|ภาษาเยอรมัน;Spanish|ภาษาสเปน;nationality|สัญชาติ;Asia|เอเชีย;Europe|ยุโรป;Africa|แอฟริกา
+# ความรู้สึกต่อสิ่งต่าง ๆ
+prefer tea|ชอบชามากกว่า;can't stand|ทนไม่ได้;don't mind|ไม่ว่าอะไร;fond of|ชอบ;tired of|เบื่อ;afraid of|กลัว;angry with|โกรธใคร;worried about|กังวลเรื่อง;excited about|ตื่นเต้นกับ;surprised by|แปลกใจกับ
+# เวลาและตารางนัดหมาย
+o'clock|นาฬิกา (ตรง);quarter past|สิบห้านาที (หลังชั่วโมง);half past|ครึ่ง (หลังชั่วโมง);in time|ทันเวลา;on time|ตรงเวลา;all day|ทั้งวัน;at the moment|ขณะนี้;these days|ทุกวันนี้;from now on|นับจากนี้;for ages|มานานมาก
+# การทำงานบ้านและครัว A2
+washing up|การล้างจาน;dishwasher|เครื่องล้างจาน;rubbish bag|ถุงขยะ;apron|ผ้ากันเปื้อน;cutting board|เขียง;ladle|ทัพพี;chopsticks|ตะเกียบ;teapot|กาน้ำชา;tray|ถาด;napkin|ผ้าเช็ดปาก
+# การเรียน A2
+calculator|เครื่องคิดเลข;compass|เข็มทิศ วงเวียน;sharpener|กบเหลาดินสอ;highlighter|ปากกาไฮไลต์;stapler|ที่เย็บกระดาษ;paper clip|คลิปหนีบกระดาษ;tape|เทปกาว;folder bag|แฟ้มเอกสาร;whiteboard|ไวท์บอร์ด;projector|โปรเจกเตอร์
+quiz|แบบทดสอบสั้น;worksheet|ใบงาน;textbook|หนังสือเรียน;exercise book|สมุดแบบฝึกหัด;report card|สมุดพก;term|ภาคเรียน;break time|เวลาพัก;absent|ขาดเรียน;present (at school)|มาเรียน;hand in|ส่งงาน
+# คำกริยา A2 ชุดสุดท้าย
+bake a cake|อบเค้ก;boil water|ต้มน้ำ;book a table|จองโต๊ะ;brush teeth|แปรงฟัน;build a house|สร้างบ้าน;catch a cold|เป็นหวัด;change clothes|เปลี่ยนเสื้อผ้า;check email|เช็กอีเมล;climb a tree|ปีนต้นไม้;cross the road|ข้ามถนน
+do homework|ทำการบ้าน;feed the cat|ให้อาหารแมว;fly a kite|เล่นว่าว;get lost|หลงทาง;go shopping|ไปซื้อของ;have a shower|อาบน้ำฝักบัว;lose weight|ลดน้ำหนัก;make a mistake|ทำผิดพลาด;miss someone|คิดถึงใคร;pay attention to|ใส่ใจกับ
+ride a horse|ขี่ม้า;save money|เก็บเงิน;send a message|ส่งข้อความ;set an alarm|ตั้งนาฬิกาปลุก;spend time|ใช้เวลา;take a photo|ถ่ายรูป;take a bus|ขึ้นรถบัส;tell a story|เล่าเรื่อง;tidy a room|จัดห้อง;turn off the light|ปิดไฟ
+# คำคุณศัพท์บอกลักษณะ A2
+curly|หยิก;straight hair|ผมตรง;bald|หัวล้าน;blonde|ผมบลอนด์;slim|ผอมเพรียว;handsome|หล่อ;pretty|สวย น่ารัก;lovely|น่ารัก;smart|ฉลาด ดูดี;elderly man|ชายสูงอายุ
+cheap ticket|ตั๋วราคาถูก;noisy street|ถนนเสียงดัง;quiet place|สถานที่เงียบ;busy road|ถนนรถเยอะ;modern city|เมืองทันสมัย;old town|เมืองเก่า;wet weather|อากาศเปียกชื้น;dry skin|ผิวแห้ง;sharp knife|มีดคม;soft pillow|หมอนนุ่ม

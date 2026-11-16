@@ -1,0 +1,21 @@
+# การศึกษาต่อและการสอบ
+admission|การรับเข้าเรียน;entrance exam|การสอบเข้า;transcript|ใบแสดงผลการเรียน;GPA|เกรดเฉลี่ย;major|วิชาเอก;minor subject|วิชาโท;elective|วิชาเลือก;prerequisite|วิชาบังคับก่อน;credit|หน่วยกิต เครดิต;seminar|การสัมมนา
+workshop|การอบรมเชิงปฏิบัติการ;orientation|ปฐมนิเทศ;dormitory|หอพัก;alumni|ศิษย์เก่า;mentor programme|โครงการพี่เลี้ยง;exchange student|นักเรียนแลกเปลี่ยน;study abroad|เรียนต่อต่างประเทศ;distance learning|การเรียนทางไกล;proficiency|ความเชี่ยวชาญ;fluency|ความคล่องแคล่ว
+# งานและอาชีพในอนาคต
+gig economy|เศรษฐกิจงานอิสระ;remote work|การทำงานทางไกล;hybrid work|การทำงานแบบผสม;work-life balance|สมดุลชีวิตและงาน;job security|ความมั่นคงในงาน;skill set|ชุดทักษะ;upskill|เพิ่มทักษะ;reskill|ฝึกทักษะใหม่;job market|ตลาดแรงงาน;career path|เส้นทางอาชีพ
+startup|สตาร์ตอัป;founder|ผู้ก่อตั้ง;CEO|ประธานเจ้าหน้าที่บริหาร;board of directors|คณะกรรมการบริษัท;executive|ผู้บริหาร;intern|นักศึกษาฝึกงาน;mentorship|การเป็นพี่เลี้ยง;networking|การสร้างเครือข่าย;job offer|ข้อเสนองาน;negotiate salary|ต่อรองเงินเดือน
+# สังคมและวัฒนธรรมร่วมสมัย
+consumerism|บริโภคนิยม;materialism|วัตถุนิยม;individualism|ปัจเจกนิยม;multicultural|พหุวัฒนธรรม;cultural heritage|มรดกทางวัฒนธรรม;generation gap|ช่องว่างระหว่างวัย;peer pressure|แรงกดดันจากเพื่อน;role model|แบบอย่าง;celebrity|คนดัง;fame|ชื่อเสียง
+lifestyle choice|การเลือกวิถีชีวิต;minimalism|ความเรียบง่ายแบบมินิมอล;volunteering|การอาสาสมัคร;philanthropy|การกุศล;activist|นักเคลื่อนไหว;petition|คำร้อง;boycott|การคว่ำบาตร;campaign for|รณรงค์เพื่อ;awareness campaign|การรณรงค์สร้างความตระหนัก;grassroots|ระดับรากหญ้า
+# สุขภาพและการแพทย์ B2
+outbreak|การระบาด;pandemic|การระบาดใหญ่ทั่วโลก;quarantine|การกักตัว;contagious|ติดต่อได้;transmission|การแพร่เชื้อ;immunity|ภูมิคุ้มกัน;booster|เข็มกระตุ้น;clinical trial|การทดลองทางคลินิก;placebo|ยาหลอก;recovery rate|อัตราการหาย
+organ|อวัยวะ;tissue sample|ตัวอย่างเนื้อเยื่อ;nerve|เส้นประสาท;kidney|ไต;liver|ตับ;spine|กระดูกสันหลัง;skull|กะโหลก;joint|ข้อต่อ;artery|หลอดเลือดแดง;hormone|ฮอร์โมน
+# อารมณ์และพฤติกรรมทางสังคม
+assertiveness|ความกล้าแสดงออก;boundaries|ขอบเขตส่วนตัว;conflict resolution|การแก้ไขความขัดแย้ง;emotional intelligence|ความฉลาดทางอารมณ์;active listening|การฟังอย่างตั้งใจ;body language|ภาษากาย;eye contact|การสบตา;small talk|การคุยเล่น;first impression|ความประทับใจแรก;rapport building|การสร้างสัมพันธ์
+# คำนามนามธรรม B2 ชุดสุดท้าย
+accessibility|การเข้าถึงได้;affordability|ความสามารถในการจ่าย;authenticity|ความเป็นของแท้;complexity|ความซับซ้อน;continuity|ความต่อเนื่อง;creativity|ความคิดสร้างสรรค์;dependency|การพึ่งพา;durability|ความทนทาน;equality|ความเท่าเทียม;flexibility at work|ความยืดหยุ่นในการทำงาน
+generosity|ความเอื้อเฟื้อ;hospitality industry|อุตสาหกรรมบริการ;humanity|มนุษยชาติ ความเป็นมนุษย์;identity|อัตลักษณ์;inclusion|การมีส่วนร่วม การรวมเข้า;intensity|ความเข้มข้น;maturity|ความเป็นผู้ใหญ่;mobility|การเคลื่อนย้าย;necessity of rest|ความจำเป็นของการพัก;originality|ความเป็นต้นฉบับ
+popularity|ความนิยม;productivity growth|การเติบโตของผลิตภาพ;prosperity|ความเจริญรุ่งเรือง;publicity|การประชาสัมพันธ์;rarity|ความหายาก;security|ความปลอดภัย;sensitivity|ความอ่อนไหว;simplicity|ความเรียบง่าย;stability|ความมั่นคง;transparency|ความโปร่งใส
+uncertainty|ความไม่แน่นอน;unity|ความเป็นหนึ่งเดียว;validity of results|ความถูกต้องของผลลัพธ์;variety|ความหลากหลาย;visibility|การมองเห็น;vitality|ความมีชีวิตชีวา;vulnerability|ความเปราะบาง;wisdom|ปัญญา;youth|ความเยาว์;zone|โซน เขต
+# การเงินส่วนบุคคล B2
+budgeting|การวางงบประมาณ;expenditure|รายจ่าย;installment|การผ่อนชำระ;overdraft|การเบิกเกินบัญชี;credit score|คะแนนเครดิต;savings account|บัญชีออมทรัพย์;cryptocurrency|สกุลเงินดิจิทัล;e-wallet|กระเป๋าเงินอิเล็กทรอนิกส์;cashless|ไร้เงินสด;financial goal|เป้าหมายทางการเงิน

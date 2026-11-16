@@ -1,0 +1,46 @@
+# รูปทรงและขนาด
+circle|วงกลม;square|สี่เหลี่ยมจัตุรัส;triangle|สามเหลี่ยม;line|เส้น;dot|จุด;shape|รูปร่าง;size|ขนาด;round|กลม;flat|แบน;heavy|หนัก
+soft|นุ่ม;wide|กว้าง;narrow|แคบ;deep|ลึก;high|สูง;low|ต่ำ;huge|ใหญ่มาก;tiny|เล็กมาก;same|เหมือนกัน;different|แตกต่าง
+# ความรู้สึก
+feel|รู้สึก;fine|สบายดี;sick|ป่วย;scared|กลัว;excited|ตื่นเต้น;bored|เบื่อ;surprised|ประหลาดใจ;worried|กังวล;sleepy|ง่วงนอน;proud|ภูมิใจ
+lonely|เหงา;shy|ขี้อาย;kind|ใจดี;funny|ตลก;friendly|เป็นมิตร;nice|ดี น่ารัก;cute|น่ารัก;brave|กล้าหาญ;smile|ยิ้ม;laugh|หัวเราะ
+cry|ร้องไห้;hug|กอด;kiss|จูบ;miss|คิดถึง พลาด;hope|หวัง;wish|ปรารถนา;dream|ฝัน;worry|กังวล;care|ใส่ใจ;hate|เกลียด
+# กิจวัตรประจำวัน
+get up|ลุกขึ้น;brush|แปรง;shower|อาบน้ำฝักบัว;bath|อาบน้ำ;get dressed|แต่งตัว;comb|หวี;go to bed|เข้านอน;rest|พักผ่อน;relax|ผ่อนคลาย;clean up|ทำความสะอาด
+tidy|เป็นระเบียบ;cut|ตัด;carry|ถือ แบก;push|ผลัก;pull|ดึง;throw|โยน;catch|รับ จับ;kick|เตะ;hit|ตี;climb|ปีน
+# ในห้องเรียน
+chalk|ชอล์ก;crayon|สีเทียน;glue|กาว;paper|กระดาษ;map|แผนที่;dictionary|พจนานุกรม;bell|กระดิ่ง;break|พัก;math|คณิตศาสตร์;science|วิทยาศาสตร์
+English|ภาษาอังกฤษ;Thai|ภาษาไทย;art|ศิลปะ;history|ประวัติศาสตร์;subject|วิชา;exam|การสอบ;mark|คะแนน;grade|เกรด ระดับชั้น;sentence|ประโยค;story|เรื่องเล่า
+# อาหารเพิ่มเติม
+ice cream|ไอศกรีม;chocolate|ช็อกโกแลต;candy|ลูกอม;honey|น้ำผึ้ง;oil|น้ำมัน;pepper|พริกไทย;chili|พริก;garlic|กระเทียม;shrimp|กุ้ง;crab|ปู
+fried rice|ข้าวผัด;curry|แกง;steak|สเต๊ก;hamburger|แฮมเบอร์เกอร์;french fries|เฟรนช์ฟรายส์;sauce|ซอส;jam|แยม;yogurt|โยเกิร์ต;flour|แป้ง;dessert|ของหวาน
+sour|เปรี้ยว;salty|เค็ม;bitter|ขม;spicy|เผ็ด;fresh|สด;taste|รสชาติ ชิม;smell|กลิ่น ดม;bite|กัด;chew|เคี้ยว;share|แบ่งปัน
+# ผลไม้และผักเพิ่มเติม
+papaya|มะละกอ;durian|ทุเรียน;rambutan|เงาะ;guava|ฝรั่ง;cherry|เชอร์รี;peach|ลูกพีช;pear|ลูกแพร์;melon|เมลอน;lime|มะนาวเขียว;coconut milk|กะทิ
+pumpkin|ฟักทอง;broccoli|บรอกโคลี;lettuce|ผักกาดหอม;pea|ถั่วลันเตา;eggplant|มะเขือ;ginger|ขิง;peanut|ถั่วลิสง;seed|เมล็ด;root|ราก;nut|ถั่วเปลือกแข็ง
+# สัตว์เพิ่มเติม
+puppy|ลูกสุนัข;kitten|ลูกแมว;chick|ลูกไก่;owl|นกฮูก;eagle|นกอินทรี;penguin|เพนกวิน;whale|วาฬ;octopus|ปลาหมึกยักษ์;crocodile|จระเข้;kangaroo|จิงโจ้
+panda|แพนด้า;fox|สุนัขจิ้งจอก;wolf|หมาป่า;deer|กวาง;squirrel|กระรอก;bat|ค้างคาว;snail|หอยทาก;worm|หนอน;mosquito|ยุง;insect|แมลง
+tail|หาง;wing|ปีก;feather|ขนนก;fur|ขนสัตว์;nest|รัง;farm|ฟาร์ม;pet|สัตว์เลี้ยง;feed|ให้อาหาร;wild|ป่า ดุร้าย;cage|กรง
+# บ้านเพิ่มเติม
+roof|หลังคา;stairs|บันได;gate|ประตูรั้ว;fence|รั้ว;yard|ลานบ้าน;shelf|ชั้นวาง;cupboard|ตู้;curtain|ผ้าม่าน;pillow|หมอน;blanket|ผ้าห่ม
+towel|ผ้าเช็ดตัว;soap|สบู่;toothbrush|แปรงสีฟัน;toothpaste|ยาสีฟัน;fan|พัดลม;light bulb|หลอดไฟ;plug|ปลั๊กไฟ;stove|เตา;pan|กระทะ;pot|หม้อ
+# ร่างกายและสุขภาพ
+health|สุขภาพ;medicine|ยา;fever|ไข้;flu|ไข้หวัด;cough|ไอ;headache|ปวดหัว;pain|ความเจ็บปวด;hurt|เจ็บ;blood|เลือด;bone|กระดูก
+skin|ผิวหนัง;lip|ริมฝีปาก;tongue|ลิ้น;chin|คาง;cheek|แก้ม;toe|นิ้วเท้า;nail|เล็บ ตะปู;thumb|นิ้วโป้ง;elbow|ข้อศอก;voice|เสียงพูด
+# เมืองและร้านค้า
+supermarket|ซูเปอร์มาร์เก็ต;mall|ห้างสรรพสินค้า;bakery|ร้านเบเกอรี่;pharmacy|ร้านขายยา;bookshop|ร้านหนังสือ;police station|สถานีตำรวจ;school bus|รถโรงเรียน;bus stop|ป้ายรถเมล์;corner shop|ร้านหัวมุม;playground|สนามเด็กเล่น
+building|อาคาร;tower|หอคอย;church|โบสถ์;palace|พระราชวัง;stadium|สนามกีฬา;pool|สระว่ายน้ำ;factory|โรงงาน;farmhouse|บ้านไร่;address|ที่อยู่;sign|ป้าย
+money|เงิน;coin|เหรียญ;price|ราคา;baht|บาท;dollar|ดอลลาร์;card|บัตร;change|เงินทอน เปลี่ยน;sale|ลดราคา;gift|ของขวัญ;list|รายการ
+# คำบอกความถี่และเวลา
+always|เสมอ;usually|โดยปกติ;often|บ่อย;sometimes|บางครั้ง;never|ไม่เคย;again|อีกครั้ง;soon|เร็ว ๆ นี้;later|ทีหลัง;before|ก่อน;after|หลัง
+every|ทุก;each|แต่ละ;all|ทั้งหมด;some|บาง;many|มาก (นับได้);much|มาก (นับไม่ได้);few|น้อย;more|มากกว่า;most|มากที่สุด;only|เท่านั้น
+# คำเชื่อมและคำเล็ก ๆ
+and|และ;or|หรือ;but|แต่;because|เพราะ;so|ดังนั้น;if|ถ้า;with|กับ;without|โดยไม่มี;about|เกี่ยวกับ;for|สำหรับ
+from|จาก;to|ถึง ไปยัง;of|ของ;by|โดย;very|มาก;too|เกินไป ด้วย;also|ด้วย เช่นกัน;maybe|บางที;really|จริง ๆ;just|เพิ่ง แค่
+# การสื่อสาร
+talk|คุย;chat|แชต;shout|ตะโกน;whisper|กระซิบ;repeat|พูดซ้ำ;explain|อธิบาย;agree|เห็นด้วย;mean|หมายถึง;language|ภาษา;message|ข้อความ
+email|อีเมล;internet|อินเทอร์เน็ต;video|วิดีโอ;radio|วิทยุ;news|ข่าว;newspaper|หนังสือพิมพ์;magazine|นิตยสาร;letterbox|ตู้จดหมาย;stamp|แสตมป์;send|ส่ง
+# ของเล่นและการเล่น
+puzzle|ตัวต่อ ปริศนา;block|บล็อก ตึก;robot|หุ่นยนต์;balloon|ลูกโป่ง;bubble|ฟองสบู่;swing|ชิงช้า;slide|สไลเดอร์;sandcastle|ปราสาททราย;hide|ซ่อน;seek|หา ค้นหา
+chess|หมากรุก;card game|เกมไพ่;dice|ลูกเต๋า;prize|รางวัล;winner|ผู้ชนะ;turn|ตา (ผลัด) หมุน;rule|กฎ;cheat|โกง;practice|ฝึกซ้อม;score|คะแนน

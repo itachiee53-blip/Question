@@ -1,0 +1,26 @@
+# คำคุณศัพท์ขั้นสูง (ต่อ)
+opaque|ทึบแสง เข้าใจยาก;opulent|หรูหรามั่งคั่ง;ostentatious|โอ้อวด;paramount|สำคัญสูงสุด;pertinent|ตรงประเด็น;pervasive|แพร่หลายทั่วไป;placid|สงบนิ่ง;plausible excuse|ข้ออ้างที่ฟังขึ้น;poignant|สะเทือนใจ;pragmatic|เน้นปฏิบัติ
+precarious|ล่อแหลม;pristine|บริสุทธิ์ดั้งเดิม;prolific|มีผลงานมาก;prominent|โดดเด่น;prudent|รอบคอบ;rampant|ระบาดควบคุมไม่ได้;resilient|ฟื้นตัวได้ดี;reticent|สงวนท่าที;robust|แข็งแกร่ง;ruthless|โหดเหี้ยม
+salient|เด่นชัด;scrupulous|ซื่อตรงละเอียด;serene|สงบเงียบ;sporadic|เกิดเป็นครั้งคราว;spurious|ปลอม ไม่จริง;stagnant|หยุดนิ่ง ซบเซา;steadfast|มั่นคง;stringent|เข้มงวด;superfluous|ฟุ่มเฟือยเกินจำเป็น;tangible|จับต้องได้
+tedious|น่าเบื่อหน่าย;tenuous|เปราะบาง อ่อนแอ;transient|ชั่วคราวผ่านไป;trivial|ไม่สำคัญ;ubiquitous|มีอยู่ทุกหนแห่ง;unprecedented|ไม่เคยเกิดขึ้นมาก่อน;unscrupulous|ไร้ยางอาย;vehement|รุนแรงเผ็ดร้อน;viable|ที่ทำได้จริง;vivid|สดใส ชัดเจน
+volatile|ผันผวน;whimsical|เพ้อฝันแปลก ๆ;wary|ระแวดระวัง;zealous|กระตือรือร้นแรงกล้า;tactful|มีไหวพริบในการพูด;tacit|โดยนัย;sombre|มืดมน เศร้าหมอง;shrewd|หลักแหลม;sceptical|ไม่ค่อยเชื่อ;sedate|สุขุม
+# วิทยาศาสตร์และการวิจัยขั้นสูง
+empirical|เชิงประจักษ์;quantitative|เชิงปริมาณ;qualitative|เชิงคุณภาพ;methodology|ระเบียบวิธี;variable|ตัวแปร;correlation|สหสัมพันธ์;causation|ความเป็นเหตุเป็นผล;sample size|ขนาดตัวอย่าง;anomaly detection|การตรวจหาความผิดปกติ;replicate|ทำซ้ำ
+peer review|การตรวจสอบโดยผู้ทรงคุณวุฒิ;abstract summary|บทคัดย่อ;appendix|ภาคผนวก;bibliography|บรรณานุกรม;footnote|เชิงอรรถ;hypothesize|ตั้งสมมติฐาน;postulate|สันนิษฐาน;theorem|ทฤษฎีบท;axiom|สัจพจน์;synthesis|การสังเคราะห์
+genome|จีโนม;mutation|การกลายพันธุ์;enzyme|เอนไซม์;metabolism|เมแทบอลิซึม;neuron|เซลล์ประสาท;pathogen|เชื้อโรค;antibody|แอนติบอดี;catalyst reaction|ปฏิกิริยาเร่ง;compound|สารประกอบ;spectrum|สเปกตรัม
+# เศรษฐกิจและการเงินขั้นสูง
+fiscal|ทางการคลัง;monetary|ทางการเงิน;deficit|การขาดดุล;surplus|ส่วนเกิน การเกินดุล;tariff|ภาษีศุลกากร;embargo|การห้ามค้าขาย;liquidity|สภาพคล่อง;dividend|เงินปันผล;equity|ส่วนของผู้ถือหุ้น ความเสมอภาค;collateral|หลักประกัน
+volatility|ความผันผวน;speculation market|ตลาดเก็งกำไร;monopoly|การผูกขาด;oligarchy|คณาธิปไตย;privatization|การแปรรูปเป็นเอกชน;deregulation|การยกเลิกการควบคุม;stimulus|มาตรการกระตุ้น;austerity measure|มาตรการรัดเข็มขัด;fluctuation|ความผันแปร;depreciation|ค่าเสื่อมราคา
+# การเมืองและปรัชญา
+autonomy|อำนาจปกครองตนเอง;authoritarian|เผด็จการ;bureaucrat|ข้าราชการ;dissident|ผู้เห็นต่าง;electorate|ผู้มีสิทธิเลือกตั้ง;federal|แบบสหพันธรัฐ;incumbent|ผู้ดำรงตำแหน่ง;mandate|อาณัติ;referendum|การลงประชามติ;regime|ระบอบการปกครอง
+ethics|จริยธรรม;morality|ศีลธรรม;existential|เกี่ยวกับการดำรงอยู่;metaphysics|อภิปรัชญา;utilitarian|ประโยชน์นิยม;dogma|หลักความเชื่อที่ตายตัว;secular|ทางโลก;pluralism|พหุนิยม;nihilism|สุญนิยม;idealism|อุดมคตินิยม
+# ภาษาและวาทศิลป์
+ambiguity|ความกำกวม;articulation|การพูดชัดถ้อยชัดคำ;colloquial|ภาษาพูด;connotative|ที่มีความหมายแฝง;denotation|ความหมายตรงตัว;dialect|ภาษาถิ่น;euphemism|คำสุภาพแทนคำหยาบ;hyperbole|การกล่าวเกินจริง;jargon|ศัพท์เฉพาะวงการ;lexicon|คลังคำศัพท์
+paraphrase|ถอดความ;rhetorical|เชิงวาทศิลป์;semantics|อรรถศาสตร์;syntax|วากยสัมพันธ์;verbose|พูดมากเยิ่นเย้อ;succinct|กระชับรัดกุม;terse|ห้วนสั้น;eloquently|อย่างคมคาย;vernacular|ภาษาท้องถิ่น;anecdote|เรื่องเล่าสั้น ๆ
+# บุคลิกและพฤติกรรมขั้นสูง
+arrogant|หยิ่งยโส;assertive|กล้าแสดงออก;belligerent|ชอบหาเรื่อง;callous|ใจดำ;compassionate|มีความเมตตา;condescending|ทำตัวเหนือกว่า;conscientious|มีจิตสำนึก รับผิดชอบ;cynical|มองโลกในแง่ร้าย;eccentric|ประหลาด แปลกแหวกแนว;gullible|หลงเชื่อง่าย
+impulsive|หุนหันพลันแล่น;indecisive|ตัดสินใจไม่ได้;introverted|เก็บตัว;extroverted|ชอบสังคม;meticulous person|คนละเอียดรอบคอบ;naive|ไร้เดียงสา;obstinate|ดื้อดึง;pessimistic|มองโลกในแง่ร้าย;optimistic|มองโลกในแง่ดี;pompous|วางมาด
+sarcastic|ประชดประชัน;self-conscious|ประหม่าเกินไป;sensible|มีเหตุผล;sensitive|อ่อนไหว;sincere|จริงใจ;stubborn|ดื้อรั้น;tactless|ไม่มีกาลเทศะ;temperamental|อารมณ์แปรปรวน;thrifty|ประหยัด;vindictive|พยาบาท
+# วลีวิชาการที่ใช้บ่อย
+in contrast|ในทางตรงกันข้าม;in addition|นอกจากนี้;as a result|ผลที่ตามมาคือ;on the other hand|ในอีกด้านหนึ่ง;to some extent|ในระดับหนึ่ง;in terms of|ในแง่ของ;with regard to|เกี่ยวกับ;due to|เนื่องจาก;in spite of|ทั้งที่;by means of|โดยวิธี
+take into account|นำมาพิจารณา;shed light on|ช่วยให้กระจ่าง;draw a conclusion|สรุปผล;play a role|มีบทบาท;come to terms with|ยอมรับความจริง;give rise to|ก่อให้เกิด;bring about|ทำให้เกิด;carry out|ดำเนินการ;account for|อธิบายถึง คิดเป็น;lay off|เลิกจ้าง
