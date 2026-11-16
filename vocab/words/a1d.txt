@@ -1,0 +1,6 @@
+# ตัวเลขเพิ่มเติม
+thirteen|สิบสาม;fourteen|สิบสี่;fifteen|สิบห้า;sixteen|สิบหก;seventeen|สิบเจ็ด;eighteen|สิบแปด;nineteen|สิบเก้า;thirty|สามสิบ;forty|สี่สิบ;fifty|ห้าสิบ
+sixty|หกสิบ;seventy|เจ็ดสิบ;eighty|แปดสิบ;ninety|เก้าสิบ;million|ล้าน;zero|ศูนย์;third|ที่สาม;last|สุดท้าย;next|ถัดไป;plus|บวก
+minus|ลบ;times|คูณ ครั้ง;equal to|เท่ากับ;odd number|เลขคี่;even number|เลขคู่
+# เดือนที่เหลือ
+February|กุมภาพันธ์;March|มีนาคม;May|พฤษภาคม;June|มิถุนายน;July|กรกฎาคม;August|สิงหาคม;September|กันยายน;October|ตุลาคม;November|พฤศจิกายน;month name|ชื่อเดือน
