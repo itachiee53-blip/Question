@@ -1,0 +1,584 @@
+<title>แชทป่วนไลฟ์</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;600&family=Anuphan:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a fake live-stream page. Stage + meters on the left, chat column on the right, troll buttons under the stage. Single dark "stream site at night" look. */
+:root{
+  --bg:#0e0c13; --panel:#17141f; --panel2:#1f1b2a; --line:#2c2639;
+  --fg:#efeaf6; --muted:#9b93ad;
+  --gold:#ffcf3f;   /* donations, money, your highlight */
+  --rage:#ff5a4e;   /* streamer anger */
+  --sus:#57a8ff;    /* mod suspicion */
+  --ok:#4fd18b;
+  --f-display:"Mitr","Anuphan",system-ui,sans-serif;
+  --f-body:"Anuphan",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,monospace;
+  color-scheme:dark;
+}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--f-body);font-size:15px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 28px}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit}
+.wrap{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:16px}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}}
+
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width:0}
+.live{background:var(--rage);color:#fff;font-weight:700;font-size:12px;letter-spacing:.08em;padding:2px 8px;border-radius:4px;font-family:var(--f-mono)}
+.title{font-family:var(--f-display);font-weight:600;font-size:18px;margin:0;text-wrap:balance;min-width:0}
+.title small{display:block;font-family:var(--f-body);font-weight:400;color:var(--muted);font-size:13px}
+.stat{margin-left:auto;display:flex;gap:16px;font-family:var(--f-mono);font-size:13px;color:var(--muted);flex-wrap:wrap}
+.stat b{color:var(--fg);font-variant-numeric:tabular-nums}
+
+.stage{position:relative;width:100%;aspect-ratio:16/9;max-width:100%;border-radius:10px;overflow:hidden;background:#000;margin-top:10px;border:1px solid var(--line)}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.bubble{position:absolute;right:3%;bottom:47%;max-width:46%;background:#fff;color:#1a1622;font-family:var(--f-display);font-size:clamp(12px,1.6vw,17px);padding:8px 12px;border-radius:14px 14px 4px 14px;box-shadow:0 6px 20px #0008;transform-origin:bottom right;transition:transform .15s,opacity .15s}
+.bubble.hide{opacity:0;transform:scale(.6)}
+.bubble.mad{background:var(--rage);color:#fff}
+.alert{position:absolute;left:50%;top:5%;transform:translateX(-50%);width:min(78%,560px);background:#1a1622ee;border:2px solid var(--gold);border-radius:12px;padding:10px 14px;text-align:center;font-family:var(--f-display)}
+.alert .who{color:var(--gold);font-weight:600;font-size:clamp(13px,1.7vw,18px)}
+.alert .msg{font-size:clamp(12px,1.5vw,16px)}
+.phase{position:absolute;left:2%;top:4%;background:#000a;padding:4px 10px;border-radius:6px;font-size:clamp(11px,1.3vw,14px);font-family:var(--f-display)}
+.phase b{color:var(--gold)}
+.pops{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.pop{position:absolute;font-family:var(--f-display);font-weight:600;font-size:clamp(14px,2vw,22px);color:var(--rage);text-shadow:0 2px 0 #000,0 0 12px #000;animation:rise 1.1s ease-out forwards;white-space:nowrap}
+.pop.good{color:var(--ok)}
+.pop.combo{color:var(--gold)}
+@keyframes rise{from{transform:translateY(0) scale(1.2);opacity:1}to{transform:translateY(-70px) scale(1);opacity:0}}
+
+.meters{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:12px}
+.meter{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+.meter .lbl{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13px;color:var(--muted)}
+.meter .lbl b{color:var(--fg);font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.bar{height:10px;border-radius:6px;background:var(--panel2);margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:6px;transition:width .2s}
+#rageBar{background:linear-gradient(90deg,#ffcf3f,#ff8a3d,var(--rage))}
+#susBar{background:var(--sus)}
+.chip{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--panel2);color:var(--fg)}
+.chip.watch{background:var(--sus);color:#071321;font-weight:700}
+.chip.afk{background:var(--ok);color:#06170e;font-weight:700}
+.strikes{font-family:var(--f-mono);letter-spacing:.2em;color:var(--rage)}
+
+.acts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+@media (max-width:640px){.acts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.act{position:relative;overflow:hidden;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 11px 9px;cursor:pointer;min-width:0;transition:border-color .12s,transform .06s}
+.act:hover{border-color:var(--gold)}
+.act:active{transform:translateY(1px)}
+.act:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.act[disabled]{cursor:not-allowed;opacity:.55}
+.act .k{position:absolute;right:8px;top:7px;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.act .n{font-family:var(--f-display);font-size:15px;display:block;padding-right:18px}
+.act .d{font-size:12px;color:var(--muted);display:block}
+.act .c{font-size:12px;font-family:var(--f-mono);display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+.c .r{color:var(--rage)} .c .s{color:var(--sus)} .c .m{color:var(--gold)} .c .g{color:var(--ok)}
+.act .cd{position:absolute;left:0;bottom:0;height:3px;background:var(--gold);width:0}
+.act.nice{background:#132019}
+
+.chat{background:var(--panel);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;min-height:0;height:calc(100vh - 32px);max-height:820px;position:sticky;top:16px}
+@media (max-width:900px){.chat{height:300px;position:static}}
+.chat h2{margin:0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--line);font-family:var(--f-mono);font-weight:500}
+.log{flex:1;overflow-y:auto;padding:8px 12px;display:flex;flex-direction:column;gap:3px;font-size:14px;min-height:0}
+.line{word-break:break-word;animation:fadeIn .2s}
+.line .u{font-weight:700}
+.line.me{background:#ffcf3f1a;border-radius:6px;padding:2px 6px;margin-inline:-6px}
+.line.mod .u::before{content:"ม็อด ";background:var(--ok);color:#06170e;font-size:10px;padding:0 4px;border-radius:3px;margin-right:4px;font-weight:700}
+.line.sys{color:var(--muted);font-size:12px;font-style:italic}
+.line.don{background:#ffcf3f26;border-left:3px solid var(--gold);padding:3px 8px;border-radius:4px}
+.emo{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:0 4px;font-size:12px;color:var(--gold)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}}
+
+.ov{position:absolute;inset:0;background:#0e0c13e6;display:flex;align-items:center;justify-content:center;padding:4%;z-index:5}
+.card{max-width:560px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
+.card h1{font-family:var(--f-display);font-weight:600;font-size:clamp(24px,4.4vw,44px);margin:0;line-height:1.1;text-wrap:balance}
+.card h1 em{font-style:normal;color:var(--gold)}
+.card p{margin:0;color:var(--muted);font-size:clamp(12px,1.6vw,15px)}
+.go{background:var(--gold);color:#1a1300;border:0;border-radius:10px;padding:10px 26px;font-family:var(--f-display);font-weight:600;font-size:18px;cursor:pointer}
+.go:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.namebox{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+.namebox input{background:var(--panel2);border:1px solid var(--line);color:var(--fg);border-radius:8px;padding:6px 10px;font:inherit;width:170px}
+.res{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:420px}
+.res div{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px}
+.res b{display:block;font-family:var(--f-mono);font-size:clamp(14px,2vw,20px);color:var(--fg)}
+.res span{font-size:11px;color:var(--muted)}
+.mute{background:none;border:1px solid var(--line);border-radius:6px;padding:2px 8px;font-size:12px;cursor:pointer;color:var(--muted)}
+.help{font-size:12px;color:var(--muted);margin-top:10px}
+@media (prefers-reduced-motion:reduce){.pop,.line{animation:none}.bubble{transition:none}}
+</style>
+
+<div class="wrap">
+  <main style="min-width:0">
+    <div class="top">
+      <span class="live">LIVE</span>
+      <h1 class="title">พี่ต้นกล้าเล่น อัศวินหมูกรอบ วันนี้ต้องผ่านบอส!!<small>TonklaPlays · หมวดเกมผจญภัย</small></h1>
+      <div class="stat">
+        <span>ผู้ชม <b id="viewers">1,204</b></span>
+        <span>เวลา <b id="time">1:30</b></span>
+        <span>คะแนน <b id="score">0</b></span>
+        <button class="mute" id="mute" type="button">เสียง: เปิด</button>
+      </div>
+    </div>
+
+    <div class="stage" id="stage">
+      <canvas id="cv" width="960" height="540"></canvas>
+      <div class="phase" id="phase">ตอนนี้: <b>เดินสำรวจ</b></div>
+      <div class="alert" id="alert" hidden><div class="who" id="alertWho"></div><div class="msg" id="alertMsg"></div></div>
+      <div class="bubble hide" id="bubble">วันนี้ผ่านแน่นอน!</div>
+      <div class="pops" id="pops"></div>
+
+      <div class="ov" id="startOv">
+        <div class="card">
+          <h1>แชท<em>ป่วน</em>ไลฟ์</h1>
+          <p>คุณคือคนดูหนึ่งคนในไลฟ์ของพี่ต้นกล้า ภารกิจคือป่วนให้พี่เขาหัวร้อนจนเลิกไลฟ์ภายใน 90 วินาที แต่ระวังม็อดปลาทู ถ้าความสงสัยเต็มหลอดจะโดนทามเอาท์ โดนครบ 3 ครั้งคือโดนแบน</p>
+          <p>ป่วนสลับท่าเพื่อเก็บคอมโบ ใช้ท่าเดิมซ้ำๆ พี่เขาจะเริ่มชิน และดูจังหวะเกมกับม็อดให้ดี</p>
+          <label class="namebox" for="nick">ชื่อในแชท <input id="nick" maxlength="16" value="ผู้ป่วนนิรนาม"></label>
+          <button class="go" id="startBtn" type="button">เข้าแชท</button>
+        </div>
+      </div>
+      <div class="ov" id="endOv" hidden>
+        <div class="card">
+          <p id="endTag">จบไลฟ์</p>
+          <h1 id="endTitle">พี่ต้นกล้า<em>เลิกไลฟ์</em>แล้ว!</h1>
+          <p id="endSub"></p>
+          <div class="res">
+            <div><b id="rScore">0</b><span>คะแนน</span></div>
+            <div><b id="rRage">0</b><span>ความหัวร้อนรวม</span></div>
+            <div><b id="rCombo">x1</b><span>คอมโบสูงสุด</span></div>
+          </div>
+          <p>ยศของคุณ: <b id="rRank" style="color:var(--gold)"></b></p>
+          <button class="go" id="againBtn" type="button">ป่วนอีกรอบ</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="meters">
+      <div class="meter">
+        <div class="lbl"><span>ความหัวร้อนของพี่ต้นกล้า</span><b id="rageTxt">0%</b></div>
+        <div class="bar"><i id="rageBar"></i></div>
+      </div>
+      <div class="meter">
+        <div class="lbl"><span>ม็อดปลาทู <span class="chip" id="modChip">ปกติ</span></span><b id="susTxt">0%</b></div>
+        <div class="bar"><i id="susBar"></i></div>
+      </div>
+      <div class="meter">
+        <div class="lbl"><span>เงินในกระเป๋า</span><b id="money" style="color:var(--gold)">฿250</b></div>
+        <div class="lbl" style="margin-top:6px"><span>คอมโบ <b id="combo" style="color:var(--gold)">x1.00</b></span><span>ใบเหลือง <span class="strikes" id="strikes">○○○</span></span></div>
+      </div>
+    </div>
+
+    <div class="acts" id="acts"></div>
+    <p class="help">กดปุ่ม 1–8 บนคีย์บอร์ดได้ · ตอนสู้บอส การบอกทางผิดแรงขึ้น 3 เท่า · ตอนพี่อ่านแชท แชทและโดเนทแรงขึ้น 2 เท่า · ตอนม็อดไปกินข้าว ป่วนได้ไม่ถูกจับ</p>
+  </main>
+
+  <aside class="chat" aria-label="แชทไลฟ์">
+    <h2>แชทสด</h2>
+    <div class="log" id="log" aria-live="polite"></div>
+  </aside>
+</div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const rand=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+
+/* ---------- content ---------- */
+const NAMES=['หมูกระทะ99','น้องแมวส้ม','ลุงเปา_gaming','KaiJeaw','ป้าข้างบ้าน','นักสืบโคนัน','เด็กหลังห้อง','Tonkla_FC','มือใหม่หัดดู','ข้าวมันไก่','boss_kub','ชาไทยไม่หวาน','ไข่ต้ม7นาที','NongPloy'];
+const COLORS=['#ff8fb1','#8fd3ff','#b9a3ff','#ffd27a','#7ff0c0','#ffa98a','#c0ff8a','#9ab8ff'];
+const ncolor=n=>COLORS[[...n].reduce((a,c)=>a+c.charCodeAt(0),0)%COLORS.length];
+const IDLE=['สู้ๆครับพี่','มาแล้วครับ','GG','พี่ๆ ดาบเล่มนั้นเก็บยัง','ใครมาจากติ๊กต็อกบ้าง',':หมูยิ้ม:',':หมูยิ้ม: :หมูยิ้ม:','พี่กินข้าวยัง','บอสนี้ยากจริง','555555','เพลงพื้นหลังชื่ออะไรครับ','ตรงนั้นมีหีบลับนะ',':ตบโต๊ะ:','ขอเพลงหน่อยครับ'];
+const REACT={
+  ask:['555555 ถามอีกแล้ว','เกมอยู่บนจอเลยพี่ชาย',':หมูยิ้ม:','อ่านชื่อไลฟ์สิ 555'],
+  emote:[':หมูยิ้ม: :หมูยิ้ม: :หมูยิ้ม:',':ตบโต๊ะ: :ตบโต๊ะ:',':หมูยิ้ม:','แชทพังแล้ว 5555'],
+  back:['อย่าไปเชื่อมัน!!','ซ้ายจริงๆ นะพี่ 555','55555555 ตกเหว','RIP อัศวิน'],
+  tts:['55555555 อ่านจริงด้วย','โดเนทคุ้มมาก','ใครโดเนทเนี่ย 555',':ตบโต๊ะ:'],
+  jump:['หูแตกแล้ววว','5555555555 สะดุ้งทั้งตัว','พี่กระโดดเลย',':ตบโต๊ะ: :ตบโต๊ะ:'],
+  spoil:['ม็อดแบนเลย!!','เฮ้ยยย สปอยล์ทำไม','ยังไม่ได้ดูเลย T_T','ไม่จริงใช่มั้ย'],
+  cheer:['ใช่ๆ สู้ๆ','น่ารัก','+1 สู้ๆครับพี่'],
+  gift:['ซื้อม็อดได้ด้วยเหรอ 555','ม็อดรับซองแล้ว','ม็อดปลาทูยิ้มเลย']
+};
+const TTS=['พี่ครับ แม่พี่ฝากบอกว่าให้ไปอาบน้ำได้แล้ว','สวัสดีครับ นี่คือข้อความจากอนาคต พี่จะตายในอีกสามวินาที','เทสๆ หนึ่งสองสาม หนึ่งสองสาม เทสๆ ได้ยินมั้ยครับ','พี่ครับ ไก่ทอดที่สั่งไว้เย็นหมดแล้วนะครับ','อ่านช้าๆ นะครับ ก ไก่ ข ไข่ ฃ ขวด ค ควาย','ผมโดเนทมาเพื่อบอกว่า บอสตัวนี้มีจุดอ่อนที่… ล้อเล่นครับ'];
+const SPOIL=['ตอนจบ หมูกรอบยักษ์คือพ่อของพระเอก!!','เจ้าหญิงคือบอสลับนะพี่','ดาบในตำนานเป็นของปลอม ตัวจริงอยู่ในห้องน้ำ','สุดท้ายพระเอกกลายเป็นหมูเองครับ'];
+const SAY={
+  ask:['บอกไปแล้ว อัศวินหมูกรอบ!','ชื่อเกมอยู่บนจอเลยครับ…','ถามรอบที่ร้อยแล้วนะ'],
+  emote:['แชทอ่านไม่ทันแล้ว','หมูยิ้มเต็มจอเลย…','พอเถอะ อีโมตเต็มไปหมด'],
+  back:['ซ้ายเหรอ? …ตกเหวเลย!','ใครบอกให้กระโดดตรงนี้!','อย่ามาแนะนำมั่วๆ'],
+  backBoss:['ใครบอกซ้าย!! ตายเลยเนี่ย!','จะชนะอยู่แล้ว!! เพราะแชทเลย!','บอสเลือดเหลือนิดเดียวเองงง'],
+  tts:['ขอบคุณที่โดเนท… เดี๋ยวนะ อะไรนะ','เงินมาพร้อมความเจ็บใจ','อ่านจบยัง… ยังอีกเหรอ'],
+  jump:['อ๊ากกกก!!! ใครตั้งเสียงนี้!!','ใจจะวาย!!','หูดับไปข้างนึงแล้ว'],
+  spoil:['อย่าสปอยล์!!! ม็อดจัดการที!','ไม่อยากรู้!! ไม่ได้ยิน!!','เล่นมาสามสิบชั่วโมงนะ!!!'],
+  cheer:['ขอบคุณครับ ยังมีคนดีในแชท','เห็นมั้ย แชทแบบนี้แหละที่ชอบ'],
+  gift:['ขอบคุณที่ซับให้ม็อด…','ใจดีจังเลยวันนี้'],
+  calm:['วันนี้ผ่านบอสแน่นอน!','ด่านนี้สบายๆ','ใครเพิ่งมา ยินดีต้อนรับครับ'],
+  mid:['แชทวันนี้เป็นอะไรกันเนี่ย','หายใจเข้า… หายใจออก…','ใจเย็นๆ ต้นกล้า'],
+  hot:['ใครเป็นคนส่งคนพวกนี้มา!','จะปิดแชทแล้วนะ!!','ม็อดอยู่ไหนเนี่ย!!']
+};
+
+/* ---------- actions ---------- */
+const ACTS=[
+  {id:'ask',  n:'ถามว่าเล่นเกมอะไร', d:'คลาสสิกที่ไม่เคยตาย', rage:2,  sus:5,  cost:0,   cd:1.2, msg:()=>pick(['พี่เล่นเกมอะไรครับ','เกมนี้ชื่ออะไรครับ','เพิ่งมา เกมอะไรครับ','นี่เกมอะไรเหรอครับ'])},
+  {id:'emote',n:'สแปมอีโมต',         d:'ท่วมแชทด้วยหมูยิ้ม', rage:2,  sus:9,  cost:0,   cd:0.8, view:6, msg:()=>Array(rand(4,8)|0).fill(':หมูยิ้ม:').join(' ')},
+  {id:'back', n:'บอกทางผิด',          d:'ซ้ายๆๆ กระโดดเลย!', rage:3,  sus:6,  cost:0,   cd:2.5, msg:()=>pick(['ซ้ายๆๆๆ!!','กระโดดเลยพี่ ตรงนั้นแหละ!','ไปทางเหวครับ มีของลับ','กดหลบไม่ต้องตี!'])},
+  {id:'tts',  n:'โดเนทให้อ่านออกเสียง',d:'ม็อดลบโดเนทไม่ได้',  rage:7,  sus:0,  cost:50,  cd:4,   view:10},
+  {id:'jump', n:'เสียงผีตุ้งแช่',      d:'โดเนทพร้อมเสียงกรีด', rage:11, sus:6,  cost:120, cd:8,   view:25},
+  {id:'spoil',n:'สปอยล์ตอนจบ',        d:'แรงมาก ม็อดโกรธมาก', rage:12, sus:35, cost:0,   cd:10,  view:15},
+  {id:'cheer',n:'เชียร์ดีๆ',          d:'ทำตัวดีให้ม็อดใจเย็น', rage:-4, sus:-12,cost:0,   cd:3,   nice:true, msg:()=>pick(['สู้ๆครับพี่ เป็นกำลังใจให้','พี่เก่งที่สุดแล้ว','ขอบคุณที่ไลฟ์ครับ'])},
+  {id:'gift', n:'ซื้อซับให้ม็อด',      d:'ติดสินบนแบบถูกกฎหมาย',rage:0,  sus:-40,cost:100, cd:6,   nice:true}
+];
+
+/* ---------- state ---------- */
+let S, me='ผู้ป่วนนิรนาม', muted=false, actx=null;
+function fresh(){return{t:0,left:90,rage:0,sus:0,money:250,viewers:1204,score:0,strikes:0,timeoutUntil:0,
+  combo:1,maxCombo:1,lastId:'',lastT:-9,streak:0,totalRage:0,
+  phase:'walk',phaseUntil:9,mod:'normal',modUntil:7,cds:{},running:false,ending:false,
+  shake:0,shock:0,heroDie:0,jumpscare:0,bossHp:1,quitT:0,nextChat:0,idleSay:6};}
+S=fresh();
+
+const PHASES={walk:{name:'เดินสำรวจ',tip:''},boss:{name:'สู้บอสหมูยักษ์',tip:'บอกทางผิด x3 · ป่วนอื่นๆ x1.5'},chat:{name:'พี่กำลังอ่านแชท',tip:'แชท/โดเนท x2'}};
+const MODS={normal:{name:'ปกติ',m:1},watch:{name:'กำลังจ้องแชท',m:2},afk:{name:'ไปกินข้าว',m:0}};
+
+/* ---------- UI build ---------- */
+const actsEl=$('acts');
+ACTS.forEach((a,i)=>{
+  const b=document.createElement('button');
+  b.type='button';b.className='act'+(a.nice?' nice':'');b.id='act-'+a.id;
+  const bits=[];
+  if(a.rage>0)bits.push(`<span class="r">หัวร้อน +${a.rage}</span>`);
+  if(a.rage<0)bits.push(`<span class="g">หัวร้อน ${a.rage}</span>`);
+  if(a.sus>0)bits.push(`<span class="s">สงสัย +${a.sus}</span>`);
+  if(a.sus<0)bits.push(`<span class="g">สงสัย ${a.sus}</span>`);
+  if(a.cost)bits.push(`<span class="m">฿${a.cost}</span>`);
+  b.innerHTML=`<span class="k">${i+1}</span><span class="n">${a.n}</span><span class="d">${a.d}</span><span class="c">${bits.join('')}</span><span class="cd"></span>`;
+  b.onclick=()=>act(a.id);
+  actsEl.appendChild(b);
+});
+addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT')return;
+  const n=+e.key; if(n>=1&&n<=ACTS.length){act(ACTS[n-1].id);e.preventDefault();}
+});
+
+const log=$('log');
+function chat(user,text,cls=''){
+  const d=document.createElement('div');d.className='line '+cls;
+  let body=esc(text).replace(/:([ก-๙a-z]+):/g,'<span class="emo">$1</span>');
+  d.innerHTML=user?`<span class="u" style="color:${cls.includes('me')?'var(--gold)':ncolor(user)}">${esc(user)}</span>: ${body}`:body;
+  log.appendChild(d);
+  while(log.children.length>80)log.firstChild.remove();
+  log.scrollTop=log.scrollHeight;
+}
+let bubbleT=0;
+function say(text,mad){const b=$('bubble');b.textContent=text;b.classList.remove('hide');b.classList.toggle('mad',!!mad);bubbleT=2.6;}
+let alertT=0;
+function showAlert(who,msg,t=3.2){$('alertWho').textContent=who;$('alertMsg').textContent=msg;$('alert').hidden=false;alertT=t;}
+function pop(text,cls=''){
+  const p=document.createElement('div');p.className='pop '+cls;p.textContent=text;
+  p.style.left=rand(30,62)+'%';p.style.top=rand(30,55)+'%';
+  $('pops').appendChild(p);setTimeout(()=>p.remove(),1150);
+}
+
+/* ---------- sound ---------- */
+function beep(f=440,d=.08,type='square',v=.05,slide=0){
+  if(muted||!actx)return;
+  const o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime;
+  o.type=type;o.frequency.setValueAtTime(f,t);if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(30,f+slide),t+d);
+  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  o.connect(g).connect(actx.destination);o.start(t);o.stop(t+d+.02);
+}
+function scream(){if(muted||!actx)return;for(let i=0;i<6;i++)setTimeout(()=>beep(900+Math.random()*900,.12,'sawtooth',.07,-500),i*40);}
+function ding(){beep(880,.1,'triangle',.08);setTimeout(()=>beep(1320,.15,'triangle',.08),90);}
+$('mute').onclick=()=>{muted=!muted;$('mute').textContent='เสียง: '+(muted?'ปิด':'เปิด');};
+
+/* ---------- core action ---------- */
+function act(id){
+  if(!S.running||S.ending)return;
+  const a=ACTS.find(x=>x.id===id);
+  if(S.t<S.timeoutUntil){pop('โดนทามเอาท์อยู่!','combo');return;}
+  if((S.cds[id]||0)>S.t)return;
+  if(S.money<a.cost){pop('เงินไม่พอ','combo');beep(160,.12,'square',.04);return;}
+  S.money-=a.cost;S.cds[id]=S.t+a.cd;
+
+  // fatigue + combo
+  if(id===S.lastId)S.streak++;else S.streak=0;
+  const fatigue=a.rage>0?Math.max(.35,1-.22*S.streak):1;
+  if(a.rage>0){
+    if(S.t-S.lastT<3&&id!==S.lastId)S.combo=Math.min(2,S.combo+.15);
+    else if(S.t-S.lastT>=3)S.combo=1;
+  }else if(id==='cheer')S.combo=1;
+  S.maxCombo=Math.max(S.maxCombo,S.combo);
+  S.lastId=id;S.lastT=S.t;
+
+  let mult=1;
+  if(S.phase==='boss')mult=id==='back'?3:1.5;
+  if(S.phase==='chat'&&['ask','emote','tts'].includes(id))mult=2;
+  let gain=a.rage>0?a.rage*mult*S.combo*fatigue:a.rage;
+  S.rage=clamp(S.rage+gain,0,100);
+  if(gain>0){S.totalRage+=gain;S.score+=gain*10;S.shake=Math.min(1,S.shake+gain/25);}
+  const susGain=a.sus>0?a.sus*MODS[S.mod].m:a.sus;
+  S.sus=clamp(S.sus+susGain,0,100);
+  S.viewers+=(a.view||0)+(gain>0?gain*2:0);
+
+  // feedback
+  if(gain>0)pop(`+${gain.toFixed(0)} หัวร้อน${S.combo>1?' x'+S.combo.toFixed(2):''}`);
+  if(fatigue<1&&gain>0)setTimeout(()=>pop('พี่เริ่มชินแล้ว','combo'),150);
+  if(a.sus<0)pop(`ม็อดใจเย็นลง ${a.sus}`,'good');
+  if(a.sus>0&&S.mod==='afk')setTimeout(()=>pop('ม็อดไม่เห็น!','good'),120);
+  beep(a.rage>0?520+gain*10:700,.06,'square',.04);
+
+  if(a.msg)chat(me,a.msg(),'me');
+  const tier=S.rage>70;
+  if(id==='tts'){const m=pick(TTS);chat(null,`${me} โดเนท ฿50: ${m}`,'don');showAlert(`${me} โดเนท ฿50`,m);ding();say(pick(SAY.tts),tier);}
+  else if(id==='jump'){chat(null,`${me} โดเนท ฿120 พร้อมเสียงพิเศษ`,'don');S.jumpscare=.6;S.shock=1.6;scream();say(pick(SAY.jump),true);}
+  else if(id==='spoil'){chat(me,pick(SPOIL),'me');say(pick(SAY.spoil),true);setTimeout(()=>chat('ปลาทู','อย่าสปอยล์นะครับ เตือนครั้งเดียว','mod'),600);}
+  else if(id==='back'){S.heroDie=1.4;say(pick(S.phase==='boss'?SAY.backBoss:SAY.back),S.phase==='boss'||tier);if(S.phase==='boss')S.bossHp=Math.min(1,S.bossHp+.4);}
+  else if(id==='gift'){chat(null,`${me} ซื้อซับให้ ปลาทู`,'don');setTimeout(()=>chat('ปลาทู','ขอบคุณครับ ผมไม่เห็นอะไรเลย','mod'),500);say(pick(SAY.gift));ding();}
+  else if(SAY[id]&&Math.random()<.75)say(pick(SAY[id]),tier);
+  if(REACT[id])for(let i=0;i<(gain>10?3:1);i++)setTimeout(()=>chat(pick(NAMES),pick(REACT[id])),300+i*350+Math.random()*300);
+
+  checkSus();
+  if(S.rage>=100)rageQuit();
+}
+
+function checkSus(){
+  if(S.sus<100)return;
+  S.strikes++;
+  if(S.strikes>=3){chat('ปลาทู',`แบน ${me} ถาวรครับ บาย`,'mod');chat(null,`${me} ถูกแบนจากแชท`,'sys');end('ban');return;}
+  const dur=S.strikes===1?5:9;
+  S.timeoutUntil=S.t+dur;S.sus=35;S.combo=1;
+  chat('ปลาทู',`${me} ทามเอาท์ ${dur} วินาที ไปนั่งสงบสติอารมณ์ก่อน`,'mod');
+  chat(null,`${me} ถูกทามเอาท์ ${dur} วินาที`,'sys');
+  pop(`โดนทามเอาท์ ${dur} วิ!`,'combo');beep(200,.3,'sawtooth',.06,-120);
+}
+
+function rageQuit(){
+  if(S.ending)return;S.ending=true;S.quitT=0;
+  say('พอแล้ว!!! เลิกไลฟ์!!! ไม่เล่นแล้ว!!!',true);
+  scream();
+  chat(null,'TonklaPlays ลุกออกจากหน้าจอ','sys');
+  ['5555555555555','พี่ต้นกล้าาาา','ใครทำพี่เขาเนี่ย',':ตบโต๊ะ: :ตบโต๊ะ: :ตบโต๊ะ:','ไลฟ์ประวัติศาสตร์'].forEach((m,i)=>setTimeout(()=>chat(pick(NAMES),m),300+i*250));
+  setTimeout(()=>end('quit'),2800);
+}
+
+function end(why){
+  S.running=false;S.ending=true;
+  let bonus=0;
+  if(why==='quit'){bonus=Math.round(S.left*60);S.score+=bonus;}
+  const ranks=[[2000,'เด็กฝึกป่วน'],[5000,'ตัวป่วนประจำแชท'],[9000,'ม็อดต้องจำชื่อได้'],[1e9,'ตำนานแห่งแชท']];
+  const rank=ranks.find(r=>S.score<r[0])[1];
+  const T={
+    quit:['ภารกิจสำเร็จ','พี่ต้นกล้า<em>เลิกไลฟ์</em>แล้ว!',`เหลือเวลา ${Math.ceil(S.left)} วินาที ได้โบนัส ${fmt(bonus)} คะแนน`],
+    ban:['ภารกิจล้มเหลว','คุณ<em>โดนแบน</em>ถาวร','ม็อดปลาทูจำชื่อคุณได้แล้ว ลองป่วนแบบเนียนกว่านี้'],
+    time:['หมดเวลา','พี่ต้นกล้า<em>ยังไหว</em>',`หัวร้อนไป ${Math.round(S.rage)}% พี่เขาจบไลฟ์ตามปกติ… แต่จำแชทวันนี้ไปอีกนาน`]
+  }[why];
+  $('endTag').textContent=T[0];$('endTitle').innerHTML=T[1];$('endSub').textContent=T[2];
+  $('rScore').textContent=fmt(S.score);$('rRage').textContent=fmt(S.totalRage);$('rCombo').textContent='x'+S.maxCombo.toFixed(2);
+  $('rRank').textContent=rank;
+  $('endOv').hidden=false;$('againBtn').focus();
+}
+
+function start(){
+  me=($('nick').value.trim()||'ผู้ป่วนนิรนาม').slice(0,16);
+  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();actx.resume();}catch(e){actx=null;}
+  S=fresh();S.running=true;
+  log.innerHTML='';
+  chat(null,'ยินดีต้อนรับสู่แชท อย่าลืมเคารพสตรีมเมอร์นะครับ','sys');
+  chat('ปลาทู','ห้ามสปอยล์ ห้ามสแปม ฝ่าฝืนทามเอาท์ครับ','mod');
+  $('startOv').hidden=true;$('endOv').hidden=true;$('alert').hidden=true;
+  say('สวัสดีครับทุกคน วันนี้ผ่านบอสแน่นอน!');
+}
+$('startBtn').onclick=start;$('againBtn').onclick=start;
+$('nick').addEventListener('keydown',e=>{if(e.key==='Enter')start();});
+
+/* ---------- update ---------- */
+function update(dt){
+  if(bubbleT>0&&(bubbleT-=dt)<=0)$('bubble').classList.add('hide');
+  if(alertT>0&&(alertT-=dt)<=0)$('alert').hidden=true;
+  S.shake=Math.max(0,S.shake-dt*1.5);S.shock=Math.max(0,S.shock-dt);S.jumpscare=Math.max(0,S.jumpscare-dt);S.heroDie=Math.max(0,S.heroDie-dt);
+  if(S.ending&&S.quitT<9)S.quitT+=dt;
+  if(!S.running||S.ending){S.t+=dt;return;}
+  S.t+=dt;S.left-=dt;
+  S.money+=dt*4;
+  S.rage=Math.max(0,S.rage-dt*1.5);
+  S.sus=Math.max(0,S.sus-dt*1.6);
+  S.viewers+=(Math.random()-.45)*dt*8;
+  if(S.phase==='boss'&&S.heroDie<=0)S.bossHp=Math.max(.05,S.bossHp-dt*.04);
+
+  if(S.t>S.phaseUntil){
+    const opts=['walk','boss','chat'].filter(p=>p!==S.phase);
+    S.phase=pick(opts);S.phaseUntil=S.t+rand(9,13);
+    if(S.phase==='boss'){S.bossHp=1;say('บอสมาแล้ว! เงียบๆ นะแชท ขอสมาธิ');}
+    if(S.phase==='chat')say('มาอ่านแชทกันหน่อย มีใครถามอะไรบ้าง');
+    if(S.phase==='walk')say(pick(SAY.calm));
+  }
+  if(S.t>S.modUntil){
+    const nx=S.mod==='normal'?(Math.random()<.5?'watch':'afk'):'normal';
+    S.mod=nx;S.modUntil=S.t+(nx==='normal'?rand(6,9):rand(4,6));
+    if(nx==='afk')chat('ปลาทู','ขอไปกินข้าวแป๊บนะครับ','mod');
+    if(nx==='watch')chat('ปลาทู','ผมกลับมาแล้ว กำลังดูแชทอยู่นะครับ','mod');
+  }
+  if(S.t>S.nextChat){S.nextChat=S.t+rand(.6,1.5);chat(pick(NAMES),pick(IDLE));}
+  if((S.idleSay-=dt)<=0){S.idleSay=rand(7,11);if(bubbleT<=0)say(pick(S.rage<35?SAY.calm:S.rage<70?SAY.mid:SAY.hot),S.rage>=70);}
+
+  if(S.left<=0){S.left=0;end('time');}
+}
+
+function render(){
+  $('viewers').textContent=fmt(Math.max(0,S.viewers));
+  const l=Math.ceil(S.left);$('time').textContent=Math.floor(l/60)+':'+String(l%60).padStart(2,'0');
+  $('score').textContent=fmt(S.score);
+  $('rageBar').style.width=S.rage+'%';$('rageTxt').textContent=Math.round(S.rage)+'%';
+  $('susBar').style.width=S.sus+'%';$('susTxt').textContent=Math.round(S.sus)+'%';
+  $('money').textContent='฿'+Math.floor(S.money);
+  $('combo').textContent='x'+S.combo.toFixed(2);
+  $('strikes').textContent='●'.repeat(S.strikes)+'○'.repeat(3-S.strikes);
+  const chip=$('modChip');chip.textContent=MODS[S.mod].name;chip.className='chip '+(S.mod==='normal'?'':S.mod);
+  const P=PHASES[S.phase];$('phase').innerHTML=`ตอนนี้: <b>${P.name}</b>${P.tip?' · '+P.tip:''}${S.t<S.timeoutUntil?` · <b style="color:var(--rage)">คุณโดนทามเอาท์ ${Math.ceil(S.timeoutUntil-S.t)} วิ</b>`:''}`;
+  const timedOut=S.t<S.timeoutUntil;
+  ACTS.forEach(a=>{
+    const b=$('act-'+a.id),cd=(S.cds[a.id]||0)-S.t;
+    b.disabled=!S.running||S.ending||timedOut||S.money<a.cost;
+    b.querySelector('.cd').style.width=cd>0?(cd/a.cd*100)+'%':'0';
+  });
+}
+
+/* ---------- canvas ---------- */
+const cv=$('cv'),cx=cv.getContext('2d');
+const W=960,H=540;
+function fitCanvas(){const r=cv.getBoundingClientRect(),d=Math.min(2,devicePixelRatio||1);cv.width=Math.round(r.width*d)||W;cv.height=Math.round(r.height*d)||H;}
+new ResizeObserver(fitCanvas).observe(cv);fitCanvas();
+
+function rr(x,y,w,h,r){cx.beginPath();cx.roundRect?cx.roundRect(x,y,w,h,r):cx.rect(x,y,w,h);}
+function draw(){
+  const sx=cv.width/W,sy=cv.height/H;cx.setTransform(sx,0,0,sy,0,0);
+  const t=S.t,boss=S.phase==='boss';
+  // sky
+  const g=cx.createLinearGradient(0,0,0,H);
+  if(boss){g.addColorStop(0,'#2a0f2e');g.addColorStop(1,'#6b1f2c');}else{g.addColorStop(0,'#3d6fd1');g.addColorStop(1,'#9fd2ff');}
+  cx.fillStyle=g;cx.fillRect(0,0,W,H);
+  // hills
+  const scroll=boss?0:t*60;
+  cx.fillStyle=boss?'#3b1530':'#5fae6a';
+  cx.beginPath();cx.moveTo(0,H);
+  for(let x=0;x<=W;x+=20)cx.lineTo(x,330+Math.sin((x+scroll*.4)/90)*30);
+  cx.lineTo(W,H);cx.fill();
+  // ground
+  cx.fillStyle=boss?'#2b1020':'#7a4b2a';cx.fillRect(0,400,W,140);
+  cx.fillStyle=boss?'#4a1a35':'#4fa34a';cx.fillRect(0,392,W,14);
+  for(let x=-(scroll%60);x<W;x+=60){cx.fillStyle=boss?'#3a1429':'#6a3f22';cx.fillRect(x,430,30,10);}
+  // hero
+  let hx=200,hy=350;
+  if(S.heroDie>0){const k=1.4-S.heroDie;hy+=k*k*220;hx-=k*60;}
+  else hy+=Math.abs(Math.sin(t*8))*-6;
+  cx.save();cx.translate(hx,hy);if(S.heroDie>0)cx.rotate((1.4-S.heroDie)*4);
+  cx.fillStyle='#c9ced8';rr(-16,-10,32,40,6);cx.fill();
+  cx.fillStyle='#e9ecf2';rr(-14,-38,28,28,8);cx.fill();
+  cx.fillStyle='#222';cx.fillRect(-8,-28,16,4);
+  cx.fillStyle='#ff5a4e';cx.fillRect(-3,-48,6,12);
+  cx.strokeStyle='#ffe28a';cx.lineWidth=5;cx.beginPath();
+  const sw=boss?Math.sin(t*10)*0.8:0.3;cx.moveTo(14,0);cx.lineTo(14+Math.cos(sw-1)*40,Math.sin(sw-1)*40);cx.stroke();
+  cx.restore();
+  // pit when hero dies outside boss
+  if(S.heroDie>0&&!boss){cx.fillStyle='#120a08';cx.fillRect(120,392,120,148);}
+  // boss
+  if(boss){
+    const bx=640,by=300+Math.sin(t*2)*8;
+    cx.fillStyle='#ff9fb8';cx.beginPath();cx.ellipse(bx,by,120,95,0,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#ff7fa0';cx.beginPath();cx.ellipse(bx-70,by-80,28,34,-.5,0,Math.PI*2);cx.ellipse(bx+70,by-80,28,34,.5,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#ff7fa0';cx.beginPath();cx.ellipse(bx-20,by+10,42,30,0,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#8a2f4a';cx.beginPath();cx.ellipse(bx-34,by+10,7,11,0,0,Math.PI*2);cx.ellipse(bx-6,by+10,7,11,0,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#1a0a10';cx.beginPath();cx.arc(bx-50,by-30,9,0,7);cx.arc(bx+20,by-30,9,0,7);cx.fill();
+    cx.fillStyle='#ffd23f';cx.beginPath();cx.moveTo(bx-40,by-100);cx.lineTo(bx-30,by-140);cx.lineTo(bx-10,by-112);cx.lineTo(bx+5,by-145);cx.lineTo(bx+20,by-112);cx.lineTo(bx+38,by-140);cx.lineTo(bx+45,by-100);cx.fill();
+    // boss HP
+    cx.fillStyle='#000a';rr(300,40,360,26,6);cx.fill();
+    cx.fillStyle='#ff5a4e';rr(304,44,352*S.bossHp,18,4);cx.fill();
+    cx.fillStyle='#fff';cx.font='600 15px Mitr, sans-serif';cx.textAlign='center';cx.fillText('ราชาหมูกรอบ',480,34);
+  }
+  if(S.heroDie>0){cx.fillStyle='#000a';cx.fillRect(0,200,W,80);cx.fillStyle='#ff5a4e';cx.font='600 46px Mitr, sans-serif';cx.textAlign='center';cx.fillText('ตายแล้วจ้า',boss?380:480,258);}
+
+  drawCam();
+
+  // jumpscare overlay
+  if(S.jumpscare>0){
+    cx.fillStyle=`rgba(0,0,0,${.85})`;cx.fillRect(0,0,W,H);
+    const s=1+ (0.6-S.jumpscare)*1.5;
+    cx.save();cx.translate(480+Math.random()*20-10,270);cx.scale(s,s);
+    cx.fillStyle='#f4f4f4';cx.beginPath();cx.ellipse(0,0,150,180,0,0,7);cx.fill();
+    cx.fillStyle='#000';cx.beginPath();cx.ellipse(-55,-40,35,50,0,0,7);cx.ellipse(55,-40,35,50,0,0,7);cx.ellipse(0,80,45,70,0,0,7);cx.fill();
+    cx.restore();
+  }
+}
+
+function drawCam(){
+  const x=640,y=300,w=300,h=222;
+  cx.save();
+  cx.fillStyle='#000';rr(x-4,y-4,w+8,h+8,12);cx.fill();
+  rr(x,y,w,h,9);cx.clip();
+  // room
+  cx.fillStyle='#2b2440';cx.fillRect(x,y,w,h);
+  cx.fillStyle='#ff5ab4';cx.fillRect(x,y+h-14,w,3); // led strip
+  cx.fillStyle='#3c3357';rr(x+20,y+20,70,90,4);cx.fill();
+  cx.fillStyle='#ffcf3f';cx.font='600 13px Mitr, sans-serif';cx.textAlign='center';cx.fillText('GG',x+55,y+70);
+  // chair
+  cx.fillStyle='#d23a5a';rr(x+90,y+60,120,170,24);cx.fill();
+
+  const q=S.quitT;
+  if(!(S.ending&&q>1.2)){
+    const r=S.rage/100;
+    const sh=(S.shake*6+(r>.75?2:0))*(Math.random()-.5)*2;
+    let ox=x+150+sh,oy=y+130+(S.shock>1?-10:0);
+    if(S.ending)oy-=q*120,ox+=q*30;
+    // body
+    cx.fillStyle='#5b4bd6';rr(ox-70,oy+40,140,110,40);cx.fill();
+    cx.fillStyle='#4a3cb8';cx.fillRect(ox-12,oy+40,24,40);
+    // head
+    const skin=lerpColor([243,201,160],[255,110,90],Math.min(1,r*1.1));
+    cx.fillStyle=skin;cx.beginPath();cx.arc(ox,oy,52,0,7);cx.fill();
+    // hair
+    cx.fillStyle='#2a1d17';cx.beginPath();
+    if(S.shock>0){for(let i=-4;i<=4;i++){cx.moveTo(ox+i*11-6,oy-38);cx.lineTo(ox+i*12,oy-82);cx.lineTo(ox+i*11+6,oy-38);}cx.fill();}
+    cx.beginPath();cx.ellipse(ox,oy-36,54,26,0,Math.PI,0);cx.fill();
+    // headset
+    cx.strokeStyle='#111';cx.lineWidth=7;cx.beginPath();cx.arc(ox,oy-6,58,Math.PI*1.05,Math.PI*1.95);cx.stroke();
+    cx.fillStyle='#111';rr(ox-66,oy-14,16,34,6);cx.fill();rr(ox+50,oy-14,16,34,6);cx.fill();
+    cx.strokeStyle='#111';cx.lineWidth=4;cx.beginPath();cx.moveTo(ox-58,oy+16);cx.quadraticCurveTo(ox-50,oy+42,ox-20,oy+40);cx.stroke();
+    // eyes
+    const shock=S.shock>0||S.ending;
+    cx.fillStyle='#fff';cx.beginPath();cx.ellipse(ox-19,oy-4,shock?11:9,shock?13:8,0,0,7);cx.ellipse(ox+19,oy-4,shock?11:9,shock?13:8,0,0,7);cx.fill();
+    cx.fillStyle='#1a1410';const pr=shock?3:5;cx.beginPath();cx.arc(ox-19,oy-3,pr,0,7);cx.arc(ox+19,oy-3,pr,0,7);cx.fill();
+    // brows
+    const ang=shock?-.15:r*0.6;
+    cx.strokeStyle='#2a1d17';cx.lineWidth=5;cx.lineCap='round';
+    cx.beginPath();cx.moveTo(ox-30,oy-20-ang*6);cx.lineTo(ox-9,oy-20+ang*10);cx.moveTo(ox+30,oy-20-ang*6);cx.lineTo(ox+9,oy-20+ang*10);cx.stroke();
+    // mouth
+    cx.strokeStyle='#5a1f1f';cx.fillStyle='#5a1f1f';cx.lineWidth=4;cx.beginPath();
+    if(shock||r>.75){cx.ellipse(ox,oy+24,shock?10:16,shock?13:11+Math.sin(S.t*20)*3,0,0,7);cx.fill();}
+    else if(r<.25){cx.arc(ox,oy+14,14,.2,Math.PI-.2);cx.stroke();}
+    else if(r<.5){cx.moveTo(ox-12,oy+22);cx.lineTo(ox+12,oy+22);cx.stroke();}
+    else{cx.arc(ox,oy+32,13,Math.PI+.3,-.3);cx.stroke();}
+    // vein + steam
+    if(r>.6){cx.strokeStyle='#c0182a';cx.lineWidth=3;cx.beginPath();const vx=ox+30,vy=oy-32;cx.moveTo(vx-6,vy);cx.lineTo(vx+6,vy);cx.moveTo(vx,vy-6);cx.lineTo(vx,vy+6);cx.stroke();}
+    if(r>.7){cx.fillStyle='rgba(255,255,255,.55)';for(let i=0;i<4;i++){const k=(S.t*1.2+i/4)%1;cx.beginPath();cx.arc(ox+(i%2?40:-40)+Math.sin(k*9)*6,oy-50-k*60,8+k*10,0,7);cx.fill();}}
+  }else{
+    cx.fillStyle='#fff';cx.font='600 18px Mitr, sans-serif';cx.textAlign='center';cx.fillText('สตรีมเมอร์ไม่อยู่หน้าจอ',x+w/2,y+h/2);
+  }
+  cx.restore();
+  cx.fillStyle='#000a';rr(x+8,y+8,62,20,5);cx.fill();
+  cx.fillStyle='#ff5a4e';cx.beginPath();cx.arc(x+19,y+18,4,0,7);cx.fill();
+  cx.fillStyle='#fff';cx.font='500 11px JetBrains Mono, monospace';cx.textAlign='left';cx.fillText('CAM',x+28,y+22);
+}
+function lerpColor(a,b,k){return `rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*k)).join(',')})`;}
+
+/* ---------- loop ---------- */
+let last=performance.now();
+function frame(now){
+  const dt=Math.min(.05,(now-last)/1000);last=now;
+  update(dt);render();draw();
+  requestAnimationFrame(frame);
+}
+// a few lines so the chat isn't empty before start
+['มาแล้วครับ','วันนี้ผ่านบอสมั้ยพี่',':หมูยิ้ม:','สู้ๆครับ'].forEach(m=>chat(pick(NAMES),m));
+requestAnimationFrame(frame);
+})();
+</script>
