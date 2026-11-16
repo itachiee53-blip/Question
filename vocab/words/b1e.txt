@@ -1,0 +1,21 @@
+# การสมัครงานและการทำงาน B1
+job advert|ประกาศรับสมัครงาน;cover letter|จดหมายสมัครงาน;CV|ประวัติย่อ;work experience|ประสบการณ์การทำงาน;part-time|งานพาร์ตไทม์;full-time|งานเต็มเวลา;permanent job|งานประจำ;temporary job|งานชั่วคราว;pay rise|การขึ้นเงินเดือน;bonus|โบนัส
+day off|วันหยุดงาน;sick leave|ลาป่วย;annual leave|ลาพักร้อน;working hours|ชั่วโมงทำงาน;office hours|เวลาทำการ;dress code|ระเบียบการแต่งกาย;uniform policy|นโยบายเครื่องแบบ;team leader|หัวหน้าทีม;assistant|ผู้ช่วย;supervisor|ผู้ควบคุมงาน
+# สิ่งแวดล้อมในชีวิตประจำวัน
+plastic bag|ถุงพลาสติก;cloth bag|ถุงผ้า;reusable cup|แก้วใช้ซ้ำ;litter bin|ถังขยะสาธารณะ;sort rubbish|คัดแยกขยะ;glass waste|ขยะแก้ว;food waste|ขยะอาหาร;save water|ประหยัดน้ำ;turn off taps|ปิดก๊อกน้ำ;air quality|คุณภาพอากาศ
+dust mask|หน้ากากกันฝุ่น;haze|หมอกควัน;polluted|เป็นมลพิษ;clean energy|พลังงานสะอาด;plant a tree|ปลูกต้นไม้;nature trail|เส้นทางเดินศึกษาธรรมชาติ;national park|อุทยานแห่งชาติ;protected area|พื้นที่คุ้มครอง;endangered animal|สัตว์ใกล้สูญพันธุ์;zoo keeper|ผู้ดูแลสวนสัตว์
+# การสื่อสารทางโทรศัพท์และข้อความ
+phone call|การโทรศัพท์;missed call|สายที่ไม่ได้รับ;voice message|ข้อความเสียง;hang up|วางสาย;call back|โทรกลับ;speak up|พูดดังขึ้น;bad signal|สัญญาณไม่ดี;text message|ข้อความ SMS;group chat|แชตกลุ่ม;emoji|อีโมจิ
+reply soon|ตอบกลับเร็ว ๆ;attach a file|แนบไฟล์;forward|ส่งต่อ;inbox|กล่องข้อความเข้า;subject line|หัวเรื่องอีเมล;signature|ลายเซ็น;video call|วิดีโอคอล;mute|ปิดเสียง;unmute|เปิดเสียง;screen share|แชร์หน้าจอ
+# สุขภาพจิตและการดูแลตัวเอง
+self-care|การดูแลตัวเอง;take a break|พักสักครู่;deep breath|หายใจลึก ๆ;feel stressed|รู้สึกเครียด;feel better|รู้สึกดีขึ้น;get enough sleep|นอนให้พอ;drink water|ดื่มน้ำ;healthy habit|นิสัยที่ดีต่อสุขภาพ;bad habit|นิสัยไม่ดี;balance|สมดุล
+positive thinking|การคิดบวก;negative thought|ความคิดลบ;talk to someone|คุยกับใครสักคน;ask for help|ขอความช่วยเหลือ;support group|กลุ่มช่วยเหลือ;comfort zone|พื้นที่ปลอดภัยในใจ;give it a try|ลองดู;step by step|ทีละขั้น;keep going|ทำต่อไป;never give up|ไม่ยอมแพ้
+# การซื้อขายออนไลน์
+online shop|ร้านค้าออนไลน์;shopping cart|ตะกร้าสินค้า;checkout|ชำระเงิน;delivery fee|ค่าส่ง;tracking number|เลขพัสดุ;out of stock|สินค้าหมด;in stock|มีสินค้า;customer review|รีวิวจากลูกค้า;star rating|คะแนนดาว;flash sale|ลดราคาช่วงสั้น
+promo code|โค้ดส่วนลด;free shipping|ส่งฟรี;cash on delivery|เก็บเงินปลายทาง;return policy|นโยบายคืนสินค้า;size guide|คู่มือขนาด;wish list|รายการสิ่งที่อยากได้;order history|ประวัติคำสั่งซื้อ;seller|ผู้ขาย;buyer|ผู้ซื้อ;genuine product|สินค้าแท้
+# งานอดิเรกสร้างสรรค์
+knitting|การถักไหมพรม;sewing|การเย็บผ้า;pottery|การปั้นดินเผา;woodwork|งานไม้;origami|การพับกระดาษ;calligraphy|การเขียนอักษรศิลป์;photography|การถ่ายภาพ;baking|การอบขนม;gardening tools|เครื่องมือทำสวน;bird watching|การดูนก
+collecting coins|การสะสมเหรียญ;model kit|ชุดประกอบโมเดล;jigsaw puzzle|จิ๊กซอว์;crossword|ปริศนาอักษรไขว้;chess club|ชมรมหมากรุก;drama club|ชมรมการละคร;choir|คณะนักร้องประสานเสียง;orchestra|วงออร์เคสตรา;dance studio|สตูดิโอเต้น;art class|คลาสศิลปะ
+# การเดินทางในประเทศไทย
+night market|ตลาดนัดกลางคืน;floating market|ตลาดน้ำ;tuk-tuk|รถตุ๊กตุ๊ก;songthaew|รถสองแถว;motorbike taxi|วินมอเตอร์ไซค์;skytrain|รถไฟฟ้า;long-tail boat|เรือหางยาว;hill tribe|ชาวเขา;rice terrace|นาขั้นบันได;elephant camp|ปางช้าง
+temple fair|งานวัด;street vendor|พ่อค้าแม่ค้าริมทาง;local market|ตลาดท้องถิ่น;tourist spot|จุดท่องเที่ยว;beach resort|รีสอร์ตริมทะเล;island hopping|การเที่ยวเกาะ;snorkeling|การดำน้ำตื้น;scuba diving|การดำน้ำลึก;boat trip|ทริปทางเรือ;sea view|วิวทะเล

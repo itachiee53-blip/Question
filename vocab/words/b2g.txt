@@ -1,0 +1,20 @@
+# ข่าวและเหตุการณ์ปัจจุบัน
+breaking news|ข่าวด่วน;current affairs|เหตุการณ์ปัจจุบัน;press release|ข่าวประชาสัมพันธ์;eyewitness|ผู้เห็นเหตุการณ์;casualty|ผู้บาดเจ็บหรือเสียชีวิต;death toll|ยอดผู้เสียชีวิต;crisis|วิกฤต;emergency services|หน่วยบริการฉุกเฉิน;investigation|การสืบสวน;statement|แถลงการณ์
+allegedly|ตามที่กล่าวหา;reportedly|ตามรายงาน;confirmed|ได้รับการยืนยัน;unconfirmed|ยังไม่ยืนยัน;ongoing|กำลังดำเนินอยู่;escalate|บานปลาย;de-escalate|ลดความรุนแรง;spokesman|โฆษกชาย;headline news|ข่าวพาดหัว;update news|อัปเดตข่าว
+# วิทยาศาสตร์อวกาศ
+astronomy|ดาราศาสตร์;galaxy|กาแล็กซี;solar system|ระบบสุริยะ;orbit|วงโคจร โคจร;satellite|ดาวเทียม;comet|ดาวหาง;asteroid|ดาวเคราะห์น้อย;black hole|หลุมดำ;light year|ปีแสง;space station|สถานีอวกาศ
+launch pad|ฐานปล่อยจรวด;spacecraft|ยานอวกาศ;rover|ยานสำรวจ;crater|หลุมอุกกาบาต;eclipse|อุปราคา;constellation|กลุ่มดาว;telescope lens|เลนส์กล้องโทรทรรศน์;zero gravity|สภาวะไร้น้ำหนัก;alien|มนุษย์ต่างดาว ชาวต่างชาติ;exploration|การสำรวจ
+# จริยธรรมและการตัดสินใจ
+dilemma choice|ทางเลือกที่ยาก;moral|ทางศีลธรรม ข้อคิด;principle of fairness|หลักความยุติธรรม;honesty matters|ความซื่อสัตย์สำคัญ;temptation|สิ่งยั่วยุ;conscience|มโนธรรม;responsibility for|ความรับผิดชอบต่อ;consequence of|ผลของ;accountable|ต้องรับผิดชอบ;ethical|มีจริยธรรม
+unethical|ผิดจริยธรรม;integrity test|การทดสอบความซื่อตรง;whistleblower|ผู้เปิดโปงความผิด;loyalty to|ความภักดีต่อ;betray|ทรยศ;betrayal|การทรยศ;forgiveness|การให้อภัย;revenge|การแก้แค้น;sacrifice|การเสียสละ;dignity|ศักดิ์ศรี
+# การท่องเที่ยวเชิงลึกและวัฒนธรรม
+customs and traditions|ขนบธรรมเนียมประเพณี;etiquette|มารยาท;taboo|ข้อห้าม;ritual|พิธีกรรม;pilgrimage|การจาริกแสวงบุญ;folklore|คติชาวบ้าน;cuisine tour|ทัวร์อาหาร;craft market|ตลาดหัตถกรรม;handicraft|งานหัตถกรรม;indigenous people|ชนพื้นเมือง
+cultural shock|ภาวะช็อกทางวัฒนธรรม;homesick|คิดถึงบ้าน;adapt to|ปรับตัวเข้ากับ;integrate into|กลมกลืนเข้ากับ;local custom|ธรรมเนียมท้องถิ่น;language barrier|อุปสรรคทางภาษา;interpreter|ล่าม;sign language|ภาษามือ;bilingual|สองภาษา;multilingual|หลายภาษา
+# ความยั่งยืนในธุรกิจ
+corporate|ของบริษัท องค์กร;stakeholder value|คุณค่าต่อผู้มีส่วนได้เสีย;fair trade|การค้าที่เป็นธรรม;ethical sourcing|การจัดหาอย่างมีจริยธรรม;supply chain|ห่วงโซ่อุปทาน;circular economy|เศรษฐกิจหมุนเวียน;green technology|เทคโนโลยีสีเขียว;eco-label|ฉลากสิ่งแวดล้อม;greenwashing|การฟอกเขียว;social responsibility|ความรับผิดชอบต่อสังคม
+# การโต้แย้งและการเขียนเรียงความ
+counterargument|ข้อโต้แย้งฝ่ายตรงข้าม;thesis statement|ประโยคใจความหลัก;topic sentence|ประโยคหัวเรื่อง;supporting detail|รายละเอียดสนับสนุน;in conclusion|โดยสรุป;to sum up|กล่าวโดยสรุป;for instance|ยกตัวอย่างเช่น;in other words|กล่าวอีกนัยหนึ่ง;on balance|โดยรวมแล้ว;it is argued that|มีการโต้แย้งว่า
+point of view|มุมมอง;viewpoint|ทัศนะ;stance on|จุดยืนต่อ;persuasive essay|เรียงความโน้มน้าว;descriptive|เชิงพรรณนา;narrative essay|เรียงความเล่าเรื่อง;cohesion|ความเชื่อมโยง;proofread|พิสูจน์อักษร;draft|ฉบับร่าง;revise a draft|แก้ไขฉบับร่าง
+# คำคุณศัพท์ B2 ชุดปิดท้าย
+straightforward|ตรงไปตรงมา ง่าย;sustainable growth|การเติบโตอย่างยั่งยืน;systematic|เป็นระบบ;tedious task|งานน่าเบื่อ;thorough|ละเอียดถี่ถ้วน;tremendous|มหาศาล;unanimous|เป็นเอกฉันท์;unbiased|ไม่ลำเอียง;underlying|ที่แฝงอยู่;unforeseen|ไม่คาดคิด
+unprecedented event|เหตุการณ์ที่ไม่เคยมี;unreliable|ไม่น่าเชื่อถือ;upcoming|ที่กำลังจะมา;urban area|เขตเมือง;versatile|อเนกประสงค์;vibrant|มีชีวิตชีวา;vigorous|แข็งขัน;vivid memory|ความทรงจำที่ชัดเจน;well-known|เป็นที่รู้จัก;worthwhile|คุ้มค่า
