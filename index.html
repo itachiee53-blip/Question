@@ -132,8 +132,8 @@ button:focus-visible{outline:3px dashed var(--red);outline-offset:3px}
       <span class="tape score" id="score">0</span>
       <button class="pause" type="button" id="pauseBtn" aria-label="หยุดเกม">II</button>
     </div>
-    <div class="shav" title="ตอบถูก 10 ครั้งได้ยางลบเพิ่ม"><i id="shav"></i></div>
-    <button class="eraser" type="button" id="eraser" aria-label="ยางลบยักษ์ ลบศัตรูทั้งหน้า"><b id="eraserN">1</b>ลบหมด</button>
+    <div class="shav" ><i id="shav"></i></div>
+    <button class="eraser" type="button" id="eraser" aria-label="ยางลบยักษ์ ลบศัตรูทั้งหน้า"><b id="eraserN">1</b></button>
     <div class="typed" id="typed"></div>
   </div>
   <div class="bar" id="bar">
@@ -156,7 +156,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 
 const parse=s=>s.trim().split(';').filter(Boolean).map(x=>{const [en,th,em]=x.split('|');return{en:en.trim(),th:th.trim(),em:(em||'').trim()};});
 const TIERS={
- easy:{name:'เล่ม 1',lvl:'ง่าย · ประถม',ex:'cat · apple · bus',words:parse(`
+ easy:{name:'เล่ม 1',lvl:'ง่าย',ex:'cat · apple · bus',words:parse(`
 cat|แมว|🐱;dog|สุนัข|🐶;elephant|ช้าง|🐘;tiger|เสือ|🐯;rabbit|กระต่าย|🐰;monkey|ลิง|🐒;bird|นก|🐦;fish|ปลา|🐟;horse|ม้า|🐴;cow|วัว|🐮;pig|หมู|🐷;snake|งู|🐍;
 apple|แอปเปิล|🍎;banana|กล้วย|🍌;grape|องุ่น|🍇;orange|ส้ม|🍊;mango|มะม่วง|🥭;watermelon|แตงโม|🍉;pineapple|สับปะรด|🍍;coconut|มะพร้าว|🥥;lemon|มะนาว|🍋;
 rice|ข้าว|🍚;bread|ขนมปัง|🍞;egg|ไข่|🥚;noodles|ก๋วยเตี๋ยว|🍜;chicken|ไก่|🍗;cake|เค้ก|🍰;soup|ซุป|🍲;milk|นม|🥛;water|น้ำ|💧;
@@ -166,7 +166,7 @@ sun|ดวงอาทิตย์|☀️;moon|ดวงจันทร์|🌙;
 car|รถยนต์|🚗;bus|รถบัส|🚌;train|รถไฟ|🚆;plane|เครื่องบิน|✈️;boat|เรือ|⛵;bicycle|จักรยาน|🚲;rocket|จรวด|🚀;
 bed|เตียง|🛏️;chair|เก้าอี้|🪑;door|ประตู|🚪;window|หน้าต่าง|🪟;key|กุญแจ|🔑;spoon|ช้อน|🥄;phone|โทรศัพท์|📱;house|บ้าน|🏠;
 run|วิ่ง|🏃;swim|ว่ายน้ำ|🏊;sleep|นอนหลับ|😴;sing|ร้องเพลง|🎤;dance|เต้นรำ|💃;cry|ร้องไห้|😢;happy|มีความสุข|😊;angry|โกรธ|😠;hungry|หิว|🤤`)},
- mid:{name:'เล่ม 2',lvl:'กลาง · ม.ต้น–ม.ปลาย',ex:'borrow · honest · journey',words:parse(`
+ mid:{name:'เล่ม 2',lvl:'กลาง',ex:'borrow · honest · journey',words:parse(`
 borrow|ยืม;build|สร้าง;buy|ซื้อ;sell|ขาย;carry|แบก;catch|จับ;choose|เลือก;collect|สะสม;decide|ตัดสินใจ;deliver|ส่งของ;
 enjoy|สนุกกับ;explain|อธิบาย;forget|ลืม;remember|จำได้;grow|เติบโต;hurry|รีบ;invite|เชิญ;promise|สัญญา;repair|ซ่อม;share|แบ่งปัน;
 travel|เดินทาง;wait|รอ;worry|กังวล;believe|เชื่อ;answer|คำตอบ;journey|การเดินทาง;kitchen|ห้องครัว;library|ห้องสมุด;market|ตลาด;medicine|ยา;
@@ -174,7 +174,7 @@ neighbor|เพื่อนบ้าน;ocean|มหาสมุทร;river|แ
 holiday|วันหยุด;breakfast|อาหารเช้า;gift|ของขวัญ;money|เงิน;letter|จดหมาย;dream|ความฝัน;job|งาน;quiet|เงียบ;safe|ปลอดภัย;strong|แข็งแรง;
 weak|อ่อนแอ;dangerous|อันตราย;difficult|ยาก;easy|ง่าย;empty|ว่างเปล่า;famous|มีชื่อเสียง;heavy|หนัก;honest|ซื่อสัตย์;lazy|ขี้เกียจ;polite|สุภาพ;
 brave|กล้าหาญ;clever|ฉลาด;kind|ใจดี;late|สาย;expensive|แพง;cheap|ราคาถูก;healthy|สุขภาพดี;noisy|เสียงดัง;beautiful|สวยงาม;wrong|ผิด`)},
- hard:{name:'เล่ม 3',lvl:'ยาก · คำออกสอบ',ex:'abandon · crucial · hesitate',words:parse(`
+ hard:{name:'เล่ม 3',lvl:'ยาก',ex:'abandon · crucial · hesitate',words:parse(`
 abandon|ละทิ้ง;achieve|ทำสำเร็จ;adapt|ปรับตัว;admire|ชื่นชม;affect|ส่งผลกระทบ;analyze|วิเคราะห์;anxious|วิตกกังวล;approve|อนุมัติ;avoid|หลีกเลี่ยง;benefit|ประโยชน์;
 candidate|ผู้สมัคร;challenge|ความท้าทาย;compare|เปรียบเทียบ;complain|ร้องเรียน;confident|มั่นใจ;consider|พิจารณา;contribute|มีส่วนร่วม;convince|ทำให้เชื่อ;crucial|สำคัญมาก;deny|ปฏิเสธ;
 efficient|มีประสิทธิภาพ;emphasize|เน้นย้ำ;encourage|ให้กำลังใจ;environment|สิ่งแวดล้อม;essential|จำเป็น;evidence|หลักฐาน;exaggerate|พูดเกินจริง;expand|ขยาย;failure|ความล้มเหลว;generous|ใจกว้าง;
@@ -260,12 +260,12 @@ const ICON={
   mult:'<svg viewBox="0 0 60 60"><path d="M30 6 L36 22 L53 22 L39 32 L45 49 L30 39 L15 49 L21 32 L7 22 L24 22 Z" fill="#ffd23f" stroke="#22305c" stroke-width="3" stroke-linejoin="round"/></svg>'
 };
 const UPG=[
-  {id:'repair',c:'#ffe3c4',n:'พลาสเตอร์',d:'ซ่อมป้อม หัวใจ +2'},
-  {id:'shield',c:'#d6efff',n:'ปกพลาสติก',d:'กันโดนได้ 2 ครั้ง'},
-  {id:'eraser',c:'#ffd6df',n:'ยางลบสำรอง',d:'ยางลบยักษ์ +1 ก้อน'},
-  {id:'slow',c:'#fff1cf',n:'นาฬิกาทราย',d:'ปีศาจเดินช้าลง 12%'},
-  {id:'chain',c:'#fff7b0',n:'ดินสอสองหัว',d:'30% ขีดฆ่าทะลุอีกตัว'},
-  {id:'mult',c:'#fff3a0',n:'ดาวเด็กดี',d:'คะแนน x1.25'}
+  {id:'repair',c:'#ffe3c4',n:'พลาสเตอร์',d:'+2 ♥'},
+  {id:'shield',c:'#d6efff',n:'ปกพลาสติก',d:'กัน 2 ครั้ง'},
+  {id:'eraser',c:'#ffd6df',n:'ยางลบ',d:'+1 ก้อน'},
+  {id:'slow',c:'#fff1cf',n:'นาฬิกาทราย',d:'ปีศาจช้าลง'},
+  {id:'chain',c:'#fff7b0',n:'ดินสอสองหัว',d:'ยิงทะลุ'},
+  {id:'mult',c:'#fff3a0',n:'ดาวเด็กดี',d:'แต้ม x1.25'}
 ];
 function newGame(tier){
   G={tier,words:TIERS[tier].words,wave:0,hp:5,maxHp:7,shield:0,erasers:1,score:0,combo:0,best:0,charge:0,slow:1,chain:0,mult:1,
@@ -276,7 +276,7 @@ function newGame(tier){
 function nextWave(){
   G.wave++;const boss=G.wave%4===0;
   G.spawnLeft=boss?3:Math.min(5+G.wave*2,22);G.bossPending=boss;G.spawnT=1.4;
-  G.banner={text:boss?'ปีศาจข้อสอบ!':'หน้า '+G.wave,sub:boss?'ต้องตอบถูกหลายคำติดกัน':'',t:2.2,boss};
+  G.banner={text:boss?'บอส!':'หน้า '+G.wave,sub:'',t:2.2,boss};
   boss?SFX.boss():SFX.page();state='play';
 }
 function takeWord(){
@@ -325,7 +325,7 @@ function fire(slot){
   if(!tg.length){
     G.combo=0;G.lockUntil=G.t+.7;SFX.bad();
     if(typeof slot==='number'){const b=notes[slot];b.classList.remove('bad');void b.offsetWidth;b.classList.add('bad');}
-    G.floats.push({x:W/2,y:groundY()-130*SC,text:`ไม่มีปีศาจคำว่า "${w.en}"`,c:RED,life:1.3,size:22,font:FONT_TH});
+    G.floats.push({x:W/2,y:groundY()-130*SC,text:'ผิด!',c:RED,life:1.3,size:22,font:FONT_TH});
     return;
   }
   strike(tg[0],true);
@@ -339,7 +339,7 @@ function strike(e,learn){
   G.strokes.push({x1:tx+Math.cos(G.aim)*64*SC,y1:ty+Math.sin(G.aim)*64*SC,x2:e.x,y2:e.y,life:.22,id:Math.random()*99});
   SFX.scribble();hitstop=.05;
   if(learn){G.combo++;G.best=Math.max(G.best,G.combo);G.learned.add(w.en);speak(w.en);
-    G.charge++;if(G.charge>=10){G.charge=0;G.erasers++;G.floats.push({x:W-70,y:H-120,text:'+ยางลบ!',c:INK,life:1.3,size:24,font:FONT_TH});SFX.sticker();}
+    G.charge++;if(G.charge>=10){G.charge=0;G.erasers++;G.floats.push({x:W-70,y:H-120,text:'+1 ยางลบ',c:INK,life:1.3,size:24,font:FONT_TH});SFX.sticker();}
     if(TUT<3){TUT++;store.set('nm-tut',TUT);}}
   const height=1-clamp(e.y/hitY(),0,1);
   const pts=Math.round((100+height*80+Math.min(G.combo,30)*10)*G.mult*(e.boss?1.5:1));
@@ -348,15 +348,15 @@ function strike(e,learn){
   G.floats.push({x:e.x+e.r+18*SC,y:e.y,text:'+'+pts,c:RED,life:1,size:24,font:FONT_EN,circle:true});
   if(e.boss&&e.idx<e.words.length-1){e.idx++;e.flash=.3;shake=Math.max(shake,6);crumbs(e.x,e.y,12);SFX.shield();refreshBar();return;}
   e.dying=.32;G.kills++;
-  if(G.combo>0&&G.combo%10===0)G.floats.push({x:W/2,y:H*.4,text:`คอมโบ ${G.combo}!`,c:RED,life:1.5,size:52,font:FONT_TH,hl:true});
+  if(G.combo>0&&G.combo%10===0)G.floats.push({x:W/2,y:H*.4,text:`x${G.combo}!`,c:RED,life:1.5,size:52,font:FONT_TH,hl:true});
 }
 function crumbs(x,y,n,s=1){for(let i=0;i<n;i++){const a=rnd(-Math.PI,0)+rnd(-.5,.5),v=rnd(80,320)*SC*s;G.parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:rnd(.5,1),max:1,w:rnd(3,8)*SC,h:rnd(2,4)*SC,rot:rnd(0,6),vr:rnd(-8,8),c:pick(['#ff8fa7','#f3a8b7','#9a9a9a','#c4b49a','#e8b26a'])});}}
 function baseHit(e){
   e.dying=-1;const w=cur(e);
-  if(G.shield>0){G.shield--;SFX.shield();G.floats.push({x:W/2,y:groundY()-130*SC,text:'ปกพลาสติกกันไว้!',c:'#2b6cb0',life:1.2,size:24,font:FONT_TH});}
+  if(G.shield>0){G.shield--;SFX.shield();G.floats.push({x:W/2,y:groundY()-130*SC,text:'กันได้!',c:'#2b6cb0',life:1.2,size:24,font:FONT_TH});}
   else{G.hp-=e.boss?3:1;SFX.thud();shake=18;G.combo=0;G.redX=.8;}
   if(!G.missed.some(m=>m.en===w.en))G.missed.push(w);
-  G.floats.push({x:W/2,y:groundY()-170*SC,text:`${w.em?w.em+' ':''}${w.en} = ${w.th}`,c:RED,life:2.4,size:30,font:FONT_TH,boxed:true});
+  G.floats.push({x:W/2,y:groundY()-170*SC,text:`${w.en} = ${w.th}`,c:RED,life:2.4,size:30,font:FONT_TH,boxed:true});
   crumbs(e.x,hitY(),30,1.2);
   G.enemies=G.enemies.filter(x=>x!==e);
   const si=G.slots.findIndex(s=>s&&s.en===w.en);if(si>=0)replaceSlot(si);
@@ -413,8 +413,7 @@ function draw(){
   cx.save();cx.translate(sx,sy);
   const hy=hitY();
   cx.setLineDash([10,8]);line(marginX()+4,hy,W-8,hy,5,2,RED);cx.setLineDash([]);
-  cx.font=`18px ${FONT_TH}`;cx.fillStyle=RED;cx.textAlign='left';cx.textBaseline='alphabetic';cx.fillText('ห้ามข้ามเส้นนี้!',marginX()+10,hy-8);
-  if(G){
+    if(G){
     const near=live().sort((a,b)=>b.y-a.y)[0];
     for(const e of G.enemies)drawMonster(e,e===near);
     drawFort();
@@ -457,9 +456,9 @@ function drawMonster(e,isNear){
   if(e.boss){for(let i=0;i<e.words.length;i++){cx.beginPath();cx.arc(x-(e.words.length-1)*10*SC+i*20*SC,y+r*1.5,6*SC,0,7);if(i>=e.idx){cx.fillStyle=RED;cx.fill();}cx.strokeStyle=RED;cx.lineWidth=2;cx.stroke();}}
   const w=cur(e),fs=(e.boss?26:22)*SC;
   cx.font=`${fs}px ${FONT_TH}`;
-  const emo=G.tier==='easy'&&w.em?w.em:'';
+  const emo='';
   const tw=cx.measureText(w.th).width+(emo?fs*1.25:0)+24*SC,th=fs*1.65;
-  const lx=clamp(x-tw/2,marginX()+6,W-tw-6),ly=y-r-th-16*SC-(e.boss?14*SC:0);
+  const lx=clamp(x-tw/2,marginX()+6,W-tw-6),ly=Math.max(50,y-r-th-16*SC-(e.boss?14*SC:0));
   cx.save();cx.translate(lx+tw/2,ly+th/2);cx.rotate(e.rot*-1.5);
   cx.fillStyle='#0000001a';cx.fillRect(-tw/2+3,-th/2+4,tw,th);
   cx.fillStyle='#fffbe0';cx.fillRect(-tw/2,-th/2,tw,th);
@@ -473,7 +472,7 @@ function drawMonster(e,isNear){
 function drawFort(){
   const x=W/2,y=groundY(),w=150*SC,h=60*SC,id=777;
   if(G.shield>0){cx.strokeStyle='#2b6cb0';cx.lineWidth=3;cx.setLineDash([6,6]);cx.beginPath();cx.ellipse(x,y-30*SC,w*.75,h*1.25,0,Math.PI,0);cx.stroke();cx.setLineDash([]);
-    cx.font=`16px ${FONT_TH}`;cx.fillStyle='#2b6cb0';cx.textAlign='center';cx.textBaseline='alphabetic';cx.fillText('ปกพลาสติก x'+G.shield,x+w*.62,y-h*1.25);}
+    cx.font=`16px ${FONT_TH}`;cx.fillStyle='#2b6cb0';cx.textAlign='center';cx.textBaseline='alphabetic';cx.fillText('x'+G.shield,x+w*.62,y-h*1.25);}
   const pts=[[x-w/2,y],[x-w/2,y-h],[x-w/2+16*SC,y-h],[x-w/2+16*SC,y-h+12*SC],[x-w/2+34*SC,y-h+12*SC],[x-w/2+34*SC,y-h],[x+w/2-34*SC,y-h],[x+w/2-34*SC,y-h+12*SC],[x+w/2-16*SC,y-h+12*SC],[x+w/2-16*SC,y-h],[x+w/2,y-h],[x+w/2,y]];
   cx.beginPath();pts.forEach((p,i)=>{const jx=p[0]+(hh(id+i)-.5)*2,jy=p[1]+(hh(id+i*3)-.5)*2;i?cx.lineTo(jx,jy):cx.moveTo(jx,jy);});cx.closePath();
   cx.save();cx.translate(4,3);cx.fillStyle='#ffd8a8';cx.fill();cx.restore();cx.strokeStyle=INK;cx.lineWidth=2.8*SC;cx.stroke();
@@ -509,7 +508,7 @@ function drawHint(e){
   const fx=e.x+e.r*.9,fy=e.y+e.r;
   cx.strokeStyle=RED;cx.lineWidth=3;cx.setLineDash([2,7]);cx.lineCap='round';cx.beginPath();cx.moveTo(fx,fy);cx.quadraticCurveTo((fx+tx)/2+60*SC,(fy+ty)/2,tx,ty-8);cx.stroke();cx.setLineDash([]);
   line(tx,ty-8,tx-10,ty-24,91,3,RED);line(tx,ty-8,tx+12,ty-22,92,3,RED);
-  cx.font=`${22*SC}px ${FONT_TH}`;cx.fillStyle=RED;cx.textAlign='center';cx.textBaseline='alphabetic';cx.fillText('แตะคำนี้!',tx,ty-34*SC);
+  cx.font=`${22*SC}px ${FONT_TH}`;cx.fillStyle=RED;cx.textAlign='center';cx.textBaseline='alphabetic';cx.fillText('แตะ!',tx,ty-34*SC);
   notes.forEach((n,j)=>n.classList.toggle('hint',j===i));
 }
 function drawFloat(f){
@@ -538,7 +537,7 @@ function hud(){
   $('#hp').innerHTML='♥'.repeat(Math.max(0,G.hp))+`<span class="gone">${'♡'.repeat(Math.max(0,5-G.hp))}</span>`;
   $('#pageLbl').textContent='หน้า '+G.wave;
   $('#score').textContent=G.score.toLocaleString('en-US');
-  const c=$('#combo');c.hidden=G.combo<2;c.textContent='x'+G.combo+' คอมโบ';
+  const c=$('#combo');c.hidden=G.combo<2;c.textContent='x'+G.combo;
   $('#eraserN').textContent=G.erasers;$('#eraser').disabled=G.erasers<=0;
   $('#shav').style.width=G.charge*10+'%';
   $('#bar').classList.toggle('lock',G.t<G.lockUntil);
@@ -556,17 +555,15 @@ function frame(now){
 const ov=$('#ov'),panel=$('#panel');
 function show(html){panel.innerHTML=html;ov.hidden=false;const s=ov.querySelector('.sheet');s.style.animation='none';void s.offsetWidth;s.style.animation='';}
 const HOW=`<div class="how">
-  <span><svg viewBox="0 0 40 40"><circle cx="20" cy="22" r="13" fill="#9cf08f" stroke="#22305c" stroke-width="2.5"/><circle cx="15" cy="19" r="3" fill="#22305c"/><circle cx="25" cy="19" r="3" fill="#22305c"/></svg>ปีศาจถือคำแปลไทย</span>
-  <span><svg viewBox="0 0 40 40"><rect x="6" y="8" width="28" height="24" fill="#fff04d" stroke="#22305c" stroke-width="2.5" transform="rotate(-6 20 20)"/><path d="M12 20 h16" stroke="#22305c" stroke-width="2.5"/></svg>แตะโพสต์อิทคำอังกฤษที่ตรงกัน</span>
-  <span><svg viewBox="0 0 40 40"><path d="M6 30 L30 6 L36 12 L12 36 Z" fill="#ffd23f" stroke="#22305c" stroke-width="2.5"/></svg>ดินสอจะขีดฆ่าให้เอง</span>
-  <span><svg viewBox="0 0 40 40"><rect x="6" y="12" width="28" height="16" rx="3" fill="#ff8fa7" stroke="#22305c" stroke-width="2.5"/><rect x="22" y="12" width="12" height="16" fill="#3c6fd1" stroke="#22305c" stroke-width="2.5"/></svg>ยางลบยักษ์ลบทั้งหน้า</span></div>`;
+  <span><svg viewBox="0 0 40 40"><circle cx="20" cy="22" r="13" fill="#9cf08f" stroke="#22305c" stroke-width="2.5"/><circle cx="15" cy="19" r="3" fill="#22305c"/><circle cx="25" cy="19" r="3" fill="#22305c"/></svg>คำไทย</span>
+  <span><svg viewBox="0 0 40 40"><rect x="6" y="8" width="28" height="24" fill="#fff04d" stroke="#22305c" stroke-width="2.5" transform="rotate(-6 20 20)"/><path d="M12 20 h16" stroke="#22305c" stroke-width="2.5"/></svg>แตะคำอังกฤษ</span>
+</div>`;
 function title(){
   state='title';G=null;typed='';notes.forEach(n=>{n.classList.remove('hint','match');n.querySelector('.w').textContent='…';});
-  show(`<h1 class="title"><span>Notebook</span><br>Monsters<small>ปีศาจหน้าสมุด · เกมยิงคำศัพท์</small></h1>
-    <p class="lead">ปีศาจที่ใครแอบวาดไว้ในสมุดภาษาอังกฤษกำลังคลานลงมาหาป้อม ขีดฆ่ามันด้วยคำศัพท์ที่ถูกต้องก่อนมันข้ามเส้นแดง</p>
+  show(`<h1 class="title"><span>Notebook</span><br>Monsters<small>ปีศาจหน้าสมุด</small></h1>
     ${HOW}
-    <div class="books">${Object.entries(TIERS).map(([k,t])=>`<button class="book" type="button" data-tier="${k}"><div class="lbl"><span class="r"><em>สมุด</em>${t.name}</span><span class="r"><em>ระดับ</em>${t.lvl}</span><span class="r"><em>สถิติ</em><b>${BEST[k]?BEST[k].toLocaleString('en-US'):'-'}</b></span></div><span class="ex">${t.ex}</span></button>`).join('')}</div>
-    <div class="toggles"><button class="chk" type="button" id="tSfx"><i>${OPT.sfx?'✓':''}</i>เสียงเอฟเฟกต์</button><button class="chk" type="button" id="tVoice"><i>${OPT.voice?'✓':''}</i>อ่านออกเสียงคำศัพท์</button></div>`);
+    <div class="books">${Object.entries(TIERS).map(([k,t])=>`<button class="book" type="button" data-tier="${k}"><div class="lbl"><span class="r"><em>ระดับ</em>${t.lvl}</span><span class="r"><em>สถิติ</em><b>${BEST[k]?BEST[k].toLocaleString('en-US'):'-'}</b></span></div></button>`).join('')}</div>
+    <div class="toggles"><button class="chk" type="button" id="tSfx"><i>${OPT.sfx?'✓':''}</i>เสียง</button><button class="chk" type="button" id="tVoice"><i>${OPT.voice?'✓':''}</i>อ่านคำ</button></div>`);
   panel.querySelectorAll('[data-tier]').forEach(b=>b.onclick=()=>start(b.dataset.tier));
   $('#tSfx').onclick=e=>{OPT.sfx=!OPT.sfx;e.currentTarget.querySelector('i').textContent=OPT.sfx?'✓':'';store.set('nm-opt',OPT);};
   $('#tVoice').onclick=e=>{OPT.voice=!OPT.voice;e.currentTarget.querySelector('i').textContent=OPT.voice?'✓':'';store.set('nm-opt',OPT);};
@@ -579,10 +576,9 @@ function start(tier){
 function showShop(){
   if(!G)return;state='shop';
   const opts=shuffle(UPG.filter(u=>!(u.id==='repair'&&G.hp>=G.maxHp))).slice(0,3);
-  show(`<p class="lead">หน้า ${G.wave} เรียบร้อย ครูให้สติกเกอร์ 1 ดวง</p><h2 class="big">เลือกสติกเกอร์</h2>
+  show(`<h2 class="big">เลือก 1 ดวง</h2>
     <div class="stickers">${opts.map(u=>`<button class="stk" type="button" data-u="${u.id}"><span class="disc" style="--c:${u.c}">${ICON[u.id]}</span><span class="n">${u.n}</span><span class="d">${u.d}</span></button>`).join('')}</div>
-    <div class="stats"><div><b>${G.score.toLocaleString('en-US')}</b>คะแนน</div><div><b>${G.learned.size}</b>คำที่ตอบถูก</div><div><b>${G.best}</b>คอมโบสูงสุด</div></div>
-    <p class="lead">หน้าถัดไป: ${(G.wave+1)%4===0?'<b style="color:var(--red)">ปีศาจข้อสอบ</b>':'หน้า '+(G.wave+1)}</p>`);
+    ${(G.wave+1)%4===0?'<p class="lead" style="color:var(--red)">ต่อไป: บอส!</p>':''}`);
   panel.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>{
     const id=b.dataset.u;SFX.sticker();
     if(id==='repair')G.hp=Math.min(G.maxHp,G.hp+2);if(id==='shield')G.shield+=2;if(id==='eraser')G.erasers++;
@@ -594,16 +590,16 @@ function gameOver(){
   if(!G)return;state='over';
   const nb=G.score>(BEST[G.tier]||0);if(nb){BEST[G.tier]=G.score;store.set('nm-best',BEST);}
   const tier=G.tier;
-  show(`<h2 class="big red">ป้อมแตกแล้ว!</h2>${nb?'<span class="newrec">สถิติใหม่!</span>':''}
-    <div class="stats"><div><b>${G.score.toLocaleString('en-US')}</b>คะแนน</div><div><b>${G.wave}</b>หน้า</div><div><b>${G.learned.size}</b>คำที่ตอบถูก</div><div><b>${G.best}</b>คอมโบสูงสุด</div></div>
-    ${G.missed.length?`<p class="lead">การบ้าน: คำที่หลุดเข้าป้อม (แตะเพื่อฟังเสียง)</p><div class="missed">${G.missed.map(w=>`<button class="mw" type="button" data-say="${esc(w.en)}"><b>${esc(w.en)}</b><span>${esc(w.th)}</span></button>`).join('')}</div>`:''}
-    <div class="row"><button class="btn" type="button" id="again">เล่นอีกครั้ง</button><button class="btn plain" type="button" id="menu">เปลี่ยนสมุด</button></div>`);
+  show(`<h2 class="big red">ป้อมแตก!</h2>${nb?'<span class="newrec">สถิติใหม่!</span>':''}
+    <div class="stats"><div><b>${G.score.toLocaleString('en-US')}</b>คะแนน</div><div><b>${G.wave}</b>หน้า</div><div><b>${G.learned.size}</b>คำถูก</div></div>
+    ${G.missed.length?`<p class="lead">คำที่พลาด</p><div class="missed">${G.missed.map(w=>`<button class="mw" type="button" data-say="${esc(w.en)}"><b>${esc(w.en)}</b><span>${esc(w.th)}</span></button>`).join('')}</div>`:''}
+    <div class="row"><button class="btn" type="button" id="again">อีกรอบ</button><button class="btn plain" type="button" id="menu">เมนู</button></div>`);
   panel.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>speak(b.dataset.say,true));
   $('#again').onclick=()=>start(tier);$('#menu').onclick=title;
 }
 function pause(){
   if(state!=='play')return;state='paused';
-  show(`<h2 class="big">พักก่อน</h2><div class="row"><button class="btn" type="button" id="resume">เล่นต่อ</button><button class="btn plain" type="button" id="quit">กลับหน้าแรก</button></div>`);
+  show(`<h2 class="big">พัก</h2><div class="row"><button class="btn" type="button" id="resume">เล่นต่อ</button><button class="btn plain" type="button" id="quit">เมนู</button></div>`);
   $('#resume').onclick=()=>{ov.hidden=true;state='play';last=performance.now();};$('#quit').onclick=title;$('#resume').focus();
 }
 $('#pauseBtn').onclick=pause;
