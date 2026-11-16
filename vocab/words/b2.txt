@@ -1,0 +1,37 @@
+# คำกริยาเชิงวิชาการ
+abandon|ละทิ้ง;acquire|ได้มา;adapt|ปรับตัว;adjust|ปรับ;affect|ส่งผลกระทบ;allocate|จัดสรร;analyze|วิเคราะห์;anticipate|คาดการณ์;assess|ประเมิน;assume responsibility|รับผิดชอบ
+attain|บรรลุ;attribute|ถือว่าเป็นผลจาก;clarify|ทำให้กระจ่าง;classify|จำแนก;collapse|พังทลาย;commit|กระทำ มุ่งมั่น;compensate|ชดเชย;compile|รวบรวม;comply|ปฏิบัติตาม;conclude|สรุป
+conduct|ดำเนินการ;consist|ประกอบด้วย;constitute|ประกอบเป็น;construct|ก่อสร้าง;consult|ปรึกษา;contradict|ขัดแย้ง;contribute|มีส่วนร่วม;convert|แปลง;coordinate|ประสานงาน;cooperate|ร่วมมือ
+define|นิยาม;demonstrate|สาธิต;derive|ได้มาจาก;detect|ตรวจจับ;determine|กำหนด ตัดสินใจ;distinguish|แยกแยะ;distribute|แจกจ่าย;dominate|ครอบงำ;eliminate|กำจัด;emerge|ปรากฏขึ้น
+emphasize|เน้นย้ำ;enable|ทำให้สามารถ;enhance|เสริม;ensure|รับประกัน ทำให้แน่ใจ;estimate|ประมาณ;evaluate|ประเมินผล;evolve|วิวัฒนาการ;exceed|เกิน;exclude|ไม่รวม;exhibit|จัดแสดง
+expose|เปิดเผย;facilitate|อำนวยความสะดวก;generate|ก่อให้เกิด;highlight|เน้น;identify|ระบุ;illustrate|แสดงให้เห็น;implement|นำไปใช้;imply|บอกเป็นนัย;impose|กำหนดบังคับ;indicate|บ่งชี้
+interpret|ตีความ;justify|ให้เหตุผลสนับสนุน;maintain|รักษาไว้;maximize|ทำให้มากที่สุด;minimize|ทำให้น้อยที่สุด;modify|ดัดแปลง;monitor|ติดตามตรวจสอบ;obtain|ได้รับ;occupy|ครอบครอง;occur|เกิดขึ้น
+participate|มีส่วนร่วม;perceive|รับรู้;pursue|ไล่ตาม มุ่งหา;regulate|ควบคุม;reinforce|เสริมกำลัง;reject|ปฏิเสธ;rely|พึ่งพา;remain|ยังคงอยู่;resolve|แก้ไข;restore|ฟื้นฟู
+restrict|จำกัด;retain|เก็บรักษา;reveal|เปิดเผย;secure|ทำให้ปลอดภัย ได้มา;seek|แสวงหา;specify|ระบุเฉพาะ;stimulate|กระตุ้น;submit|ยื่น ส่ง;sustain|ค้ำจุน;transmit|ส่งผ่าน
+# คำนามนามธรรม B2
+approach (method)|แนวทาง;aspect|แง่มุม;assumption|ข้อสันนิษฐาน;authority|อำนาจ เจ้าหน้าที่;awareness|ความตระหนัก;capacity|ความจุ ขีดความสามารถ;circumstance|สถานการณ์แวดล้อม;component|องค์ประกอบ;concept|แนวคิด;consequence|ผลที่ตามมา
+context|บริบท;contrast|ความแตกต่าง;criteria|เกณฑ์;dimension|มิติ;element|องค์ประกอบ ธาตุ;emphasis|การเน้น;equivalent|เทียบเท่า;framework|กรอบงาน;function|หน้าที่ ฟังก์ชัน;hypothesis|สมมติฐาน
+impact|ผลกระทบ;implication|นัยยะ;incentive|สิ่งจูงใจ;initiative|ความริเริ่ม;insight|ความเข้าใจลึกซึ้ง;instance|กรณี ตัวอย่าง;integrity|ความซื่อตรง;intention|ความตั้งใจ;interaction|ปฏิสัมพันธ์;issue|ประเด็น
+mechanism|กลไก;motive|แรงจูงใจ;objective|วัตถุประสงค์;outcome|ผลลัพธ์;perspective|มุมมอง;phenomenon|ปรากฏการณ์;principle|หลักการ;priority|สิ่งสำคัญอันดับแรก;procedure|ขั้นตอน;proportion|สัดส่วน
+prospect|แนวโน้ม;reputation|ชื่อเสียง;requirement|ข้อกำหนด;resource|ทรัพยากร;restriction|ข้อจำกัด;scope|ขอบเขต;sequence|ลำดับ;significance|ความสำคัญ;strategy|กลยุทธ์;structure|โครงสร้าง
+# ธุรกิจและเศรษฐศาสตร์
+enterprise|กิจการ;entrepreneur|ผู้ประกอบการ;investment|การลงทุน;investor|นักลงทุน;shareholder|ผู้ถือหุ้น;stock market|ตลาดหุ้น;revenue|รายได้ (บริษัท);expense|ค่าใช้จ่าย;inflation|ภาวะเงินเฟ้อ;recession|ภาวะเศรษฐกิจถดถอย
+merger|การควบรวมกิจการ;negotiation|การเจรจาต่อรอง;competitor|คู่แข่ง;consumer|ผู้บริโภค;brand|แบรนด์;campaign|แคมเปญ;launch|เปิดตัว;target market|ตลาดเป้าหมาย;export|ส่งออก;import|นำเข้า
+asset|ทรัพย์สิน;capital investment|เงินลงทุน;finance|การเงิน;insurance|ประกันภัย;interest rate|อัตราดอกเบี้ย;mortgage|การจำนอง;bankrupt|ล้มละลาย;wage|ค่าจ้าง;pension|เงินบำนาญ;subsidy|เงินอุดหนุน
+# จิตวิทยาและพฤติกรรม
+psychology|จิตวิทยา;consciousness|จิตสำนึก;perception|การรับรู้;motivation|แรงจูงใจ;personality trait|ลักษณะนิสัย;tendency|แนวโน้ม;impulse|แรงกระตุ้นฉับพลัน;instinct|สัญชาตญาณ;resilience|ความยืดหยุ่นทางใจ;self-esteem|ความภาคภูมิใจในตนเอง
+empathy|ความเห็นอกเห็นใจ;prejudice|อคติ;bias|ความลำเอียง;stereotype|ภาพเหมารวม;conflict|ความขัดแย้ง;compromise|การประนีประนอม;tolerance|ความอดทนอดกลั้น;loyalty|ความภักดี;ambition|ความทะเยอทะยาน;frustration|ความหงุดหงิดคับข้องใจ
+# กฎหมายและการปกครอง
+legislation|การออกกฎหมาย;regulation|ระเบียบข้อบังคับ;constitution|รัฐธรรมนูญ;democracy|ประชาธิปไตย;parliament|รัฐสภา;candidate|ผู้สมัคร;campaign trail|การหาเสียง;corruption|การทุจริต;bribe|สินบน;justice|ความยุติธรรม
+verdict|คำตัดสิน;sentence (court)|โทษ คำพิพากษา;trial|การพิจารณาคดี;lawsuit|คดีความ;evidence file|แฟ้มหลักฐาน;testimony|คำให้การ;appeal|อุทธรณ์;violate|ละเมิด;enforce|บังคับใช้;authorize|อนุญาตอย่างเป็นทางการ
+# วิทยาศาสตร์และการแพทย์
+biology|ชีววิทยา;chemistry|เคมี;physics|ฟิสิกส์;organism|สิ่งมีชีวิต;cell|เซลล์;gene|ยีน;evolution|วิวัฒนาการ;bacteria|แบคทีเรีย;molecule|โมเลกุล;particle|อนุภาค
+diagnosis|การวินิจฉัย;therapy|การบำบัด;vaccine|วัคซีน;immune|มีภูมิคุ้มกัน;epidemic|โรคระบาด;chronic|เรื้อรัง;disorder|ความผิดปกติ;cure|รักษาให้หาย;dose|ขนาดยา;side effect|ผลข้างเคียง
+# สิ่งแวดล้อมขั้นสูง
+conservation|การอนุรักษ์;sustainable|ยั่งยืน;renewable|หมุนเวียนได้;emission|การปล่อยมลพิษ;carbon|คาร์บอน;deforestation|การตัดไม้ทำลายป่า;ecosystem|ระบบนิเวศ;biodiversity|ความหลากหลายทางชีวภาพ;contamination|การปนเปื้อน;greenhouse gas|ก๊าซเรือนกระจก
+# คำคุณศัพท์ B2
+abstract|เป็นนามธรรม;adequate|เพียงพอ;aggressive|ก้าวร้าว;ambiguous|กำกวม;apparent|ชัดแจ้ง;appropriate|เหมาะสม;arbitrary|ตามอำเภอใจ;comprehensive|ครอบคลุม;considerable|มากพอสมควร;consistent|สม่ำเสมอ
+contemporary|ร่วมสมัย;controversial|เป็นที่ถกเถียง;conventional|ตามแบบแผน;crucial|สำคัญมาก;cumulative|สะสม;distinct|แตกต่างชัดเจน;dynamic|มีพลวัต;essential|จำเป็นอย่างยิ่ง;explicit|ชัดแจ้ง;feasible|เป็นไปได้
+fundamental|พื้นฐาน;genuine|แท้จริง;hostile|เป็นศัตรู;inevitable|หลีกเลี่ยงไม่ได้;initial|เริ่มแรก;intense|รุนแรง เข้มข้น;legitimate|ชอบธรรม;liberal|เสรีนิยม;mutual|ซึ่งกันและกัน;neutral|เป็นกลาง
+notable|โดดเด่น;numerous|จำนวนมาก;objective (adj)|ไม่ลำเอียง;potential|ที่มีศักยภาพ;precise|แม่นยำ;predominant|เด่น ส่วนใหญ่;preliminary|เบื้องต้น;profound|ลึกซึ้ง;rational|มีเหตุผล;relevant|เกี่ยวข้อง
+reluctant|ไม่เต็มใจ;rigid|แข็งทื่อ;severe|รุนแรง;sophisticated|ซับซ้อน ทันสมัย;subsequent|ที่ตามมา;substantial|มาก สำคัญ;subtle|แนบเนียน;sufficient|เพียงพอ;superior|เหนือกว่า;vulnerable|อ่อนแอ เปราะบาง

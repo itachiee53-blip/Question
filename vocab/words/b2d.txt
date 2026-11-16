@@ -1,0 +1,22 @@
+# กริยาวลีที่ใช้บ่อย
+give up|ยอมแพ้;look after|ดูแล;look for|มองหา;look forward to|ตั้งตารอ;find out|ค้นพบ หาคำตอบ;turn down|ปฏิเสธ หรี่เสียง;turn up|ปรากฏตัว เพิ่มเสียง;set up|จัดตั้ง;put off|เลื่อนออกไป;put up with|ทนกับ
+run out of|หมด;get over|หายจาก ทำใจได้;break down|เสีย พังทลาย;break up|เลิกรา;bring up|เลี้ยงดู หยิบยกขึ้นมา;call off|ยกเลิก;catch up|ตามทัน;come across|พบโดยบังเอิญ;cut down on|ลดปริมาณ;figure out|คิดออก
+get rid of|กำจัด;go through|ผ่านพ้น ตรวจดู;hold on|รอสักครู่;keep up with|ตามให้ทัน;let down|ทำให้ผิดหวัง;look up|ค้นหา (ข้อมูล);make up|แต่งเรื่อง คืนดี;pick up|หยิบ ไปรับ;point out|ชี้ให้เห็น;show off|อวด
+stand for|ย่อมาจาก;take after|เหมือน (พ่อแม่);take off|ถอด เครื่องบินขึ้น;take over|เข้าควบคุม;take up|เริ่มทำ (งานอดิเรก);throw away|ทิ้ง;try out|ทดลอง;turn into|กลายเป็น;work out|ออกกำลัง คิดออก;wear out|ใช้จนสึก
+# ชีวิตในเมืองและที่อยู่อาศัย
+landlord|เจ้าของที่ให้เช่า;tenant|ผู้เช่า;lease|สัญญาเช่า;utility bill|ค่าสาธารณูปโภค;renovate|ปรับปรุงใหม่;spacious|กว้างขวาง;cramped|คับแคบ;cosy|อบอุ่นสบาย;furnished|มีเฟอร์นิเจอร์;detached house|บ้านเดี่ยว
+condominium|คอนโดมิเนียม;skyscraper|ตึกระฟ้า;commuter|ผู้เดินทางไปทำงาน;rush hour|ชั่วโมงเร่งด่วน;congestion|ความแออัด;public transport|ขนส่งสาธารณะ;amenities|สิ่งอำนวยความสะดวก;gentrification|การปรับปรุงย่านให้หรูขึ้น;slum|สลัม;metropolis|มหานคร
+# อาหารและโภชนาการ B2
+carbohydrate|คาร์โบไฮเดรต;fibre|ใยอาหาร;cholesterol|คอเลสเตอรอล;additive|สารเติมแต่ง;preservative|สารกันบูด;processed food|อาหารแปรรูป;nutritious|มีคุณค่าทางอาหาร;malnutrition|ภาวะขาดสารอาหาร;intake|ปริมาณที่ได้รับ;digestion|การย่อยอาหาร
+gourmet|นักชิมอาหาร;cuisine culture|วัฒนธรรมอาหาร;delicacy|อาหารรสเลิศ;savoury|รสเค็มเผ็ด ไม่หวาน;bitter taste|รสขม;aroma|กลิ่นหอม;garnish|ของแต่งหน้าอาหาร;marinate|หมัก;simmer|เคี่ยว;ferment|หมักบ่ม
+# การเดินทางและการท่องเที่ยว B2
+itinerary|แผนการเดินทาง;excursion|การทัศนศึกษา;expedition|การสำรวจ;landmark site|สถานที่สำคัญ;hospitality|การต้อนรับ;jet lag|อาการเจ็ตแล็ก;layover|การแวะพักต่อเครื่อง;visa|วีซ่า;check-in desk|เคาน์เตอร์เช็กอิน;boarding pass|บัตรขึ้นเครื่อง
+ecotourism|การท่องเที่ยวเชิงนิเวศ;backpacker|นักท่องเที่ยวแบกเป้;off the beaten track|นอกเส้นทางท่องเที่ยวหลัก;picturesque|งดงามราวภาพวาด;breathtaking|งดงามจนตะลึง;remote|ห่างไกล;secluded|เงียบสงบห่างไกล;bustling|คึกคัก;overcrowded|แออัดเกินไป;touristy|เต็มไปด้วยนักท่องเที่ยว
+# อารมณ์และความรู้สึก B2
+apprehensive|หวาดหวั่น;bewildered|งุนงง;content|พอใจ;devastated|เสียใจอย่างมาก;ecstatic|ปลื้มปีติ;exasperated|หงุดหงิดมาก;fed up|เบื่อหน่าย;flattered|ปลื้มที่ได้รับคำชม;gloomy|หม่นหมอง;heartbroken|อกหัก เสียใจมาก
+indignant|ขุ่นเคือง;irritated|รำคาญ;nostalgic|คิดถึงอดีต;overjoyed|ดีใจมาก;petrified|กลัวจนตัวแข็ง;puzzled|งงงวย;relieved|โล่งใจ;resentful|ขุ่นแค้น;startled|สะดุ้งตกใจ;thrilled|ตื่นเต้นดีใจ
+# คำนาม B2 ชุดเพิ่มเติม
+fraud|การฉ้อโกง;hostage|ตัวประกัน;inquiry|การสอบสวน;intellect|สติปัญญา;intuition|สัญชาตญาณ ความรู้สึกหยั่งรู้;jurisdiction|เขตอำนาจศาล;landmark decision|คำตัดสินสำคัญ;legacy|มรดก;longevity|อายุยืน;manifesto|แถลงการณ์
+mentor|พี่เลี้ยง ผู้ให้คำแนะนำ;momentum|แรงส่ง;mortality|อัตราการตาย;negligible|น้อยจนไม่มีความหมาย;notion|แนวคิด;novelty|ความแปลกใหม่;obstacle|อุปสรรค;oversight|การมองข้าม การกำกับดูแล;panorama|ทัศนียภาพ;paradox of choice|ความย้อนแย้งของการเลือก
+pitfall|หลุมพราง;predecessor|ผู้มาก่อน;premises|สถานที่ (ธุรกิจ);provision|การจัดเตรียม บทบัญญัติ;quota|โควตา;rebate|เงินคืน;recipient|ผู้รับ;remedy|การแก้ไข ยา;retrospect|การมองย้อนหลัง;sanctuary|สถานที่หลบภัย
+setback|อุปสรรค ความล้มเหลวชั่วคราว;shortage|การขาดแคลน;spectacle|ภาพที่น่าตื่นตา;stance|จุดยืน;stimulus package|ชุดมาตรการกระตุ้น;surveillance camera|กล้องวงจรปิด;threshold|ธรณีประตู เกณฑ์;transition|การเปลี่ยนผ่าน;trait|ลักษณะเฉพาะ;venture|กิจการเสี่ยง

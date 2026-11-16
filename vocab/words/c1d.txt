@@ -1,0 +1,20 @@
+# คำคุณศัพท์ C1 ชุดสุดท้าย
+perfunctory|ทำพอเป็นพิธี;perilous|อันตรายมาก;pernicious|เป็นอันตรายร้ายแรง;perpetual|ตลอดกาล;placate|เอาใจให้สงบ;precocious|แก่แดด เจริญเร็ว;predatory|ล่าเหยื่อ เอาเปรียบ;preposterous|ไร้สาระสิ้นดี;profuse|มากมายล้นหลาม;prosaic|จืดชืดธรรมดา
+provocative|ยั่วยุ;punitive|เป็นการลงโทษ;quaint|แปลกน่ารักแบบโบราณ;rancorous|ขมขื่นอาฆาต;recalcitrant|ดื้อดึงไม่เชื่อฟัง;redolent|ชวนให้นึกถึง;relentless|ไม่หยุดหย่อน;remorseful|สำนึกผิด;reprehensible|น่าตำหนิ;resolute|เด็ดเดี่ยว
+sagacious|ฉลาดรอบรู้;sanguine|มองโลกในแง่ดี;scathing|วิจารณ์รุนแรง;solicitous|เอาใจใส่;spurious claim|คำกล่าวอ้างเท็จ;squalid|สกปรกโสโครก;stoic|อดทนไม่แสดงอารมณ์;strident|เสียงแหลมกระด้าง;sublime|ประเสริฐ งดงามยิ่ง;surreptitious|แอบทำ
+taciturn|เงียบขรึม;tantamount|เท่ากับ;tenacious|ยึดมั่นไม่ปล่อย;trenchant|เฉียบคมรุนแรง;truculent|ชอบทะเลาะ;turbulent|ปั่นป่วน;unassuming|ถ่อมตัว;unequivocal|ชัดเจนไม่กำกวม;unwieldy|เทอะทะ;vacuous|ว่างเปล่าไร้ความคิด
+venerable|น่าเคารพนับถือ;veracious|พูดความจริง;vicarious|รู้สึกร่วมผ่านผู้อื่น;vigilant|เฝ้าระวัง;vindicated|ได้รับการพิสูจน์ว่าถูก;virulent|ร้ายแรง เป็นพิษ;voracious|ตะกละ กระหาย;wistful|โหยหา;zany|บ้าบอตลก;wanton|ไร้เหตุผล เจตนาร้าย
+# คำนาม C1 ชุดเสริม
+abeyance|การระงับไว้ชั่วคราว;acquiescence|การยอมตาม;admonition|คำตักเตือน;allegiance|ความจงรักภักดี;ambiguity of law|ความกำกวมของกฎหมาย;amnesty|การนิรโทษกรรม;antithesis|สิ่งที่ตรงข้ามโดยสิ้นเชิง;apex|จุดสุดยอด;apparatus|เครื่องมือ กลไก;artifact|โบราณวัตถุ
+assertion|การยืนยัน;attrition|การลดลงทีละน้อย;cadence|จังหวะ;caveat|ข้อควรระวัง;clout|อิทธิพล;cognizance|การรับรู้;compendium|ประมวลสรุป;conduit|ช่องทาง ท่อ;confluence|จุดบรรจบ;conundrum|ปัญหายุ่งยาก
+deluge|น้ำท่วมใหญ่ ความมากล้น;demeanor|ท่าทางการวางตัว;deterrent|สิ่งยับยั้ง;diatribe|การโจมตีด้วยวาจา;dichotomy|การแบ่งเป็นสองขั้ว;disposition|อุปนิสัย;dissemination|การเผยแพร่;edifice|อาคารใหญ่โต;efficacy|ประสิทธิผล;embargo order|คำสั่งห้ามค้า
+facade|ด้านหน้าอาคาร ภาพลวง;facet|แง่มุม;foresight|การมองการณ์ไกล;gamut|ขอบเขตทั้งหมด;harbinger|ลางบอกเหตุ;idiosyncrasy|ลักษณะเฉพาะตัว;impasse|ทางตัน;impediment|อุปสรรค;incentive scheme|โครงการจูงใจ;inception|การเริ่มต้น
+insurgency|การก่อความไม่สงบ;intransigence|ความดื้อรั้นไม่ยอมประนีประนอม;lacuna|ช่องว่างที่ขาดหายไป;largesse|ความใจกว้างในการให้;liaison|การประสานงาน;milieu|สภาพแวดล้อมทางสังคม;mores|ขนบธรรมเนียมของสังคม;nexus|จุดเชื่อมโยง;panacea|ยาครอบจักรวาล;parity|ความเท่าเทียมกัน
+proclivity|ความโน้มเอียง;proponent|ผู้สนับสนุน;proviso|เงื่อนไข;quandary|ภาวะลำบากใจ;rebuttal|การโต้แย้งหักล้าง;remuneration|ค่าตอบแทน;repercussion|ผลกระทบที่ตามมา;reprisal|การตอบโต้แก้แค้น;retribution|การลงโทษตอบแทน;schism|ความแตกแยก
+# คำกริยา C1 ชุดเสริม
+abate|ลดลง บรรเทา;abscond|หลบหนีไป;accrue|สะสมเพิ่มขึ้น;adjourn|เลื่อนการประชุม;adulate|ประจบสอพลอ;allay|ระงับ (ความกลัว);beguile|ล่อลวง;belittle|ดูถูก;berate|ด่าว่าอย่างรุนแรง;bequeath|ยกให้เป็นมรดก
+buttress|ค้ำจุน;cajole|เกลี้ยกล่อม;capitulate|ยอมจำนน;castigate|ตำหนิอย่างรุนแรง;chastise|ตำหนิลงโทษ;circumscribe|จำกัดขอบเขต;coalesce|รวมตัวกัน;collate|รวบรวมเปรียบเทียบ;commandeer|ยึดมาใช้;concur|เห็นพ้อง
+consign|มอบหมาย ส่งไป;construe|ตีความ;contravene|ฝ่าฝืน;covet|ปรารถนาอยากได้;culminate|สิ้นสุดที่จุดสูงสุด;debunk|เปิดโปงความเท็จ;decry|ประณามต่อสาธารณะ;defer|เลื่อน ยอมตาม;delineate|อธิบายรายละเอียด;denigrate|ใส่ร้าย
+desecrate|ทำลายความศักดิ์สิทธิ์;dissuade|ห้ามปรามไม่ให้ทำ;divulge|เปิดเผยความลับ;efface|ลบเลือน;emulate|เอาอย่าง;encroach|รุกล้ำ;enumerate|แจกแจง;espouse|สนับสนุน (แนวคิด);evince|แสดงให้เห็น;exalt|ยกย่องสรรเสริญ
+exhort|ชักชวนอย่างจริงจัง;expunge|ลบออก;extol|ยกย่องอย่างสูง;fathom|เข้าใจลึกซึ้ง;flout|ฝ่าฝืนอย่างเปิดเผย;foment|ปลุกปั่น;forgo|สละไม่ทำ;gloat|สะใจ;goad|ยั่วยุให้ทำ;impugn|ตั้งข้อสงสัยต่อ
+inculcate|ปลูกฝัง;inundate|ท่วมท้น;lambaste|วิจารณ์อย่างรุนแรง;languish in|ทุกข์ทรมานใน;meander|คดเคี้ยว เดินเรื่อยเปื่อย;mollify|ทำให้สงบลง;obfuscate|ทำให้สับสนคลุมเครือ;ostracize|ขับออกจากกลุ่ม;palliate|บรรเทาอาการ;pander|ประจบเอาใจ

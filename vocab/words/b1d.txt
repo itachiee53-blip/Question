@@ -1,0 +1,26 @@
+# สุขภาพและการแพทย์ B1
+check-up|การตรวจสุขภาพ;dentist appointment|นัดหมอฟัน;emergency room|ห้องฉุกเฉิน;operation|การผ่าตัด การดำเนินการ;painkiller|ยาแก้ปวด;antibiotic|ยาปฏิชีวนะ;rash|ผื่น;swollen|บวม;dizzy|เวียนหัว;sore|เจ็บ ระบม
+heart attack|หัวใจวาย;diabetes|เบาหวาน;cancer|มะเร็ง;asthma|หอบหืด;flu shot|วัคซีนไข้หวัด;blood test|การตรวจเลือด;x-ray|เอกซเรย์;wheelchair|รถเข็นคนป่วย;crutches|ไม้ค้ำยัน;recovery|การฟื้นตัว
+# งานบ้านและซ่อมแซม B1
+toolbox|กล่องเครื่องมือ;screwdriver|ไขควง;drill|สว่าน;saw|เลื่อย;spanner|ประแจ;tape measure|ตลับเมตร;glue gun|ปืนกาว;paintbrush|พู่กัน;leak|รั่ว;tap water|น้ำประปา
+# การเดินทางทางอากาศ
+airline|สายการบิน;terminal|อาคารผู้โดยสาร;gate number|หมายเลขประตู;security check|จุดตรวจความปลอดภัย;hand luggage|กระเป๋าถือขึ้นเครื่อง;baggage claim|จุดรับกระเป๋า;window seat|ที่นั่งริมหน้าต่าง;aisle|ทางเดิน;turbulence|อากาศแปรปรวน;landing|การลงจอด
+take-off|การขึ้นบิน;pilot announcement|ประกาศจากนักบิน;crew|ลูกเรือ;cabin|ห้องโดยสาร;jet|เครื่องบินเจ็ต;runway|รันเวย์;cancelled flight|เที่ยวบินยกเลิก;connecting flight|เที่ยวบินต่อ;duty-free|ปลอดภาษี;declare|สำแดง ประกาศ
+# อาหารและร้านอาหาร B1
+starter|อาหารเรียกน้ำย่อย;main course|อาหารจานหลัก;bill please|เก็บเงินด้วย;tip|ทิป เคล็ดลับ;chef's special|เมนูพิเศษของเชฟ;buffet|บุฟเฟต์;vegan|วีแกน;gluten-free|ปลอดกลูเตน;home-made|ทำเอง;well done|สุกมาก ทำได้ดี
+rare steak|สเต๊กสุกน้อย;spicy food|อาหารเผ็ด;street food|อาหารริมทาง;food stall|แผงขายอาหาร;fast food|อาหารจานด่วน;leftovers|อาหารเหลือ;doggy bag|ถุงห่ออาหารเหลือ;table manners|มารยาทบนโต๊ะอาหาร;reservation name|ชื่อที่จองไว้;waitress|พนักงานเสิร์ฟหญิง
+# อาชีพ B1 เพิ่มเติม
+firefighter|นักดับเพลิง;paramedic|เจ้าหน้าที่กู้ชีพ;detective|นักสืบ;judge job|อาชีพผู้พิพากษา;politician|นักการเมือง;economist|นักเศรษฐศาสตร์;psychologist|นักจิตวิทยา;veterinarian|สัตวแพทย์ (เต็ม);consultant|ที่ปรึกษา;freelancer|ฟรีแลนซ์
+# สิ่งของในชีวิตประจำวัน B1
+keyring|พวงกุญแจ;lighter|ไฟแช็ก;tissue|ทิชชู;mask|หน้ากาก;comb (tool)|หวี;razor|มีดโกน;shampoo|แชมพู;lotion|โลชั่น;perfume|น้ำหอม;deodorant|ยาระงับกลิ่นกาย
+calendar app|แอปปฏิทิน;power bank|แบตสำรอง;earphones|หูฟังแบบเสียบ;notebook computer|คอมพิวเตอร์โน้ตบุ๊ก;sticky note|กระดาษโน้ต;envelope|ซองจดหมาย;postcard|โปสการ์ด;label|ฉลาก ป้าย;container|ภาชนะ;jar|โหล
+# การกระทำต่อสิ่งของ
+assemble furniture|ประกอบเฟอร์นิเจอร์;bend metal|ดัดโลหะ;crush|บด ขยี้;dig a hole|ขุดหลุม;drag|ลาก;float|ลอย;hammer a nail|ตอกตะปู;heat up|อุ่นให้ร้อน;knot|ปม;polish|ขัดเงา
+press|กด;rub|ถู;scratch|ข่วน ขีด;seal a box|ปิดผนึกกล่อง;shine|ส่องแสง เป็นเงา;sink below|จมลง;soak|แช่;split|แยก แบ่ง;stack|ซ้อน;wrap|ห่อ
+# ความรู้ทั่วไป
+history book|หนังสือประวัติศาสตร์;ancient times|สมัยโบราณ;kingdom|ราชอาณาจักร;emperor|จักรพรรดิ;battle|การสู้รบ;castle|ปราสาท;knight|อัศวิน;pyramid|พีระมิด;statue|รูปปั้น;ruins|ซากปรักหักพัง
+explorer|นักสำรวจ;voyage|การเดินทางทางทะเล;discovery|การค้นพบ;treasure|สมบัติ;legend|ตำนาน;myth|ปรัมปรา เรื่องเล่า;hero story|เรื่องวีรบุรุษ;fairy tale|เทพนิยาย;ghost|ผี;dragon|มังกร
+# คำคุณศัพท์ B1 ชุดสุดท้าย
+jealous of|อิจฉา;loyal|ซื่อสัตย์ จงรักภักดี;mature|เป็นผู้ใหญ่;moody|อารมณ์แปรปรวน;mysterious|ลึกลับ;narrow-minded|ใจแคบ;open-minded|ใจกว้าง เปิดรับ;organised|เป็นระเบียบ;outgoing|ชอบเข้าสังคม;patient|อดทน
+practical|ใช้ได้จริง;reasonable|สมเหตุสมผล;reliable|เชื่อถือได้;responsible|รับผิดชอบ;sensible choice|ทางเลือกที่มีเหตุผล;sociable|ชอบสังคม;strict|เข้มงวด;talented|มีพรสวรรค์;thoughtful|รอบคอบ ใส่ใจ;tolerant|อดทนอดกลั้น
+urgent|เร่งด่วน;valuable lesson|บทเรียนที่มีค่า;violent|รุนแรง;visible|มองเห็นได้;invisible|มองไม่เห็น;wealthy family|ครอบครัวร่ำรวย;willing|เต็มใจ;wise|ฉลาด รอบรู้;worth it|คุ้มค่า;young adult|วัยหนุ่มสาว

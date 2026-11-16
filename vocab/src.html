@@ -67,6 +67,9 @@ button[disabled]{cursor:not-allowed}
 .note{--c:var(--hl-y);--r:-1.6deg;position:relative;min-height:60px;background:var(--c);transform:rotate(var(--r));box-shadow:2px 5px 0 #0003,inset 0 -10px 14px -12px #0003;font-family:var(--f-en);font-size:clamp(20px,2.8vw,30px);line-height:1.05;padding:6px;overflow-wrap:anywhere;transition:transform .08s;color:var(--ink)}
 .note::before{content:"";position:absolute;left:50%;top:-9px;width:46%;height:16px;transform:translateX(-50%) rotate(2deg);background:#f4ecc9cc}
 .note:nth-child(2){--c:var(--hl-p);--r:1.2deg} .note:nth-child(3){--c:var(--hl-g);--r:-.8deg} .note:nth-child(4){--c:var(--hl-b);--r:1.8deg}
+.note.long{font-size:clamp(15px,2vw,21px)}
+.unit{width:100%;margin:10px 0 6px;font-weight:400;font-size:18px;text-align:left;border-bottom:2px dashed #0002;padding-bottom:2px}
+.unit.ok::after{content:" ✓";color:var(--ok)}
 .note .k{position:absolute;left:7px;bottom:3px;font-size:13px;opacity:.45}
 .note .tick{position:absolute;right:6px;top:2px;font-family:var(--f-mark);color:var(--ok);font-size:26px;opacity:0}
 .note:active{transform:rotate(var(--r)) translateY(3px) scale(.96);box-shadow:1px 2px 0 #0003}
@@ -245,46 +248,33 @@ const rshuffle=(r,a)=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor
 const COIN='<i class="coin"></i>';
 
 /* ---------- words: books follow CEFR levels; each book splits into stages of 10 words ---------- */
-const parse=s=>s.trim().split(';').filter(Boolean).map(x=>{const [en,th]=x.split('|');return{en:en.trim(),th:th.trim()};});
-const BOOKS={
- a1:{name:'เล่ม 1',lvl:'A1 เริ่มต้น',c:'#4f9d69',words:parse(`
-cat|แมว;dog|สุนัข;elephant|ช้าง;tiger|เสือ;rabbit|กระต่าย;monkey|ลิง;bird|นก;fish|ปลา;horse|ม้า;cow|วัว;pig|หมู;snake|งู;
-apple|แอปเปิล;banana|กล้วย;grape|องุ่น;orange|ส้ม;mango|มะม่วง;watermelon|แตงโม;pineapple|สับปะรด;coconut|มะพร้าว;lemon|มะนาว;
-rice|ข้าว;bread|ขนมปัง;egg|ไข่;noodles|ก๋วยเตี๋ยว;chicken|ไก่;cake|เค้ก;soup|ซุป;milk|นม;water|น้ำ;
-eye|ตา;ear|หู;nose|จมูก;mouth|ปาก;hand|มือ;foot|เท้า;tooth|ฟัน;heart|หัวใจ;
-book|หนังสือ;pencil|ดินสอ;bag|กระเป๋า;ruler|ไม้บรรทัด;scissors|กรรไกร;teacher|ครู;clock|นาฬิกา;school|โรงเรียน;
-sun|ดวงอาทิตย์;moon|ดวงจันทร์;star|ดาว;rain|ฝน;cloud|เมฆ;snow|หิมะ;rainbow|รุ้งกินน้ำ;tree|ต้นไม้;flower|ดอกไม้;mountain|ภูเขา;sea|ทะเล;
-car|รถยนต์;bus|รถบัส;train|รถไฟ;plane|เครื่องบิน;boat|เรือ;bicycle|จักรยาน;rocket|จรวด;
-bed|เตียง;chair|เก้าอี้;door|ประตู;window|หน้าต่าง;key|กุญแจ;spoon|ช้อน;phone|โทรศัพท์;house|บ้าน;
-run|วิ่ง;swim|ว่ายน้ำ;sleep|นอนหลับ;sing|ร้องเพลง;dance|เต้นรำ;cry|ร้องไห้;happy|มีความสุข;angry|โกรธ;hungry|หิว`)},
- b1:{name:'เล่ม 2',lvl:'A2–B1 ม.ต้น–ม.ปลาย',c:'#3f6fb5',words:parse(`
-borrow|ยืม;build|สร้าง;buy|ซื้อ;sell|ขาย;carry|แบก;catch|จับ;choose|เลือก;collect|สะสม;decide|ตัดสินใจ;deliver|ส่งของ;
-enjoy|สนุกกับ;explain|อธิบาย;forget|ลืม;remember|จำได้;grow|เติบโต;hurry|รีบ;invite|เชิญ;promise|สัญญา;repair|ซ่อม;share|แบ่งปัน;
-travel|เดินทาง;wait|รอ;worry|กังวล;believe|เชื่อ;answer|คำตอบ;journey|การเดินทาง;kitchen|ห้องครัว;library|ห้องสมุด;market|ตลาด;medicine|ยา;
-neighbor|เพื่อนบ้าน;ocean|มหาสมุทร;river|แม่น้ำ;village|หมู่บ้าน;country|ประเทศ;city|เมือง;island|เกาะ;forest|ป่า;desert|ทะเลทราย;weather|สภาพอากาศ;
-holiday|วันหยุด;breakfast|อาหารเช้า;gift|ของขวัญ;money|เงิน;letter|จดหมาย;dream|ความฝัน;job|งาน;quiet|เงียบ;safe|ปลอดภัย;strong|แข็งแรง;
-weak|อ่อนแอ;dangerous|อันตราย;difficult|ยาก;easy|ง่าย;empty|ว่างเปล่า;famous|มีชื่อเสียง;heavy|หนัก;honest|ซื่อสัตย์;lazy|ขี้เกียจ;polite|สุภาพ;
-brave|กล้าหาญ;clever|ฉลาด;kind|ใจดี;late|สาย;expensive|แพง;cheap|ราคาถูก;healthy|สุขภาพดี;noisy|เสียงดัง;beautiful|สวยงาม;wrong|ผิด`)},
- b2:{name:'เล่ม 3',lvl:'B2 คำออกสอบ',c:'#c8553d',words:parse(`
-abandon|ละทิ้ง;achieve|ทำสำเร็จ;adapt|ปรับตัว;admire|ชื่นชม;affect|ส่งผลกระทบ;analyze|วิเคราะห์;anxious|วิตกกังวล;approve|อนุมัติ;avoid|หลีกเลี่ยง;benefit|ประโยชน์;
-candidate|ผู้สมัคร;challenge|ความท้าทาย;compare|เปรียบเทียบ;complain|ร้องเรียน;confident|มั่นใจ;consider|พิจารณา;contribute|มีส่วนร่วม;convince|ทำให้เชื่อ;crucial|สำคัญมาก;deny|ปฏิเสธ;
-efficient|มีประสิทธิภาพ;emphasize|เน้นย้ำ;encourage|ให้กำลังใจ;environment|สิ่งแวดล้อม;essential|จำเป็น;evidence|หลักฐาน;exaggerate|พูดเกินจริง;expand|ขยาย;failure|ความล้มเหลว;generous|ใจกว้าง;
-gradually|ทีละน้อย;guarantee|รับประกัน;hesitate|ลังเล;identify|ระบุ;ignore|เพิกเฉย;improve|ปรับปรุง;increase|เพิ่มขึ้น;influence|อิทธิพล;investigate|สืบสวน;justify|ให้เหตุผล;
-maintain|รักษาไว้;negotiate|เจรจา;obvious|ชัดเจน;opportunity|โอกาส;persuade|ชักชวน;predict|ทำนาย;prevent|ป้องกัน;priority|สิ่งสำคัญอันดับแรก;reduce|ลด;reliable|เชื่อถือได้;
-responsible|รับผิดชอบ;significant|มีนัยสำคัญ;solution|ทางแก้ปัญหา;survive|รอดชีวิต;sufficient|เพียงพอ;temporary|ชั่วคราว;tremendous|มหาศาล;valuable|มีค่า;reveal|เปิดเผย;sustain|ค้ำจุน`)}
-};
-const BOOK_ORDER=['a1','b1','b2'];
-const BOOK_RANK={a1:0,b1:1,b2:2};
-for(const k in BOOKS){const w=BOOKS[k].words,st=[];for(let i=0;i<w.length;i+=10)st.push(w.slice(i,i+10));
-  if(st.length>1&&st[st.length-1].length<6){const t=st.pop();st[st.length-1]=st[st.length-1].concat(t);}BOOKS[k].stages=st;}
+const WORDS=/*WORDS*/{};
+const BOOK_ORDER=['a1','a2','b1','b2','c1'];
+const BOOK_META={a1:{name:'เล่ม 1',lvl:'A1 เริ่มต้น',c:'#4f9d69'},a2:{name:'เล่ม 2',lvl:'A2 พื้นฐาน',c:'#2a9d8f'},b1:{name:'เล่ม 3',lvl:'B1 กลาง',c:'#3f6fb5'},b2:{name:'เล่ม 4',lvl:'B2 สูง',c:'#8a4fb5'},c1:{name:'เล่ม 5',lvl:'C1 ขั้นสูง',c:'#c8553d'}};
+const BOOK_RANK={a1:0,a2:1,b1:2,b2:3,c1:4};
+const BOOKS={};
+for(const k of BOOK_ORDER){
+  const units=(WORDS[k]||[]).map(u=>({name:u[0],words:u[1].map(([en,th])=>({en,th}))}));
+  const info=[];
+  units.forEach((u,ui)=>{const w=u.words,st=[];for(let i=0;i<w.length;i+=10)st.push(w.slice(i,i+10));
+    if(st.length>1&&st[st.length-1].length<6){const t=st.pop();st[st.length-1]=st[st.length-1].concat(t);}
+    st.forEach((ws,j)=>info.push({unit:ui,uname:u.name,part:j+1,parts:st.length,words:ws}));});
+  BOOKS[k]={...BOOK_META[k],units,info,stages:info.map(x=>x.words),words:units.flatMap(u=>u.words)};
+}
 
 /* ---------- save (this browser only) ---------- */
 const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
 let OPT={sfx:true,voice:true,music:true,...store.get('nm-opt',{})};
-let P={coins:0,up:{},owned:['yellow'],pen:'yellow',prog:{a1:[],b1:[],b2:[]},endless:{},learned:{a1:[],b1:[],b2:[]},weak:{a1:[],b1:[],b2:[]},...store.get('nm-save2',{})};
-for(const k of BOOK_ORDER){P.prog[k]=P.prog[k]||[];P.learned[k]=P.learned[k]||[];P.weak[k]=P.weak[k]||[];}
+// save v3: progress per book, learned/weak words kept as one global list (they survive word-list changes)
+let P=store.get('nm-save3',null);
+if(!P){const o=store.get('nm-save2',{});P={coins:o.coins||0,up:o.up||{},owned:o.owned||['yellow'],pen:o.pen||'yellow',prog:{},endless:{},
+  learned:[...new Set(Object.values(o.learned||{}).flat())],weak:[...new Set(Object.values(o.weak||{}).flat())]};}
+for(const k of BOOK_ORDER)P.prog[k]=P.prog[k]||[];
+const LEARNED=new Set(P.learned),WEAK=new Set(P.weak);
+const syncWords=()=>{P.learned=[...LEARNED];P.weak=[...WEAK];};
+const learnedIn=k=>BOOKS[k].words.reduce((a,w)=>a+(LEARNED.has(w.en)?1:0),0);
 let TUT=store.get('nm-tut',0);
-const save=()=>store.set('nm-save2',P);
+const save=()=>{syncWords();store.set('nm-save3',P);};
 const up=k=>P.up[k]||0;
 
 /* ---------- shop ---------- */
@@ -501,7 +491,7 @@ const isBossPage=()=>G.mode==='stage'?G.wave===PAGES:G.wave%4===0;
 function nextWave(){
   G.wave++;
   const boss=isBossPage();
-  const diff=G.mode==='stage'?G.stage+BOOK_RANK[G.book]*2:G.wave*.8;
+  const diff=G.mode==='stage'?BOOK_RANK[G.book]*1.2+Math.min(5,G.stage/12)+(G.wave-1)*.3:G.wave*.8+BOOK_RANK[G.book]*.6;
   G.spawnLeft=G.mode==='stage'?(boss?2+Math.floor(diff/3):[0,5,7][G.wave]+Math.floor(diff/2)):(boss?3:Math.min(5+G.wave*2,22));
   G.bossPending=boss;G.spawnT=1.5;G.diff=diff;
   G.shield=shieldsPerPage();G.fluid=lvl('fluid');
@@ -514,11 +504,11 @@ function nextWave(){
   const pg=$('#pg');pg.classList.remove('turn');void pg.offsetWidth;pg.classList.add('turn');
 }
 function takeWord(){
-  const on=new Set(G.enemies.flatMap(e=>e.words.map(w=>w.en)));
-  const weak=new Set(P.weak[G.book]);
+  const on=new Set(G.enemies.flatMap(e=>e.words.flatMap(w=>[w.en,w.th])));
+  const weak=WEAK;
   let src=G.words;
   if(G.mode==='stage'&&G.review.length&&G.rw()<.3){const wr=G.review.filter(w=>weak.has(w.en));src=wr.length&&G.rw()<.6?wr:G.review;}
-  let pool=src.filter(w=>!on.has(w.en)&&!G.recent.includes(w.en));if(!pool.length)pool=src.filter(w=>!on.has(w.en));if(!pool.length)pool=G.words.filter(w=>!on.has(w.en));
+  let pool=src.filter(w=>!on.has(w.en)&&!on.has(w.th)&&!G.recent.includes(w.en));if(!pool.length)pool=src.filter(w=>!on.has(w.en)&&!on.has(w.th));if(!pool.length)pool=G.words.filter(w=>!on.has(w.en));
   const wp=pool.filter(w=>weak.has(w.en));
   const w=wp.length&&G.rw()<.3?rpick(G.rw,wp):rpick(G.rw,pool);
   G.recent.push(w.en);if(G.recent.length>Math.min(8,Math.floor(G.words.length*.6)))G.recent.shift();return w;
@@ -544,8 +534,8 @@ const live=()=>G.enemies.filter(e=>!e.dying);
 
 /* ---------- sticky-note answers ---------- */
 const notes=[...document.querySelectorAll('.note')];
-function setNote(i,w){G.slots[i]=w;const b=notes[i];b.querySelector('.w').textContent=w?w.en:'…';b.classList.remove('new','bad','ok');void b.offsetWidth;b.classList.add('new');}
-function decoy(have,aliveSet){const pool=G.all.filter(w=>!have.has(w.en)&&!aliveSet.has(w.en));return pick(pool.length?pool:G.all);}
+function setNote(i,w){G.slots[i]=w;const b=notes[i];b.querySelector('.w').textContent=w?w.en:'…';b.classList.toggle('long',!!w&&w.en.length>13);b.classList.remove('new','bad','ok');void b.offsetWidth;b.classList.add('new');}
+function decoy(have,aliveSet){const ths=new Set(live().map(e=>cur(e).th));const pool=G.all.filter(w=>!have.has(w.en)&&!aliveSet.has(w.en)&&!ths.has(w.th));return pick(pool.length?pool:G.all);}
 function refreshBar(){
   if(!G)return;
   const alive=live().sort((a,b)=>b.y-a.y).map(cur),aliveSet=new Set(alive.map(w=>w.en));
@@ -589,8 +579,8 @@ function strike(e){
   if(p.spark)for(let i=0;i<10;i++)G.parts.push({x:e.x,y:e.y,vx:rnd(-160,160)*SC,vy:rnd(-220,-40)*SC,life:.7,max:.7,w:5*SC,h:5*SC,rot:0,vr:6,c:'#ffd23f',star:true});
   G.recoil=1;SFX.scribble();hitstop=.05;
   G.combo++;G.best=Math.max(G.best,G.combo);G.learned.add(w.en);speak(w.en);
-  const lk=P.learned[G.book];if(!lk.includes(w.en)){lk.push(w.en);G.newWords++;}
-  P.weak[G.book]=P.weak[G.book].filter(x=>x!==w.en);
+  if(!LEARNED.has(w.en)){LEARNED.add(w.en);G.newWords++;}
+  WEAK.delete(w.en);
   if(TUT<3){TUT++;store.set('nm-tut',TUT);}
   const fastLimit=[0,2.5,3,3.5][lvl('shav')],fast=fastLimit&&G.t-e.seen<=fastLimit;
   G.charge+=fast?2:1;if(G.charge>=chargeNeed()){G.charge-=chargeNeed();G.erasers++;G.floats.push({x:W-70,y:H-110,text:'+1',c:'text',life:1.2,size:28,font:FONT_EN});SFX.sticker();}
@@ -617,7 +607,7 @@ function baseHit(e){
   if(G.shield>0){G.shield--;SFX.shield();G.floats.push({x:W/2,y:hitY()-40*SC,text:'กันได้!',c:'def',life:1.1,size:26,font:FONT_TH});if(lvl('cover')>=2)G.freezeT=Math.max(G.freezeT,.8);}
   else{const dmg=e.boss?3:1;G.hp-=dmg;SFX.thud();buzz(90);shake=18;G.combo=0;G.fortHit=.6;heartsUI(false,dmg);}
   if(!G.missed.some(m=>m.en===w.en))G.missed.push(w);
-  if(!P.weak[G.book].includes(w.en))P.weak[G.book].push(w.en);
+  WEAK.add(w.en);
   G.floats.push({x:W/2,y:hitY()-80*SC,text:`${w.en} = ${w.th}`,c:'bad',life:2.3,size:30,font:FONT_TH,boxed:true});
   crumbs(e.x,hitY(),30,1.2);
   G.enemies=G.enemies.filter(x=>x!==e);
@@ -849,7 +839,7 @@ function clearRun(){G=null;typed='';notes.forEach(n=>{n.classList.remove('hint',
 function home(){
   state='menu';clearRun();
   const cast=[0,1,2,3,4,5].map(i=>ART['m'+i]?`<img src="${ART['m'+i]}" alt="">`:'').join('');
-  const learned=BOOK_ORDER.reduce((a,k)=>a+P.learned[k].length,0),total=BOOK_ORDER.reduce((a,k)=>a+BOOKS[k].words.length,0);
+  const learned=BOOK_ORDER.reduce((a,k)=>a+learnedIn(k),0),total=BOOK_ORDER.reduce((a,k)=>a+BOOKS[k].words.length,0);
   show(`<h1 class="title"><span>Notebook</span><br>Monsters<small>ปีศาจหน้าสมุด</small></h1>
     <div class="cast">${cast}</div>
     <div class="menu">
@@ -869,23 +859,28 @@ function map(k){
   state='menu';curBook=k;store.set('nm-curbook',k);
   const B=BOOKS[k],pr=P.prog[k],n=B.stages.length;
   const next=pr.filter(Boolean).length;
-  const dots=B.stages.map((s,i)=>{const st=pr[i]||0,open=i<=next,boss=i===n-1;
-    return `<button class="dot ${st?'done':''} ${i===next&&open?'next':''} ${open?'':'lock'} ${boss?'boss':''}" type="button" data-s="${i}" ${open?'':'disabled'}><b>${boss?'B':i+1}</b><span class="st">${st?'★'.repeat(st)+`<span class="no">${'★'.repeat(3-st)}</span>`:''}</span></button>`;}).join('');
+  let lastU=-1,dots='';
+  B.info.forEach((inf,i)=>{
+    if(inf.unit!==lastU){if(lastU>=0)dots+='</div>';lastU=inf.unit;const done=B.info.filter(x=>x.unit===inf.unit).every((x,j,arr)=>pr[B.info.indexOf(x)]);dots+=`<h3 class="unit ${done?'ok':''}">${esc(inf.uname)}</h3><div class="dots">`;}
+    const st=pr[i]||0,open=i<=next,boss=i===n-1;
+    dots+=`<button class="dot ${st?'done':''} ${i===next&&open?'next':''} ${open?'':'lock'} ${boss?'boss':''}" type="button" data-s="${i}" ${open?'':'disabled'}><b>${boss?'B':i+1}</b><span class="st">${st?'★'.repeat(st)+`<span class="no">${'★'.repeat(3-st)}</span>`:''}</span></button>`;});
+  if(lastU>=0)dots+='</div>';
   const best=P.endless[k]||0;
   show(`<div class="topbar"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>เลือกด่าน</h2>${coinsTag()}</div>
     ${bookTabs(k,'data-b')}
-    <div class="bookinfo">${B.lvl} · ★ ${bookStars(k)}/${n*3} · เก็บคำ ${P.learned[k].length}/${B.words.length}</div>
-    <div class="scroll"><div class="dots">${dots}</div></div>
+    <div class="bookinfo">${B.lvl} · ★ ${bookStars(k)}/${n*3} · เก็บคำ ${learnedIn(k)}/${B.words.length}</div>
+    <div class="scroll" id="mapScroll">${dots}</div>
     <button class="endless" type="button" id="endless" ${bookDone(k)?'':'disabled'}>∞ โหมดไม่รู้จบ ${bookDone(k)?(best?'· สถิติ '+fmt(best):''):'· ผ่านครบทุกด่านก่อน'}</button>`);
   $('#back').onclick=home;
   panel.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{SFX.tap();map(b.dataset.b);});
   panel.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{SFX.tap();preStage(k,+b.dataset.s);});
   $('#endless').onclick=()=>start('endless',k,0);
+  const nx=panel.querySelector('.dot.next');if(nx)nx.scrollIntoView({block:'center'});
 }
 function preStage(k,i){
   const ws=BOOKS[k].stages[i],last=i===BOOKS[k].stages.length-1;
   show(`<div class="topbar"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>ด่าน ${i+1}${last?' · บอสใหญ่':''}</h2></div>
-    <div class="bookinfo">คำใหม่ ${ws.length} คำ · แตะเพื่อฟังเสียง</div>
+    <div class="bookinfo">${esc(BOOKS[k].info[i].uname)}${BOOKS[k].info[i].parts>1?' '+BOOKS[k].info[i].part+'/'+BOOKS[k].info[i].parts:''} · ${ws.length} คำ · แตะเพื่อฟัง</div>
     <div class="scroll"><div class="wgrid">${ws.map(w=>`<button class="wi" type="button" data-say="${esc(w.en)}"><b>${esc(w.en)}</b><span>${esc(w.th)}</span></button>`).join('')}</div></div>
     <button class="btn" type="button" id="go">เริ่มด่าน</button>`);
   panel.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>{audio();speak(b.dataset.say,true);});
@@ -893,10 +888,10 @@ function preStage(k,i){
 }
 function words(k){
   state='menu';curBook=k;
-  const B=BOOKS[k],L=new Set(P.learned[k]),Wk=new Set(P.weak[k]);
+  const B=BOOKS[k],L=LEARNED,Wk=new Set(B.words.filter(w=>WEAK.has(w.en)).map(w=>w.en));
   show(`<div class="topbar"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>สมุดคำศัพท์</h2></div>
     ${bookTabs(k,'data-b')}
-    <div class="bookinfo">${B.lvl} · เก็บแล้ว ${L.size}/${B.words.length} · ต้องทบทวน ${Wk.size}</div>
+    <div class="bookinfo">${B.lvl} · เก็บแล้ว ${learnedIn(k)}/${B.words.length} · ต้องทบทวน ${Wk.size}</div>
     <div class="scroll"><div class="wgrid">${B.words.map(w=>{const cls=Wk.has(w.en)?'weak':L.has(w.en)?'':'unk';return `<button class="wi ${cls}" type="button" data-say="${esc(w.en)}"><b>${esc(w.en)}</b><span>${esc(w.th)}</span><i>${Wk.has(w.en)?'ทวน':L.has(w.en)?'✓':''}</i></button>`;}).join('')}</div></div>`);
   $('#back').onclick=home;
   panel.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>words(b.dataset.b));

@@ -1,0 +1,21 @@
+# วลีและสำนวนระดับสูง
+a blessing in disguise|เรื่องร้ายที่กลายเป็นดี;a piece of cake|ง่ายมาก;break the ice|ทำลายความเงียบ;bite the bullet|กัดฟันสู้;burn the midnight oil|ทำงานดึก;cost an arm and a leg|แพงมาก;cut corners|ทำแบบลวก ๆ;hit the nail on the head|พูดตรงประเด็น;in the long run|ในระยะยาว;keep an eye on|คอยดู
+let the cat out of the bag|เผยความลับ;miss the boat|พลาดโอกาส;on the same page|เข้าใจตรงกัน;once in a blue moon|นาน ๆ ครั้ง;pull someone's leg|แกล้งหลอก;spill the beans|เผยความลับ;the last straw|ฟางเส้นสุดท้าย;under the weather|ไม่สบาย;up in the air|ยังไม่แน่นอน;when pigs fly|ไม่มีทางเกิดขึ้น
+beat around the bush|พูดอ้อมค้อม;call it a day|เลิกงานวันนี้;get out of hand|ควบคุมไม่ได้;go the extra mile|ทุ่มเทมากกว่าที่ควร;hang in there|อดทนไว้;jump on the bandwagon|ทำตามกระแส;kill two birds with one stone|ยิงปืนนัดเดียวได้นกสองตัว;learn the ropes|เรียนรู้งาน;out of the blue|อยู่ ๆ ก็เกิดขึ้น;take with a grain of salt|ฟังหูไว้หู
+# ภาษาวิชาการ C1
+albeit|แม้ว่า;notwithstanding|แม้กระนั้น;inasmuch as|เนื่องจาก;heretofore|ก่อนหน้านี้;whereby|โดยที่;vis-à-vis|เมื่อเทียบกับ;per se|โดยตัวมันเอง;de facto|โดยพฤตินัย;status quo|สถานะเดิม;ad hoc|เฉพาะกิจ
+bona fide|แท้จริง สุจริต;in lieu of|แทนที่;a priori|โดยนิรนัย;ergo|ดังนั้น;quintessential|เป็นแก่นแท้;salient feature|ลักษณะเด่น;overarching|ครอบคลุมทั้งหมด;underpin|รองรับ เป็นรากฐาน;interplay|ปฏิสัมพันธ์;trade-off|การได้อย่างเสียอย่าง
+# สิ่งแวดล้อมและนโยบาย C1
+decarbonize|ลดการปล่อยคาร์บอน;geoengineering|วิศวกรรมภูมิอากาศ;mitigation|การบรรเทา;adaptation policy|นโยบายการปรับตัว;carbon tax|ภาษีคาร์บอน;emissions trading|การซื้อขายสิทธิการปล่อยก๊าซ;desertification|การกลายเป็นทะเลทราย;acidification|การเป็นกรด;salinization|การเกิดดินเค็ม;overfishing|การจับปลามากเกินไป
+# เทคโนโลยีขั้นสูง C1
+machine learning|การเรียนรู้ของเครื่อง;neural network|โครงข่ายประสาทเทียม;blockchain|บล็อกเชน;quantum computing|การคำนวณควอนตัม;biometrics|ไบโอเมตริกซ์;nanotechnology|นาโนเทคโนโลยี;augmented reality|ความจริงเสริม;open source|โอเพนซอร์ส;deepfake|ดีปเฟก;latency|ความหน่วง
+# จิตใจและปรัชญาชีวิต
+contentment|ความพอใจในสิ่งที่มี;equanimity|อุเบกขา ความสงบใจ;fulfillment|ความรู้สึกสมบูรณ์;humility|ความถ่อมตน;integrity of character|ความซื่อตรงของบุคลิก;perseverance|ความเพียร;self-discipline|การมีวินัยในตนเอง;serenity|ความสงบสุข;transcendence|การก้าวข้าม;virtue|คุณธรรม
+# คำกริยา C1 ชุดสุดท้าย
+patronize|ทำตัวเหนือกว่า อุดหนุน;permeate|แทรกซึม;perpetrate|ก่อ (อาชญากรรม);pilfer|ลักเล็กขโมยน้อย;placate an angry crowd|ทำให้ฝูงชนสงบ;preclude|ทำให้เป็นไปไม่ได้;proffer|ยื่นเสนอ;promulgate|ประกาศใช้;rebuke|ตำหนิ;recant|ถอนคำพูด
+reconcile differences|ปรับความเข้าใจ;relegate|ลดชั้น;remonstrate|คัดค้านประท้วง;reproach|ตำหนิด้วยความผิดหวัง;revere|เคารพบูชา;satiate|ทำให้อิ่มเต็มที่;scrutinize closely|ตรวจละเอียด;skew|ทำให้บิดเบือน;solicit|ขอร้อง ชักชวน;stifle|ปิดกั้น
+stipulate|กำหนดเงื่อนไข;subjugate|ทำให้ตกอยู่ใต้อำนาจ;substantiate a claim|ยืนยันข้อกล่าวอ้าง;supplant|เข้าแทนที่;tantalize|ยั่วให้อยาก;thwart|ขัดขวาง;transcend|ก้าวข้าม;truncate|ตัดให้สั้น;usurp|ช่วงชิงอำนาจ;vacillate|ลังเลไปมา
+venerate|เคารพนับถือ;vilify|ใส่ร้ายป้ายสี;vindicate|พิสูจน์ความบริสุทธิ์;waive|สละสิทธิ์ ยกเว้น;wane|ลดลง เสื่อมลง;wield|ใช้ (อำนาจ อาวุธ);wither|เหี่ยวเฉา;wrangle|ทะเลาะเถียง;yearn|โหยหา;zealously|อย่างกระตือรือร้น
+# คำนาม C1 ชุดสุดท้าย
+sanctity|ความศักดิ์สิทธิ์;scourge|ภัยร้าย;semblance of order|ความเป็นระเบียบภายนอก;sinecure|ตำแหน่งสบายได้เงินมาก;solidarity|ความเป็นน้ำหนึ่งใจเดียว;stalemate|ภาวะชะงักงัน;subterfuge|อุบาย;syndicate|องค์กรร่วม;tenure|การดำรงตำแหน่ง;travesty|การล้อเลียน การบิดเบือน
+treatise|บทความวิชาการ;tribulation|ความทุกข์ยาก;vagary|ความแปรปรวน;veneer|ภาพลักษณ์ผิวนอก;verisimilitude|ความน่าเชื่อว่าจริง;vestige|ร่องรอย;vicissitude|ความผันผวนของชีวิต;vigilance|ความระแวดระวัง;vocation|อาชีพที่ใจรัก;wherewithal|ทุนทรัพย์ที่จำเป็น

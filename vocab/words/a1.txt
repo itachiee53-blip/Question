@@ -1,0 +1,73 @@
+# ทักทายและผู้คน
+hello|สวัสดี;goodbye|ลาก่อน;please|กรุณา;thank you|ขอบคุณ;sorry|ขอโทษ;yes|ใช่;no|ไม่;name|ชื่อ;friend|เพื่อน;people|ผู้คน
+man|ผู้ชาย;woman|ผู้หญิง;boy|เด็กผู้ชาย;girl|เด็กผู้หญิง;baby|ทารก;child|เด็ก;person|คน;teacher|ครู;student|นักเรียน;doctor|หมอ
+# ครอบครัว
+family|ครอบครัว;mother|แม่;father|พ่อ;sister|พี่สาว น้องสาว;brother|พี่ชาย น้องชาย;son|ลูกชาย;daughter|ลูกสาว;grandmother|ยาย ย่า;grandfather|ตา ปู่;parents|พ่อแม่
+uncle|ลุง น้า อา;aunt|ป้า น้า อา;cousin|ลูกพี่ลูกน้อง;husband|สามี;wife|ภรรยา;twin|ฝาแฝด;home|บ้าน;live|อาศัยอยู่;love|รัก;together|ด้วยกัน
+# ร่างกาย
+head|ศีรษะ;face|ใบหน้า;eye|ตา;ear|หู;nose|จมูก;mouth|ปาก;tooth|ฟัน;hair|ผม;hand|มือ;finger|นิ้วมือ
+arm|แขน;leg|ขา;foot|เท้า;knee|เข่า;back|หลัง;neck|คอ;shoulder|ไหล่;stomach|ท้อง;heart|หัวใจ;body|ร่างกาย
+# สี
+red|สีแดง;blue|สีน้ำเงิน;green|สีเขียว;yellow|สีเหลือง;black|สีดำ;white|สีขาว;pink|สีชมพู;orange|สีส้ม;purple|สีม่วง;brown|สีน้ำตาล
+gray|สีเทา;gold|สีทอง;silver|สีเงิน;color|สี;dark|มืด เข้ม;light|สว่าง อ่อน;bright|สดใส;rainbow|รุ้งกินน้ำ;paint|ระบายสี;draw|วาดรูป
+# ตัวเลขและจำนวน
+one|หนึ่ง;two|สอง;three|สาม;four|สี่;five|ห้า;six|หก;seven|เจ็ด;eight|แปด;nine|เก้า;ten|สิบ
+eleven|สิบเอ็ด;twelve|สิบสอง;twenty|ยี่สิบ;hundred|ร้อย;thousand|พัน;first|ที่หนึ่ง แรก;second|ที่สอง วินาที;half|ครึ่ง;number|ตัวเลข;count|นับ
+# เวลา วัน เดือน
+time|เวลา;day|วัน;night|กลางคืน;morning|ตอนเช้า;afternoon|ตอนบ่าย;evening|ตอนเย็น;today|วันนี้;tomorrow|พรุ่งนี้;yesterday|เมื่อวาน;week|สัปดาห์
+month|เดือน;year|ปี;hour|ชั่วโมง;minute|นาที;clock|นาฬิกา;Monday|วันจันทร์;Tuesday|วันอังคาร;Wednesday|วันพุธ;Thursday|วันพฤหัสบดี;Friday|วันศุกร์
+Saturday|วันเสาร์;Sunday|วันอาทิตย์;weekend|วันหยุดสุดสัปดาห์;January|มกราคม;April|เมษายน;December|ธันวาคม;birthday|วันเกิด;now|ตอนนี้;early|เช้า ก่อนเวลา;late|สาย
+# อาหาร
+food|อาหาร;rice|ข้าว;bread|ขนมปัง;egg|ไข่;noodles|ก๋วยเตี๋ยว;chicken|ไก่;fish|ปลา;meat|เนื้อสัตว์;pork|หมู (เนื้อ);beef|เนื้อวัว
+soup|ซุป;salad|สลัด;cake|เค้ก;cheese|ชีส;butter|เนย;sugar|น้ำตาล;salt|เกลือ;pizza|พิซซ่า;sandwich|แซนด์วิช;cookie|คุกกี้
+breakfast|อาหารเช้า;lunch|อาหารกลางวัน;dinner|อาหารเย็น;snack|ของว่าง;hungry|หิว;eat|กิน;cook|ทำอาหาร;delicious|อร่อย;sweet|หวาน;hot|ร้อน เผ็ด
+# เครื่องดื่ม
+water|น้ำ;milk|นม;juice|น้ำผลไม้;tea|ชา;coffee|กาแฟ;drink|ดื่ม;thirsty|กระหายน้ำ;cup|ถ้วย;glass|แก้ว;bottle|ขวด
+ice|น้ำแข็ง;cold|เย็น หนาว;soda|น้ำอัดลม;cocoa|โกโก้;straw|หลอด;menu|เมนู;order|สั่ง;restaurant|ร้านอาหาร;cafe|ร้านกาแฟ;waiter|พนักงานเสิร์ฟ
+# ผลไม้และผัก
+fruit|ผลไม้;apple|แอปเปิล;banana|กล้วย;grape|องุ่น;mango|มะม่วง;watermelon|แตงโม;pineapple|สับปะรด;coconut|มะพร้าว;lemon|มะนาว;strawberry|สตรอว์เบอร์รี
+vegetable|ผัก;carrot|แครอท;potato|มันฝรั่ง;tomato|มะเขือเทศ;onion|หัวหอม;corn|ข้าวโพด;bean|ถั่ว;cabbage|กะหล่ำปลี;cucumber|แตงกวา;mushroom|เห็ด
+# สัตว์
+animal|สัตว์;cat|แมว;dog|สุนัข;bird|นก;parrot|นกแก้ว;cow|วัว;pig|หมู;horse|ม้า;duck|เป็ด;sheep|แกะ
+goat|แพะ;rabbit|กระต่าย;mouse|หนู;elephant|ช้าง;tiger|เสือ;lion|สิงโต;monkey|ลิง;bear|หมี;snake|งู;frog|กบ
+camel|อูฐ;turtle|เต่า;butterfly|ผีเสื้อ;bee|ผึ้ง;ant|มด;spider|แมงมุม;zebra|ม้าลาย;giraffe|ยีราฟ;dolphin|โลมา;shark|ฉลาม
+# บ้าน
+house|บ้าน (หลัง);room|ห้อง;bedroom|ห้องนอน;bathroom|ห้องน้ำ;kitchen|ห้องครัว;living room|ห้องนั่งเล่น;door|ประตู;window|หน้าต่าง;wall|กำแพง ผนัง;floor|พื้น
+bed|เตียง;chair|เก้าอี้;table|โต๊ะ;sofa|โซฟา;lamp|โคมไฟ;mirror|กระจกเงา;key|กุญแจ;box|กล่อง;bag|กระเป๋า;garden|สวน
+spoon|ช้อน;fork|ส้อม;knife|มีด;plate|จาน;bowl|ชาม;fridge|ตู้เย็น;television|โทรทัศน์;phone|โทรศัพท์;computer|คอมพิวเตอร์;picture|รูปภาพ
+# โรงเรียน
+school|โรงเรียน;class|ชั้นเรียน;classroom|ห้องเรียน;book|หนังสือ;notebook|สมุด;pencil|ดินสอ;pen|ปากกา;eraser|ยางลบ;ruler|ไม้บรรทัด;scissors|กรรไกร
+desk|โต๊ะเรียน;board|กระดาน;homework|การบ้าน;lesson|บทเรียน;test|การทดสอบ;question|คำถาม;answer|คำตอบ;word|คำ;letter|ตัวอักษร จดหมาย;page|หน้า
+read|อ่าน;write|เขียน;spell|สะกด;learn|เรียนรู้;study|เรียน ศึกษา;teach|สอน;listen|ฟัง;speak|พูด;understand|เข้าใจ;know|รู้
+# เสื้อผ้า
+clothes|เสื้อผ้า;shirt|เสื้อเชิ้ต;T-shirt|เสื้อยืด;dress|ชุดกระโปรง;skirt|กระโปรง;pants|กางเกง;shorts|กางเกงขาสั้น;shoes|รองเท้า;socks|ถุงเท้า;hat|หมวก
+jacket|เสื้อแจ็กเก็ต;coat|เสื้อโค้ท;uniform|เครื่องแบบ;glasses|แว่นตา;watch|นาฬิกาข้อมือ ดู;belt|เข็มขัด;wear|สวมใส่;put on|ใส่;take off|ถอด;pocket|กระเป๋าเสื้อ
+# ธรรมชาติและอากาศ
+weather|สภาพอากาศ;sun|ดวงอาทิตย์;moon|ดวงจันทร์;star|ดาว;sky|ท้องฟ้า;cloud|เมฆ;rain|ฝน;snow|หิมะ;wind|ลม;storm|พายุ
+sunny|แดดออก;rainy|ฝนตก;windy|ลมแรง;cloudy|มีเมฆมาก;warm|อบอุ่น;tree|ต้นไม้;flower|ดอกไม้;grass|หญ้า;leaf|ใบไม้;river|แม่น้ำ
+sea|ทะเล;beach|ชายหาด;mountain|ภูเขา;lake|ทะเลสาบ;island|เกาะ;forest|ป่า;rock|หิน;sand|ทราย;fire|ไฟ;earth|โลก ดิน
+# สถานที่ในเมือง
+city|เมือง;town|เมืองเล็ก;street|ถนน;road|ถนน (ทาง);park|สวนสาธารณะ;shop|ร้านค้า;market|ตลาด;bank|ธนาคาร;hospital|โรงพยาบาล;hotel|โรงแรม
+zoo|สวนสัตว์;museum|พิพิธภัณฑ์;library|ห้องสมุด;cinema|โรงภาพยนตร์;station|สถานี;airport|สนามบิน;post office|ไปรษณีย์;temple|วัด;bridge|สะพาน;village|หมู่บ้าน
+# การเดินทาง
+car|รถยนต์;bus|รถบัส;train|รถไฟ;plane|เครื่องบิน;boat|เรือ;ship|เรือใหญ่;bike|จักรยาน;motorbike|รถจักรยานยนต์;taxi|แท็กซี่;truck|รถบรรทุก
+go|ไป;come|มา;walk|เดิน;drive|ขับรถ;ride|ขี่;fly|บิน;stop|หยุด;left|ซ้าย;right|ขวา ถูกต้อง;ticket|ตั๋ว
+# อาชีพ
+job|งาน;work|ทำงาน;farmer|ชาวนา;police|ตำรวจ;nurse|พยาบาล;driver|คนขับ;chef|เชฟ;singer|นักร้อง;dancer|นักเต้น;pilot|นักบิน
+artist|ศิลปิน;soldier|ทหาร;dentist|ทันตแพทย์;vet|สัตวแพทย์;engineer|วิศวกร;office|สำนักงาน;boss|หัวหน้า;worker|คนงาน;shopkeeper|เจ้าของร้าน;fireman|นักดับเพลิง
+# คำกริยาพื้นฐาน
+be|เป็น อยู่ คือ;have|มี;do|ทำ;make|ทำ สร้าง;get|ได้รับ;give|ให้;take|เอา หยิบ;see|เห็น;look|มอง;hear|ได้ยิน
+say|พูด บอก;tell|บอก เล่า;ask|ถาม;call|โทร เรียก;want|ต้องการ;need|จำเป็น ต้องการ;like|ชอบ;help|ช่วย;play|เล่น;run|วิ่ง
+jump|กระโดด;swim|ว่ายน้ำ;sing|ร้องเพลง;dance|เต้นรำ;sleep|นอนหลับ;wake up|ตื่นนอน;sit|นั่ง;stand|ยืน;open|เปิด;close|ปิด
+buy|ซื้อ;sell|ขาย;pay|จ่าย;find|หา พบ;lose|ทำหาย แพ้;win|ชนะ;start|เริ่ม;finish|จบ เสร็จ;wait|รอ;wash|ล้าง
+# คำคุณศัพท์พื้นฐาน
+big|ใหญ่;small|เล็ก;long|ยาว;short|สั้น เตี้ย;tall|สูง;fat|อ้วน;thin|ผอม บาง;old|เก่า แก่;new|ใหม่;young|อายุน้อย
+good|ดี;bad|ไม่ดี เลว;happy|มีความสุข;sad|เศร้า;angry|โกรธ;tired|เหนื่อย;beautiful|สวยงาม;ugly|น่าเกลียด;clean|สะอาด;dirty|สกปรก
+fast|เร็ว;slow|ช้า;easy|ง่าย;difficult|ยาก;full|เต็ม อิ่ม;empty|ว่างเปล่า;cheap|ราคาถูก;expensive|แพง;rich|รวย;poor|จน
+# งานอดิเรกและกีฬา
+sport|กีฬา;football|ฟุตบอล;basketball|บาสเกตบอล;tennis|เทนนิส;game|เกม;team|ทีม;ball|ลูกบอล;music|ดนตรี;song|เพลง;guitar|กีตาร์
+piano|เปียโน;movie|ภาพยนตร์;camera|กล้อง;photo|รูปถ่าย;toy|ของเล่น;doll|ตุ๊กตา;kite|ว่าว;party|งานเลี้ยง;holiday|วันหยุด;fun|สนุก
+# คำถามและตำแหน่ง
+what|อะไร;who|ใคร;where|ที่ไหน;when|เมื่อไร;why|ทำไม;how|อย่างไร;which|อันไหน;how many|กี่;how much|เท่าไร;whose|ของใคร
+in|ใน;on|บน;under|ใต้;near|ใกล้;next to|ข้าง ๆ;behind|ข้างหลัง;in front of|ข้างหน้า;between|ระหว่าง;up|ขึ้น ข้างบน;down|ลง ข้างล่าง
+here|ที่นี่;there|ที่นั่น;inside|ข้างใน;outside|ข้างนอก;far|ไกล;top|ด้านบน;bottom|ด้านล่าง;middle|ตรงกลาง;corner|มุม;around|รอบ ๆ
