@@ -152,6 +152,16 @@ button[disabled]{cursor:not-allowed}
 .wi i{font-style:normal;margin-left:auto;font-family:var(--f-mark);font-size:15px;color:var(--ok)}
 .wi.weak i{color:var(--red)}
 .wi.unk b{color:#0005}
+.quests{width:min(360px,100%);background:#fff;border:2.5px solid var(--ink);border-radius:12px;padding:6px 10px;display:flex;flex-direction:column;gap:4px;text-align:left;box-shadow:3px 3px 0 #0002}
+.quests .qh{font-size:17px}.quests .qh small{color:#0008;font-size:13px}
+.q{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 8px;font-size:15px}
+.q i{grid-column:1;height:6px;border-radius:4px;background:linear-gradient(90deg,var(--ok) calc(var(--p)*100%),#0001 0)}
+.q small,.q b,.q .buy{grid-column:2;grid-row:1/3;font-family:var(--f-en);font-size:15px;display:inline-flex;align-items:center;gap:3px}
+.q b{color:var(--ok);font-weight:400}.q.claimed span{text-decoration:line-through;opacity:.6}
+.q .coin{width:16px;height:16px}
+.search{width:min(420px,100%);border:2.5px solid var(--ink);border-radius:var(--hand);padding:5px 12px;font-size:17px;background:#fff;color:var(--ink)}
+.mbtn small svg{display:none}
+.mbtn>svg{flex:none}
 .shopgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;width:100%}
 .item{display:flex;gap:10px;align-items:center;text-align:left;background:#fff;border:2.5px solid var(--ink);border-radius:12px;padding:8px 10px;box-shadow:3px 3px 0 #0002}
 .item .ic{width:52px;height:52px;flex:none;border-radius:50%;display:grid;place-items:center;background:#fff6cc;border:2px solid #0002}
@@ -201,6 +211,7 @@ button[disabled]{cursor:not-allowed}
 .card .d{font-size:15px;color:#444;min-height:2.6em;line-height:1.3}
 .newrec{font-family:var(--f-mark);color:var(--red);border:3px solid var(--red);border-radius:var(--hand);padding:2px 12px;transform:rotate(-6deg);font-size:18px}
 @media (orientation:landscape) and (max-height:500px){.sheet{padding:12px 14px 10px 50px}.panel{gap:7px}.title{font-size:36px}.cast{height:34px}.menu{flex-direction:row;flex-wrap:wrap;justify-content:center;width:100%}.mbtn{font-size:20px;padding:5px 14px}.mbtn.main{font-size:24px}.dot b{width:46px;height:46px;font-size:22px}.dot.boss b{width:52px;height:52px}.card .disc{width:50px;height:50px}.card .disc svg{width:30px;height:30px}.stars{font-size:34px}}
+@media (orientation:landscape) and (max-height:500px){.cast{display:none}.title{font-size:30px}.title small{display:none}.quests{width:min(560px,100%);padding:4px 10px;gap:2px}.q{font-size:13px;grid-template-columns:1fr 1.2fr auto}.q i{grid-column:2;grid-row:1}.q small,.q b,.q .buy{grid-column:3;grid-row:1}.quests .qh{font-size:14px}.menu{gap:8px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 
@@ -273,9 +284,25 @@ for(const k of BOOK_ORDER)P.prog[k]=P.prog[k]||[];
 P.forts=P.forts||['base'];P.fort=P.fort||'base';
 const LEARNED=new Set(P.learned),WEAK=new Set(P.weak);
 const syncWords=()=>{P.learned=[...LEARNED];P.weak=[...WEAK];};
+const ALLW=[],EN2W={};
+function indexWords(){for(const k of BOOK_ORDER)for(const w of BOOKS[k].words){ALLW.push(w);EN2W[w.en]=w;}}
+const weakList=()=>[...WEAK].map(e=>EN2W[e]).filter(Boolean);
+function reviewPick(){const L=weakList();for(let i=L.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[L[i],L[j]]=[L[j],L[i]];}return L.slice(0,12);}
 const learnedIn=k=>BOOKS[k].words.reduce((a,w)=>a+(LEARNED.has(w.en)?1:0),0);
 let TUT=store.get('nm-tut',0);
 const save=()=>{syncWords();store.set('nm-save3',P);};
+const todayKey=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();};
+const QUESTS={stages:{n:'ผ่านด่าน',goal:2},words:{n:'ตอบถูก',goal:40,unit:'คำ'},combo:{n:'ทำคอมโบ',goal:10},stars3:{n:'ได้ 3 ดาว',goal:1,unit:'ด่าน'},review:{n:'ทบทวนคำที่พลาด',goal:1,unit:'ครั้ง'}};
+let dailyBonus=0;
+function dailyInit(){
+  const t=todayKey();if(P.daily&&P.daily.date===t)return;
+  const y=new Date();y.setDate(y.getDate()-1);const yk=y.getFullYear()+'-'+(y.getMonth()+1)+'-'+y.getDate();
+  const streak=P.daily&&P.daily.date===yk?(P.daily.streak||1)+1:1;
+  const ids=Object.keys(QUESTS).sort(()=>Math.random()-.5).slice(0,3);
+  P.daily={date:t,streak,q:ids.map(id=>({id,prog:0,claimed:false}))};
+  dailyBonus=10+5*Math.min(streak-1,6);P.coins+=dailyBonus;save();
+}
+function quest(id,v,mode){if(!P.daily)return;for(const q of P.daily.q)if(q.id===id&&!q.claimed){q.prog=mode==='max'?Math.max(q.prog,v):q.prog+v;}}
 const up=k=>P.up[k]||0;
 
 /* ---------- shop ---------- */
@@ -397,6 +424,7 @@ function penIcon(p){const body=p.body;return `<svg viewBox="0 0 60 60"><g transf
 const NAV={
  play:'<svg viewBox="0 0 40 40"><path d="M12 8 L32 20 L12 32 Z" fill="#e2463d" stroke="#22305c" stroke-width="2.5" stroke-linejoin="round"/></svg>',
  shop:'<svg viewBox="0 0 40 40"><path d="M6 14 h28 l-3 20 h-22 Z" fill="#fff04d" stroke="#22305c" stroke-width="2.5" stroke-linejoin="round"/><path d="M14 14 C14 6 26 6 26 14" fill="none" stroke="#22305c" stroke-width="2.5"/></svg>',
+ map:'<svg viewBox="0 0 40 40"><path d="M5 10 L14 6 L26 10 L35 6 V30 L26 34 L14 30 L5 34 Z" fill="#9cf08f" stroke="#22305c" stroke-width="2.5" stroke-linejoin="round"/><path d="M14 6 V30 M26 10 V34" stroke="#22305c" stroke-width="2.5"/><circle cx="20" cy="18" r="3" fill="#e2463d"/></svg>',
  words:'<svg viewBox="0 0 40 40"><rect x="8" y="6" width="24" height="28" rx="2" fill="#8fd6ff" stroke="#22305c" stroke-width="2.5"/><path d="M13 14 h14 M13 20 h14 M13 26 h9" stroke="#22305c" stroke-width="2.5" stroke-linecap="round"/></svg>'
 };
 
@@ -559,18 +587,20 @@ const PAGES=3;
 function newRun(mode,book,stage){
   const s=(Math.random()*4294967295)>>>0;
   const B=BOOKS[book];
-  const words=mode==='stage'?B.stages[stage]:B.words;
+  const isRev=mode==='review';if(isRev)mode='stage';
+  const words=isRev?reviewPick():mode==='stage'?B.stages[stage]:B.words;
   // earlier stages of the same book come back as review, missed words first
-  const review=mode==='stage'?B.stages.slice(0,stage).flat():[];
+  const review=isRev?[]:mode==='stage'?B.stages.slice(0,stage).flat():[];
   const hp=5+up('hp');
-  G={mode,book,stage,words,review,all:B.words,wave:0,hp,maxHp:hp,startHp:hp,shield:0,fluid:0,erasers:up('eraser'),score:0,combo:0,best:0,charge:0,
+  G={mode,book,stage:isRev?0:stage,rev:isRev,words,review,all:isRev?ALLW:B.words,wave:0,hp,maxHp:hp,startHp:hp,shield:0,fluid:0,erasers:up('eraser'),score:0,combo:0,best:0,charge:0,
      enemies:[],parts:[],strokes:[],floats:[],spawnLeft:0,spawnT:0,lockUntil:0,kills:0,missed:[],learned:new Set(),t:0,wrong:0,
      banner:null,slots:[null,null,null,null],barT:0,recent:[],sweep:null,uid:1,recoil:0,fortHit:0,newWords:0,
      sk:{},freezeT:0,boltT:0,hits:[],seenTypes:new Set(),rw:mulberry(s),rs:mulberry(s^0x9e3779b9),ro:mulberry(s^0x51ed270b)};
   if(up('start')){const k=rpick(G.ro,['redpen','star','hl','shav','bolt','sand','cover','fluid']);G.sk[k]=1;}
   shownScore=0;MUS.step=0;heartsUI(true);skillsUI();nextWave();
 }
-const isBossPage=()=>G.mode==='stage'?G.wave===PAGES:G.wave%4===0;
+const pages=()=>G.rev?2:PAGES;
+const isBossPage=()=>G.mode==='stage'?!G.rev&&G.wave===PAGES:G.wave%4===0;
 function nextWave(){
   G.wave++;
   const boss=isBossPage();
@@ -579,11 +609,12 @@ function nextWave(){
   G.bossPending=boss;G.spawnT=1.5;G.diff=diff;
   G.shield=shieldsPerPage();G.fluid=lvl('fluid');
   const first=G.mode==='stage'?G.wave===1:G.wave%4===1;
-  G.banner={text:boss?'บอส!':(G.mode==='stage'?'หน้า '+G.wave+'/'+PAGES:'หน้า '+G.wave),sub:first?(G.mode==='stage'?BOOKS[G.book].name+' · ด่าน '+(G.stage+1):'ไม่รู้จบ · '+theme().name):'',t:first?2.6:2,boss};
+  G.banner={text:boss?'บอส!':(G.mode==='stage'?'หน้า '+G.wave+'/'+pages():'หน้า '+G.wave),sub:first&&G.rev?'ทบทวนคำที่พลาด':first?(G.mode==='stage'?BOOKS[G.book].name+' · ด่าน '+(G.stage+1):'ไม่รู้จบ · '+theme().name):'',t:first?2.6:2,boss};
   boss?SFX.boss():SFX.page();state='play';bg=null;
   const f=$('#flip');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');
   $('#pgLbl').textContent=G.mode==='stage'?'ด่าน '+(G.stage+1):'ไม่รู้จบ';
-  $('#pageN').textContent=G.mode==='stage'?G.wave+'/'+PAGES:G.wave;
+  $('#pageN').textContent=G.mode==='stage'?G.wave+'/'+pages():G.wave;
+  if(G.rev)$('#pgLbl').textContent='ทบทวน';
   const pg=$('#pg');pg.classList.remove('turn');void pg.offsetWidth;pg.classList.add('turn');
 }
 function takeWord(){
@@ -672,7 +703,7 @@ function strike(e){
   G.strokes.push({x1:t.x,y1:t.y,x2:e.x,y2:e.y,life:.22,id:Math.random()*99,red:lvl('redpen')>0});
   if(p.spark)for(let i=0;i<10;i++)G.parts.push({x:e.x,y:e.y,vx:rnd(-160,160)*SC,vy:rnd(-220,-40)*SC,life:.7,max:.7,w:5*SC,h:5*SC,rot:0,vr:6,c:'#ffd23f',star:true});
   G.recoil=1;SFX.scribble();hitstop=.05;
-  G.combo++;G.best=Math.max(G.best,G.combo);G.learned.add(w.en);speak(w.en);
+  G.combo++;G.best=Math.max(G.best,G.combo);G.learned.add(w.en);speak(w.en);quest('words',1);quest('combo',G.combo,'max');
   if(!LEARNED.has(w.en)){LEARNED.add(w.en);G.newWords++;}
   WEAK.delete(w.en);
   if(TUT<3){TUT++;store.set('nm-tut',TUT);}
@@ -731,7 +762,7 @@ function update(dt){
       }
     }else if(!G.enemies.length&&!G.sweep){
       state='between';
-      if(G.mode==='stage'&&G.wave>=PAGES)setTimeout(()=>runEnd(true),850);
+      if(G.mode==='stage'&&G.wave>=pages())setTimeout(()=>runEnd(true),850);
       else setTimeout(showPick,850);
     }
     const hy=hitY(),sm=speedMul();
@@ -953,15 +984,26 @@ function home(){
   state='menu';clearRun();
   const cast=[0,1,2,3,4,5].map(i=>ART['m'+i]?`<img src="${ART['m'+i]}" alt="">`:'').join('');
   const learned=BOOK_ORDER.reduce((a,k)=>a+learnedIn(k),0),total=BOOK_ORDER.reduce((a,k)=>a+BOOKS[k].words.length,0);
+  dailyInit();
+  const nextI=Math.min(BOOKS[curBook].stages.length-1,P.prog[curBook].filter(Boolean).length);
+  const wl=weakList().length;
+  const qs=P.daily.q.map((q,qi)=>{const Q=QUESTS[q.id],done=q.prog>=Q.goal;return `<div class="q ${q.claimed?'claimed':''}"><span>${Q.n} ${Math.min(q.prog,Q.goal)}/${Q.goal}${Q.unit?' '+Q.unit:''}</span><i style="--p:${Math.min(1,q.prog/Q.goal)}"></i>${q.claimed?'<b>✓</b>':done?`<button class="buy" type="button" data-claim="${qi}">${COIN}30</button>`:`<small>${COIN}30</small>`}</div>`;}).join('');
   show(`<h1 class="title"><span>Notebook</span><br>Monsters<small>ปีศาจหน้าสมุด</small></h1>
     <div class="cast">${cast}</div>
     <div class="menu">
-      <button class="mbtn main" type="button" id="goPlay">${NAV.play}เล่น</button>
+      <button class="mbtn main" type="button" id="goNext">${NAV.play}เล่นต่อ<small>${BOOKS[curBook].name} · ด่าน ${nextI+1}</small></button>
+      <button class="mbtn" type="button" id="goPlay">${NAV.map}เลือกด่าน</button>
+      ${wl>=4?`<button class="mbtn" type="button" id="goRev">${ICON.fluid}ทบทวนคำที่พลาด<small>${wl} คำ</small></button>`:''}
       <button class="mbtn" type="button" id="goShop">${NAV.shop}ร้านค้า<small>${fmt(P.coins)}</small></button>
       <button class="mbtn" type="button" id="goWords">${NAV.words}สมุดคำศัพท์<small>${learned}/${total}</small></button>
     </div>
+    <div class="quests"><div class="qh">ภารกิจวันนี้ <small>เข้าเล่นติดกัน ${P.daily.streak} วัน</small></div>${qs}</div>
     <div class="toggles"><button class="chk" type="button" id="tSfx"><i>${OPT.sfx?'✓':''}</i>เสียง</button><button class="chk" type="button" id="tMus"><i>${OPT.music?'✓':''}</i>เพลง</button><button class="chk" type="button" id="tVoice"><i>${OPT.voice?'✓':''}</i>อ่านคำ</button></div>`);
   $('#goPlay').onclick=()=>{SFX.tap();map(curBook);};
+  $('#goNext').onclick=()=>{audio();SFX.tap();preStage(curBook,nextI);};
+  if($('#goRev'))$('#goRev').onclick=()=>start('review',curBook,0);
+  panel.querySelectorAll('[data-claim]').forEach(b=>b.onclick=()=>{const q=P.daily.q[+b.dataset.claim];if(q.claimed)return;q.claimed=true;P.coins+=30;save();audio();SFX.coin();toast('+30 เหรียญ');home();});
+  if(dailyBonus){toast(`โบนัสเข้าเล่นวันนี้ +${dailyBonus} เหรียญ`);dailyBonus=0;}
   $('#goShop').onclick=()=>{SFX.tap();shop('up');};
   $('#goWords').onclick=()=>{SFX.tap();words(curBook);};
   const tg=(id,key)=>{$(id).onclick=e=>{audio();OPT[key]=!OPT[key];e.currentTarget.querySelector('i').textContent=OPT[key]?'✓':'';store.set('nm-opt',OPT);};};
@@ -1005,9 +1047,11 @@ function words(k){
   show(`<div class="topbar"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>สมุดคำศัพท์</h2></div>
     ${bookTabs(k,'data-b')}
     <div class="bookinfo">${B.lvl} · เก็บแล้ว ${learnedIn(k)}/${B.words.length} · ต้องทบทวน ${Wk.size}</div>
+    <input class="search" id="wsearch" type="search" placeholder="ค้นหาคำ อังกฤษหรือไทย" autocomplete="off">
     <div class="scroll"><div class="wgrid">${B.words.map(w=>{const cls=Wk.has(w.en)?'weak':L.has(w.en)?'':'unk';return `<button class="wi ${cls}" type="button" data-say="${esc(w.en)}"><b>${esc(w.en)}</b><span>${esc(w.th)}</span><i>${Wk.has(w.en)?'ทวน':L.has(w.en)?'✓':''}</i></button>`;}).join('')}</div></div>`);
   $('#back').onclick=home;
   panel.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>words(b.dataset.b));
+  const ws=$('#wsearch');ws.oninput=()=>{const q=ws.value.trim().toLowerCase();panel.querySelectorAll('.wgrid .wi').forEach(el=>{el.hidden=!!q&&!el.textContent.toLowerCase().includes(q);});};
   panel.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>{audio();speak(b.dataset.say,true);});
 }
 function shop(tab){
@@ -1065,9 +1109,10 @@ function runEnd(won){
   if(!G)return;state='over';save();
   const k=G.book,i=G.stage,mode=G.mode;
   let coins=0,head='',extra='',stars=0,bookFinished=false;
-  if(mode==='stage'){
-    if(won){
-      const lost=G.startHp-G.hp;stars=lost===0&&G.wrong<=2?3:lost<=2?2:1;
+  if(G.rev){coins=G.learned.size*3;head=won?`<h2 class="big green">ทบทวนเสร็จ!</h2>`:`<h2 class="big red">ป้อมแตก!</h2>`;extra=`<div class="bookinfo">แก้คำที่เคยพลาดได้ ${G.learned.size} คำ</div>`;if(won){quest('review',1);SFX.win();}}
+  else if(mode==='stage'){
+    if(won){quest('stages',1);
+      const lost=G.startHp-G.hp;stars=lost===0&&G.wrong<=2?3:lost<=2?2:1;if(stars===3)quest('stars3',1);
       const prev=P.prog[k][i]||0;
       coins=10+stars*5;
       if(!prev)coins+=30;
@@ -1086,18 +1131,18 @@ function runEnd(won){
     head=`<h2 class="big red">ป้อมแตก!</h2>`;extra=`<div class="gain" style="color:var(--ink)">${fmt(G.score)} แต้ม</div>${nb?'<span class="newrec">สถิติใหม่!</span>':''}`;
   }
   P.coins+=coins;save();
-  const hasNext=mode==='stage'&&won&&i+1<BOOKS[k].stages.length;
+  const hasNext=!G.rev&&mode==='stage'&&won&&i+1<BOOKS[k].stages.length;const wasRev=G.rev;
   show(`${head}${extra}
-    <div class="gain">+${COIN}${fmt(coins)}</div>
+    <div class="gain">+${COIN}<span id="gainN">0</span></div>
     ${bookFinished?'<div class="bookinfo">ปลดล็อกโหมดไม่รู้จบแล้ว</div>':''}
     <div class="stats"><div><b>${G.learned.size}</b>คำถูก</div><div><b>${G.best}</b>คอมโบ</div>${G.newWords?`<div><b>+${G.newWords}</b>คำใหม่</div>`:''}${mode==='stage'?`<div><b>${fmt(G.score)}</b>แต้ม</div>`:`<div><b>${G.wave}</b>หน้า</div>`}</div>
     ${G.missed.length?`<div class="scroll" style="max-height:22vh"><div class="wgrid">${G.missed.map(w=>`<button class="wi weak" type="button" data-say="${esc(w.en)}"><b>${esc(w.en)}</b><span>${esc(w.th)}</span><i>ทวน</i></button>`).join('')}</div></div>`:''}
     <div class="row">${hasNext?'<button class="btn" type="button" id="next">ด่านต่อไป</button>':''}<button class="btn ${hasNext?'plain':''}" type="button" id="again">${won?'เล่นซ้ำ':'ลองใหม่'}</button><button class="btn plain" type="button" id="toMap">แผนที่</button></div>`);
-  if(coins>0)setTimeout(()=>SFX.coin(),300);
+  if(coins>0){const el=$('#gainN'),t0=performance.now(),dur=Math.min(1200,300+coins*8);const tick=now=>{const k2=Math.min(1,(now-t0)/dur);el.textContent=fmt(coins*k2);if(k2<1)requestAnimationFrame(tick);else SFX.coin();};setTimeout(()=>requestAnimationFrame(tick),350);}
   panel.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>speak(b.dataset.say,true));
   if(hasNext)$('#next').onclick=()=>preStage(k,i+1);
-  $('#again').onclick=()=>start(mode,k,i);
-  $('#toMap').onclick=()=>map(k);
+  $('#again').onclick=()=>wasRev?start('review',k,0):start(mode,k,i);
+  $('#toMap').onclick=()=>wasRev?home():map(k);
 }
 function pause(){
   if(state!=='play')return;state='paused';
@@ -1125,7 +1170,7 @@ addEventListener('keydown',e=>{
 });
 
 window.__nm=()=>G;window.__P=()=>P;
-makeForts();
+makeForts();indexWords();
 fit();home();requestAnimationFrame(frame);
 })();
 </script>
