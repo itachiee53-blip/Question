@@ -1,0 +1,13 @@
+# วิชาการและการวิจัย C1
+discourse analysis|การวิเคราะห์วาทกรรม;epistemology|ญาณวิทยา;longitudinal study|การศึกษาระยะยาว;meta-analysis|การวิเคราะห์อภิมาน;operationalize|กำหนดนิยามเชิงปฏิบัติการ;paradigmatic|เป็นแบบฉบับ;qualitative data|ข้อมูลเชิงคุณภาพ;sampling bias|ความลำเอียงในการสุ่ม;triangulation|การตรวจสอบสามเส้า;theoretical framework|กรอบทฤษฎี
+empirically|โดยประจักษ์;inherently|โดยเนื้อแท้;intrinsically|โดยเนื้อแท้ภายใน;ostensibly|ดูภายนอกว่า;paradoxically|อย่างย้อนแย้ง;perpetually|ตลอดไป;pragmatically|ในทางปฏิบัติ;purportedly|ตามที่อ้าง;tacitly|โดยนัย;unequivocally|อย่างชัดเจนที่สุด
+# สังคมและวัฒนธรรม C1
+assimilation|การกลืนกลาย;cosmopolitan|เป็นสากล;disenfranchised|ถูกตัดสิทธิ์;egalitarian|เสมอภาคนิยม;gentrify|ปรับปรุงให้หรูขึ้น;hegemonic|ครองความเป็นใหญ่;meritocracy|ระบบคุณธรรม;patriarchy|ระบบชายเป็นใหญ่;secularism|ลัทธิฆราวาสนิยม;xenophobia|ความเกลียดกลัวคนต่างชาติ
+diaspora|กลุ่มคนพลัดถิ่น;ethnocentric|ยึดชาติพันธุ์ตนเป็นศูนย์กลาง;homogeneous|เป็นเนื้อเดียวกัน;heterogeneous|หลากหลายต่างกัน;indoctrinate|ปลูกฝังความเชื่อ;polarization|การแบ่งขั้ว;stratification|การแบ่งชั้น;subculture|วัฒนธรรมย่อย;taboo subject|เรื่องต้องห้าม;zeitgeist|จิตวิญญาณของยุคสมัย
+# คำบรรยายบุคลิก C1
+abrasive manner|ท่าทีกระด้าง;assiduous|ขยันขันแข็ง;blasé|เฉยชาเพราะชินแล้ว;brusque|ห้วน;charismatic|มีเสน่ห์ดึงดูด;churlish|หยาบคายไร้มารยาท;contrarian|ชอบเห็นต่าง;demure|เรียบร้อยสงบเสงี่ยม;erudite|รอบรู้;fickle|โลเล
+garrulous person|คนพูดมาก;haughty|หยิ่งยโส;impetuous|หุนหัน;irascible|โกรธง่าย;judicious|มีวิจารณญาณ;magnetic|มีแรงดึงดูด;ingenuous|ซื่อไร้เดียงสา;obstreperous|เอะอะดื้อด้าน;phlegmatic|เยือกเย็นไม่ตื่นเต้น;querulous|ขี้บ่น
+sanctimonious|ทำทีเป็นคนดี;supercilious|ดูถูกผู้อื่น;timorous|ขี้ขลาด;unflappable|ไม่หวั่นไหว;urbane|สุภาพเรียบร้อยแบบคนเมือง;vivacious|มีชีวิตชีวาร่าเริง;wily|เจ้าเล่ห์;witty|มีไหวพริบตลก;astuteness|ความหลักแหลม;self-effacing|ถ่อมตัวไม่โอ้อวด
+# วลีกริยาขั้นสูง
+brush off|ปัดตก;bow out|ถอนตัว;buckle down|ตั้งใจทำงาน;butt in|แทรกขัดจังหวะ;chip in|ช่วยกันออกเงิน;clamp down on|ปราบปราม;crop up|เกิดขึ้นโดยไม่คาดคิด;dawn on|เริ่มเข้าใจ;dwell on|คิดวนเวียน;egg on|ยุให้ทำ
+fend off|ปัดป้อง;fizzle out|ค่อย ๆ หมดไป;flesh out|ขยายรายละเอียด;gloss over|ทำเป็นมองข้าม;hammer out|ตกลงกันได้หลังถกเถียง;iron out|แก้ปัญหาเล็ก ๆ;mull over|ครุ่นคิด;phase out|ค่อย ๆ ยกเลิก;rein in|ควบคุม;stave off|ป้องกันไว้ก่อน

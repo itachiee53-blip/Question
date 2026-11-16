@@ -1,0 +1,15 @@
+# ครอบครัวและชีวิตคู่ B1
+engaged|หมั้นแล้ว;engagement|การหมั้น;bride|เจ้าสาว;groom|เจ้าบ่าว;honeymoon|ฮันนีมูน;anniversary|วันครบรอบ;single parent|พ่อแม่เลี้ยงเดี่ยว;adopted child|ลูกบุญธรรม;household|ครัวเรือน;in-laws|ญาติฝ่ายสามีหรือภรรยา
+sibling|พี่น้อง;only child|ลูกคนเดียว;upbringing|การเลี้ยงดู;raise a child|เลี้ยงลูก;babysitter|พี่เลี้ยงเด็ก;nursery|สถานรับเลี้ยงเด็ก;kindergarten|อนุบาล;grow up|เติบโตขึ้น;get married|แต่งงาน;settle down|ลงหลักปักฐาน
+# อารมณ์ขันและความบันเทิง
+joke|เรื่องตลก;prank|การแกล้ง;punchline|มุกเด็ด;comedian|นักแสดงตลก;sense of humour|อารมณ์ขัน;laugh out loud|หัวเราะเสียงดัง;giggle|หัวเราะคิกคัก;tease|ล้อเล่น แหย่;amuse|ทำให้ขบขัน;amusing|น่าขบขัน
+magic trick|มายากล;magician|นักมายากล;circus|ละครสัตว์;clown|ตัวตลก;fireworks|ดอกไม้ไฟ;parade|ขบวนพาเหรด;carnival|งานรื่นเริง;theme park|สวนสนุก;roller coaster|รถไฟเหาะ;haunted house|บ้านผีสิง
+# ความปลอดภัยและอาชญากรรมเล็ก ๆ
+pickpocket|นักล้วงกระเป๋า;burglar|โจรย่องเบา;burglary|การย่องเบา;shoplifting|การขโมยของในร้าน;vandalism|การทำลายทรัพย์สิน;security guard|เจ้าหน้าที่รักษาความปลอดภัย;CCTV|กล้องวงจรปิด;lock the door|ล็อกประตู;report a crime|แจ้งความ;stolen|ถูกขโมย
+# คำกริยา B1 ชุดปิดท้าย
+manage time|บริหารเวลา;measure up|ได้มาตรฐาน;memorise words|ท่องคำศัพท์;mention briefly|กล่าวถึงสั้น ๆ;murmur|พึมพำ;negotiate prices|ต่อรองราคา;obey|เชื่อฟัง;occupy time|ใช้เวลา;offer|เสนอ;operate|ดำเนินงาน ผ่าตัด
+own|เป็นเจ้าของ;participate in|เข้าร่วมใน;perform|แสดง;permit|อนุญาต;persuade friends|โน้มน้าวเพื่อน;pretend|แกล้งทำ;print a photo|พิมพ์รูป;proceed|ดำเนินต่อไป;publish a book|ตีพิมพ์หนังสือ;qualify as|มีคุณสมบัติเป็น
+react|ตอบสนอง;recommend a film|แนะนำหนัง;record a video|อัดวิดีโอ;recover from|ฟื้นตัวจาก;reduce stress|ลดความเครียด;reflect|สะท้อน ไตร่ตรอง;register|ลงทะเบียน;relate to|เกี่ยวข้องกับ เข้าใจ;release|ปล่อย;rely on|พึ่งพา
+# คำนาม B1 ชุดปิดท้าย
+aim|เป้าหมาย เล็ง;angle|มุม;atmosphere at home|บรรยากาศในบ้าน;audience size|จำนวนผู้ชม;background|พื้นหลัง ภูมิหลัง;balance sheet|งบดุล;category|หมวดหมู่;centre|ศูนย์กลาง;challenge accepted|รับคำท้า;climate zone|เขตภูมิอากาศ
+contest|การประกวด;crew member|ลูกเรือคนหนึ่ง;detail|รายละเอียด;feature|ลักษณะเด่น;figure|ตัวเลข รูปร่าง;force|แรง บังคับ;image|ภาพ;level|ระดับ;mixture of|ส่วนผสมของ;pattern|ลวดลาย รูปแบบ

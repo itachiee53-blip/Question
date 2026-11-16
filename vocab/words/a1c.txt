@@ -1,0 +1,13 @@
+# คำกริยาง่าย ๆ ในบ้าน
+eat breakfast|กินข้าวเช้า;drink milk|ดื่มนม;go home|กลับบ้าน;go to school|ไปโรงเรียน;come back|กลับมา;sit down|นั่งลง;stand up|ลุกขึ้นยืน;look at|มองดู;listen to|ฟัง (สิ่งใด);talk to|คุยกับ
+play games|เล่นเกม;watch TV|ดูทีวี;read a book|อ่านหนังสือ;write a letter|เขียนจดหมาย;draw a cat|วาดแมว;sing a song|ร้องเพลงหนึ่งเพลง;open the door|เปิดประตู;close the window|ปิดหน้าต่าง;wash hands|ล้างมือ;comb hair|หวีผม
+# ของเล่นและสิ่งของรอบตัว
+teddy|ตุ๊กตาหมี (เรียกสั้น);ball game|เกมบอล;toy car|รถของเล่น;train set|ชุดรถไฟของเล่น;crayons|สีเทียนหลายแท่ง;storybook|หนังสือนิทาน;drum set|ชุดกลอง;whistle toy|นกหวีดของเล่น;yo-yo|โยโย่;marble|ลูกแก้ว
+# สัตว์เลี้ยงและเสียงสัตว์
+woof|โฮ่ง;moo|มอ;quack|ก้าบ;oink|อู๊ด;tweet|จิ๊บ;roar|คำราม;hiss|ขู่ฟ่อ;buzz|หึ่ง;croak|อ๊บ;neigh|ม้าร้อง
+# คำบอกลักษณะง่าย ๆ
+yummy|อร่อย (ภาษาเด็ก);messy|รก;wet hair|ผมเปียก;hot day|วันที่ร้อน;cold water|น้ำเย็น;big dog|หมาตัวใหญ่;small cat|แมวตัวเล็ก;long hair|ผมยาว;short hair|ผมสั้น;new shoes|รองเท้าใหม่
+old book|หนังสือเก่า;happy face|หน้ายิ้ม;sad story|เรื่องเศร้า;fast car|รถเร็ว;slow turtle|เต่าช้า;tall tree|ต้นไม้สูง;little bird|นกตัวน้อย;red apple|แอปเปิลแดง;green leaf|ใบไม้สีเขียว;blue sky|ท้องฟ้าสีฟ้า
+# ประโยคสั้นในห้องเรียน
+good morning|สวัสดีตอนเช้า;good afternoon|สวัสดีตอนบ่าย;good night|ราตรีสวัสดิ์;see you|แล้วเจอกัน;excuse me|ขอโทษ (ขอทาง);of course|แน่นอน;no problem|ไม่เป็นไร;you're welcome|ด้วยความยินดี;I don't know|ฉันไม่รู้;nice to meet you|ยินดีที่ได้รู้จัก
+how are you|สบายดีไหม;I'm fine|ฉันสบายดี;what time|กี่โมง;how old|อายุเท่าไร;sit please|เชิญนั่ง;be quiet|เงียบหน่อย;hurry up|เร็วเข้า;come in|เข้ามา;let's go|ไปกันเถอะ;well done|เก่งมาก
