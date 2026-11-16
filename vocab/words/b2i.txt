@@ -1,0 +1,11 @@
+# เศรษฐกิจดิจิทัล
+e-commerce|พาณิชย์อิเล็กทรอนิกส์;platform|แพลตฟอร์ม;user base|ฐานผู้ใช้;monetize|สร้างรายได้จาก;freemium|ฟรีแต่มีส่วนเสียเงิน;in-app purchase|การซื้อในแอป;subscription fee|ค่าสมาชิก;digital literacy|การรู้เท่าทันดิจิทัล;online banking|ธนาคารออนไลน์;contactless|ไร้การสัมผัส
+data privacy|ความเป็นส่วนตัวของข้อมูล;terms and conditions|ข้อกำหนดและเงื่อนไข;consent form|แบบฟอร์มยินยอม;opt out|เลือกไม่เข้าร่วม;opt in|เลือกเข้าร่วม;tech giant|บริษัทเทคยักษ์ใหญ่;disrupt an industry|พลิกโฉมอุตสาหกรรม;digital divide|ความเหลื่อมล้ำทางดิจิทัล;remote access|การเข้าถึงทางไกล;user experience|ประสบการณ์ผู้ใช้
+# การแก้ปัญหาและความคิดสร้างสรรค์
+problem-solving|การแก้ปัญหา;critical thinking|การคิดเชิงวิพากษ์;lateral thinking|การคิดนอกกรอบ;trial and error|การลองผิดลองถูก;root cause|ต้นเหตุ;workaround|วิธีแก้ขัด;brainchild|ความคิดริเริ่ม;inspiration|แรงบันดาลใจ;resourceful|มีไหวพริบหาทางออก;inventive|มีความคิดประดิษฐ์
+iterate|ทำซ้ำเพื่อปรับปรุง;refine an idea|ขัดเกลาความคิด;feasibility|ความเป็นไปได้;constraint|ข้อจำกัด;trade off|แลกเปลี่ยนได้อย่างเสียอย่าง;outcome-based|อิงผลลัพธ์;experiment with|ทดลองกับ;think through|คิดให้รอบคอบ;come up with|คิดขึ้นมา;rule out|ตัดออกจากความเป็นไปได้
+# ความขัดแย้งและการเจรจา
+mediator|ผู้ไกล่เกลี่ย;middle ground|จุดกึ่งกลาง;bargaining power|อำนาจต่อรอง;concession|การยอมผ่อนปรน;deadlock|ทางตัน;ultimatum given|คำขาดที่ยื่น;de-escalation|การลดความตึงเครียด;mutual respect|ความเคารพซึ่งกันและกัน;common ground|จุดร่วม;agree to disagree|ยอมรับที่จะเห็นต่าง
+# ภาษากาย สีหน้า ท่าทาง
+frown|ขมวดคิ้ว;grin|ยิ้มกว้าง;smirk|ยิ้มเยาะ;glare|จ้องเขม็ง;stare|จ้องมอง;glance|ชำเลือง;wink|ขยิบตา;shrug|ยักไหล่;sigh|ถอนหายใจ;yawn|หาว
+blush|หน้าแดง;tremble|สั่นเทา;clench|กำแน่น;pout|ทำปากยื่น;gesture|ท่าทาง;posture slump|ท่านั่งหลังค่อม;fidget|อยู่ไม่สุข;pace up and down|เดินไปมา;tap fingers|เคาะนิ้ว;roll eyes|กลอกตา

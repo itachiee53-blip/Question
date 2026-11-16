@@ -1,0 +1,13 @@
+# อุปกรณ์กีฬาและการออกกำลังกาย
+treadmill|ลู่วิ่ง;dumbbell|ดัมเบล;yoga mat|เสื่อโยคะ;push-up|วิดพื้น;sit-up|ซิทอัพ;squat|สควอต;lap|รอบ (สนาม);personal best|สถิติส่วนตัว;work out daily|ออกกำลังทุกวัน;sports drink|เครื่องดื่มเกลือแร่
+marathon|มาราธอน;relay|วิ่งผลัด;high jump|กระโดดสูง;long jump|กระโดดไกล;javelin|พุ่งแหลน;archery|ยิงธนู;rowing|พายเรือ;sailing|แล่นเรือใบ;karate|คาราเต้;taekwondo|เทควันโด
+# อาหารและการทำครัว B1
+cookbook|ตำราอาหาร;measuring cup|ถ้วยตวง;whisk|ตะกร้อตีไข่;blender|เครื่องปั่น;rolling pin|ไม้นวดแป้ง;grater|ที่ขูด;frying pan|กระทะทอด;saucepan|หม้อด้ามจับ;baking tray|ถาดอบ;oven glove|ถุงมือจับของร้อน
+steam|นึ่ง ไอน้ำ;roast|อบ ย่าง;toast bread|ปิ้งขนมปัง;scramble|คนไข่ (ทำไข่คน);season|ปรุงรส ฤดู;taste test|ชิมรส;leftover rice|ข้าวเหลือ;serve|เสิร์ฟ;dish up|ตักอาหารใส่จาน;clear up|เก็บกวาด
+# อารมณ์และความสัมพันธ์ในโรงเรียน
+bully|รังแก คนชอบรังแก;bullying|การรังแก;stand up for|ปกป้อง ยืนหยัดเพื่อ;make fun of|ล้อเลียน;fall out|ทะเลาะกัน;make up with|คืนดีกับ;best friend|เพื่อนสนิท;share secrets|เล่าความลับ;keep a secret|เก็บความลับ;trustworthy|ไว้ใจได้
+# สิ่งของและวัสดุรีไซเคิล
+cardboard|กระดาษแข็ง;tin can|กระป๋อง;glass jar|โหลแก้ว;newspaper pile|กองหนังสือพิมพ์;recycle bin|ถังรีไซเคิล;compost bin|ถังหมักปุ๋ย;scrap paper|กระดาษเหลือใช้;bottle cap|ฝาขวด;aluminium|อะลูมิเนียม;rubber|ยาง
+# คำวิเศษณ์บอกท่าทาง
+angrily|อย่างโกรธ;happily|อย่างมีความสุข;sadly|อย่างเศร้า;proudly|อย่างภูมิใจ;nervously|อย่างประหม่า;politely|อย่างสุภาพ;rudely|อย่างหยาบคาย;patiently|อย่างอดทน;honestly|อย่างซื่อสัตย์;bravely|อย่างกล้าหาญ
+gently|อย่างนุ่มนวล;firmly|อย่างหนักแน่น;briefly|โดยย่อ;clearly|อย่างชัดเจน;correctly|อย่างถูกต้อง;fairly|อย่างยุติธรรม ค่อนข้าง;freely|อย่างอิสระ;kindly|อย่างใจดี;silently|อย่างเงียบ ๆ;warmly|อย่างอบอุ่น
