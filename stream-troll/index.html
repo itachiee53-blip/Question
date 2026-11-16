@@ -103,6 +103,35 @@ button{font:inherit;color:inherit}
 .res span{font-size:11px;color:var(--muted)}
 .mute{background:none;border:1px solid var(--line);border-radius:6px;padding:2px 8px;font-size:12px;cursor:pointer;color:var(--muted)}
 .help{font-size:12px;color:var(--muted);margin-top:10px}
+.rot{background:none;border:1px solid var(--gold);color:var(--gold);border-radius:6px;padding:2px 8px;font-size:12px;cursor:pointer}
+.rot:focus-visible,.mute:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media (min-width:901px) and (pointer:fine){.rot{display:none}}
+.landhint{font-size:12px!important;color:var(--gold)!important}
+/* compact landscape layout: set by script when the phone is sideways, or forced by the rotate button */
+html.land body{height:100vh;height:100dvh;overflow:hidden;padding-block:6px}
+html.land .wrap{grid-template-columns:minmax(0,1fr) clamp(120px,18%,170px);gap:8px;height:100%;max-width:none}
+html.land main{display:grid;grid-template-columns:minmax(0,1fr) clamp(170px,26%,230px);grid-template-rows:auto auto minmax(0,1fr);gap:6px 8px;min-height:0;align-content:start}
+html.land .top{grid-column:1/-1;gap:8px;flex-wrap:nowrap}
+html.land .live{font-size:10px;padding:1px 6px}
+html.land .title{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.land .title small,html.land .help,html.land .landhint{display:none}
+html.land .stat{gap:8px;font-size:11px;flex-wrap:nowrap;white-space:nowrap}
+html.land .stage{grid-column:1;grid-row:2;margin:0}
+html.land .meters{grid-column:1;grid-row:3;margin:0;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;align-self:start}
+html.land .meter{padding:4px 7px}
+html.land .meter .lbl{font-size:10.5px;gap:4px}
+html.land .bar{height:7px;margin-top:3px}
+html.land .acts{grid-column:2;grid-row:2/4;margin:0;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:5px;min-height:0}
+html.land .act{padding:4px 7px}
+html.land .act .d,html.land .act .k{display:none}
+html.land .act .n{font-size:12px;padding-right:0;line-height:1.25}
+html.land .act .c{font-size:9.5px;gap:2px 5px}
+html.land .chat{height:100%;max-height:none;position:static;min-height:0}
+html.land .chat h2{padding:5px 8px;font-size:11px}
+html.land .log{font-size:12px;padding:5px 8px}
+html.land .ov{position:fixed;z-index:50}
+html.land .card p{font-size:12px}
+html.force body{position:fixed;top:0;left:0;margin:0;transform-origin:top left;transform:rotate(90deg) translateY(-100%)}
 @media (prefers-reduced-motion:reduce){.pop,.line{animation:none}.bubble{transition:none}}
 </style>
 
@@ -116,6 +145,7 @@ button{font:inherit;color:inherit}
         <span>เวลา <b id="time">1:30</b></span>
         <span>คะแนน <b id="score">0</b></span>
         <button class="mute" id="mute" type="button">เสียง: เปิด</button>
+        <button class="rot" id="rot" type="button">แนวนอน</button>
       </div>
     </div>
 
@@ -131,6 +161,7 @@ button{font:inherit;color:inherit}
           <h1>แชท<em>ป่วน</em>ไลฟ์</h1>
           <p>คุณคือคนดูหนึ่งคนในไลฟ์ของพี่ต้นกล้า ภารกิจคือป่วนให้พี่เขาหัวร้อนจนเลิกไลฟ์ภายใน 90 วินาที แต่ระวังม็อดปลาทู ถ้าความสงสัยเต็มหลอดจะโดนทามเอาท์ โดนครบ 3 ครั้งคือโดนแบน</p>
           <p>ป่วนสลับท่าเพื่อเก็บคอมโบ ใช้ท่าเดิมซ้ำๆ พี่เขาจะเริ่มชิน และดูจังหวะเกมกับม็อดให้ดี</p>
+          <p class="landhint">เล่นบนมือถือ: กดปุ่ม "แนวนอน" มุมขวาบน หรือหมุนเครื่องเป็นแนวนอน</p>
           <label class="namebox" for="nick">ชื่อในแชท <input id="nick" maxlength="16" value="ผู้ป่วนนิรนาม"></label>
           <button class="go" id="startBtn" type="button">เข้าแชท</button>
         </div>
@@ -446,7 +477,7 @@ function render(){
 /* ---------- canvas ---------- */
 const cv=$('cv'),cx=cv.getContext('2d');
 const W=960,H=540;
-function fitCanvas(){const r=cv.getBoundingClientRect(),d=Math.min(2,devicePixelRatio||1);cv.width=Math.round(r.width*d)||W;cv.height=Math.round(r.height*d)||H;}
+function fitCanvas(){const r={width:cv.clientWidth,height:cv.clientHeight},d=Math.min(2,devicePixelRatio||1);cv.width=Math.round(r.width*d)||W;cv.height=Math.round(r.height*d)||H;}
 new ResizeObserver(fitCanvas).observe(cv);fitCanvas();
 
 function rr(x,y,w,h,r){cx.beginPath();cx.roundRect?cx.roundRect(x,y,w,h,r):cx.rect(x,y,w,h);}
@@ -569,6 +600,32 @@ function drawCam(){
   cx.fillStyle='#fff';cx.font='500 11px JetBrains Mono, monospace';cx.textAlign='left';cx.fillText('CAM',x+28,y+22);
 }
 function lerpColor(a,b,k){return `rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*k)).join(',')})`;}
+
+/* ---------- landscape ---------- */
+const root=document.documentElement;let forced=false;
+function layout(){
+  const iw=innerWidth,ih=innerHeight;
+  const portraitPhone=ih>iw&&iw<700, natLand=iw>ih&&ih<600, force=forced&&portraitPhone;
+  root.classList.toggle('force',force);
+  root.classList.toggle('land',natLand||force);
+  const b=document.body.style;
+  if(force){b.width=ih+'px';b.height=iw+'px';}else{b.width='';b.height='';}
+  $('rot').textContent=force?'แนวตั้ง':'แนวนอน';
+  fitCanvas();
+}
+$('rot').onclick=async()=>{
+  if(root.classList.contains('force')){forced=false;layout();return;}
+  let ok=false;
+  try{if(!document.fullscreenElement)await root.requestFullscreen();await screen.orientation.lock('landscape');ok=true;}catch(e){}
+  if(ok)await new Promise(r=>setTimeout(r,700));
+  if(!ok||innerHeight>innerWidth){
+    if(innerHeight>innerWidth){try{if(document.fullscreenElement)await document.exitFullscreen();}catch(e){}forced=true;}
+  }
+  layout();
+};
+addEventListener('resize',layout);
+try{screen.orientation.addEventListener('change',layout);}catch(e){}
+layout();
 
 /* ---------- loop ---------- */
 let last=performance.now();
