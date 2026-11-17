@@ -681,16 +681,33 @@ function refreshBar(){
   const have=()=>new Set(G.slots.filter(Boolean).map(w=>w.en));
   for(const w of alive.slice(0,3)){
     if(have().has(w.en))continue;
-    let i=G.slots.findIndex(s=>!s||!aliveSet.has(s.en));
+    // any free or decoy slot, picked at random, so answers land on every colour
+    const free=G.slots.map((s,j)=>!s||!aliveSet.has(s.en)?j:-1).filter(j=>j>=0);
+    let i=free.length?pick(free):-1;
     if(i<0)i=G.slots.reduce((bi,s,j)=>alive.findIndex(a=>a.en===s.en)>alive.findIndex(a=>a.en===G.slots[bi].en)?j:bi,0);
     setNote(i,w);
   }
   for(let i=0;i<4;i++)if(!G.slots[i])setNote(i,decoy(have(),aliveSet));
 }
 function replaceSlot(i,delay=0){
-  const go=()=>{if(!G)return;const alive=live().sort((a,b)=>b.y-a.y).map(cur),have=new Set(G.slots.filter((s,j)=>s&&j!==i).map(w=>w.en));
-    setNote(i,alive.find(w=>!have.has(w.en))||decoy(have,new Set(alive.map(a=>a.en))));};
+  const g=G;
+  const go=()=>{if(!G||G!==g)return;
+    const alive=live().sort((a,b)=>b.y-a.y).map(cur),aliveSet=new Set(alive.map(a=>a.en));
+    G.slots[i]=null;
+    // the slot that just emptied and every decoy slot get dealt again: the next answer goes to one of them at random, the rest get fresh decoys
+    const open=G.slots.map((s,j)=>!s||!aliveSet.has(s.en)?j:-1).filter(j=>j>=0);
+    const have=new Set(G.slots.filter((s,j)=>s&&!open.includes(j)).map(w=>w.en));
+    const next=alive.find(w=>!have.has(w.en));
+    const at=next?pick(open):-1;if(next)have.add(next.en);
+    for(const j of open){if(j===at){setNote(j,next);continue;}const d=decoy(have,aliveSet);have.add(d.en);setNote(j,d);}
+  };
   delay?setTimeout(go,delay):go();
+}
+// after a wrong press the notes swap places, so tapping the same spot over and over does not work
+function shuffleBar(){
+  const g=G;setTimeout(()=>{if(!G||G!==g)return;const old=[...G.slots];let order;
+    do{order=[0,1,2,3].sort(()=>Math.random()-.5);}while(order.every((v,k)=>v===k));
+    order.forEach((from,k)=>setNote(k,old[from]));},380);
 }
 notes.forEach((b,i)=>b.addEventListener('pointerdown',e=>{e.preventDefault();fire(i);}));
 
@@ -703,8 +720,12 @@ function fire(slot){
     if(typeof slot==='number'){const b=notes[slot];b.classList.remove('bad');void b.offsetWidth;b.classList.add('bad');}
     const t=tip();G.wrong++;
     if(G.fluid>0){G.fluid--;SFX.shield();G.floats.push({x:t.x,y:t.y-40*SC,text:'ไม่เป็นไร',c:'def',life:1,size:26,font:FONT_TH});return;}
-    G.combo=0;G.lockUntil=G.t+.8;G.score=Math.max(0,G.score-5);SFX.bad();buzz(40);
-    G.floats.push({x:t.x,y:t.y-40*SC,text:'ผิด! -5',c:'bad',life:1,size:28,font:FONT_TH});
+    // pressing wrong again soon after costs more and locks the notes for longer
+    G.mash=G.t-(G.lastWrong??-99)<3?(G.mash||0)+1:1;G.lastWrong=G.t;
+    const m=Math.min(G.mash,4),lose=5*m;
+    G.combo=0;G.lockUntil=G.t+[0,.8,1.4,2,2.6][m];G.score=Math.max(0,G.score-lose);SFX.bad();buzz(40*m);
+    G.floats.push({x:t.x,y:t.y-40*SC,text:m>=3?'อย่ากดมั่ว! -'+lose:'ผิด! -'+lose,c:'bad',life:m>=3?1.6:1,size:m>=3?32:28,font:FONT_TH});
+    shuffleBar();
     return;
   }
   strike(tg[0]);
