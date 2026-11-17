@@ -337,8 +337,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.7.0',VERSION_DATE='17 พ.ย. 2569';
-const CHANGES=['ฉากใหม่ 5 แบบ: สวนสาธารณะ ทางด่วนร้าง ท่าเรือ ฐานทหาร (ไฟส่องกวาด) และทางด่วนไฟลุก สลับกับฉากเดิมทุกพื้นที่','อากาศใหม่: หิมะตก','ซอมบี้ใหม่: หมาซอมบี้ ซอมบี้กระโดด เกราะถัง และฝูงจิ๋ว'];
+const VERSION='2.8.0',VERSION_DATE='17 พ.ย. 2569';
+const CHANGES=['บอสใหม่ 3 ตัว: จ่าฝูงหมาซอมบี้ (กระโดดพุ่ง) แฝดนรก (ฆ่าตัวหนึ่ง อีกตัวโกรธ) และรถถังซอมบี้ (ยิงปืนใหญ่ใส่เครื่องกีดขวางจากระยะไกล)','ปืนใหม่: ปืนแช่แข็ง ไรเฟิลสายฟ้า บาซูก้า','อาวุธประชิดใหม่: หอก (แทงไกล) และกีตาร์หนาม','เอาชื่อประเภทซอมบี้บนหัวออก'];
 
 /* ---------------- helpers ---------------- */
 const $=s=>document.querySelector(s);
@@ -404,6 +404,9 @@ const GUNS={
   rifle:{n:'ไรเฟิล',m:'Rifle',len:1.6,cost:1200,d:'ยิงตายแล้วกระสุนทะลุ ผลักตัวถัดไปถอยหลังไกล (โหมดสะกด: เปิดตัวอักษร 2 ตัว)',push:.45,kick:.09,pierce:2,mag:8,shots:1,reload:1.4,rs:'reload_rifle',speed:260},
   sniper:{n:'สไนเปอร์',m:'Sniper',cost:1600,d:'กระสุนทะลุทุกตัวในแนวเดียวกัน ผลักถอยและมึน',push:1.2,kick:.18,mag:5,shots:1,reload:2,rs:'reload_rifle',speed:420,lane:true,toon:true,len:2.05},
   launcher:{n:'ปืนยิงลูกระเบิด',m:'GrenadeLauncher',cost:2200,d:'ลูกระเบิดระเบิดรอบเป้า ตัวข้างๆ เสียคำ',push:.8,kick:.2,mag:4,shots:1,reload:2.2,rs:'reload_shotgun',speed:38,blast:true,toon:true,len:1.2},
+  freeze:{n:'ปืนแช่แข็ง',m:'ShortCannon',cost:1800,d:'แช่แข็งเป้าและตัวรอบๆ 3 วินาที',push:.2,kick:.1,mag:6,shots:1,reload:1.6,rs:'reload_rifle',speed:80,freeze:true,toon:true,len:1.25,size:2.4,color:0x9fdcff},
+  tesla:{n:'ไรเฟิลสายฟ้า',m:'Sniper_2',cost:2000,d:'สายฟ้ากระโดดไปโดนอีก 3 ตัว มึนและเสียตัวเลือกผิด',push:.6,kick:.12,mag:8,shots:1,reload:1.5,rs:'reload_rifle',speed:320,chain:3,toon:true,len:1.75,size:1.8,color:0x8fe8ff},
+  bazooka:{n:'บาซูก้า',m:'RocketLauncher',cost:2600,d:'จรวดระเบิดวงกว้าง ตัวรอบเป้าเสียคำหรือตาย',push:1,kick:.25,mag:2,shots:1,reload:2.8,rs:'reload_shotgun',speed:30,blast:true,radius:3.6,toon:true,len:1.3,size:3.5,color:0xff9a4a},
 };
 const UPG={
   mag:{n:'แม็กกาซีนเสริม',d:'กระสุนต่อแม็ก +25%',ic:'gun',cost:[140,300,600]},
@@ -429,6 +432,11 @@ const ZT={
   leaper:{m:'Zombie_Basic',h:1.75,speed:.9,anim:'Walk',dps:5,words:1,coin:5,tint:[0xa98ad8,0x1a0030],leap:true,label:'กระโดด',cls:'beast'},
   barrel:{m:'Zombie_Chubby',h:2,speed:.55,anim:'Walk',dps:8,words:3,coin:9,gear:'barrel',label:'เกราะถัง',cls:'armor'},
   mini:{m:'Zombie_Ribcage',h:1.05,speed:2.1,anim:'Run',dps:2,words:1,coin:2,short:true},
+  alphadog:{m:'Characters_GermanShepherd',h:2.3,speed:1.1,anim:'Run',atk:'Attack',dps:20,words:5,coin:45,boss:'จ่าฝูงหมาซอมบี้',tint:[0x5f7048,0x500000],leap:true,jumpAnim:'Run_Jump',tagH:2.3},
+  twinR:{m:'Zombie_Ribcage',h:2.8,speed:.55,anim:'Walk',dps:12,words:3,coin:30,boss:'แฝดนรก (แดง)',tint:[0xff6a5a,0x500000],twin:true},
+  twinB:{m:'Zombie_Ribcage',h:2.8,speed:.55,anim:'Walk',dps:12,words:3,coin:30,boss:'แฝดนรก (น้ำเงิน)',tint:[0x6aa0ff,0x001050],twin:true},
+  twins:{boss:'แฝดนรก',pseudo:true},
+  tank:{m:'Tank',native:true,scale:1.7,h:3.6,speed:.55,anim:null,dps:25,words:6,coin:55,boss:'รถถังซอมบี้',vehicle:true,artillery:true},
   conehead:{m:'Zombie_Basic',h:1.75,speed:1,anim:'Walk',dps:5,words:2,coin:5,gear:'cone',label:'หัวกรวย',cls:'armor'},
   shield:{m:'Zombie_Chubby',h:2,speed:.7,anim:'Walk',dps:8,words:2,coin:7,gear:'shield',label:'โล่',cls:'armor'},
 };
@@ -491,7 +499,7 @@ function tn(f,dur,type,vol,{f2=0,at=0,dest=master}={}){
   o.connect(g).connect(dest);o.start(t);o.stop(t+dur+.05);
 }
 const SFX={
-  shot(kind){if(kind==='launcher'){SFX.thoomp();return;}if(sample(kind,kind==='smg'||kind==='ak'?.75:.95))return;const big=kind==='shotgun',rf=kind==='rifle';
+  shot(kind){if(kind==='launcher'){SFX.thoomp();return;}if(kind==='bazooka'){SFX.thoomp();nz(.6,.35,'bandpass',900,{q:.8,f2:300});return;}if(kind==='freeze'){nz(.35,.3,'highpass',2500,{f2:6000});tn(1800,.25,'sine',.08,{f2:900});return;}if(kind==='tesla'){SFX.zap();sample('rifle',.5);return;}if(sample(kind,kind==='smg'||kind==='ak'?.75:.95))return;const big=kind==='shotgun',rf=kind==='rifle';
     nz(big?.35:rf?.28:.18,big?.9:.7,'lowpass',big?2200:3200,{f2:300});nz(.05,.5,'highpass',3000);
     tn(big?70:95,big?.3:.18,'sine',.7,{f2:35});if(rf)nz(.6,.12,'bandpass',900,{q:.7,at:.05,f2:200});},
   jam(){tn(2300,.03,'square',.15);tn(1500,.04,'square',.12,{at:.06});nz(.08,.2,'bandpass',4000,{q:3,at:.02});},
@@ -518,6 +526,10 @@ const SFX={
   head(){nz(.12,.5,'lowpass',1800,{f2:300});tn(1400,.08,'square',.06,{at:.02});tn(2100,.12,'triangle',.07,{at:.06});},
   scream(){if(!ac||!P.opts.sfx)return;for(let i=0;i<3;i++){tn(rnd(700,900),.9,'sawtooth',.06,{f2:rnd(1200,1500),at:i*.04});}nz(.9,.2,'bandpass',2200,{q:3,f2:1200});},
   click(){tn(2600,.02,'square',.08);},
+  zap(){nz(.3,.35,'highpass',2800,{q:2});tn(220,.25,'sawtooth',.08,{f2:1400});tn(90,.2,'square',.05,{at:.05});},
+  freeze(){tn(2400,.5,'sine',.07,{f2:3200});tn(1600,.4,'triangle',.05,{f2:2400,at:.06});nz(.4,.15,'highpass',5000);},
+  cannon(){tn(70,.5,'sine',.6,{f2:30});nz(.5,.6,'lowpass',1200,{f2:100});},
+  strum(){[196,247,294,392].forEach((f,i)=>tn(f,.6,'sawtooth',.05,{at:i*.02}));nz(.2,.2,'bandpass',1200);},
   clang(){tn(900,.15,'square',.06,{f2:500});nz(.12,.2,'highpass',3000);tn(1700,.2,'triangle',.05,{at:.02});},
   roar(){tn(60,1.2,'sawtooth',.18,{f2:40});nz(1,.3,'lowpass',500,{f2:150});},
   engine(){tn(38,1.1,'sawtooth',.06,{f2:44});nz(1,.05,'lowpass',200);},
@@ -716,7 +728,7 @@ const smokeTex=canvasTex(64,64,(g)=>{const gr=g.createRadialGradient(32,32,2,32,
 
 /* ---------------- model loading ---------------- */
 const MODELS={};
-const MODEL_LIST=['Zombie_Basic','Zombie_Ribcage','Zombie_Chubby','Zombie_Arm','Pistol','Shotgun','SMG','Rifle','StreetLights','Street_Straight','Street_Straight_Crack1','TrafficBarrier_1','TrafficBarrier_2','Pallet','Pallet_Broken','CinderBlock','Barrel','Container_Red','Container_Green','TrashBag_1','FireHydrant','Wheels_Stack','TrafficCone_1','Vehicle_Pickup','Vehicle_Sports','Vehicle_Truck','Blood_1','SackTrench','SackTrench_Small','Debris_BrokenCar','Debris_Pile','Debris_Papers_1','Debris_Tires','ExplodingBarrel','TrashContainer','TrashContainer_Open','Fence_Long','MetalFence','Tree_1','Tree_2','Structure_1','Structure_2','Structure_3','Structure_4','WaterTank_Platform','GasTank','CardboardBoxes_1','Crate','Pipes','Tank','Health','Characters_Shaun','Characters_GermanShepherd','Knife','AK','Revolver','Sniper','GrenadeLauncher','Axe','WoodenBat_Barbed','WoodenBat_Saw','Vehicle_Truck_Armored','Container_Long','Container_Small','Sofa','Tree_3','Tree_4','WoodPlanks','TownSign','TrafficLight_1','Barrier_Large'];
+const MODEL_LIST=['Zombie_Basic','Zombie_Ribcage','Zombie_Chubby','Zombie_Arm','Pistol','Shotgun','SMG','Rifle','StreetLights','Street_Straight','Street_Straight_Crack1','TrafficBarrier_1','TrafficBarrier_2','Pallet','Pallet_Broken','CinderBlock','Barrel','Container_Red','Container_Green','TrashBag_1','FireHydrant','Wheels_Stack','TrafficCone_1','Vehicle_Pickup','Vehicle_Sports','Vehicle_Truck','Blood_1','SackTrench','SackTrench_Small','Debris_BrokenCar','Debris_Pile','Debris_Papers_1','Debris_Tires','ExplodingBarrel','TrashContainer','TrashContainer_Open','Fence_Long','MetalFence','Tree_1','Tree_2','Structure_1','Structure_2','Structure_3','Structure_4','WaterTank_Platform','GasTank','CardboardBoxes_1','Crate','Pipes','Tank','Health','Characters_Shaun','Characters_GermanShepherd','Knife','AK','Revolver','Sniper','GrenadeLauncher','Axe','WoodenBat_Barbed','WoodenBat_Saw','Vehicle_Truck_Armored','Container_Long','Container_Small','Sofa','Tree_3','Tree_4','WoodPlanks','TownSign','TrafficLight_1','Barrier_Large','RocketLauncher','ShortCannon','Sniper_2','Spear','Guitar'];
 async function loadModels(){
   const loader=new GLTFLoader();let done=0;
   await Promise.all(MODEL_LIST.map(n=>new Promise(res=>{
@@ -932,7 +944,7 @@ function makeZombie(type,word,x,z,menu=false){
   const T=ZT[type],mn=Array.isArray(T.m)?pick(T.m):T.m,m=MODELS[mn];if(!m)return null;
   const obj=T.native?m.scene.clone():SkeletonUtils.clone(m.scene);obj.updateMatrixWorld(true);
   const box=new THREE.Box3().setFromObject(obj),h=box.max.y-box.min.y||1;
-  const s=T.native?1:T.h/h;obj.scale.setScalar(s);obj.position.set(x,-box.min.y*s,z);
+  const s=T.native?(T.scale||1):T.h/h;obj.scale.setScalar(s);obj.position.set(x,-box.min.y*s,z);
   obj.rotation.y=0;
   const wrap=new THREE.Group();wrap.add(obj);wrap.position.set(x,0,z);obj.position.set(0,-box.min.y*s,0);
   const blob=new THREE.Mesh(new THREE.PlaneGeometry(1,1),blobMat);blob.rotation.x=-Math.PI/2;blob.position.y=.03;blob.scale.setScalar(T.h*.55);wrap.add(blob);
@@ -948,7 +960,7 @@ function makeZombie(type,word,x,z,menu=false){
   if(T.gear&&!menu)addGear(z0);
   if(T.vehicle){for(const sx of [-.8,.8]){const l=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:0xfff0c0,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));l.scale.setScalar(1.2);l.position.set(sx,1.1,2.6);wrap.add(l);}const hl=new THREE.SpotLight(0xfff0c0,40,22,.5,.6,1.5);hl.position.set(0,1.2,2.5);hl.target.position.set(0,0,10);wrap.add(hl);wrap.add(hl.target);}
   z0.chargeCD=rnd(5,8);z0.spawnCD=5;z0.charging=0;z0.engT=0;
-  if(!menu){const el=document.createElement('div');el.className='tag'+(T.cls?' '+T.cls:'');el.innerHTML=(T.label?`<small class="kind">${T.label}</small>`:'')+'<div class="th"></div><div class="en"></div><div class="pips"></div>';
+  if(!menu){const el=document.createElement('div');el.className='tag'+(T.cls?' '+T.cls:'');el.innerHTML='<div class="th"></div><div class="en"></div><div class="pips"></div>';
     el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(!z0.dead){setTarget(z0);SFX.ui();}});tagsEl.appendChild(el);z0.tag=el;renderTag(z0);}
   zombies.push(z0);return z0;
 }
@@ -1043,7 +1055,7 @@ function waves(k,i,mode,mod){
   return {W,speed:(1+Math.min(.45,d*.05))*(mod==='horde'?.85:1)};
 }
 // survival: waves keep coming and get harder
-const BOSSES=['giant','behemoth','mother','truck'];
+const BOSSES=['giant','behemoth','mother','truck','alphadog','twins','tank'];
 const bossFor=i=>BOSSES[Math.floor(i/5)%BOSSES.length];
 function survWords(k){
   const Z=ZONES[k],upto=Math.max(3,nextNight(k)+1);
@@ -1079,7 +1091,7 @@ function nextWave(){
   if(G.mode==='survival'){G.W.push(survWave(G.wave));quest('surv',G.wave);}
   if(G.wave>=G.W.length){endNight(true);return;}
   G.queue=[...G.W[G.wave].list];G.spawnT=G.wave===0?1.2:3;waveProps();
-  const boss=G.queue.find(t=>ZT[t].boss);
+  const boss=G.queue.find(t=>ZT[t]&&ZT[t].boss);
   const surv=G.mode==='survival';
   banner(surv?'WAVE '+(G.wave+1):G.wave===G.W.length-1?(boss?'BOSS: '+ZT[boss].boss:'FINAL WAVE'):'WAVE '+(G.wave+1),
     G.wave===0?(GUNS[P.gun].n+' · ')+(G.mode==='review'?'ทบทวนคำที่เคยพลาด':surv?ZONES[G.k].name+' · อยู่ให้รอดนานที่สุด':SCN[curScene].n+' · '+SKIES[G.sky].n+(G.mod?' · '+MODS[G.mod].n:'')):'');
@@ -1089,6 +1101,7 @@ function nextWave(){
 const ZTIP={dog:'หมาซอมบี้: วิ่งเร็วมาก ตัวเตี้ย ยิงให้ไว',leaper:'ซอมบี้กระโดด: กระโดดพุ่งเข้ามาทีละไกล',barrel:'เกราะถัง: ต้องตอบ 3 คำ ถังหลุดหลังคำแรก',swarm:'ฝูงจิ๋ว: มาทีละ 3 ตัว วิ่งเร็วแต่คำสั้น',golden:'ซอมบี้ทอง: ยิงให้ทันก่อนมันหนี ได้ 40 เหรียญ',bloater:'ซอมบี้ระเบิด: ตายแล้วระเบิดใส่ตัวข้างๆ อย่าให้ถึงเครื่องกีดขวาง',screamer:'ซอมบี้กรีดร้อง: ถ้าปล่อยไว้นาน มันจะเร่งตัวอื่นให้เร็วขึ้น'};
 function spawnAt(type,x,zz){const T=ZT[type],ws=Array.from({length:T.words},()=>takeWord(type==='runner'||T.short));const z=makeZombie(type,ws,x,zz);if(z){z.speed*=G.speedMul;renderTag(z);}return z;}
 function spawn(type){
+  if(type==='twins'){const a=spawnAt('twinR',-1.8,SPAWN_Z),b=spawnAt('twinB',1.8,SPAWN_Z-1);if(a&&b){a.twin=b;b.twin=a;}if(!target)setTarget(nearest());return;}
   if(type==='swarm'){if(!P.seenZ.includes('swarm')){P.seenZ.push('swarm');save();toast(ZTIP.swarm);}const x=rnd(-2.2,2.2);for(const d of [-1,0,1])spawnAt('mini',clamp(x+d*.9,-3.4,3.4),SPAWN_Z+d*.8);if(!target)setTarget(nearest());return;}
   const T=ZT[type],ws=Array.from({length:T.words},()=>takeWord(type==='runner'||T.short));
   const lane=[-2.6,-1.3,0,1.3,2.6],x=pick(lane)+rnd(-.4,.4);
@@ -1193,6 +1206,7 @@ function wordDone(z){
 }
 function kill(z,byWord){
   z.dead=true;G.kills++;quest('kills');G.xp+=1;
+  if(z.twin&&!z.twin.dead){z.twin.rage=999;floatAt(z.twin,'โกรธจัด!','#ff6a5a');SFX.roar();}
   z.dieT=0;z.dieDelay=byWord?G.pendingImpact:0;if(z.dieDelay<=0)play(z,'Death',false,.1);
   if(z.T.loot&&byWord!==null){G.bonusCoins+=z.T.loot;setTimeout(()=>{SFX.coin();floatAt(z,'+'+z.T.loot+' เหรียญ','#f2b33d');},z.dieDelay*1000);}
   if(z.T.boom)setTimeout(()=>{if(G&&!G.ended)bloat(z,false);},z.dieDelay*1000+150);
@@ -1251,28 +1265,45 @@ function fireOne(z,g,count,last){
       if(z.at){z.at=false;play(z,z.T.anim,true);}if(z.hitT<=0){play(z,'HitReact',false,.05);z.hitT=.35;}}
     if(last)gunSpecial(z,g);};
   if(P.gun==='shotgun'){bullet(from,to,g.speed,hit,1);for(let i=0;i<6;i++)bullet(from,to.clone().add(new THREE.Vector3(rnd(-.5,.5),rnd(-.4,.4),rnd(-.3,.3))),g.speed*rnd(.95,1.05),null,.7);}
-  else bullet(from,to,g.speed,hit,P.gun==='launcher'?3:P.gun==='sniper'?1.8:P.gun==='rifle'?1.4:1);
+  else bullet(from,to,g.speed,hit,g.size||(P.gun==='launcher'?3:P.gun==='sniper'?1.8:P.gun==='rifle'?1.4:1),g.color);
 }
+function icePuff(x,z){for(let i=0;i<12;i++){const m=new THREE.Sprite(new THREE.SpriteMaterial({map:smokeTex,color:0xcfeaff,transparent:true,depthWrite:false}));m.position.set(x+rnd(-1.2,1.2),rnd(.2,1.6),z+rnd(-1.2,1.2));m.scale.setScalar(rnd(.8,1.6));scene.add(m);fx.push({o:m,life:rnd(.8,1.3),max:1.3,kind:'smoke',v:new THREE.Vector3(rnd(-.3,.3),rnd(.2,.6),rnd(-.3,.3))});}}
 function knock(o,d,stun=.8){if(o.dead)return;const nz=o.obj.position.z-d*(o.T.boss?.3:1);if(!blocked(o.obj.position.x,nz))o.obj.position.z=Math.max(SPAWN_Z-6,nz);if(o.at){o.at=false;play(o,o.T.anim,true);}play(o,'HitReact',false,.05);o.hitT=stun;blood(o);}
 function gunSpecial(z,g){
   if(!G)return;const zx=z.obj.position.x,zz=z.obj.position.z;
   if(g.lane)for(const o of live())if(o!==z&&Math.abs(o.obj.position.x-zx)<1&&o.obj.position.z<zz+.3)knock(o,2,1);
   if(g.splash){const o=live().filter(o=>o!==z).sort((a,b)=>Math.hypot(a.obj.position.x-zx,a.obj.position.z-zz)-Math.hypot(b.obj.position.x-zx,b.obj.position.z-zz))[0];
     if(o&&Math.hypot(o.obj.position.x-zx,o.obj.position.z-zz)<3)knock(o,.7,.5);}
-  if(g.blast){SFX.boom();shake=Math.max(shake,.7);explosion(zx,zz);
-    for(const o of live()){if(o===z)continue;const d=Math.hypot(o.obj.position.x-zx,o.obj.position.z-zz);if(d<2.4){
+  if(g.freeze){SFX.freeze();for(const o of live()){const d=Math.hypot(o.obj.position.x-zx,o.obj.position.z-zz);if(d<2.5)freezeZ(o,3);}icePuff(zx,zz);}
+  if(g.chain){SFX.zap();let from=chest(z).clone();const hit=new Set([z]);
+    for(let k=0;k<g.chain;k++){const o=live().filter(o=>!hit.has(o)).sort((a,b)=>chest(a).distanceTo(from)-chest(b).distanceTo(from))[0];if(!o||chest(o).distanceTo(from)>7)break;hit.add(o);const to=chest(o).clone();arc(from,to);knock(o,.3,1.2);wound(o);from=to;}}
+  if(g.blast){SFX.boom();shake=Math.max(shake,g.radius?1:.7);explosion(zx,zz);if(g.radius)explosion(zx+1,zz-1);
+    for(const o of live()){if(o===z)continue;const d=Math.hypot(o.obj.position.x-zx,o.obj.position.z-zz);if(d<(g.radius||2.4)){
       if(o.T.boss||o.wi<o.words.length-1){if(o.gear)dropGear(o);o.wi=Math.min(o.wi+1,o.words.length-1);o.p=0;o.opts=null;renderTag(o);knock(o,1.2);}else{G.pendingImpact=0;kill(o,false);}}}
     renderPad();hud();}
 }
+function tankShot(z){
+  SFX.cannon();const from=new THREE.Vector3(z.obj.position.x,2.2,z.obj.position.z+1.5),to=new THREE.Vector3(rnd(-2.2,2.2),.8,BARR_Z);
+  muzzleFlash(from);floatAt(z,'ยิง!','#ff9a3a');
+  bullet(from,to,22,()=>{if(!G||G.ended)return;explosion(to.x,to.z);SFX.boom();shake=1;if(G.shieldT<=0){G.wall=Math.max(0,G.wall-10);const h=$('#hurt');h.classList.add('on');setTimeout(()=>h.classList.remove('on'),220);}hud();},4,0xff8a3a);
+}
+// freeze: stop a zombie in place with an icy tint
+function freezeZ(o,t=3){if(o.dead||o.T.vehicle)return;o.frozen=Math.max(o.frozen||0,t*(o.T.boss?.5:1));o.mixer.timeScale=0;
+  if(!o.iced){o.iced=true;o.obj.traverse(m=>{if(m.isMesh&&m.material){m.material=m.material.clone();m.userData.em=m.material.emissive?m.material.emissive.getHex():0;if(m.material.emissive)m.material.emissive.setHex(0x3a7aff);}});}}
+function unfreeze(o){o.frozen=0;o.mixer.timeScale=o.T.anRate||1;if(o.iced){o.iced=false;o.obj.traverse(m=>{if(m.isMesh&&m.material&&m.material.emissive)m.material.emissive.setHex(m.userData.em||0);});}}
+// lightning arcs between zombies
+function arc(a,b){const pts=[];for(let i=0;i<=8;i++){const t=i/8,p=a.clone().lerp(b,t);if(i&&i<8)p.add(new THREE.Vector3(rnd(-.25,.25),rnd(-.25,.25),rnd(-.25,.25)));pts.push(p);}
+  const l=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x9fe8ff,transparent:true,opacity:1,fog:false,blending:THREE.AdditiveBlending}));scene.add(l);fx.push({o:l,life:.25,max:.25,kind:'line'});}
+function wound(o){if(CHOICE()){const w=choicesFor(o).filter(c=>!c.ok&&!c.gone);if(w.length>1)pick(w).gone=true;}else{const i=needIdx(o);if(i<curWord(o).en.length-1){o.p=i+1;skipNon(o);}}renderTag(o);if(o===target)renderPad();}
 const bulletGeo=new THREE.CylinderGeometry(.014,.014,.34,5);bulletGeo.rotateX(Math.PI/2);
 const bulletMat=new THREE.MeshBasicMaterial({color:0xfff2c0,fog:false});
 const casingGeo=new THREE.CylinderGeometry(.012,.012,.045,6),casingMat=new THREE.MeshStandardMaterial({color:0xc9a040,metalness:.8,roughness:.3});
 function muzzleWorld(){return new THREE.Vector3(.33,-.16,-1.05).applyMatrix4(camera.matrixWorld);}
 const streakGeo=new THREE.CylinderGeometry(.5,.5,1,6,1,true);streakGeo.rotateX(Math.PI/2);
-function bullet(from,to,speed,onHit,size=1){
+function bullet(from,to,speed,onHit,size=1,color=0xffc864){
   const m=new THREE.Group();m.position.copy(from);scene.add(m);
-  const head=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:0xfff0c0,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));head.scale.setScalar(.22*size);m.add(head);
-  const tl=new THREE.Mesh(streakGeo,new THREE.MeshBasicMaterial({color:0xffc864,transparent:true,opacity:.75,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));tl.userData.w=.035*size;scene.add(tl);
+  const head=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:color===0xffc864?0xfff0c0:color,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));head.scale.setScalar(.22*size);m.add(head);
+  const tl=new THREE.Mesh(streakGeo,new THREE.MeshBasicMaterial({color,transparent:true,opacity:.75,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));tl.userData.w=.035*size;scene.add(tl);
   const dur=from.distanceTo(to)/speed;fx.push({kind:'bullet',o:m,trail:tl,from:from.clone(),to:to.clone(),t:0,dur,life:dur+.1,max:dur+.1,onHit});
 }
 function muzzleFlash(at){
@@ -1291,6 +1322,8 @@ const MELEE={
   knife:{n:'มีด',m:'Knife',cost:0,d:'เบา คูลดาวน์สั้น',cd:3.5,push:2.6,stun:1.2,cut:1,scale:.55},
   bat:{n:'ไม้หนามเหล็ก',m:'WoodenBat_Barbed',cost:300,d:'ตีกระเด็นไกลมาก',cd:4,push:4.2,stun:1.5,cut:1,scale:.36},
   axe:{n:'ขวาน',m:'Axe',cost:700,d:'ตัดตัวเลือกผิด 2 ข้อ / เปิด 2 ตัวอักษร',cd:4.5,push:2,stun:1.6,cut:2,scale:.36},
+  spear:{n:'หอก',m:'Spear',cost:900,d:'แทงไกล โดนซอมบี้ที่ยังอยู่ห่างได้',cd:3.5,push:3,stun:1.2,cut:1,reach:7,scale:.3},
+  guitar:{n:'กีตาร์หนาม',m:'Guitar',cost:1500,d:'ฟาดทุกตัวใกล้ๆ คลื่นเสียงทำให้มึน 3 วินาที',cd:4.5,push:2.5,stun:3,cut:1,all:true,scale:.3},
   saw:{n:'ไม้เลื่อย',m:'WoodenBat_Saw',cost:1200,d:'ฟาดทุกตัวที่อยู่ใกล้พร้อมกัน มึนนาน',cd:4,push:3,stun:2.5,cut:1,all:true,scale:.34},
 };
 let knifeObj=null,knifeSwing=0,swipe=null;
@@ -1308,7 +1341,7 @@ function slash(sx){
   G.knifeT=knifeCD();knifeSwing=1;SFX.whoosh();
   const fxEl=$('#slashfx');fxEl.classList.remove('on');void fxEl.offsetWidth;fxEl.classList.add('on');
   // reach: zombies close to the barricade
-  let cand=live().filter(z=>z.obj.position.z>STOP_Z-2.6);
+  const Wr=MELEE[P.melee]||MELEE.knife;let cand=live().filter(z=>z.obj.position.z>STOP_Z-(Wr.reach||2.6));if(P.melee==='guitar')SFX.strum();
   if(sx!=null&&cand.length>1){cand.sort((a,b)=>{const pa=chest(a).project(camera),pb=chest(b).project(camera);return Math.abs((pa.x*.5+.5)*innerWidth-sx)-Math.abs((pb.x*.5+.5)*innerWidth-sx);});}
   else cand.sort((a,b)=>b.obj.position.z-a.obj.position.z);
   const W=MELEE[P.melee]||MELEE.knife;
@@ -1716,12 +1749,14 @@ function step(dt){
     if(z.groanT<=0){z.groanT=rnd(4,9);const d=-z.obj.position.z;SFX.groan(clamp(.22-d*.004,.03,.2),z.T.boss||z.type==='brute');}
     const p=z.obj.position;
     if(!z.at){
-      if(z.hitT<=0){if(z.T.anim&&z.clips[z.T.anim]&&z.act!==z.mixer.clipAction(z.clips[z.T.anim]))play(z,z.T.anim,true);walk(z,z.speed*dt*TS*(z.rage>0?1.6:1));}
+      if(z.frozen>0){z.frozen-=dt;if(z.frozen<=0)unfreeze(z);z.x=p.x;z.z=p.z;continue;}
+      if(z.hitT<=0&&!(z.T.artillery&&p.z>=-17)){if(z.T.anim&&z.clips[z.T.anim]&&z.act!==z.mixer.clipAction(z.clips[z.T.anim]))play(z,z.T.anim,true);walk(z,z.speed*dt*TS*(z.rage>0?1.6:1));}
       if(z.rage>0)z.rage-=dt;
       if(z.T.leap){z.leapCD=(z.leapCD??rnd(2,4))-dt;if(z.leapT>0){z.leapT-=dt;walk(z,6.5*dt*TS);z.obj.position.y=Math.sin(Math.max(0,z.leapT)/.6*Math.PI)*1.1;if(z.leapT<=0){z.obj.position.y=0;play(z,z.T.anim,true);}}
-        else if(z.leapCD<=0&&p.z<STOP_Z-6){z.leapCD=rnd(3,4.5);z.leapT=.6;play(z,'Jump',false,.05);SFX.whoosh();}}
+        else if(z.leapCD<=0&&p.z<STOP_Z-6){z.leapCD=rnd(3,4.5);z.leapT=.6;play(z,z.T.jumpAnim||'Jump',false,.05);SFX.whoosh();if(z.T.boss){SFX.roar();shake=Math.max(shake,.4);}}}
       if(z.T.charge){z.chargeCD-=dt;if(z.charging>0){z.charging-=dt;walk(z,z.speed*dt*TS*2.6);}else if(z.chargeCD<=0&&p.z<-9){z.chargeCD=rnd(6,9);z.charging=1.3;SFX.roar();shake=Math.max(shake,.5);floatAt(z,'พุ่งชน!','#ff6a5a');}}
       if(z.T.spawner){z.spawnCD-=dt;if(z.spawnCD<=0&&live().length<9){z.spawnCD=6;SFX.groan(.3,true);floatAt(z,'ออกลูก!','#c8a0ff');for(const d of [-1.3,1.3])spawnAt(Math.random()<.5?'crawler':'runner',clamp(p.x+d,-3.4,3.4),p.z+.5);}}
+      if(z.T.artillery){if(p.z>=-17){p.z=Math.min(p.z,-17);z.fireCD=(z.fireCD??2.5)-dt*TS;if(z.fireCD<=0){z.fireCD=5;tankShot(z);}}}
       if(z.T.vehicle){z.engT-=dt;if(z.engT<=0){z.engT=1;SFX.engine();}}
       if(z.T.scream&&p.z>-28){z.screamT-=dt;if(z.screamT<=0){z.screamT=9;SFX.scream();floatAt(z,'กรีดร้อง!','#ff6a5a');for(const o of L)if(o!==z)o.rage=5;}}
       if(z.T.loot&&p.z>=STOP_Z-1.2){floatAt(z,'หนีไปแล้ว','#f2b33d');z.dead=true;removeZombie(z);continue;}
@@ -1729,6 +1764,7 @@ function step(dt){
       p.x=clamp(p.x,-3.6,3.6);
       if(p.z>=STOP_Z-(z.T.boss?.8:0)){p.z=STOP_Z-(z.T.boss?.8:0);if(z.T.boom){z.dead=true;G.miss.add(curWord(z).en);bloat(z,true);removeZombie(z);continue;}z.at=true;play(z,z.T.atk||(z.clips.Punch?'Punch':'Idle_Attack'),true);}
     }else{
+      if(z.frozen>0){z.frozen-=dt;if(z.frozen<=0)unfreeze(z);continue;}
       z.atkT-=dt*TS;if(G.shieldT<=0)G.wall-=z.T.dps*dt*TS;
       if(z.atkT<=0){z.atkT=.9;SFX.thud();shake=Math.max(shake,.25);const h=$('#hurt');h.classList.add('on');setTimeout(()=>h.classList.remove('on'),90);z.miss=true;G.miss.add(curWord(z).en);}
     }
