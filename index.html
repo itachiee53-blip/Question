@@ -87,7 +87,8 @@ button[disabled]{cursor:not-allowed}
 .note .tick{position:absolute;right:6px;top:2px;font-family:var(--f-mark);color:var(--ok);font-size:26px;opacity:0}
 .note:active{transform:rotate(var(--r)) translateY(3px) scale(.96);box-shadow:1px 2px 0 #0003}
 .note.new{animation:stick .32s ease-out}
-@keyframes stick{from{transform:rotate(calc(var(--r) - 10deg)) translateY(-18px) scale(.9);opacity:0}}
+@keyframes stick{0%{transform:rotate(var(--r)) scaleY(.82)}60%{transform:rotate(var(--r)) scaleY(1.04)}}
+.tape.score{display:flex;align-items:center;gap:6px;justify-content:flex-end}.tape.score b{font-weight:400}.tape.score i{display:block;width:24px;height:24px;flex:none}.tape.score i svg{width:100%;height:100%;display:block}
 .note.ok .tick{animation:tick .5s}
 .note.ok{animation:yes .35s}
 @keyframes tick{0%{opacity:0;transform:scale(2)}30%{opacity:1;transform:scale(1)}100%{opacity:0}}
@@ -101,6 +102,7 @@ button[disabled]{cursor:not-allowed}
 .bar.lock .note{filter:saturate(.25) brightness(.95)}
 @media (max-width:560px) and (orientation:portrait){.bar{grid-template-columns:1fr 1fr;gap:12px 10px}.note{min-height:52px}}
 @media (orientation:landscape) and (max-height:480px){.note{min-height:40px;font-size:21px;padding:3px 6px}.bar{padding-top:9px;gap:10px}.hearts{font-size:18px}.pg b{width:34px;height:34px;font-size:16px}.side{gap:5px}.tape{font-size:22px}}
+@media (orientation:landscape) and (max-height:400px){.note{min-height:34px;font-size:19px}.bar{padding-top:7px;padding-bottom:max(7px,env(safe-area-inset-bottom,0px));gap:8px}.eraser{width:64px;height:36px;bottom:8px}.tape{font-size:20px}.tape.score i{width:20px;height:20px}.hearts{font-size:15px}.pg b{width:30px;height:30px;font-size:14px}.myskills i{width:22px;height:22px}.myskills i svg{width:15px;height:15px}}
 
 /* menus: one sheet that always fits the screen */
 .ov{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) max(12px,env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));background:#3b2d22cc;animation:fade .25s}
@@ -242,7 +244,7 @@ button[disabled]{cursor:not-allowed}
       <div class="shield" id="shield"></div>
     </div>
     <div class="tr">
-      <span class="tape" id="score">0</span>
+      <span class="tape score"><i id="scoreIc"></i><b id="score">0</b></span>
       <span class="combo" id="combo" hidden></span>
       <div class="myskills" id="myskills"></div>
     </div>
@@ -272,9 +274,9 @@ const buzz=ms=>{try{navigator.vibrate&&navigator.vibrate(ms);}catch(e){}};
 function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 const rpick=(r,a)=>a[Math.floor(r()*a.length)];
 const rshuffle=(r,a)=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
-const VERSION='1.6.0',VERSION_DATE='17 พ.ย. 2569';
+const VERSION='1.6.1',VERSION_DATE='17 พ.ย. 2569';
 // shown once on the home screen after the player gets a new version
-const CHANGES=['เปลี่ยนหน้าเมนูแบบพลิกกระดาษ ไม่กระพริบจอแล้ว พร้อมเสียงกระดาษ','คำตอบสุ่มไปทุกช่องสี คำหลอกเปลี่ยนตลอด','กดมั่วจะโดนหักหนักขึ้นและกระดาษสลับที่','เหรียญลายใหม่'];
+const CHANGES=['กระดาษคำตอบไม่ใบ้คำถูกแล้ว (เปลี่ยนพร้อมกันทีละ 2 ใบ)','จอโทรศัพท์แนวนอน: ฉากไม่ซูมแน่นแล้ว ปุ่มเล็กลงให้พอดีจอ','ช่องคะแนนมีไอคอนดาว']
 const COIN='<i class="coin"></i>';
 document.documentElement.style.setProperty('--coin-img',`url(${ART.coin})`);
 
@@ -440,6 +442,7 @@ const ICON={
  pick:'<svg viewBox="0 0 60 60"><rect x="10" y="20" width="40" height="30" rx="6" fill="#4f9d69" stroke="#22305c" stroke-width="3"/><path d="M22 20 V14 h16 v6" fill="none" stroke="#22305c" stroke-width="3"/><rect x="24" y="30" width="12" height="8" fill="#ffd23f" stroke="#22305c" stroke-width="2"/></svg>',
  start:'<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="20" fill="#ffe1de" stroke="#fff" stroke-width="4"/><circle cx="30" cy="30" r="22" fill="none" stroke="#22305c" stroke-width="2"/><path d="M30 17 L33 26 L42 26 L35 32 L38 41 L30 35 L22 41 L25 32 L18 26 L27 26 Z" fill="#ffd23f" stroke="#22305c" stroke-width="2"/></svg>'
 };
+document.getElementById("scoreIc").innerHTML=ICON.star;
 function penIcon(p){const body=p.body;return `<svg viewBox="0 0 60 60"><g transform="rotate(-40 30 30)" stroke="#22305c" stroke-width="2.6" stroke-linejoin="round"><rect x="24" y="8" width="12" height="34" rx="2" fill="${p.id==='rainbow'?'url(#rb)':body}"/><path d="M24 42 L30 54 L36 42 Z" fill="#f2d2a2"/><path d="M28 50 L30 54 L32 50 Z" fill="${p.c==='rainbow'?'#e2463d':p.c}"/></g><defs><linearGradient id="rb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2463d"/><stop offset=".5" stop-color="#ffd23f"/><stop offset="1" stop-color="#2f7fd1"/></linearGradient></defs></svg>`;}
 const NAV={
  play:'<svg viewBox="0 0 40 40"><path d="M12 8 L32 20 L12 32 Z" fill="#e2463d" stroke="#22305c" stroke-width="2.5" stroke-linejoin="round"/></svg>',
@@ -509,7 +512,7 @@ const cv=$('#cv'),cx=cv.getContext('2d');
 let W=800,H=500,DPR=1,SC=1,bg=null,bgKey='',seed=0,dust=[],amb={kind:'',list:[]};
 const PENCIL='#4b4b4b',RED='#d8342c',MX=56;
 const FONT_TH='Itim, sans-serif',FONT_EN='"Patrick Hand", Itim, sans-serif';
-function fit(){const r=cv.getBoundingClientRect();DPR=Math.min(2,devicePixelRatio||1);W=r.width||800;H=r.height||500;cv.width=W*DPR;cv.height=H*DPR;SC=clamp(Math.min(W/900,H/560),.8,1.25);bg=null;}
+function fit(){const r=cv.getBoundingClientRect();DPR=Math.min(2,devicePixelRatio||1);W=r.width||800;H=r.height||500;cv.width=W*DPR;cv.height=H*DPR;SC=clamp(Math.min(W/900,H/560),.5,1.25);bg=null;}
 new ResizeObserver(fit).observe(cv);
 const hh=n=>{const s=Math.sin(n*127.1+seed*311.7)*43758.5453;return s-Math.floor(s);};
 function line(x1,y1,x2,y2,id,w=2.2,c='#22305c'){const mx=(x1+x2)/2+(hh(id)-.5)*3,my=(y1+y2)/2+(hh(id+1)-.5)*3;cx.strokeStyle=c;cx.lineWidth=w;cx.lineCap='round';cx.beginPath();cx.moveTo(x1,y1);cx.quadraticCurveTo(mx,my,x2,y2);cx.stroke();}
@@ -686,6 +689,7 @@ function refreshBar(){
   if(!G)return;
   const alive=live().sort((a,b)=>b.y-a.y).map(cur),aliveSet=new Set(alive.map(w=>w.en));
   const have=()=>new Set(G.slots.filter(Boolean).map(w=>w.en));
+  const decoys=()=>G.slots.map((s,j)=>s&&!aliveSet.has(s.en)?j:-1).filter(j=>j>=0);
   for(const w of alive.slice(0,3)){
     if(have().has(w.en))continue;
     // any free or decoy slot, picked at random, so answers land on every colour
@@ -693,6 +697,8 @@ function refreshBar(){
     let i=free.length?pick(free):-1;
     if(i<0)i=G.slots.reduce((bi,s,j)=>alive.findIndex(a=>a.en===s.en)>alive.findIndex(a=>a.en===G.slots[bi].en)?j:bi,0);
     setNote(i,w);
+    // swap one other decoy at the same moment, so the note that just changed is not a giveaway
+    const o=decoys();if(o.length)setNote(pick(o),decoy(have(),aliveSet));
   }
   for(let i=0;i<4;i++)if(!G.slots[i])setNote(i,decoy(have(),aliveSet));
 }
@@ -701,12 +707,13 @@ function replaceSlot(i,delay=0){
   const go=()=>{if(!G||G!==g)return;
     const alive=live().sort((a,b)=>b.y-a.y).map(cur),aliveSet=new Set(alive.map(a=>a.en));
     G.slots[i]=null;
-    // the slot that just emptied and every decoy slot get dealt again: the next answer goes to one of them at random, the rest get fresh decoys
+    // exactly two notes change after a hit: one gets the next answer, the other a fresh decoy, in random order
     const open=G.slots.map((s,j)=>!s||!aliveSet.has(s.en)?j:-1).filter(j=>j>=0);
     const have=new Set(G.slots.filter((s,j)=>s&&!open.includes(j)).map(w=>w.en));
     const next=alive.find(w=>!have.has(w.en));
     const at=next?pick(open):-1;if(next)have.add(next.en);
-    for(const j of open){if(j===at){setNote(j,next);continue;}const d=decoy(have,aliveSet);have.add(d.en);setNote(j,d);}
+    const change=[i];if(at>=0&&at!==i)change.push(at);else{const o=open.filter(j=>j!==i);if(o.length)change.push(pick(o));}
+    for(const j of change){if(j===at){setNote(j,next);continue;}const d=decoy(have,aliveSet);have.add(d.en);setNote(j,d);}
   };
   delay?setTimeout(go,delay):go();
 }
