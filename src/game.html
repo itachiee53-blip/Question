@@ -85,6 +85,16 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .pad.shake{animation:shake .35s}
 @keyframes shake{20%{transform:translateX(-10px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
 .pad.jam .key{filter:grayscale(1) brightness(.6)}
+.pad.choice{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:900px;margin:0 auto}
+.opt{position:relative;min-height:54px;padding:6px 10px;border-radius:12px;background:linear-gradient(#26322c,#18211d);border:1px solid #ffffff2a;border-bottom:4px solid #0a0f0d;font-family:var(--f-disp);font-size:clamp(20px,2.6vw,28px);letter-spacing:1px;line-height:1.05;color:#f2efe6;overflow-wrap:anywhere}
+.opt small{position:absolute;left:7px;top:4px;font-family:var(--f-th);font-size:11px;color:#fff6;letter-spacing:0}
+.opt:active{transform:translateY(2px);border-bottom-width:2px}
+.opt[disabled]{opacity:.25;text-decoration:line-through}
+.seg{display:inline-flex;margin-top:14px;border:1px solid var(--line);border-radius:999px;padding:3px;background:#0006}
+.seg button{padding:6px 16px;border-radius:999px;font-size:15px;color:var(--dim)}
+.seg button small{margin-left:6px;font-size:12px;opacity:.7}
+.seg button[aria-pressed="true"]{background:var(--toxic);color:#10170c;font-weight:600}
+@media (max-width:560px){.pad.choice{grid-template-columns:1fr 1fr}.opt{min-height:46px}}
 .jamtag{position:fixed;left:50%;bottom:calc(84px + var(--safe-b));transform:translateX(-50%);z-index:9;font-family:var(--f-disp);font-size:30px;letter-spacing:2px;color:var(--blood);text-shadow:0 2px 10px #000;pointer-events:none}
 
 /* menus */
@@ -249,8 +259,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.0.0',VERSION_DATE='17 พ.ย. 2569';
-const CHANGES=['เกมใหม่ทั้งหมด: ยิงซอมบี้ด้วยการสะกดคำ','เห็นคำไทยบนหัวซอมบี้ กดตัวอักษรเรียงให้ถูกเพื่อยิง','อาวุธ 4 แบบ ระเบิด และคำใบ้','ฉาก 3 มิติ ถนนยามค่ำคืน'];
+const VERSION='2.1.0',VERSION_DATE='17 พ.ย. 2569';
+const CHANGES=['โหมดเลือกคำตอบ (4 ตัวเลือก) เป็นค่าเริ่มต้น สลับเป็นโหมดสะกดคำได้ที่หน้าแรก','ซอมบี้เดินอ้อมรถแล้ว ไม่ทะลุ','ซอมบี้หันตามทางที่เดิน']
 
 /* ---------------- helpers ---------------- */
 const $=s=>document.querySelector(s);
@@ -308,8 +318,8 @@ const isBossNight=i=>(i+1)%5===0;
 const GUNS={
   pistol:{n:'ปืนพก',m:'Pistol',cost:0,d:'อาวุธเริ่มต้น ยิงแม่น',push:.25,kick:.05},
   shotgun:{n:'ลูกซอง',m:'Shotgun',cost:400,d:'ยิงถูกแต่ละตัวอักษร ผลักซอมบี้ถอยหลังไกล',push:.9,kick:.12},
-  smg:{n:'ปืนกล',m:'SMG',cost:800,d:'เติมตัวอักษรแรกของทุกคำให้อัตโนมัติ',push:.3,kick:.04,auto1:true},
-  rifle:{n:'ไรเฟิล',m:'Rifle',cost:1200,d:'ยิงตายแล้วกระสุนทะลุ เปิดตัวอักษร 2 ตัวของตัวถัดไป',push:.45,kick:.09,pierce:2},
+  smg:{n:'ปืนกล',m:'SMG',cost:800,d:'ตัดตัวเลือกผิดออก 1 ข้อทุกคำ (โหมดสะกด: เติมตัวอักษรแรกให้)',push:.3,kick:.04,auto1:true},
+  rifle:{n:'ไรเฟิล',m:'Rifle',cost:1200,d:'ยิงตายแล้วกระสุนทะลุ ผลักตัวถัดไปถอยหลังไกล (โหมดสะกด: เปิดตัวอักษร 2 ตัว)',push:.45,kick:.09,pierce:2},
 };
 const UPG={
   wall:{n:'เสริมเครื่องกีดขวาง',d:'ความทนทาน +25',ic:'wall',cost:[150,320,650]},
@@ -326,10 +336,11 @@ const ZT={
 
 /* ---------------- save ---------------- */
 const SAVE_KEY='dw-save-v1';
-const DEF={coins:0,prog:{},gun:'pistol',owned:['pistol'],up:{wall:0,hint:0,oil:0},gren:1,learned:[],weak:[],opts:{sfx:true,amb:true,voice:true},zone:'a1',seen:null};
+const DEF={coins:0,prog:{},gun:'pistol',owned:['pistol'],up:{wall:0,hint:0,oil:0},gren:1,learned:[],weak:[],opts:{sfx:true,amb:true,voice:true},zone:'a1',seen:null,mode:'choice'};
 let P=Object.assign(structuredClone(DEF),store.get(SAVE_KEY,{}));
 for(const k of ORDER)P.prog[k]=P.prog[k]||[];
-P.up=Object.assign({wall:0,hint:0,oil:0},P.up);P.opts=Object.assign({},DEF.opts,P.opts);
+P.up=Object.assign({wall:0,hint:0,oil:0},P.up);if(P.mode!=='spell')P.mode='choice';
+const CHOICE=()=>P.mode==='choice';P.opts=Object.assign({},DEF.opts,P.opts);
 let LEARNED=new Set(P.learned),WEAK=new Set(P.weak);
 function save(){P.learned=[...LEARNED];P.weak=[...WEAK];store.set(SAVE_KEY,P);}
 const nextNight=k=>Math.min(ZONES[k].nights.length-1,P.prog[k].filter(Boolean).length);
@@ -453,7 +464,24 @@ async function loadModels(){
       done++;$('#loadBar').style.width=done/MODEL_LIST.length*100+'%';res();},undefined,()=>{done++;res();});
   })));
 }
-function place(n,x,y,z,ry=0,s=1){const m=MODELS[n];if(!m)return null;const o=m.scene.clone();o.position.set(x,y,z);o.rotation.y=ry;o.scale.setScalar(s);scene.add(o);return o;}
+const OBST=[];
+function place(n,x,y,z,ry=0,s=1){const m=MODELS[n];if(!m)return null;const o=m.scene.clone();o.position.set(x,y,z);o.rotation.y=ry;o.scale.setScalar(s);scene.add(o);
+  // anything solid standing in the road becomes an obstacle zombies must walk around
+  if(/^Vehicle_|^Container_|^Barrel|^TrashBag|^FireHydrant/.test(n)){o.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(o);if(b.min.x<4.2&&b.max.x>-4.2)OBST.push({x0:b.min.x,x1:b.max.x,z0:b.min.z,z1:b.max.z});}
+  return o;}
+const ZR=.45; // zombie body radius
+function blocked(x,z){for(const b of OBST)if(x>b.x0-ZR&&x<b.x1+ZR&&z>b.z0-ZR&&z<b.z1+ZR)return b;return null;}
+// walk forward, sidestepping toward the open side of anything in the way
+function walk(z,dist){
+  const p=z.obj.position,ahead=blocked(p.x,p.z+.9);
+  let dx=0,dz=dist;
+  if(ahead){const goRight=(ahead.x0+ahead.x1)/2<0;const tx=goRight?ahead.x1+ZR+.15:ahead.x0-ZR-.15;dx=clamp(tx-p.x,-dist*1.4,dist*1.4);dz=dist*.25;}
+  const nx=p.x+dx,nz=p.z+dz;
+  if(!blocked(nx,nz)){p.x=nx;p.z=nz;}else if(!blocked(nx,p.z))p.x=nx;else if(!blocked(p.x,nz))p.z=nz;
+  // turn to face where it is going
+  const want=Math.atan2(dx,dz);z.obj.rotation.y+=(want-z.obj.rotation.y)*.15;
+}
+function freeX(x,z){for(let k=0;k<12&&blocked(x,z);k++)x=clamp(x+(x<0?.6:-.6),-3.4,3.4);return x;}
 const STOP_Z=-4.4,BARR_Z=-3.4,SPAWN_Z=-31;
 function buildWorld(){
   for(let z=4,i=0;z>-160;z-=8,i++)place(i%4===2?'Street_Straight_Crack1':'Street_Straight',0,0,z,0);
@@ -526,7 +554,7 @@ function needIdx(z){const w=curWord(z).en.toLowerCase();let i=z.p;while(i<w.leng
 function renderTag(z){
   if(!z.tag)return;const w=curWord(z),en=w.en.toLowerCase();
   z.tag.querySelector('.th').textContent=w.th;
-  z.tag.querySelector('.en').innerHTML=[...en].map((c,i)=>isL(c)?`<i class="${i<z.p?'on':''}">${i<z.p?c.toUpperCase():''}</i>`:`<i class="sp">${c===' '?'':esc(c)}</i>`).join('');
+  const enEl=z.tag.querySelector('.en');enEl.hidden=CHOICE();if(CHOICE())enEl.innerHTML='';else enEl.innerHTML=[...en].map((c,i)=>isL(c)?`<i class="${i<z.p?'on':''}">${i<z.p?c.toUpperCase():''}</i>`:`<i class="sp">${c===' '?'':esc(c)}</i>`).join('');
   z.tag.querySelector('.pips').innerHTML=z.words.length>1?z.words.map((_,i)=>`<b class="${i<z.wi?'off':''}"></b>`).join(''):'';
 }
 function removeZombie(z){scene.remove(z.obj);z.tag&&z.tag.remove();const i=zombies.indexOf(z);if(i>=0)zombies.splice(i,1);if(target===z)target=null;}
@@ -587,8 +615,8 @@ function nextWave(){
 function spawn(type){
   const T=ZT[type],ws=Array.from({length:T.words},()=>takeWord(type==='runner'));
   const lane=[-2.6,-1.3,0,1.3,2.6],x=pick(lane)+rnd(-.4,.4);
-  const z=makeZombie(type,ws,type==='giant'?0:x,SPAWN_Z+rnd(-4,2));
-  if(z){z.speed*=G.speedMul;if(GUNS[P.gun].auto1)autoFirst(z);renderTag(z);if(!target)setTarget(nearest());}
+  const sz=SPAWN_Z+rnd(-4,2),z=makeZombie(type,ws,type==='giant'?0:freeX(x,sz),sz);
+  if(z){z.speed*=G.speedMul;if(GUNS[P.gun].auto1&&!CHOICE())autoFirst(z);renderTag(z);if(!target)setTarget(nearest());}
 }
 function clearZombies(){while(zombies.length)removeZombie(zombies[0]);fx.forEach(f=>scene.remove(f.o));fx.length=0;}
 function endNight(win){
@@ -621,7 +649,7 @@ function press(ch,fromKey){
   }else wrong(z,ch);
 }
 function consumeKey(ch){const k=[...$('#pad').querySelectorAll('.key:not(.used)')].find(b=>b.dataset.k===ch);if(k)k.classList.add('used');}
-function wrong(z,ch){
+function wrong(z){
   G.mash=G.t-G.lastWrong<3?G.mash+1:1;G.lastWrong=G.t;
   const m=Math.min(G.mash,4),dur=[0,.6,1,1.5,2][m]*(1-.2*P.up.oil);
   jamUntil=G.t+dur;G.combo=0;G.miss.add(curWord(z).en);z.miss=true;
@@ -629,7 +657,6 @@ function wrong(z,ch){
   SFX.jam();try{navigator.vibrate&&navigator.vibrate(60);}catch(e){}
   const pad=$('#pad');pad.classList.remove('shake');void pad.offsetWidth;pad.classList.add('shake','jam');
   $('#jamTag').hidden=false;$('#jamTag').textContent=m>=3?'อย่ากดมั่ว!':'ปืนติด!';
-  setTimeout(()=>{if(G&&G.t>=jamUntil-.05){pad.classList.remove('jam');$('#jamTag').hidden=true;renderPad();}},dur*1000+30);
   hud();
 }
 function wordDone(z){
@@ -637,7 +664,7 @@ function wordDone(z){
   G.combo++;G.best=Math.max(G.best,G.combo);
   const pts=10+w.en.length*2+Math.min(G.combo,20);G.score+=pts;floatAt(z,'+'+pts,'#a6e05a');
   speak(w.en);
-  if(z.wi<z.words.length-1){z.wi++;z.p=0;if(GUNS[P.gun].auto1)autoFirst(z);renderTag(z);bumpTag(z);z.obj.position.z-=.8;play(z,'HitReact',false,.05);z.hitT=.5;renderPad();hud();return;}
+  if(z.wi<z.words.length-1){z.wi++;z.p=0;z.opts=null;if(GUNS[P.gun].auto1&&!CHOICE())autoFirst(z);renderTag(z);bumpTag(z);z.obj.position.z-=.8;play(z,'HitReact',false,.05);z.hitT=.5;renderPad();hud();return;}
   kill(z,true);
 }
 function kill(z,byWord){
@@ -647,13 +674,16 @@ function kill(z,byWord){
   const c=z.T.coin;G.score+=c*5;
   SFX.die();
   if(byWord&&GUNS[P.gun].pierce){const n=live().filter(o=>o!==z).sort((a,b)=>Math.abs(a.x-z.x)-Math.abs(b.x-z.x))[0];
-    if(n){for(let k=0;k<GUNS[P.gun].pierce;k++){const i=needIdx(n);if(i<curWord(n).en.length-1){n.p=i+1;skipNon(n);}}renderTag(n);bumpTag(n);tracer(n);}}
+    if(n){if(CHOICE()){const nz=n.obj.position.z-3;if(!blocked(n.obj.position.x,nz))n.obj.position.z=nz;if(n.at){n.at=false;play(n,n.T.anim,true);}play(n,'HitReact',false,.05);n.hitT=.5;}
+      else for(let k=0;k<GUNS[P.gun].pierce;k++){const i=needIdx(n);if(i<curWord(n).en.length-1){n.p=i+1;skipNon(n);}}renderTag(n);bumpTag(n);tracer(n);}}
   if(target===z){target=null;setTarget(nearest());}
   hud();
 }
 function useHint(){
   if(state!=='play'||!G||G.hints<=0)return;
   if(!target||target.dead)setTarget(nearest());const z=target;if(!z)return;
+  if(CHOICE()){const o=choicesFor(z),wrongs=o.filter(c=>!c.ok&&!c.gone);if(!wrongs.length)return;G.hints--;z.hinted=true;G.miss.add(curWord(z).en);
+    shuffle(wrongs).slice(0,2).forEach(c=>c.gone=true);renderPad();hud();return;}
   G.hints--;z.hinted=true;G.miss.add(curWord(z).en);
   const ch=curWord(z).en.toLowerCase()[needIdx(z)];jamUntil=0;press(ch);hud();
 }
@@ -670,7 +700,7 @@ function useGrenade(){
 function shoot(z,quiet){
   const g=GUNS[P.gun];SFX.shot(P.gun);SFX.flesh();
   recoil=1;muzzleLight.intensity=12;shake=Math.max(shake,g.kick*2);
-  z.obj.position.z=Math.max(SPAWN_Z-6,z.obj.position.z-g.push*(z.type==='giant'?.3:z.type==='brute'?.6:1));
+  const nz=Math.max(SPAWN_Z-6,z.obj.position.z-g.push*(z.type==='giant'?.3:z.type==='brute'?.6:1));if(!blocked(z.obj.position.x,nz))z.obj.position.z=nz;
   if(z.at){z.at=false;play(z,z.T.anim,true);}
   if(z.hitT<=0){play(z,'HitReact',false,.05);z.hitT=.35;}
   tracer(z);blood(z);
@@ -724,10 +754,34 @@ function hud(){
   $('#grenN').textContent=G.gren;$('#grenBtn').disabled=G.gren<=0;
 }
 const DECOY='etaoinshrdlucmfwypvbgk';
+// four answers for the targeted zombie, made once per word so switching targets back and forth keeps them stable
+function choicesFor(z){
+  if(z.opts&&z.opts.word===curWord(z).en)return z.opts.list;
+  const w=curWord(z),pool=[...G.fresh,...G.old,...ZONES[G.k].words].filter(o=>o.en!==w.en&&o.th!==w.th);
+  const L=w.en.length,near=pool.filter(o=>Math.abs(o.en.length-L)<=3),src=near.length>=6?near:pool;
+  const picks=[];const seen=new Set([w.en]);
+  for(const o of shuffle(src)){if(seen.has(o.en))continue;seen.add(o.en);picks.push(o);if(picks.length===3)break;}
+  const list=shuffle([{en:w.en,ok:true},...picks.map(o=>({en:o.en,ok:false}))]);
+  if(GUNS[P.gun].auto1){const c=list.find(c=>!c.ok);if(c)c.gone=true;}
+  z.opts={word:w.en,list};return list;
+}
+function pickChoice(i){
+  if(state!=='play'||!G)return;
+  if(G.t<jamUntil){SFX.jam();return;}
+  if(!target||target.dead)setTarget(nearest());const z=target;if(!z)return;
+  const c=choicesFor(z)[i];if(!c||c.gone)return;
+  if(c.ok){
+    // a short burst of shots, then the word is done
+    shoot(z);setTimeout(()=>{if(!z.dead&&G)shoot(z);},90);
+    z.p=curWord(z).en.length;wordDone(z);
+  }else{c.gone=true;wrong(z);renderPad();}
+}
 function renderPad(){
   const pad=$('#pad');if(!G){pad.innerHTML='';return;}
   const z=target&&!target.dead?target:null;
   if(!z){pad.innerHTML='';return;}
+  pad.classList.toggle('choice',CHOICE());
+  if(CHOICE()){pad.innerHTML=choicesFor(z).map((c,i)=>`<button class="opt" type="button" data-i="${i}" ${c.gone?'disabled':''}><small>${i+1}</small>${esc(c.en)}</button>`).join('');return;}
   const w=curWord(z).en.toLowerCase(),rest=[...w.slice(z.p)].filter(isL);
   const n=rest.length,decoys=n<=3?3:n<=7?3:2,ds=[];
   for(let i=0;i<decoys;i++){let c;do c=pick(DECOY);while(rest.includes(c)&&Math.random()<.7);ds.push(c);}
@@ -738,7 +792,7 @@ function renderPad(){
   pad.style.setProperty('--k',(rows>1?clamp(Math.floor((avail-gap*(Math.ceil(keys.length/2)-1))/Math.ceil(keys.length/2)),30,52):k)+'px');pad.style.setProperty('--g',gap+'px');
   pad.innerHTML=keys.map(c=>`<button class="key" type="button" data-k="${c}">${c}</button>`).join('');
 }
-$('#pad').addEventListener('pointerdown',e=>{const b=e.target.closest('.key');if(!b||b.classList.contains('used'))return;e.preventDefault();SFX.key();press(b.dataset.k);});
+$('#pad').addEventListener('pointerdown',e=>{const o=e.target.closest('.opt');if(o){e.preventDefault();if(!o.disabled){SFX.key();pickChoice(+o.dataset.i);}return;}const b=e.target.closest('.key');if(!b||b.classList.contains('used'))return;e.preventDefault();SFX.key();press(b.dataset.k);});
 $('#hintBtn').addEventListener('click',useHint);
 $('#grenBtn').addEventListener('click',useGrenade);
 $('#pauseBtn').addEventListener('click',()=>pause());
@@ -746,6 +800,7 @@ addEventListener('keydown',e=>{
   if(state==='play'){
     if(e.key==='Escape'){pause();return;}
     if(e.key==='Tab'){e.preventDefault();const L=live().sort((a,b)=>b.z-a.z);if(L.length){const i=L.indexOf(target);setTarget(L[(i+1)%L.length]);}return;}
+    if(CHOICE()){if(/^[1-4]$/.test(e.key)){pickChoice(+e.key-1);return;}if(e.key==='h'||e.key==='H'){useHint();return;}if(e.key==='g'||e.key==='G'){useGrenade();return;}return;}
     if(e.key==='1'){useHint();return;}if(e.key==='2'){useGrenade();return;}
     const k=e.key.toLowerCase();if(/^[a-z]$/.test(k)){e.preventDefault();press(k,true);}
   }else if(state==='paused'&&e.key==='Escape')resume();
@@ -766,7 +821,8 @@ function home(){
   show(`<div class="home">
     <div class="brand">
       <h1>DEAD<br><span>WORDS</span></h1>
-      <p>สะกดคำให้ถูก ก่อนพวกมันจะถึงตัวคุณ</p>
+      <p>ตอบคำให้ถูก ก่อนพวกมันจะถึงตัวคุณ</p>
+      <div class="seg" role="group" aria-label="วิธีตอบ"><button type="button" data-m="choice" aria-pressed="${CHOICE()}">เลือกคำตอบ<small>ง่าย</small></button><button type="button" data-m="spell" aria-pressed="${!CHOICE()}">สะกดคำ<small>ยาก</small></button></div>
       <div class="toggles" style="margin-top:14px">
         <button class="tog" type="button" id="oS" aria-pressed="${P.opts.sfx}">เสียงเอฟเฟกต์</button>
         <button class="tog" type="button" id="oA" aria-pressed="${P.opts.amb}">เสียงบรรยากาศ</button>
@@ -790,6 +846,7 @@ function home(){
   if(fresh)$('#newsX').onclick=()=>{P.seen=VERSION;save();$('#news').remove();};
   const tg=(id,key)=>$(id).onclick=e=>{P.opts[key]=!P.opts[key];save();e.currentTarget.setAttribute('aria-pressed',P.opts[key]);if(key==='amb')ambience();SFX.ui();};
   tg('#oS','sfx');tg('#oA','amb');tg('#oV','voice');
+  scr.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{P.mode=b.dataset.m;save();SFX.ui();scr.querySelectorAll('[data-m]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.m===P.mode));});
 }
 const zoneTabs=(sel,attr)=>`<div class="tabs">${ORDER.map(k=>`<button class="tab" type="button" ${attr}="${k}" style="--c:${ZONES[k].c}" aria-pressed="${k===sel}">${ZONES[k].name}<small>${ZONES[k].lvl}</small></button>`).join('')}</div>`;
 function zoneMap(k){
@@ -819,7 +876,7 @@ function brief(k,i,mode='night'){
   const boss=!rev&&isBossNight(i);
   show(`<div class="card" style="max-height:100%">
     <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>${rev?'ทบทวน':'คืนที่ '+(i+1)}</h2><span class="zinfo">${rev?'คำที่เคยพลาด':esc(ZONES[k].name+' · '+ZONES[k].nights[i].unit)}${boss?' · <b style="color:var(--blood)">มีบอส</b>':''}</span><span class="sp"></span></div>
-    <div class="zinfo">ซอมบี้แต่ละตัวมีคำไทยติดอยู่ กดตัวอักษรเรียงเป็นคำภาษาอังกฤษให้ถูกเพื่อยิง ทำความรู้จักคำของคืนนี้ก่อน</div>
+    <div class="zinfo">${CHOICE()?'ซอมบี้แต่ละตัวมีคำไทยติดอยู่ เลือกคำภาษาอังกฤษที่ตรงกันเพื่อยิง':'ซอมบี้แต่ละตัวมีคำไทยติดอยู่ กดตัวอักษรเรียงเป็นคำภาษาอังกฤษให้ถูกเพื่อยิง'} ทำความรู้จักคำของคืนนี้ก่อน</div>
     <div class="scroll"><div class="wlist">${ws.map(w=>wordRow(w,LEARNED.has(w.en)?'ok':'')).join('')}</div></div>
     <div class="row"><button class="btn main" type="button" id="go">${SV.play.replace('<svg','<svg style="width:18px;height:18px"')}เริ่มป้องกัน</button></div></div>`,'solid');
   $('#back').onclick=()=>rev?home():zoneMap(k);
@@ -886,7 +943,7 @@ function menuScene(){
   if(menuZ.length&&menuZ.every(z=>zombies.includes(z)))return;
   menuZ=[];
   const set=[['walker',-1.8,-13],['brute',1.6,-17],['walker',.2,-21],['runner',-3,-26],['walker',2.8,-29]];
-  for(const [t,x,z] of set){const o=makeZombie(t,[{en:'',th:''}],x,z,true);if(o){o.speed=ZT[t].speed*.25;menuZ.push(o);}}
+  for(const [t,x,z] of set){const o=makeZombie(t,[{en:'',th:''}],freeX(x,z),z,true);if(o){o.speed=ZT[t].speed*.25;menuZ.push(o);}}
 }
 
 /* ---------------- main loop ---------------- */
@@ -906,7 +963,7 @@ function frame(now){
   if(state!=='paused'){
     for(const z of [...zombies]){
       z.mixer.update(dt*(z.menu?.6:1));
-      if(z.menu){z.obj.position.z+=z.speed*dt;if(z.obj.position.z>-9){z.obj.position.z=-32;}continue;}
+      if(z.menu){walk(z,z.speed*dt);if(z.obj.position.z>-9){z.obj.position.z=-32;z.obj.position.x=freeX(z.obj.position.x,-32);}continue;}
       if(z.dead){z.dieT+=dt;if(z.dieT>1.8)z.obj.position.y-=dt*.6;if(z.dieT>3.2)removeZombie(z);}
     }
     stepFx(dt);
@@ -926,19 +983,31 @@ function frame(now){
   renderer.render(scene,camera);
   // word tags follow heads
   if(playing||state==='end'||state==='paused'){
-    const W=innerWidth,H=innerHeight;
+    const W=innerWidth,H=innerHeight,items=[];
     for(const z of zombies){if(!z.tag)continue;
       proj.set(z.obj.position.x,z.T.h+.35+z.obj.position.y,z.obj.position.z).project(camera);
       const d=camera.position.distanceTo(z.obj.position),s=clamp(8/d,.78,1.15);
-      const x=(proj.x*.5+.5)*W,y=(-proj.y*.5+.5)*H;
-      const tf=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,-100%) scale(${s.toFixed(3)})`;
-      z.tag.style.transform=tf;z.tag.style.setProperty('--tf',tf);z.tag.style.zIndex=1000-Math.round(d*10);
-      z.tag.style.display=proj.z>1?'none':'';
+      if(!z.tw||z.tagDirty!==z.tag.textContent){z.tw=z.tag.offsetWidth;z.th=z.tag.offsetHeight;z.tagDirty=z.tag.textContent;}
+      items.push({z,d,s,x:(proj.x*.5+.5)*W,y:(-proj.y*.5+.5)*H,w:z.tw*s,h:z.th*s,hide:proj.z>1});
+    }
+    // nearest tags keep their place; farther ones that would overlap are lifted above them
+    items.sort((a,b)=>a.d-b.d);
+    const placed=[];
+    for(const it of items){
+      if(it.hide||it.z.dead){continue;}
+      for(let k=0;k<8;k++){const hit=placed.find(o=>Math.abs(o.x-it.x)<(o.w+it.w)/2+4&&it.y>o.y-o.h-4&&it.y-it.h<o.y+4);if(!hit)break;it.y=hit.y-hit.h-6;}
+      placed.push(it);
+    }
+    for(const it of items){const z=it.z;
+      const tf=`translate(${it.x.toFixed(1)}px,${it.y.toFixed(1)}px) translate(-50%,-100%) scale(${it.s.toFixed(3)})`;
+      z.tag.style.transform=tf;z.tag.style.setProperty('--tf',tf);z.tag.style.zIndex=1000-Math.round(it.d*10);
+      z.tag.style.display=it.hide?'none':'';
       z.tag.classList.toggle('near',z.obj.position.z>STOP_Z-4&&!z.dead);
     }
   }
 }
 function step(dt){
+  if(!$('#jamTag').hidden&&G.t>=jamUntil){$('#jamTag').hidden=true;$('#pad').classList.remove('jam');renderPad();}
   // spawning
   if(G.queue.length){G.spawnT-=dt;if(G.spawnT<=0&&live().length<8){spawn(G.queue.shift());G.spawnT=G.W[G.wave].gap*rnd(.75,1.2);}}
   else if(!live().length&&!G.ended){G.waveGap=(G.waveGap||2.2)-dt;if(G.waveGap<=0){G.waveGap=0;nextWave();}}
@@ -949,8 +1018,8 @@ function step(dt){
     if(z.groanT<=0){z.groanT=rnd(4,9);const d=-z.obj.position.z;SFX.groan(clamp(.22-d*.004,.03,.2),z.type==='giant'||z.type==='brute');}
     const p=z.obj.position;
     if(!z.at){
-      if(z.hitT<=0){if(z.act!==z.mixer.clipAction(z.clips[z.T.anim]))play(z,z.T.anim,true);p.z+=z.speed*dt;}
-      for(const o of L)if(o!==z){const dx=p.x-o.obj.position.x,dz=p.z-o.obj.position.z;if(Math.abs(dz)<1.2&&Math.abs(dx)<.9){p.x+=Math.sign(dx||rnd(-1,1))*dt*.8;}}
+      if(z.hitT<=0){if(z.act!==z.mixer.clipAction(z.clips[z.T.anim]))play(z,z.T.anim,true);walk(z,z.speed*dt);}
+      for(const o of L)if(o!==z){const dx=p.x-o.obj.position.x,dz=p.z-o.obj.position.z;if(Math.abs(dz)<1.2&&Math.abs(dx)<.9){const nx=p.x+Math.sign(dx||rnd(-1,1))*dt*.8;if(!blocked(nx,p.z))p.x=nx;}}
       p.x=clamp(p.x,-3.6,3.6);
       if(p.z>=STOP_Z-(z.type==='giant'?.8:0)){p.z=STOP_Z-(z.type==='giant'?.8:0);z.at=true;play(z,z.clips.Punch?'Punch':'Idle_Attack',true);}
     }else{
@@ -971,7 +1040,7 @@ requestAnimationFrame(frame);
 loadModels().then(()=>{
   buildWorld();try{makeThumbs();}catch(e){}equipGun();if(gunObj)gunObj.visible=false;
   $('#loading').hidden=true;home();
-  window.__dw={get G(){return G;},zombies,press,live,get target(){return target;},P};
+  window.__dw={get G(){return G;},zombies,press,live,get target(){return target;},P,OBST,blocked};
 });
 </script>
 </body>
