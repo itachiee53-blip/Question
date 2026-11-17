@@ -16,3 +16,6 @@ Also included from the same author under the same CC0 1.0 license:
 - Zombie Apocalypse Kit: https://quaternius.com/packs/zombieapocalypsekit.html
 - Toon Shooter Game Kit: https://quaternius.com/packs/toonshootergamekit.html
 - Toon Shooter Game Kit guns (AK, Revolver, Sniper, GrenadeLauncher) and Zombie Apocalypse Kit melee weapons and armored truck
+
+Kenney Animated Characters 1 (CC0 1.0) - https://opengameart.org/content/animated-characters-1
+  Kenney_Char/Run/Idle.glb converted from FBX; textures/zombieA.png, zombieC.png

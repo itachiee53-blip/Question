@@ -341,8 +341,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.10.0',VERSION_DATE='17 พ.ย. 2569';
-const CHANGES=['อาวุธประชิดมีท่าจริง: มีดปาหมุนออกไป หอกพุ่งเหมือนแหลน ไม้ฟาดเฉียง ขวานจามลง กีตาร์กวาดมีคลื่นเสียง ไม้เลื่อยมีประกายไฟ','ปุ่มถังระเบิดเปลี่ยนเป็นไอคอนเล็กบนตัวถัง ไม่บังคำศัพท์'];
+const VERSION='2.11.0',VERSION_DATE='17 พ.ย. 2569';
+const CHANGES=['ซอมบี้ชาวเมืองใหม่ 2 แบบ (จาก Kenney) ปนมากับซอมบี้ปกติ'];
 
 /* ---------------- helpers ---------------- */
 const $=s=>document.querySelector(s);
@@ -441,6 +441,7 @@ const ZT={
   twinB:{m:'Zombie_Ribcage',h:2.8,speed:.55,anim:'Walk',dps:12,words:3,coin:30,boss:'แฝดนรก (น้ำเงิน)',tint:[0x6aa0ff,0x001050],twin:true},
   twins:{boss:'แฝดนรก',pseudo:true},
   tank:{m:'Tank',native:true,scale:1.7,h:3.6,speed:.55,anim:null,dps:25,words:6,coin:55,boss:'รถถังซอมบี้',vehicle:true,artillery:true},
+  townie:{m:'Kenney_Char',h:1.7,speed:.95,anim:'Run',anRate:.42,atk:'Idle',dps:5,words:1,coin:3,skins:['zombieA','zombieC']},
   conehead:{m:'Zombie_Basic',h:1.75,speed:1,anim:'Walk',dps:5,words:2,coin:5,gear:'cone',label:'หัวกรวย',cls:'armor'},
   shield:{m:'Zombie_Chubby',h:2,speed:.7,anim:'Walk',dps:8,words:2,coin:7,gear:'shield',label:'โล่',cls:'armor'},
 };
@@ -732,8 +733,14 @@ const smokeTex=canvasTex(64,64,(g)=>{const gr=g.createRadialGradient(32,32,2,32,
 
 /* ---------------- model loading ---------------- */
 const MODELS={};
-const MODEL_LIST=['Zombie_Basic','Zombie_Ribcage','Zombie_Chubby','Zombie_Arm','Pistol','Shotgun','SMG','Rifle','StreetLights','Street_Straight','Street_Straight_Crack1','TrafficBarrier_1','TrafficBarrier_2','Pallet','Pallet_Broken','CinderBlock','Barrel','Container_Red','Container_Green','TrashBag_1','FireHydrant','Wheels_Stack','TrafficCone_1','Vehicle_Pickup','Vehicle_Sports','Vehicle_Truck','Blood_1','SackTrench','SackTrench_Small','Debris_BrokenCar','Debris_Pile','Debris_Papers_1','Debris_Tires','ExplodingBarrel','TrashContainer','TrashContainer_Open','Fence_Long','MetalFence','Tree_1','Tree_2','Structure_1','Structure_2','Structure_3','Structure_4','WaterTank_Platform','GasTank','CardboardBoxes_1','Crate','Pipes','Tank','Health','Characters_Shaun','Characters_GermanShepherd','Knife','AK','Revolver','Sniper','GrenadeLauncher','Axe','WoodenBat_Barbed','WoodenBat_Saw','Vehicle_Truck_Armored','Container_Long','Container_Small','Sofa','Tree_3','Tree_4','WoodPlanks','TownSign','TrafficLight_1','Barrier_Large','RocketLauncher','ShortCannon','Sniper_2','Spear','Guitar'];
-async function loadModels(){
+const MODEL_LIST=['Zombie_Basic','Zombie_Ribcage','Zombie_Chubby','Zombie_Arm','Pistol','Shotgun','SMG','Rifle','StreetLights','Street_Straight','Street_Straight_Crack1','TrafficBarrier_1','TrafficBarrier_2','Pallet','Pallet_Broken','CinderBlock','Barrel','Container_Red','Container_Green','TrashBag_1','FireHydrant','Wheels_Stack','TrafficCone_1','Vehicle_Pickup','Vehicle_Sports','Vehicle_Truck','Blood_1','SackTrench','SackTrench_Small','Debris_BrokenCar','Debris_Pile','Debris_Papers_1','Debris_Tires','ExplodingBarrel','TrashContainer','TrashContainer_Open','Fence_Long','MetalFence','Tree_1','Tree_2','Structure_1','Structure_2','Structure_3','Structure_4','WaterTank_Platform','GasTank','CardboardBoxes_1','Crate','Pipes','Tank','Health','Characters_Shaun','Characters_GermanShepherd','Knife','AK','Revolver','Sniper','GrenadeLauncher','Axe','WoodenBat_Barbed','WoodenBat_Saw','Vehicle_Truck_Armored','Container_Long','Container_Small','Sofa','Tree_3','Tree_4','WoodPlanks','TownSign','TrafficLight_1','Barrier_Large','RocketLauncher','ShortCannon','Sniper_2','Spear','Guitar','Kenney_Char','Kenney_Run','Kenney_Idle'];
+async function loadModels(){await loadModelsRaw();
+  // Kenney characters: one mesh, animations shipped separately, skins as textures
+  const K=MODELS.Kenney_Char;if(K){for(const n of ['Kenney_Run','Kenney_Idle'])if(MODELS[n])K.animations.push(...MODELS[n].animations.filter(c=>c.name!=='Targeting Pose'));
+    const tl=new THREE.TextureLoader();for(const sk of ['zombieA','zombieC']){const t=await tl.loadAsync(`assets/textures/${sk}.png`).catch(()=>null);if(t){t.colorSpace=THREE.SRGBColorSpace;t.flipY=false;SKINS[sk]=t;}}}
+}
+const SKINS={};
+async function loadModelsRaw(){
   const loader=new GLTFLoader();let done=0;
   await Promise.all(MODEL_LIST.map(n=>new Promise(res=>{
     loader.load(`assets/models/${n}.glb`,g=>{MODELS[n]=g;
@@ -973,6 +980,7 @@ function makeZombie(type,word,x,z,menu=false){
   const blob=new THREE.Mesh(new THREE.PlaneGeometry(1,1),blobMat);blob.rotation.x=-Math.PI/2;blob.position.y=.03;blob.scale.setScalar(T.h*.55);wrap.add(blob);
   // infected civilians: grey-green skin, grimy clothes
   if(T.skin)obj.traverse(o=>{if(o.isMesh&&o.material){const ms=Array.isArray(o.material)?o.material:[o.material];o.material=ms.map(mt=>{const c=mt.clone();if(/skin/i.test(mt.name))c.color.setHex(T.skin);else if(!/eye/i.test(mt.name))c.color.multiplyScalar(.6).lerp(new THREE.Color(0x4a5a40),.25);return c;});if(o.material.length===1)o.material=o.material[0];}});
+  if(T.skins){const t=SKINS[pick(T.skins)];if(t)obj.traverse(o=>{if(o.isMesh&&o.material){o.material=o.material.clone();o.material.map=t;o.material.color.setHex(0xffffff);o.material.needsUpdate=true;}});}
   if(T.tint)obj.traverse(o=>{if(o.isMesh&&o.material){o.material=o.material.clone();o.material.color.multiply(new THREE.Color(T.tint[0]));o.material.emissive=new THREE.Color(T.tint[1]);}});
   scene.add(wrap);
   const mixer=new THREE.AnimationMixer(obj),clips={};
@@ -1124,6 +1132,7 @@ function nextWave(){
 const ZTIP={dog:'หมาซอมบี้: วิ่งเร็วมาก ตัวเตี้ย ยิงให้ไว',leaper:'ซอมบี้กระโดด: กระโดดพุ่งเข้ามาทีละไกล',barrel:'เกราะถัง: ต้องตอบ 3 คำ ถังหลุดหลังคำแรก',swarm:'ฝูงจิ๋ว: มาทีละ 3 ตัว วิ่งเร็วแต่คำสั้น',golden:'ซอมบี้ทอง: ยิงให้ทันก่อนมันหนี ได้ 40 เหรียญ',bloater:'ซอมบี้ระเบิด: ตายแล้วระเบิดใส่ตัวข้างๆ อย่าให้ถึงเครื่องกีดขวาง',screamer:'ซอมบี้กรีดร้อง: ถ้าปล่อยไว้นาน มันจะเร่งตัวอื่นให้เร็วขึ้น'};
 function spawnAt(type,x,zz){const T=ZT[type],ws=Array.from({length:T.words},()=>takeWord(type==='runner'||T.short));const z=makeZombie(type,ws,x,zz);if(z){z.speed*=G.speedMul;renderTag(z);}return z;}
 function spawn(type){
+  if(type==='walker'&&MODELS.Kenney_Char&&Math.random()<.4)type='townie';
   if(type==='twins'){const a=spawnAt('twinR',-1.8,SPAWN_Z),b=spawnAt('twinB',1.8,SPAWN_Z-1);if(a&&b){a.twin=b;b.twin=a;}if(!target)setTarget(nearest());return;}
   if(type==='swarm'){if(!P.seenZ.includes('swarm')){P.seenZ.push('swarm');save();toast(ZTIP.swarm);}const x=rnd(-2.2,2.2);for(const d of [-1,0,1])spawnAt('mini',clamp(x+d*.9,-3.4,3.4),SPAWN_Z+d*.8);if(!target)setTarget(nearest());return;}
   const T=ZT[type],ws=Array.from({length:T.words},()=>takeWord(type==='runner'||T.short));
