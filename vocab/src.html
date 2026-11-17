@@ -111,8 +111,7 @@ button[disabled]{cursor:not-allowed}
 .topbar h2{flex:1;margin:0;font-family:var(--f-mark);font-weight:400;font-size:clamp(24px,5vw,36px);text-align:left;transform:rotate(-1deg)}
 .back{width:42px;height:38px;border:2.5px solid var(--ink);border-radius:var(--hand);background:#fff;font-size:20px}
 .coins{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-en);font-size:24px;background:#fff6cc;border:2.5px solid var(--gold);border-radius:999px;padding:0 12px 0 4px}
-.coin{display:inline-block;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffe58a,#e0a400 70%);border:2px solid #9c6f00;position:relative;flex:none}
-.coin::after{content:"";position:absolute;inset:5px 8px;border-left:2px solid #9c6f00}
+.coin{display:inline-block;width:24px;height:24px;background:var(--coin-img) center/contain no-repeat;flex:none;vertical-align:-5px}
 .title{margin:0;font-family:var(--f-mark);font-weight:400;font-size:clamp(34px,8vw,64px);line-height:.95;transform:rotate(-2deg)}
 .title span{display:inline-block;background:linear-gradient(transparent 50%,var(--hl-y) 50% 88%,transparent 88%);padding:0 8px;animation:wob 3s ease-in-out infinite}
 .title small{display:block;font-family:var(--f-th);font-size:.36em;color:var(--red);margin-top:4px}
@@ -261,6 +260,7 @@ function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1
 const rpick=(r,a)=>a[Math.floor(r()*a.length)];
 const rshuffle=(r,a)=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 const COIN='<i class="coin"></i>';
+document.documentElement.style.setProperty('--coin-img',`url(${ART.coin})`);
 
 /* ---------- words: books follow CEFR levels; each book splits into stages of 10 words ---------- */
 const WORDS=/*WORDS*/{};
