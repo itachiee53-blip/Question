@@ -337,8 +337,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.8.0',VERSION_DATE='17 พ.ย. 2569';
-const CHANGES=['บอสใหม่ 3 ตัว: จ่าฝูงหมาซอมบี้ (กระโดดพุ่ง) แฝดนรก (ฆ่าตัวหนึ่ง อีกตัวโกรธ) และรถถังซอมบี้ (ยิงปืนใหญ่ใส่เครื่องกีดขวางจากระยะไกล)','ปืนใหม่: ปืนแช่แข็ง ไรเฟิลสายฟ้า บาซูก้า','อาวุธประชิดใหม่: หอก (แทงไกล) และกีตาร์หนาม','เอาชื่อประเภทซอมบี้บนหัวออก'];
+const VERSION='2.9.0',VERSION_DATE='17 พ.ย. 2569';
+const CHANGES=['ผู้ช่วยต้องซื้อเองที่คลังแสง แท็บผู้ช่วย','ผู้รอดชีวิต: ยิงซอมบี้ที่ใกล้สุดให้ถอยเป็นระยะ (ไม่ฆ่า)','สุนัขเฝ้ายาม: กัดซอมบี้ที่ทุบเครื่องกีดขวางให้หยุดชั่วครู่','อัปเกรดได้ 3 ขั้น'];
 
 /* ---------------- helpers ---------------- */
 const $=s=>document.querySelector(s);
@@ -448,7 +448,7 @@ let P=Object.assign(structuredClone(DEF),store.get(SAVE_KEY,{}));
 for(const k of ORDER)P.prog[k]=P.prog[k]||[];
 P.up=Object.assign({wall:0,hint:0,oil:0,mag:0,knife:0},P.up);P.seenZ=P.seenZ||[];if(P.mode!=='spell')P.mode='choice';
 const CHOICE=()=>P.mode==='choice';
-P.best=P.best||{};P.melee=P.melee||'knife';P.ownedMelee=P.ownedMelee||['knife'];P.xp=P.xp||0;
+P.best=P.best||{};P.allies=Object.assign({man:0,dog:0},P.allies);P.melee=P.melee||'knife';P.ownedMelee=P.ownedMelee||['knife'];P.xp=P.xp||0;
 /* ranks grow with experience from answering */
 const RANKS=[[0,'มือใหม่'],[150,'ผู้รอดชีวิต'],[500,'นักล่า'],[1200,'ทหารพราน'],[2600,'ผู้พิทักษ์'],[5000,'ฮีโร่'],[9000,'ตำนาน']];
 const rankOf=xp=>{let i=0;while(i<RANKS.length-1&&xp>=RANKS[i+1][0])i++;return i;};
@@ -857,14 +857,24 @@ function setScene(k){
 
 /* ---------------- survivor and dog behind the barricade ---------------- */
 const allies=[];
+/* helpers you buy: they only slow zombies down, never kill or answer for you */
+const ALLY={
+  man:{n:'ผู้รอดชีวิต',cost:500,up:[300,600],cd:[12,10,8],push:[1.5,1.8,2.2],
+    d:l=>`ยิงซอมบี้ที่ใกล้ที่สุดให้ถอย ${ALLY.man.push[l]} ม. ทุก ${ALLY.man.cd[l]} วิ (ไม่ฆ่า ไม่ตอบแทน)`},
+  dog:{n:'สุนัขเฝ้ายาม',cost:400,up:[250,500],cd:[16,13,10],stun:[1.5,2,2.5],
+    d:l=>`กระโจนกัดซอมบี้ที่กำลังทุบเครื่องกีดขวาง หยุดมัน ${ALLY.dog.stun[l]} วิ ทุก ${ALLY.dog.cd[l]} วิ`},
+};
+let allyCrate=null;
+function allyVisibility(){const [man,dog]=allies;if(man)man.obj.visible=P.allies.man>0;if(dog)dog.obj.visible=P.allies.dog>0;if(allyCrate)allyCrate.visible=P.allies.dog>0;}
 function buildAllies(){
   const mk=(n,x,z,h,ry,idle)=>{const m=MODELS[n];if(!m)return null;const o=SkeletonUtils.clone(m.scene);o.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(o),hh=b.max.y-b.min.y||1,s=h/hh;
     o.scale.setScalar(s);const w=new THREE.Group();w.add(o);o.position.y=-b.min.y*s;w.position.set(x,0,z);w.rotation.y=ry;scene.add(w);
     const mixer=new THREE.AnimationMixer(o),clips={};for(const c of m.animations)clips[c.name]=c;const a={obj:w,mixer,clips,act:null,idle,name:n,busy:0};allies.push(a);allyPlay(a,idle);return a;};
   mk('Characters_Shaun',-1.95,-3.0,1.72,Math.PI+.6,'Idle');
   // the dog keeps watch from a crate so it can see over the barricade
-  place('Crate',2.4,0,-3.05,.2);const d=mk('Characters_GermanShepherd',2.4,-3.05,.78,Math.PI-.6,'Idle_2');if(d)d.obj.position.y=.79;
+  allyCrate=place('Crate',2.4,0,-3.05,.2);const d=mk('Characters_GermanShepherd',2.4,-3.05,.78,Math.PI-.6,'Idle_2');if(d)d.obj.position.y=.79;
   const fill=new THREE.PointLight(0xffd2a0,7,5,1.5);fill.position.set(0,2.3,-2);scene.add(fill);
+  allyVisibility();
 }
 function allyPlay(a,name,once=false){const c=a.clips[name];if(!c)return;const act=a.mixer.clipAction(c);if(a.act===act&&!once)return;act.reset();act.setLoop(once?THREE.LoopOnce:THREE.LoopRepeat,Infinity);act.clampWhenFinished=once;if(a.act)act.crossFadeFrom(a.act,.2,false);act.play();a.act=act;if(once)a.busy=c.duration;}
 function allyReact(kind){
@@ -877,8 +887,15 @@ function stepAllies(dt){
   const near=state==='play'&&live().some(z=>z.obj.position.z>-9);
   const [man,dog]=allies;
   for(const a of allies){a.mixer.update(dt);if(a.busy>0){a.busy-=dt;if(a.busy<=0)allyPlay(a,a.idle);}}
-  if(dog&&dog.busy<=0&&state==='play'){allyPlay(dog,near?'Attack':dog.idle);if(near&&Math.random()<dt*.8)SFX.bark();}
-  if(man&&man.busy<=0&&state==='play'){allyPlay(man,near?'Punch':man.idle);}
+  if(state!=='play'||!G)return;
+  const lm=P.allies.man,ld=P.allies.dog;
+  // survivor: a shot that pushes the closest zombie back
+  if(man&&lm>0){G.manT-=dt;if(G.manT<=0){const t=live().filter(z=>z.obj.position.z>-14).sort((a,b)=>b.obj.position.z-a.obj.position.z)[0];
+    if(t){G.manT=ALLY.man.cd[lm-1];allyPlay(man,'Punch',true);sample('pistol',.45)||SFX.shot('pistol');const from=new THREE.Vector3(-1.9,1.45,-3.3);muzzleFlash(from);
+      bullet(from,chest(t).clone(),140,()=>{if(zombies.includes(t)&&!t.dead){knock(t,ALLY.man.push[lm-1],.5);t.stunT=0;}},1);}else G.manT=.5;}}
+  // dog: pounces on a zombie that is attacking the barricade and holds it for a moment
+  if(dog&&ld>0){G.dogT-=dt;if(G.dogT<=0){const t=live().find(z=>z.at&&!(z.stunT>0));
+    if(t){G.dogT=ALLY.dog.cd[ld-1];allyPlay(dog,'Attack',true);SFX.bark();setTimeout(()=>{if(zombies.includes(t)&&!t.dead){t.stunT=ALLY.dog.stun[ld-1];blood(t);play(t,'HitReact',false,.05);floatAt(t,'ถูกกัด!','#ffb070');}},250);}else G.dogT=.5;}}
 }
 
 /* ---------------- tappable things on the road: exploding barrels, medkits ---------------- */
@@ -920,6 +937,8 @@ function makeThumbs(){
   for(const [id,g] of [...Object.entries(GUNS),...Object.entries(MELEE).map(([k,v])=>['m_'+k,{...v,melee:true}])]){const m=MODELS[g.m];if(!m)continue;const o=m.scene.clone();sc.add(o);
     o.rotation.set(g.melee?Math.PI/2:0,g.toon?0:-Math.PI/2,0);o.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(o),c=b.getCenter(new THREE.Vector3()),sz=b.getSize(new THREE.Vector3()).length();
     cam.position.set(c.x+sz*.1,c.y+sz*.18,c.z+sz*1.05);cam.lookAt(c);r.render(sc,cam);THUMB[id]=r.domElement.toDataURL();sc.remove(o);}
+  for(const [id,n] of [['ally_man','Characters_Shaun'],['ally_dog','Characters_GermanShepherd']]){const m=MODELS[n];if(!m)continue;const o=SkeletonUtils.clone(m.scene);sc.add(o);o.rotation.set(0,.5,0);o.updateMatrixWorld(true);
+    const b=new THREE.Box3().setFromObject(o),c=b.getCenter(new THREE.Vector3()),sz=b.getSize(new THREE.Vector3()).length();cam.position.set(c.x,c.y+sz*.1,c.z+sz*1.25);cam.lookAt(c);r.render(sc,cam);THUMB[id]=r.domElement.toDataURL();sc.remove(o);}
   r.dispose();
 }
 
@@ -1078,7 +1097,7 @@ function startNight(k,i,mode='night'){
   const wallMax=100+25*P.up.wall;
   G={k,i,mode,fresh:nw.fresh,old:nw.old,used:new Map(),W:wv.W,speedMul:wv.speed,wave:-1,queue:[],spawnT:0,wall:wallMax,wallMax,
      score:0,combo:0,best:0,kills:0,hints:2+P.up.hint,gren:P.gren,mash:0,lastWrong:-9,hit:new Set(),miss:new Set(),t:0,ended:false,
-     ammo:0,mag:0,reloadT:0,bonusCoins:0,heads:0,knifeT:0,pendingImpact:0,
+     manT:4,dogT:6,ammo:0,mag:0,reloadT:0,bonusCoins:0,heads:0,knifeT:0,pendingImpact:0,
      sky:info.sky,mod:info.mod,adr:0,slow:0,slowMul:1,coinMul:info.mod?1.3:1,shieldT:0,xp:0,wrongs:0,extraBarrels:0};
   state='play';target=null;jamUntil=0;
   $('#hud').hidden=false;$('#dock').hidden=false;$('#screen').hidden=true;
@@ -1484,7 +1503,7 @@ function toast(m,ms=2200){const n=document.querySelectorAll('.toast').length;con
 const coinTag=()=>`<span class="coins">${SV.coin}${fmt(P.coins)}</span>`;
 function hideGame(){$('#bossBar').hidden=true;$('#hud').hidden=true;$('#dock').hidden=true;$('#danger').hidden=true;$('#jamTag').hidden=true;}
 function home(){
-  state='menu';G=null;target=null;hideGame();clearZombies();clearProps();setZone(P.zone);barricadeLook();allyReact('reset');menuScene();if(gunObj)gunObj.visible=false;
+  state='menu';G=null;target=null;hideGame();clearZombies();clearProps();setZone(P.zone);barricadeLook();allyVisibility();allyReact('reset');menuScene();if(gunObj)gunObj.visible=false;
   const k=P.zone,ni=nextNight(k),weak=WEAK.size;
   const learned=LEARNED.size;
   const fresh=P.seen!==VERSION;dailyInit();
@@ -1620,17 +1639,22 @@ function shop(tab){
   let body='';
   if(tab==='guns')body=Object.entries(GUNS).map(([id,g])=>{const own=P.owned.includes(id),eq=P.gun===id;
     return `<div class="it"><span class="ic">${THUMB[id]?`<img src="${THUMB[id]}" alt="">`:SV.gun}</span><span class="tx"><b>${g.n}</b><small>${g.d} · แม็ก ${g.mag} นัด · ยิง ${g.shots} นัดต่อคำ</small></span>${eq?'<span class="buy eq">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-eq="${id}">ใช้</button>`:`<button class="buy" type="button" data-gun="${id}" ${P.coins<g.cost?'disabled':''}>${SV.coin}${fmt(g.cost)}</button>`}</div>`;}).join('');
+  else if(tab==='ally')body=Object.entries(ALLY).map(([id,a])=>{const lv=P.allies[id],max=lv>=3;
+    const desc=lv?a.d(lv-1)+(max?'':`<br><span style="color:var(--toxic)">ขั้นต่อไป: ${a.d(lv)}</span>`):a.d(0);
+    const price=lv?a.up[lv-1]:a.cost;
+    return `<div class="it"><span class="ic">${THUMB['ally_'+id]?`<img src="${THUMB['ally_'+id]}" alt="">`:SV.wall}</span><span class="tx"><b>${a.n}${lv?' · ขั้น '+lv:''}</b><small>${desc}</small><span class="lv">${[1,2,3].map(i=>`<i class="${i<=lv?'on':''}"></i>`).join('')}</span></span>${max?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" data-ally="${id}" ${P.coins<price?'disabled':''}>${lv?'':'ซื้อ '}${SV.coin}${fmt(price)}</button>`}</div>`;}).join('');
   else if(tab==='melee')body=Object.entries(MELEE).map(([id,w])=>{const own=P.ownedMelee.includes(id),eq=P.melee===id,th=THUMB['m_'+id];
     return `<div class="it"><span class="ic">${th?`<img src="${th}" alt="">`:SV.knife}</span><span class="tx"><b>${w.n}</b><small>${w.d} · พร้อมใช้ทุก ${w.cd} วิ</small></span>${eq?'<span class="buy eq">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-meq="${id}">ใช้</button>`:`<button class="buy" type="button" data-mel="${id}" ${P.coins<w.cost?'disabled':''}>${SV.coin}${fmt(w.cost)}</button>`}</div>`;}).join('');
   else body=Object.entries(UPG).map(([id,u])=>{const lv=P.up[id],max=lv>=u.cost.length;
     return `<div class="it"><span class="ic">${SV[u.ic]}</span><span class="tx"><b>${u.n}</b><small>${u.d}</small><span class="lv">${u.cost.map((_,i)=>`<i class="${i<lv?'on':''}"></i>`).join('')}</span></span>${max?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" data-up="${id}" ${P.coins<u.cost[lv]?'disabled':''}>${SV.coin}${fmt(u.cost[lv])}</button>`}</div>`;}).join('')
     +`<div class="it"><span class="ic">${SV.gren}</span><span class="tx"><b>ระเบิดมือ</b><small>ฆ่าซอมบี้รอบเป้าหมายทั้งหมด (มี ${P.gren}/${GREN_MAX})</small></span>${P.gren>=GREN_MAX?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" id="bGren" ${P.coins<GREN_COST?'disabled':''}>${SV.coin}${GREN_COST}</button>`}</div>`;
   show(`<div class="card" style="max-height:100%">
-    <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>คลังแสง</h2><div class="tabs"><button class="tab" type="button" data-t="guns" aria-pressed="${tab==='guns'}">อาวุธ</button><button class="tab" type="button" data-t="melee" aria-pressed="${tab==='melee'}">ประชิด</button><button class="tab" type="button" data-t="up" aria-pressed="${tab==='up'}">อัปเกรดและของใช้</button></div><span class="sp"></span>${coinTag()}</div>
+    <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>คลังแสง</h2><div class="tabs"><button class="tab" type="button" data-t="guns" aria-pressed="${tab==='guns'}">อาวุธ</button><button class="tab" type="button" data-t="melee" aria-pressed="${tab==='melee'}">ประชิด</button><button class="tab" type="button" data-t="ally" aria-pressed="${tab==='ally'}">ผู้ช่วย</button><button class="tab" type="button" data-t="up" aria-pressed="${tab==='up'}">อัปเกรดและของใช้</button></div><span class="sp"></span>${coinTag()}</div>
     <div class="scroll"><div class="grid">${body}</div></div></div>`);
   $('#back').onclick=home;
   scr.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{SFX.ui();shop(b.dataset.t);});
   scr.querySelectorAll('[data-gun]').forEach(b=>b.onclick=()=>{const id=b.dataset.gun,g=GUNS[id];if(P.coins<g.cost)return;P.coins-=g.cost;P.owned.push(id);P.gun=id;save();SFX.coin();toast('ได้ '+g.n+' แล้ว');shop('guns');});
+  scr.querySelectorAll('[data-ally]').forEach(b=>b.onclick=()=>{const id=b.dataset.ally,a=ALLY[id],lv=P.allies[id],price=lv?a.up[lv-1]:a.cost;if(lv>=3||P.coins<price)return;P.coins-=price;P.allies[id]=lv+1;save();SFX.coin();toast(lv?a.n+' อัปเกรดเป็นขั้น '+(lv+1):'ได้ '+a.n+' แล้ว');allyVisibility();shop('ally');});
   scr.querySelectorAll('[data-mel]').forEach(b=>b.onclick=()=>{const id=b.dataset.mel,w=MELEE[id];if(P.coins<w.cost)return;P.coins-=w.cost;P.ownedMelee.push(id);P.melee=id;save();SFX.coin();toast('ได้ '+w.n+' แล้ว');shop('melee');});
   scr.querySelectorAll('[data-meq]').forEach(b=>b.onclick=()=>{P.melee=b.dataset.meq;save();SFX.ui();shop('melee');});
   scr.querySelectorAll('[data-eq]').forEach(b=>b.onclick=()=>{P.gun=b.dataset.eq;save();SFX.ui();shop('guns');});
@@ -1765,6 +1789,7 @@ function step(dt){
       if(p.z>=STOP_Z-(z.T.boss?.8:0)){p.z=STOP_Z-(z.T.boss?.8:0);if(z.T.boom){z.dead=true;G.miss.add(curWord(z).en);bloat(z,true);removeZombie(z);continue;}z.at=true;play(z,z.T.atk||(z.clips.Punch?'Punch':'Idle_Attack'),true);}
     }else{
       if(z.frozen>0){z.frozen-=dt;if(z.frozen<=0)unfreeze(z);continue;}
+      if(z.stunT>0){z.stunT-=dt;z.x=p.x;z.z=p.z;continue;}
       z.atkT-=dt*TS;if(G.shieldT<=0)G.wall-=z.T.dps*dt*TS;
       if(z.atkT<=0){z.atkT=.9;SFX.thud();shake=Math.max(shake,.25);const h=$('#hurt');h.classList.add('on');setTimeout(()=>h.classList.remove('on'),90);z.miss=true;G.miss.add(curWord(z).en);}
     }
