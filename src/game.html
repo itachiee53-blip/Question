@@ -341,8 +341,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.12.0',VERSION_DATE='17 พ.ย. 2569';
-const CHANGES=['เอาซอมบี้ Kenney ออก','ซอมบี้ใส่ของใหม่: หมวกเหล็ก แบกลัง (ได้เหรียญ) ถือป้าย','ซอมบี้สีใหม่: ไหม้ (เร็ว) พิษ (ทิ้งแอ่งพิษให้ตัวอื่นช้า) น้ำแข็ง (ไม่ถอย) วิญญาณ (หายตัว)','บอสใหม่: ยักษ์ลาวา'];
+const VERSION='2.12.1',VERSION_DATE='17 พ.ย. 2569';
+const CHANGES=['เสียงฝนเบาลงครึ่งหนึ่ง'];
 
 /* ---------------- helpers ---------------- */
 const $=s=>document.querySelector(s);
@@ -572,7 +572,7 @@ function sample(n,vol=1,{rate=1,offset=0,dur}={}){
 let rainNode=null;
 function rainSound(on){
   if(!ac)return;
-  if(on&&!rainNode&&P.opts.amb){const s=ac.createBufferSource();s.buffer=noiseBuf;s.loop=true;const f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=1200;const g=ac.createGain();g.gain.value=0;s.connect(f).connect(g).connect(master);s.start();g.gain.linearRampToValueAtTime(.09,ac.currentTime+1.5);rainNode={s,g};}
+  if(on&&!rainNode&&P.opts.amb){const s=ac.createBufferSource();s.buffer=noiseBuf;s.loop=true;const f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=1200;const g=ac.createGain();g.gain.value=0;s.connect(f).connect(g).connect(master);s.start();g.gain.linearRampToValueAtTime(.045,ac.currentTime+1.5);rainNode={s,g};}
   else if((!on||!P.opts.amb)&&rainNode){const r=rainNode;rainNode=null;r.g.gain.linearRampToValueAtTime(0,ac.currentTime+.6);setTimeout(()=>{try{r.s.stop();}catch(e){}},800);}
 }
 function speak(t){if(!P.opts.voice||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.95;speechSynthesis.speak(u);}catch(e){}}
