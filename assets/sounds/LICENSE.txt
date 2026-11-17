@@ -1,0 +1,3 @@
+Gun sounds: The Free Firearm Sound Library (CC0 1.0) - https://opengameart.org/content/the-free-firearm-sound-library
+  pistol = Walther PPQ, shotgun = Mossberg, smg = Carl Gustav M45, rifle = AR-15 (single shots cut from the "Prepared" recordings)
+Reload sounds: "Gun Reload Sounds" by SpringySpringo (CC0 1.0) - https://opengameart.org/content/gun-reload-sounds
