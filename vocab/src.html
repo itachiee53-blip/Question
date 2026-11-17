@@ -58,6 +58,10 @@ button[disabled]{cursor:not-allowed}
 .shav{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:64px;width:74px;height:8px;border:2px solid var(--ink);border-radius:var(--hand);overflow:hidden;background:#fff}
 .shav i{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,#e8b26a 0 6px,#c98a3d 6px 9px);transition:width .25s}
 .typed{position:absolute;left:50%;bottom:32%;transform:translateX(-50%) rotate(-2deg);font-family:var(--f-en);font-size:34px;color:var(--ink);background:linear-gradient(transparent 55%,var(--hl-y) 55% 90%,transparent 90%);padding:0 6px;pointer-events:none}
+.ver{font-size:14px;opacity:.55;font-family:var(--f-en)}
+.newver{position:relative;width:min(420px,100%);background:#fff6cc;border:2.5px solid var(--gold);border-radius:12px;padding:6px 34px 8px 12px;text-align:left;font-size:16px;line-height:1.35}
+.newver b{display:block;font-size:18px}.newver ul{margin:2px 0 0;padding-left:18px}
+.newver button{position:absolute;right:6px;top:4px;width:26px;height:26px;font-size:18px}
 .toast{position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:40;background:var(--ink);color:#fff;border-radius:10px;padding:6px 16px;font-size:17px;animation:fade .2s}
 .flip{position:absolute;inset:0;pointer-events:none;background:var(--flipbg,var(--paper));transform-origin:left center;box-shadow:-20px 0 40px #0004;opacity:0}
 .flip.go{animation:flip .8s cubic-bezier(.5,0,.75,0) forwards}
@@ -94,6 +98,10 @@ button[disabled]{cursor:not-allowed}
 @keyframes fade{from{opacity:0}}
 .sheet{position:relative;width:min(860px,100%);max-height:100%;display:flex;flex-direction:column;background:#fbfaf3;background-image:linear-gradient(90deg,transparent 40px,var(--margin) 40px 42px,transparent 42px),repeating-linear-gradient(transparent 0 31px,var(--rule) 31px 32px);padding:18px 16px 16px 54px;box-shadow:0 10px 0 -4px #e9e4d2,0 12px 30px #0006;transform:rotate(-.5deg);animation:slide .4s cubic-bezier(.2,1.4,.4,1)}
 @keyframes slide{from{transform:translateY(60px) rotate(-4deg);opacity:0}}
+/* menu to menu: the sheet turns like a page instead of fading out, so the game behind never shows through */
+.sheet.turn{animation:turn .34s cubic-bezier(.2,.7,.3,1);transform-origin:left center}
+@keyframes turn{0%{transform:perspective(1600px) rotateY(16deg) translateX(-6px) rotate(-.5deg);filter:brightness(.93)}100%{transform:perspective(1600px) rotateY(0) rotate(-.5deg)}}
+.panel.still>*{animation:none}
 .sheet::before,.sheet::after{content:"";position:absolute;top:-10px;width:80px;height:24px;background:#f1e6bccc;z-index:1}
 .sheet::before{left:26px;transform:rotate(-8deg)} .sheet::after{right:26px;transform:rotate(7deg)}
 .holes{position:absolute;left:12px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-evenly}
@@ -107,8 +115,7 @@ button[disabled]{cursor:not-allowed}
 .topbar h2{flex:1;margin:0;font-family:var(--f-mark);font-weight:400;font-size:clamp(24px,5vw,36px);text-align:left;transform:rotate(-1deg)}
 .back{width:42px;height:38px;border:2.5px solid var(--ink);border-radius:var(--hand);background:#fff;font-size:20px}
 .coins{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-en);font-size:24px;background:#fff6cc;border:2.5px solid var(--gold);border-radius:999px;padding:0 12px 0 4px}
-.coin{display:inline-block;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffe58a,#e0a400 70%);border:2px solid #9c6f00;position:relative;flex:none}
-.coin::after{content:"";position:absolute;inset:5px 8px;border-left:2px solid #9c6f00}
+.coin{display:inline-block;width:24px;height:24px;background:var(--coin-img) center/contain no-repeat;flex:none;vertical-align:-5px}
 .title{margin:0;font-family:var(--f-mark);font-weight:400;font-size:clamp(34px,8vw,64px);line-height:.95;transform:rotate(-2deg)}
 .title span{display:inline-block;background:linear-gradient(transparent 50%,var(--hl-y) 50% 88%,transparent 88%);padding:0 8px;animation:wob 3s ease-in-out infinite}
 .title small{display:block;font-family:var(--f-th);font-size:.36em;color:var(--red);margin-top:4px}
@@ -256,7 +263,11 @@ const buzz=ms=>{try{navigator.vibrate&&navigator.vibrate(ms);}catch(e){}};
 function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 const rpick=(r,a)=>a[Math.floor(r()*a.length)];
 const rshuffle=(r,a)=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const VERSION='1.6.0',VERSION_DATE='17 พ.ย. 2569';
+// shown once on the home screen after the player gets a new version
+const CHANGES=['เปลี่ยนหน้าเมนูแบบพลิกกระดาษ ไม่กระพริบจอแล้ว พร้อมเสียงกระดาษ','คำตอบสุ่มไปทุกช่องสี คำหลอกเปลี่ยนตลอด','กดมั่วจะโดนหักหนักขึ้นและกระดาษสลับที่','เหรียญลายใหม่'];
 const COIN='<i class="coin"></i>';
+document.documentElement.style.setProperty('--coin-img',`url(${ART.coin})`);
 
 /* ---------- words: books follow CEFR levels; each book splits into stages of 10 words ---------- */
 const WORDS=/*WORDS*/{};
@@ -462,6 +473,7 @@ const SFX={
   split(){tn(500,.1,'sine',.1,900);tn(500,.1,'sine',.1,900,.09);},
   woo(){tn(300,.6,'sine',.04,500);},
   star(){tn(1568,.12,'triangle',.07);tn(2093,.2,'triangle',.06,0,.08);},
+  paper(){nz(.24,.13,'bandpass',1600,.9,0,4800);nz(.09,.08,'highpass',3200,1,.13);tn(180,.07,'sine',.04,0,.16);},
   page2(){nz(.3,.18,'highpass',1200,.7,0,6000);tn(660,.12,'triangle',.05,0,.15);}
 };
 const MUS={next:0,step:0};
@@ -667,16 +679,33 @@ function refreshBar(){
   const have=()=>new Set(G.slots.filter(Boolean).map(w=>w.en));
   for(const w of alive.slice(0,3)){
     if(have().has(w.en))continue;
-    let i=G.slots.findIndex(s=>!s||!aliveSet.has(s.en));
+    // any free or decoy slot, picked at random, so answers land on every colour
+    const free=G.slots.map((s,j)=>!s||!aliveSet.has(s.en)?j:-1).filter(j=>j>=0);
+    let i=free.length?pick(free):-1;
     if(i<0)i=G.slots.reduce((bi,s,j)=>alive.findIndex(a=>a.en===s.en)>alive.findIndex(a=>a.en===G.slots[bi].en)?j:bi,0);
     setNote(i,w);
   }
   for(let i=0;i<4;i++)if(!G.slots[i])setNote(i,decoy(have(),aliveSet));
 }
 function replaceSlot(i,delay=0){
-  const go=()=>{if(!G)return;const alive=live().sort((a,b)=>b.y-a.y).map(cur),have=new Set(G.slots.filter((s,j)=>s&&j!==i).map(w=>w.en));
-    setNote(i,alive.find(w=>!have.has(w.en))||decoy(have,new Set(alive.map(a=>a.en))));};
+  const g=G;
+  const go=()=>{if(!G||G!==g)return;
+    const alive=live().sort((a,b)=>b.y-a.y).map(cur),aliveSet=new Set(alive.map(a=>a.en));
+    G.slots[i]=null;
+    // the slot that just emptied and every decoy slot get dealt again: the next answer goes to one of them at random, the rest get fresh decoys
+    const open=G.slots.map((s,j)=>!s||!aliveSet.has(s.en)?j:-1).filter(j=>j>=0);
+    const have=new Set(G.slots.filter((s,j)=>s&&!open.includes(j)).map(w=>w.en));
+    const next=alive.find(w=>!have.has(w.en));
+    const at=next?pick(open):-1;if(next)have.add(next.en);
+    for(const j of open){if(j===at){setNote(j,next);continue;}const d=decoy(have,aliveSet);have.add(d.en);setNote(j,d);}
+  };
   delay?setTimeout(go,delay):go();
+}
+// after a wrong press the notes swap places, so tapping the same spot over and over does not work
+function shuffleBar(){
+  const g=G;setTimeout(()=>{if(!G||G!==g)return;const old=[...G.slots];let order;
+    do{order=[0,1,2,3].sort(()=>Math.random()-.5);}while(order.every((v,k)=>v===k));
+    order.forEach((from,k)=>setNote(k,old[from]));},380);
 }
 notes.forEach((b,i)=>b.addEventListener('pointerdown',e=>{e.preventDefault();fire(i);}));
 
@@ -689,8 +718,12 @@ function fire(slot){
     if(typeof slot==='number'){const b=notes[slot];b.classList.remove('bad');void b.offsetWidth;b.classList.add('bad');}
     const t=tip();G.wrong++;
     if(G.fluid>0){G.fluid--;SFX.shield();G.floats.push({x:t.x,y:t.y-40*SC,text:'ไม่เป็นไร',c:'def',life:1,size:26,font:FONT_TH});return;}
-    G.combo=0;G.lockUntil=G.t+.8;G.score=Math.max(0,G.score-5);SFX.bad();buzz(40);
-    G.floats.push({x:t.x,y:t.y-40*SC,text:'ผิด! -5',c:'bad',life:1,size:28,font:FONT_TH});
+    // pressing wrong again soon after costs more and locks the notes for longer
+    G.mash=G.t-(G.lastWrong??-99)<3?(G.mash||0)+1:1;G.lastWrong=G.t;
+    const m=Math.min(G.mash,4),lose=5*m;
+    G.combo=0;G.lockUntil=G.t+[0,.8,1.4,2,2.6][m];G.score=Math.max(0,G.score-lose);SFX.bad();buzz(40*m);
+    G.floats.push({x:t.x,y:t.y-40*SC,text:m>=3?'อย่ากดมั่ว! -'+lose:'ผิด! -'+lose,c:'bad',life:m>=3?1.6:1,size:m>=3?32:28,font:FONT_TH});
+    shuffleBar();
     return;
   }
   strike(tg[0]);
@@ -971,8 +1004,18 @@ function frame(now){
 
 /* ---------- menus ---------- */
 const ov=$('#ov'),panel=$('#panel'),sheet=$('#sheet');
-function show(html){panel.innerHTML=html;ov.hidden=false;for(const el of [ov,sheet]){el.style.animation='none';void el.offsetWidth;el.style.animation='';}}
-function hide(){ov.hidden=true;}
+let sheetKey='';
+function show(html){
+  const open=!ov.hidden,key=(html.match(/<h[12][^>]*>([\s\S]*?)<\/h[12]>/)||[])[1]||html.slice(0,80),same=open&&key===sheetKey;
+  sheetKey=key;panel.innerHTML=html;ov.hidden=false;panel.classList.toggle('still',same);
+  if(same)return; // re-render of the same menu (buying, switching tabs): no animation, no flash
+  sheet.classList.remove('turn');
+  if(open){void sheet.offsetWidth;sheet.classList.add('turn');}
+  else for(const el of [ov,sheet]){el.style.animation='none';void el.offsetWidth;el.style.animation='';}
+  SFX.paper();
+}
+function hide(){ov.hidden=true;sheetKey='';}
+addEventListener('pointerdown',audio,{capture:true,passive:true});
 function toast(msg){const d=document.createElement('div');d.className='toast';d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),1600);}
 const coinsTag=()=>`<span class="coins">${COIN}<span id="coinN">${fmt(P.coins)}</span></span>`;
 const bookStars=k=>P.prog[k].reduce((a,b)=>a+(b||0),0);
@@ -988,7 +1031,9 @@ function home(){
   const nextI=Math.min(BOOKS[curBook].stages.length-1,P.prog[curBook].filter(Boolean).length);
   const wl=weakList().length;
   const qs=P.daily.q.map((q,qi)=>{const Q=QUESTS[q.id],done=q.prog>=Q.goal;return `<div class="q ${q.claimed?'claimed':''}"><span>${Q.n} ${Math.min(q.prog,Q.goal)}/${Q.goal}${Q.unit?' '+Q.unit:''}</span><i style="--p:${Math.min(1,q.prog/Q.goal)}"></i>${q.claimed?'<b>✓</b>':done?`<button class="buy" type="button" data-claim="${qi}">${COIN}30</button>`:`<small>${COIN}30</small>`}</div>`;}).join('');
-  show(`<h1 class="title"><span>Notebook</span><br>Monsters<small>ปีศาจหน้าสมุด</small></h1>
+  const fresh=store.get('nm-ver',null)!==VERSION;
+  const news=fresh?`<div class="newver" id="newver"><button type="button" id="newverX" aria-label="ปิด">✕</button><b>อัปเดตใหม่ v${VERSION}</b><ul>${CHANGES.map(c=>`<li>${c}</li>`).join('')}</ul></div>`:'';
+  show(`${news}<h1 class="title"><span>Notebook</span><br>Monsters<small>ปีศาจหน้าสมุด</small></h1>
     <div class="cast">${cast}</div>
     <div class="menu">
       <button class="mbtn main" type="button" id="goNext">${NAV.play}เล่นต่อ<small>${BOOKS[curBook].name} · ด่าน ${nextI+1}</small></button>
@@ -998,7 +1043,9 @@ function home(){
       <button class="mbtn" type="button" id="goWords">${NAV.words}สมุดคำศัพท์<small>${learned}/${total}</small></button>
     </div>
     <div class="quests"><div class="qh">ภารกิจวันนี้ <small>เข้าเล่นติดกัน ${P.daily.streak} วัน</small></div>${qs}</div>
-    <div class="toggles"><button class="chk" type="button" id="tSfx"><i>${OPT.sfx?'✓':''}</i>เสียง</button><button class="chk" type="button" id="tMus"><i>${OPT.music?'✓':''}</i>เพลง</button><button class="chk" type="button" id="tVoice"><i>${OPT.voice?'✓':''}</i>อ่านคำ</button></div>`);
+    <div class="toggles"><button class="chk" type="button" id="tSfx"><i>${OPT.sfx?'✓':''}</i>เสียง</button><button class="chk" type="button" id="tMus"><i>${OPT.music?'✓':''}</i>เพลง</button><button class="chk" type="button" id="tVoice"><i>${OPT.voice?'✓':''}</i>อ่านคำ</button></div>
+    <div class="ver">เวอร์ชัน ${VERSION} · ${VERSION_DATE}</div>`);
+  if(fresh)$('#newverX').onclick=()=>{store.set('nm-ver',VERSION);$('#newver').remove();};
   $('#goPlay').onclick=()=>{SFX.tap();map(curBook);};
   $('#goNext').onclick=()=>{audio();SFX.tap();preStage(curBook,nextI);};
   if($('#goRev'))$('#goRev').onclick=()=>start('review',curBook,0);
