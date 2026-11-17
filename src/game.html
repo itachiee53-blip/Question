@@ -53,7 +53,8 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .tag.beast{border-color:#ff9a3a}.tag.beast .kind{background:#ff9a3a;color:#2a1000}
 .tag.armor{border-color:#9fb3c8}.tag.armor .kind{background:#9fb3c8;color:#111}
 .tag.scream{border-color:#ff6a5a}.tag.scream .kind{background:#e2463d;color:#fff}
-.ptag{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;padding:4px 10px;border-radius:999px;font-family:var(--f-th);font-size:14px;color:#fff;background:#d8402fdd;border:1px solid #ffb09a;box-shadow:0 0 0 0 #d8402f88;animation:ping 1.4s infinite}
+.ptag{position:absolute;left:0;top:0;z-index:1;pointer-events:auto;cursor:pointer;padding:4px 10px;border-radius:999px;font-family:var(--f-th);font-size:14px;color:#fff;background:#d8402fdd;border:1px solid #ffb09a;box-shadow:0 0 0 0 #d8402f88;animation:ping 1.4s infinite}
+.ptag.barrel{width:30px;height:30px;padding:0;display:grid;place-items:center;background:#d8402fb0;opacity:.85}.ptag.barrel svg{width:16px;height:16px}
 .ptag.med{background:#2f8f4fdd;border-color:#a6e05a}
 .ptag b{font-weight:600}
 @keyframes ping{70%{box-shadow:0 0 0 12px #d8402f00}}
@@ -103,6 +104,9 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .item.knife.ready{border-color:#ffffff66}
 .slashfx{background:linear-gradient(160deg,transparent 46%,#ffffffcc 49%,#ffffff 50%,#ffffffcc 51%,transparent 54%);opacity:0;transform:translateX(-40%)}
 .slashfx.on{animation:slashA .28s ease-out}
+.slashfx.chop{background:linear-gradient(90deg,transparent 46%,#ffffffcc 49%,#fff 50%,#ffffffcc 51%,transparent 54%)}.slashfx.chop.on{animation:chopA .25s ease-out}
+@keyframes chopA{0%{opacity:.9;transform:translateY(-40%)}100%{opacity:0;transform:translateY(40%)}}
+.slashfx.sweep{background:linear-gradient(180deg,transparent 47%,#d8c0ffcc 49%,#fff 50%,#d8c0ffcc 51%,transparent 53%)}
 @keyframes slashA{0%{opacity:.9;transform:translateX(-40%)}100%{opacity:0;transform:translateX(40%)}}
 .pad{flex:1;display:flex;flex-wrap:wrap;justify-content:center;gap:var(--g,8px);min-height:50px;align-content:flex-end}
 .key{width:var(--k,52px);height:var(--k,52px);border-radius:10px;background:linear-gradient(#2a3530,#1a2320);border:1px solid #ffffff2a;border-bottom:4px solid #0a0f0d;font-family:var(--f-disp);font-size:calc(var(--k,52px)*.56);letter-spacing:0;display:grid;place-items:center;color:#f2efe6;text-transform:uppercase;transition:transform .05s}
@@ -337,8 +341,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.9.1',VERSION_DATE='17 พ.ย. 2569';
-const CHANGES=['คำอธิบายในคลังแสงสั้นลง อ่านง่ายขึ้น','การ์ดในร้านกว้างขึ้น'];
+const VERSION='2.10.0',VERSION_DATE='17 พ.ย. 2569';
+const CHANGES=['อาวุธประชิดมีท่าจริง: มีดปาหมุนออกไป หอกพุ่งเหมือนแหลน ไม้ฟาดเฉียง ขวานจามลง กีตาร์กวาดมีคลื่นเสียง ไม้เลื่อยมีประกายไฟ','ปุ่มถังระเบิดเปลี่ยนเป็นไอคอนเล็กบนตัวถัง ไม่บังคำศัพท์'];
 
 /* ---------------- helpers ---------------- */
 const $=s=>document.querySelector(s);
@@ -902,7 +906,7 @@ function stepAllies(dt){
 const props=[];
 function addProp(kind,x,z){
   const o=place(kind==='barrel'?'ExplodingBarrel':'Health',x,0,z,rnd(0,6),kind==='barrel'?1:.9);if(!o)return;
-  const el=document.createElement('button');el.type='button';el.className='ptag '+kind;el.innerHTML=kind==='barrel'?'<b>แตะ!</b>':'<b>+20</b>';tagsEl.appendChild(el);
+  const el=document.createElement('button');el.type='button';el.className='ptag '+kind;el.innerHTML=kind==='barrel'?'<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2.2 5.6L20 6l-3 5 5 2-5.4 1.6L18 20l-5-2.6L9 22l-.6-5.6L3 16l3.8-3.8L3 8l5.6.4z"/></svg>':'<b>+20</b>';el.setAttribute('aria-label',kind==='barrel'?'ระเบิดถัง':'ชุดปฐมพยาบาล');tagsEl.appendChild(el);
   const pr={kind,obj:o,x,z,el,t:0,dead:false,ob:kind==='barrel'?OBST[OBST.length-1]:null};
   el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();useProp(pr);});
   props.push(pr);return pr;
@@ -1345,34 +1349,74 @@ const MELEE={
   guitar:{n:'กีตาร์หนาม',m:'Guitar',cost:1500,d:'ฟาดทุกตัว มึนนาน',cd:4.5,push:2.5,stun:3,cut:1,all:true,scale:.3},
   saw:{n:'ไม้เลื่อย',m:'WoodenBat_Saw',cost:1200,d:'ฟาดทุกตัวใกล้ๆ',cd:4,push:3,stun:2.5,cut:1,all:true,scale:.34},
 };
+Object.assign(MELEE.knife,{d:'ปาได้ไกล',anim:'throw',dur:.45,hit:.38,proj:true,spin:true,speed:26,reach:13,push:1.4});
+Object.assign(MELEE.bat,{anim:'swing',dur:.55,hit:.42,bonk:true});
+Object.assign(MELEE.axe,{anim:'chop',dur:.6,hit:.45});
+Object.assign(MELEE.spear,{d:'พุ่งได้ไกล',anim:'throw',dur:.55,hit:.4,proj:true,speed:34});
+Object.assign(MELEE.guitar,{anim:'sweep',dur:.6,hit:.45,wave:true});
+Object.assign(MELEE.saw,{anim:'swing',dur:.55,hit:.42,sparks:true});
+// viewmodel keyframes: [t, x,y,z, rx,ry,rz] in camera space; rx -PI/2 holds the weapon upright
+const MANIM={
+  swing:[[0,.45,-.6,-.6,-1.2,0,-.3],[.3,.42,-.02,-.55,-2,0,-.9],[.45,-.05,-.25,-.75,-1.2,0,.7],[.62,-.45,-.5,-.6,-.8,0,1.4],[1,-.6,-.95,-.5,-.6,0,1.6]],
+  chop:[[0,.3,-.65,-.6,-1.3,0,-.2],[.32,.22,.12,-.5,-2.5,0,-.15],[.45,.1,-.3,-.75,-.35,0,-.1],[.62,.08,-.52,-.75,-.15,0,-.1],[1,.2,-.95,-.6,-.6,0,-.2]],
+  sweep:[[0,.6,-.55,-.5,-1.2,0,-1.3],[.3,.55,-.2,-.5,-1.5,0,-1.5],[.5,-.15,-.25,-.8,-1.5,0,1.1],[1,-.75,-.55,-.5,-1.3,0,1.5]],
+  throw:[[0,.4,-.55,-.55,-1.4,0,-.2],[.25,.38,.04,-.35,-2.6,0,-.25],[.38,.25,-.05,-.8,-1.6,0,-.1],[1,.25,-.6,-.8,-1.2,0,-.1]],
+};
+function poseAt(keys,k){let i=0;while(i<keys.length-2&&k>keys[i+1][0])i++;const a=keys[i],b=keys[i+1],u=clamp((k-a[0])/(b[0]-a[0]),0,1),e=u*u*(3-2*u);return a.map((v,j)=>v+(b[j]-v)*e).slice(1);}
+let mAnim=null;
 let knifeObj=null,knifeSwing=0,swipe=null;
-function equipKnife(){if(knifeObj)camera.remove(knifeObj);const W=MELEE[P.melee]||MELEE.knife,m=MODELS[W.m];if(!m)return;knifeObj=m.scene.clone();knifeObj.scale.setScalar(W.scale);knifeObj.visible=false;camera.add(knifeObj);}
+function equipKnife(){if(knifeObj)camera.remove(knifeObj);const W=MELEE[P.melee]||MELEE.knife,m=MODELS[W.m];if(!m)return;knifeObj=m.scene.clone();knifeObj.scale.setScalar(W.scale);knifeObj.rotation.order='ZYX';knifeObj.visible=false;camera.add(knifeObj);}
 function stepKnife(dt){
   if(!knifeObj)return;
-  if(knifeSwing>0){knifeSwing=Math.max(0,knifeSwing-dt*4);const t=1-knifeSwing;knifeObj.visible=true;
-    knifeObj.position.set(-.45+t*.8,-.15-Math.sin(t*Math.PI)*.12,-.55);knifeObj.rotation.set(-.3,Math.PI*.9,1.4-t*2.6);}
+  if(mAnim){mAnim.t+=dt;const W=mAnim.W,k=mAnim.t/W.dur;
+    if(k>=1){mAnim=null;knifeObj.visible=false;}
+    else{const ps=poseAt(MANIM[W.anim],k);knifeObj.visible=!(W.proj&&k>W.hit);knifeObj.position.set(ps[0],ps[1],ps[2]);knifeObj.rotation.set(ps[3],ps[4],ps[5]);}}
   else knifeObj.visible=false;
   const kb=$('#knifeBtn');if(kb&&G){const cd=G.knifeT>0?G.knifeT/knifeCD():0;kb.style.setProperty('--cd',cd);kb.classList.toggle('ready',cd<=0);}
 }
 const knifeCD=()=>(MELEE[P.melee]||MELEE.knife).cd*(1-.2*P.up.knife);
 function slash(sx){
   if(state!=='play'||!G||G.knifeT>0)return;
-  G.knifeT=knifeCD();knifeSwing=1;SFX.whoosh();
-  const fxEl=$('#slashfx');fxEl.classList.remove('on');void fxEl.offsetWidth;fxEl.classList.add('on');
+  const W0=MELEE[P.melee]||MELEE.knife;
+  G.knifeT=knifeCD();mAnim={W:W0,t:0};setTimeout(()=>SFX.whoosh(),W0.dur*W0.hit*600);
+  if(!W0.proj)setTimeout(()=>{const fxEl=$('#slashfx');fxEl.className='fx slashfx '+W0.anim;void fxEl.offsetWidth;fxEl.classList.add('on');},W0.dur*W0.hit*1000-60);
   // reach: zombies close to the barricade
   const Wr=MELEE[P.melee]||MELEE.knife;let cand=live().filter(z=>z.obj.position.z>STOP_Z-(Wr.reach||2.6));if(P.melee==='guitar')SFX.strum();
   if(sx!=null&&cand.length>1){cand.sort((a,b)=>{const pa=chest(a).project(camera),pb=chest(b).project(camera);return Math.abs((pa.x*.5+.5)*innerWidth-sx)-Math.abs((pb.x*.5+.5)*innerWidth-sx);});}
   else cand.sort((a,b)=>b.obj.position.z-a.obj.position.z);
   const W=MELEE[P.melee]||MELEE.knife;
-  const hits=W.all?cand:cand.slice(0,1);if(!hits.length){floatAt0('ไกลเกินไป');return;}
-  setTimeout(()=>{for(const z of hits){if(!zombies.includes(z)||z.dead)continue;SFX.slash();blood(z);blood(z);
+  const hits=W.all?cand:cand.slice(0,1);
+  const at=W.dur*W.hit*1000;
+  if(W.proj){setTimeout(()=>throwWeapon(W,hits[0]),at);return;}
+  if(!hits.length){setTimeout(()=>floatAt0('ไกลเกินไป'),at);return;}
+  setTimeout(()=>meleeHit(W,hits),at);
+}
+// a thrown knife spins through the air; a spear flies point first
+function throwWeapon(W,z){
+  if(!G)return;const m=MODELS[W.m];if(!m)return;
+  const o=m.scene.clone();o.scale.setScalar(W.scale);const from=new THREE.Vector3(.25,-.05,-.8).applyMatrix4(camera.matrixWorld);o.position.copy(from);scene.add(o);
+  const to=z?chest(z).clone():from.clone().add(new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion).multiplyScalar(18));
+  o.lookAt(to);const dur=from.distanceTo(to)/W.speed;
+  fx.push({kind:'thrown',o,from,to,t:0,dur,life:dur+.25,max:dur+.25,spin:W.spin,onHit:()=>{if(z)meleeHit(W,[z]);else floatAt0('พลาด');}});
+}
+function meleeHit(W,hits){
+  if(!G)return;
+  if(W.wave)shockwave();
+  if(W.bonk)shake=Math.max(shake,.6);
+  {for(const z of hits){if(!zombies.includes(z)||z.dead)continue;SFX.slash();blood(z);blood(z);if(W.anim==='chop')blood(z);if(W.sparks)sparks(z);
     if(z.gear&&z.gear.kind==='shield')dropGear(z);
     const push=W.push*(z.T.boss?.3:z.type==='brute'||z.type==='bloater'?.6:1),nz=z.obj.position.z-push;if(!blocked(z.obj.position.x,nz))z.obj.position.z=nz;
     if(z.at){z.at=false;play(z,z.T.anim,true);}play(z,'HitReact',false,.05);z.hitT=W.stun;
     // a wounded zombie is easier to finish: wrong answers crossed out, or letters revealed
     for(let c=0;c<W.cut;c++){if(CHOICE()){const o=choicesFor(z).filter(c=>!c.ok&&!c.gone);if(o.length>1)pick(o).gone=true;}else{const i=needIdx(z);if(i<curWord(z).en.length-1){z.p=i+1;skipNon(z);}}}
-    renderTag(z);bumpTag(z);if(z===target)renderPad();G.score+=15;floatAt(z,'SLASH!','#ffffff');quest('knife');}hud();},90);
+    renderTag(z);bumpTag(z);if(z===target)renderPad();G.score+=15;floatAt(z,W.bonk?'BONK!':W.anim==='chop'?'CHOP!':W.proj?'HIT!':W.wave?'WAAANG!':'SLASH!','#ffffff');quest('knife');}hud();}
 }
+function shockwave(){
+  const r=new THREE.Mesh(new THREE.RingGeometry(.6,.9,40),new THREE.MeshBasicMaterial({color:0xc8a0ff,transparent:true,opacity:.8,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,depthWrite:false}));
+  r.rotation.x=-Math.PI/2;r.position.set(0,.15,STOP_Z+.3);scene.add(r);fx.push({o:r,life:.6,max:.6,kind:'ring'});
+}
+function sparks(z){const c=chest(z);for(let i=0;i<12;i++){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:0xffd060,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));s.position.copy(c);s.scale.setScalar(rnd(.08,.16));scene.add(s);
+  fx.push({o:s,life:rnd(.3,.5),max:.5,kind:'drop',v:new THREE.Vector3(rnd(-3,3),rnd(1,4),rnd(-2,1))});}SFX.clang();}
 function floatAt0(t){const el=document.createElement('div');el.className='float';el.textContent=t;el.style.color='#fff';el.style.left='50%';el.style.top='55%';document.body.appendChild(el);setTimeout(()=>el.remove(),1000);}
 // swipe gesture anywhere above the dock
 addEventListener('pointerdown',e=>{if(state!=='play'||e.target.closest('.dock,.hud,.scr,.ptag'))return;swipe={x:e.clientX,y:e.clientY,t:performance.now()};},{passive:true});
@@ -1407,6 +1451,9 @@ function stepFx(dt){
       f.trail.position.lerpVectors(tail,f.o.position,.5);f.trail.lookAt(f.o.position);f.trail.scale.set(f.trail.userData.w,f.trail.userData.w,len);
       if(k2>=1&&!f.done){f.done=true;f.o.visible=false;f.onHit&&f.onHit();}f.trail.material.opacity=k2>=1?.75*k:.75;
       if(f.life<=0){scene.remove(f.o);scene.remove(f.trail);f.trail.material.dispose();f.o.children.forEach(c=>c.material.dispose());fx.splice(i,1);}continue;}
+    if(f.kind==='thrown'){f.t+=dt;const k2=Math.min(1,f.t/f.dur);f.o.position.lerpVectors(f.from,f.to,k2);if(f.spin)f.o.rotateX(-dt*22);
+      if(k2>=1&&!f.done){f.done=true;f.onHit&&f.onHit();}if(f.life<=0){scene.remove(f.o);fx.splice(i,1);}continue;}
+    if(f.kind==='ring'){const k3=1-f.life/f.max;f.o.scale.setScalar(1+k3*6);f.o.material.opacity=.8*(1-k3);if(f.life<=0){scene.remove(f.o);f.o.geometry.dispose();f.o.material.dispose();fx.splice(i,1);}continue;}
     if(f.kind==='debris'){f.v.y-=9.8*dt;f.o.position.addScaledVector(f.v,dt);f.o.rotation.x+=f.spin*dt;if(f.life<.4)f.o.scale.multiplyScalar(.9);if(f.life<=0){scene.remove(f.o);fx.splice(i,1);}continue;}
     if(f.kind==='casing'){f.v.y-=9.8*dt;f.o.position.addScaledVector(f.v,dt);f.o.rotation.x+=f.spin*dt;f.o.rotation.z+=f.spin*.7*dt;if(f.life<=0){scene.remove(f.o);fx.splice(i,1);}continue;}
     if(f.kind==='drop'){f.v.y-=9*dt;f.o.position.addScaledVector(f.v,dt);f.o.material.opacity=k;}
@@ -1722,7 +1769,7 @@ function frame(now){
   const look=target&&!target.dead&&playing?chest(target):new THREE.Vector3(0,1.1,-20);
   const aim=new THREE.Vector3(0,1.05,-20).lerp(look,.15);
   camera.lookAt(aim);
-  if(gunObj){const dip=G&&G.reloadT>0?Math.sin(Math.min(1,G.reloadT/GUNS[P.gun].reload)*Math.PI):0;gunObj.position.set(.34,-.21-dip*.3+Math.sin(clock*2)*.004,-.62+recoil*.07);gunObj.rotation.x=recoil*.22-dip*.6;gunObj.rotation.z=dip*.5;}
+  if(gunObj){const dip=Math.max(G&&G.reloadT>0?Math.sin(Math.min(1,G.reloadT/GUNS[P.gun].reload)*Math.PI):0,mAnim?Math.sin(Math.min(1,mAnim.t/mAnim.W.dur)*Math.PI):0);gunObj.position.set(.34,-.21-dip*.3+Math.sin(clock*2)*.004,-.62+recoil*.07);gunObj.rotation.x=recoil*.22-dip*.6;gunObj.rotation.z=dip*.5;}
   stepKnife(dt);
   muzzleLight.intensity=Math.max(0,muzzleLight.intensity-dt*120);
   // flashlight follows the target
@@ -1746,8 +1793,8 @@ function frame(now){
       for(let k=0;k<8;k++){const hit=placed.find(o=>Math.abs(o.x-it.x)<(o.w+it.w)/2+4&&it.y>o.y-o.h-4&&it.y-it.h<o.y+4);if(!hit)break;it.y=hit.y-hit.h-6;}
       placed.push(it);
     }
-    for(const pr of props){proj.set(pr.x,pr.kind==='barrel'?1.35:1,pr.z).project(camera);
-      pr.el.style.transform=`translate(${((proj.x*.5+.5)*W).toFixed(1)}px,${((-proj.y*.5+.5)*H).toFixed(1)}px) translate(-50%,-100%)`;pr.el.style.display=proj.z>1?'none':'';}
+    for(const pr of props){proj.set(pr.x,pr.kind==='barrel'?.55:1,pr.z).project(camera);
+      pr.el.style.transform=`translate(${((proj.x*.5+.5)*W).toFixed(1)}px,${((-proj.y*.5+.5)*H).toFixed(1)}px) translate(-50%,${pr.kind==='barrel'?'-50%':'-100%'})`;pr.el.style.display=proj.z>1?'none':'';}
     for(const it of items){const z=it.z;
       const tf=`translate(${it.x.toFixed(1)}px,${it.y.toFixed(1)}px) translate(-50%,-100%) scale(${it.s.toFixed(3)})`;
       z.tag.style.transform=tf;z.tag.style.setProperty('--tf',tf);z.tag.style.zIndex=1000-Math.round(it.d*10);
@@ -1807,7 +1854,7 @@ requestAnimationFrame(frame);
 loadModels().then(()=>{
   buildWorld();try{makeThumbs();}catch(e){}equipGun();equipKnife();if(gunObj)gunObj.visible=false;
   $('#loading').hidden=true;home();
-  window.__dw={get G(){return G;},zombies,press,live,get target(){return target;},P,get OBST(){return OBST;},blocked,setZone,setScene,setAtmosphere,perkPick,startNight};
+  window.__dw={get G(){return G;},zombies,press,live,get target(){return target;},P,get OBST(){return OBST;},blocked,setZone,setScene,setAtmosphere,perkPick,startNight,equipKnife,MELEE};
 });
 </script>
 </body>
