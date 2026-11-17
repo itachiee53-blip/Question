@@ -221,6 +221,29 @@ button[disabled]{cursor:not-allowed}
 .newrec{font-family:var(--f-mark);color:var(--red);border:3px solid var(--red);border-radius:var(--hand);padding:2px 12px;transform:rotate(-6deg);font-size:18px}
 @media (orientation:landscape) and (max-height:500px){.sheet{padding:12px 14px 10px 50px}.panel{gap:7px}.title{font-size:36px}.cast{height:34px}.menu{flex-direction:row;flex-wrap:wrap;justify-content:center;width:100%}.mbtn{font-size:20px;padding:5px 14px}.mbtn.main{font-size:24px}.dot b{width:46px;height:46px;font-size:22px}.dot.boss b{width:52px;height:52px}.card .disc{width:50px;height:50px}.card .disc svg{width:30px;height:30px}.stars{font-size:34px}}
 @media (orientation:landscape) and (max-height:500px){.cast{display:none}.title{font-size:30px}.title small{display:none}.quests{width:min(560px,100%);padding:4px 10px;gap:2px}.q{font-size:13px;grid-template-columns:1fr 1.2fr auto}.q i{grid-column:2;grid-row:1}.q small,.q b,.q .buy{grid-column:3;grid-row:1}.quests .qh{font-size:14px}.menu{gap:8px}}
+/* header row: tabs wrap under the title on narrow screens, sit beside it on wide/landscape ones */
+.topbar{flex-wrap:wrap;row-gap:8px}.topbar .tabs{order:5;width:100%}
+.panel.home .hl,.panel.home .hr{display:contents}
+.panel.home .newver{order:0}.panel.home .title{order:1}.panel.home .cast{order:2}.panel.home .menu{order:3}.panel.home .quests{order:4}.panel.home .toggles{order:5}.panel.home .ver{order:6}
+@media (max-width:560px) and (orientation:portrait){.tab{font-size:15px;padding:3px 9px}.tab small{font-size:12px}}
+@media (min-width:900px){.topbar .tabs{order:0;width:auto;flex:1}.topbar h2{flex:none}}
+@media (orientation:landscape) and (max-height:500px){
+ .ov{padding:6px max(8px,env(safe-area-inset-right,0px)) 6px max(8px,env(safe-area-inset-left,0px))}
+ .sheet{padding:10px 14px 8px 46px}
+ .topbar{flex-wrap:nowrap}.topbar .tabs{order:0;width:auto;flex:1;flex-wrap:nowrap;overflow-x:auto;justify-content:center}.topbar h2{flex:none;font-size:24px}
+ .tab{font-size:15px;padding:3px 10px;white-space:nowrap}.tab small{font-size:12px}.back{width:36px;height:32px}
+ .bookinfo{font-size:14px}.unit{margin:4px 0 2px;font-size:16px}
+ .endless{font-size:16px;padding:3px 14px}
+ .panel.home{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:8px 22px;align-items:center;text-align:center}
+ .panel.home .hl,.panel.home .hr{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0}
+ .panel.home .cast{display:flex;height:40px}.panel.home .title{font-size:38px}.panel.home .title small{display:block}
+ .panel.home .menu{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+ .panel.home .mbtn{width:100%;font-size:19px;padding:5px 10px}.panel.home .mbtn.main{grid-column:1/-1;font-size:24px}
+ .panel.home .mbtn svg{width:26px;height:26px}.panel.home .mbtn small{font-size:14px}
+ .panel.home .quests{width:100%}
+ .panel.home .mbtn:last-child:nth-child(even){grid-column:1/-1}.panel.home .mbtn{white-space:nowrap}
+ .panel.home .newver{font-size:13px;padding:4px 30px 5px 10px;max-height:96px;overflow:auto}.panel.home .newver b{font-size:15px}
+}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 
@@ -265,9 +288,9 @@ const buzz=ms=>{try{navigator.vibrate&&navigator.vibrate(ms);}catch(e){}};
 function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 const rpick=(r,a)=>a[Math.floor(r()*a.length)];
 const rshuffle=(r,a)=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
-const VERSION='1.6.1',VERSION_DATE='17 พ.ย. 2569';
+const VERSION='1.6.2',VERSION_DATE='17 พ.ย. 2569';
 // shown once on the home screen after the player gets a new version
-const CHANGES=['กระดาษคำตอบไม่ใบ้คำถูกแล้ว (เปลี่ยนพร้อมกันทีละ 2 ใบ)','จอโทรศัพท์แนวนอน: ฉากไม่ซูมแน่นแล้ว ปุ่มเล็กลงให้พอดีจอ','ช่องคะแนนมีไอคอนดาว']
+const CHANGES=['จอแนวนอน: หน้าแรกแบ่งเป็น 2 ฝั่ง ไม่ต้องเลื่อนลง','แถบเลือกเล่มย้ายขึ้นไปอยู่แถวเดียวกับหัวข้อ เหลือที่ให้ด่านมากขึ้น','เมนูเต็มจอมากขึ้น ขอบเล็กลง'];
 const COIN='<i class="coin"></i>';
 document.documentElement.style.setProperty('--coin-img',`url(${ART.coin})`);
 
@@ -1014,7 +1037,7 @@ const ov=$('#ov'),panel=$('#panel'),sheet=$('#sheet');
 let sheetKey='';
 function show(html){
   const open=!ov.hidden,key=(html.match(/<h[12][^>]*>([\s\S]*?)<\/h[12]>/)||[])[1]||html.slice(0,80),same=open&&key===sheetKey;
-  sheetKey=key;panel.innerHTML=html;ov.hidden=false;panel.classList.toggle('still',same);
+  sheetKey=key;panel.classList.remove('home');panel.innerHTML=html;ov.hidden=false;panel.classList.toggle('still',same);
   if(same)return; // re-render of the same menu (buying, switching tabs): no animation, no flash
   sheet.classList.remove('turn');
   if(open){void sheet.offsetWidth;sheet.classList.add('turn');}
@@ -1040,8 +1063,10 @@ function home(){
   const qs=P.daily.q.map((q,qi)=>{const Q=QUESTS[q.id],done=q.prog>=Q.goal;return `<div class="q ${q.claimed?'claimed':''}"><span>${Q.n} ${Math.min(q.prog,Q.goal)}/${Q.goal}${Q.unit?' '+Q.unit:''}</span><i style="--p:${Math.min(1,q.prog/Q.goal)}"></i>${q.claimed?'<b>✓</b>':done?`<button class="buy" type="button" data-claim="${qi}">${COIN}30</button>`:`<small>${COIN}30</small>`}</div>`;}).join('');
   const fresh=store.get('nm-ver',null)!==VERSION;
   const news=fresh?`<div class="newver" id="newver"><button type="button" id="newverX" aria-label="ปิด">✕</button><b>อัปเดตใหม่ v${VERSION}</b><ul>${CHANGES.map(c=>`<li>${c}</li>`).join('')}</ul></div>`:'';
-  show(`${news}<h1 class="title"><span>Notebook</span><br>Monsters<small>ปีศาจหน้าสมุด</small></h1>
+  show(`<div class="hl">${news}<h1 class="title"><span>Notebook</span><br>Monsters<small>ปีศาจหน้าสมุด</small></h1>
     <div class="cast">${cast}</div>
+    <div class="toggles"><button class="chk" type="button" id="tSfx"><i>${OPT.sfx?'✓':''}</i>เสียง</button><button class="chk" type="button" id="tMus"><i>${OPT.music?'✓':''}</i>เพลง</button><button class="chk" type="button" id="tVoice"><i>${OPT.voice?'✓':''}</i>อ่านคำ</button></div>
+    <div class="ver">เวอร์ชัน ${VERSION} · ${VERSION_DATE}</div></div><div class="hr">
     <div class="menu">
       <button class="mbtn main" type="button" id="goNext">${NAV.play}เล่นต่อ<small>${BOOKS[curBook].name} · ด่าน ${nextI+1}</small></button>
       <button class="mbtn" type="button" id="goPlay">${NAV.map}เลือกด่าน</button>
@@ -1050,8 +1075,7 @@ function home(){
       <button class="mbtn" type="button" id="goWords">${NAV.words}สมุดคำศัพท์<small>${learned}/${total}</small></button>
     </div>
     <div class="quests"><div class="qh">ภารกิจวันนี้ <small>เข้าเล่นติดกัน ${P.daily.streak} วัน</small></div>${qs}</div>
-    <div class="toggles"><button class="chk" type="button" id="tSfx"><i>${OPT.sfx?'✓':''}</i>เสียง</button><button class="chk" type="button" id="tMus"><i>${OPT.music?'✓':''}</i>เพลง</button><button class="chk" type="button" id="tVoice"><i>${OPT.voice?'✓':''}</i>อ่านคำ</button></div>
-    <div class="ver">เวอร์ชัน ${VERSION} · ${VERSION_DATE}</div>`);
+</div>`);
   if(fresh)$('#newverX').onclick=()=>{store.set('nm-ver',VERSION);$('#newver').remove();};
   $('#goPlay').onclick=()=>{SFX.tap();map(curBook);};
   $('#goNext').onclick=()=>{audio();SFX.tap();preStage(curBook,nextI);};
@@ -1061,6 +1085,7 @@ function home(){
   $('#goShop').onclick=()=>{SFX.tap();shop('up');};
   $('#goWords').onclick=()=>{SFX.tap();words(curBook);};
   const tg=(id,key)=>{$(id).onclick=e=>{audio();OPT[key]=!OPT[key];e.currentTarget.querySelector('i').textContent=OPT[key]?'✓':'';store.set('nm-opt',OPT);};};
+  panel.classList.add('home');
   tg('#tSfx','sfx');tg('#tMus','music');tg('#tVoice','voice');
 }
 const bookTabs=(sel,attr)=>`<div class="tabs">${BOOK_ORDER.map(k=>`<button class="tab" type="button" ${attr}="${k}" style="--c:${BOOKS[k].c}" aria-pressed="${k===sel}">${BOOKS[k].name} <small>${BOOKS[k].lvl.split(' ')[0]}</small></button>`).join('')}</div>`;
@@ -1075,8 +1100,7 @@ function map(k){
     dots+=`<button class="dot ${st?'done':''} ${i===next&&open?'next':''} ${open?'':'lock'} ${boss?'boss':''}" type="button" data-s="${i}" ${open?'':'disabled'}><b>${boss?'B':i+1}</b><span class="st">${st?'★'.repeat(st)+`<span class="no">${'★'.repeat(3-st)}</span>`:''}</span></button>`;});
   if(lastU>=0)dots+='</div>';
   const best=P.endless[k]||0;
-  show(`<div class="topbar"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>เลือกด่าน</h2>${coinsTag()}</div>
-    ${bookTabs(k,'data-b')}
+  show(`<div class="topbar"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>เลือกด่าน</h2>${bookTabs(k,'data-b')}${coinsTag()}</div>
     <div class="bookinfo">${B.lvl} · ★ ${bookStars(k)}/${n*3} · เก็บคำ ${learnedIn(k)}/${B.words.length}</div>
     <div class="scroll" id="mapScroll">${dots}</div>
     <button class="endless" type="button" id="endless" ${bookDone(k)?'':'disabled'}>∞ โหมดไม่รู้จบ ${bookDone(k)?(best?'· สถิติ '+fmt(best):''):'· ผ่านครบทุกด่านก่อน'}</button>`);
@@ -1098,8 +1122,7 @@ function preStage(k,i){
 function words(k){
   state='menu';curBook=k;
   const B=BOOKS[k],L=LEARNED,Wk=new Set(B.words.filter(w=>WEAK.has(w.en)).map(w=>w.en));
-  show(`<div class="topbar"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>สมุดคำศัพท์</h2></div>
-    ${bookTabs(k,'data-b')}
+  show(`<div class="topbar"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>สมุดคำศัพท์</h2>${bookTabs(k,'data-b')}</div>
     <div class="bookinfo">${B.lvl} · เก็บแล้ว ${learnedIn(k)}/${B.words.length} · ต้องทบทวน ${Wk.size}</div>
     <input class="search" id="wsearch" type="search" placeholder="ค้นหาคำ อังกฤษหรือไทย" autocomplete="off">
     <div class="scroll"><div class="wgrid">${B.words.map(w=>{const cls=Wk.has(w.en)?'weak':L.has(w.en)?'':'unk';return `<button class="wi ${cls}" type="button" data-say="${esc(w.en)}"><b>${esc(w.en)}</b><span>${esc(w.th)}</span><i>${Wk.has(w.en)?'ทวน':L.has(w.en)?'✓':''}</i></button>`;}).join('')}</div></div>`);
@@ -1117,8 +1140,7 @@ function shop(tab){
     return `<div class="item"><span class="ic" style="border-radius:10px;width:74px">${img?`<img src="${img}" alt="" style="width:68px">`:''}</span><span class="tx"><b>${f.n}</b><small>${f.d}</small></span>${using?'<span class="buy use">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-usef="${f.id}">ใช้</button>`:`<button class="buy" type="button" data-fort="${f.id}" ${P.coins<f.cost?'disabled':''}>${COIN}${fmt(f.cost)}</button>`}</div>`;}).join('');
   else body=PENS.map(p=>{const own=P.owned.includes(p.id),using=P.pen===p.id;
     return `<div class="item"><span class="ic">${penIcon(p)}</span><span class="tx"><b>${p.n}</b><small>${p.d}</small></span>${using?'<span class="buy use">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-use="${p.id}">ใช้</button>`:`<button class="buy" type="button" data-pen="${p.id}" ${P.coins<p.cost?'disabled':''}>${COIN}${fmt(p.cost)}</button>`}</div>`;}).join('');
-  show(`<div class="topbar"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>ร้านค้า</h2>${coinsTag()}</div>
-    <div class="tabs"><button class="tab" type="button" data-t="up" style="--c:#4f9d69" aria-pressed="${tab==='up'}">อัปเกรดป้อม</button><button class="tab" type="button" data-t="fort" style="--c:#3f6fb5" aria-pressed="${tab==='fort'}">ป้อม</button><button class="tab" type="button" data-t="pen" style="--c:#c8553d" aria-pressed="${tab==='pen'}">ปากกา</button></div>
+  show(`<div class="topbar"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>ร้านค้า</h2><div class="tabs"><button class="tab" type="button" data-t="up" style="--c:#4f9d69" aria-pressed="${tab==='up'}">อัปเกรดป้อม</button><button class="tab" type="button" data-t="fort" style="--c:#3f6fb5" aria-pressed="${tab==='fort'}">ป้อม</button><button class="tab" type="button" data-t="pen" style="--c:#c8553d" aria-pressed="${tab==='pen'}">ปากกา</button></div>${coinsTag()}</div>
     <div class="scroll"><div class="shopgrid">${body}</div></div>`);
   $('#back').onclick=home;
   panel.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>shop(b.dataset.t));
