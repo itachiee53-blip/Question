@@ -223,12 +223,12 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .search{width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:#0006;color:var(--text);font:inherit;font-size:16px}
 
 /* shop */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
 .it{display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px;border:1px solid var(--line);background:#ffffff08}
 .it .ic{width:54px;height:54px;flex:none;border-radius:12px;background:#0006;display:grid;place-items:center}
 .it .ic svg{width:30px;height:30px;color:var(--toxic)}
 .it .tx{flex:1;min-width:0;line-height:1.3}
-.it .tx b{display:block;font-size:17px;font-weight:600}
+.it .tx b{display:block;font-size:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .it .tx small{font-size:13px;color:var(--dim)}
 .it .lv{display:flex;gap:4px;margin-top:4px}.it .lv i{width:16px;height:5px;border-radius:3px;background:#fff2}.it .lv i.on{background:var(--toxic)}
 .buy{flex:none;padding:7px 12px;border-radius:9px;background:#f2b33d22;border:1px solid #f2b33d77;color:var(--amber);font-family:var(--f-disp);font-size:20px;letter-spacing:1px;display:inline-flex;align-items:center;gap:5px}
@@ -337,8 +337,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.9.0',VERSION_DATE='17 พ.ย. 2569';
-const CHANGES=['ผู้ช่วยต้องซื้อเองที่คลังแสง แท็บผู้ช่วย','ผู้รอดชีวิต: ยิงซอมบี้ที่ใกล้สุดให้ถอยเป็นระยะ (ไม่ฆ่า)','สุนัขเฝ้ายาม: กัดซอมบี้ที่ทุบเครื่องกีดขวางให้หยุดชั่วครู่','อัปเกรดได้ 3 ขั้น'];
+const VERSION='2.9.1',VERSION_DATE='17 พ.ย. 2569';
+const CHANGES=['คำอธิบายในคลังแสงสั้นลง อ่านง่ายขึ้น','การ์ดในร้านกว้างขึ้น'];
 
 /* ---------------- helpers ---------------- */
 const $=s=>document.querySelector(s);
@@ -396,21 +396,21 @@ const BYEN=new Map(ALL.map(w=>[w.en,w]));
 const isBossNight=i=>(i+1)%5===0;
 
 const GUNS={
-  pistol:{n:'ปืนพก',m:'Pistol',len:.95,cost:0,d:'อาวุธเริ่มต้น ยิงแม่น',push:.25,kick:.05,mag:12,shots:2,reload:1.0,rs:'reload_pistol',speed:140},
-  shotgun:{n:'ลูกซอง',m:'Shotgun',cost:400,d:'ยิงถูกแต่ละตัวอักษร ผลักซอมบี้ถอยหลังไกล',push:.9,kick:.12,mag:6,shots:1,reload:1.5,rs:'reload_shotgun',speed:110},
-  smg:{n:'ปืนกล',m:'SMG',cost:800,d:'ตัดตัวเลือกผิดออก 1 ข้อทุกคำ (โหมดสะกด: เติมตัวอักษรแรกให้)',push:.3,kick:.04,auto1:true,mag:30,shots:4,reload:1.3,rs:'reload_rifle',speed:150},
-  revolver:{n:'ลูกโม่แม็กนั่ม',m:'Revolver',cost:600,d:'ทุกนัดนับเป็นเฮดช็อต ผลักแรง',push:1.4,kick:.16,mag:6,shots:1,reload:1.6,rs:'reload_pistol',speed:170,head:true,toon:true,len:1},
-  ak:{n:'AK-47',m:'AK',cost:1000,d:'ยิงชุด 3 นัด กระสุนกระเด็นโดนตัวข้างๆ',push:.5,kick:.07,mag:30,shots:3,reload:1.2,rs:'reload_rifle',speed:180,splash:true,toon:true,len:1.45},
-  rifle:{n:'ไรเฟิล',m:'Rifle',len:1.6,cost:1200,d:'ยิงตายแล้วกระสุนทะลุ ผลักตัวถัดไปถอยหลังไกล (โหมดสะกด: เปิดตัวอักษร 2 ตัว)',push:.45,kick:.09,pierce:2,mag:8,shots:1,reload:1.4,rs:'reload_rifle',speed:260},
-  sniper:{n:'สไนเปอร์',m:'Sniper',cost:1600,d:'กระสุนทะลุทุกตัวในแนวเดียวกัน ผลักถอยและมึน',push:1.2,kick:.18,mag:5,shots:1,reload:2,rs:'reload_rifle',speed:420,lane:true,toon:true,len:2.05},
-  launcher:{n:'ปืนยิงลูกระเบิด',m:'GrenadeLauncher',cost:2200,d:'ลูกระเบิดระเบิดรอบเป้า ตัวข้างๆ เสียคำ',push:.8,kick:.2,mag:4,shots:1,reload:2.2,rs:'reload_shotgun',speed:38,blast:true,toon:true,len:1.2},
-  freeze:{n:'ปืนแช่แข็ง',m:'ShortCannon',cost:1800,d:'แช่แข็งเป้าและตัวรอบๆ 3 วินาที',push:.2,kick:.1,mag:6,shots:1,reload:1.6,rs:'reload_rifle',speed:80,freeze:true,toon:true,len:1.25,size:2.4,color:0x9fdcff},
-  tesla:{n:'ไรเฟิลสายฟ้า',m:'Sniper_2',cost:2000,d:'สายฟ้ากระโดดไปโดนอีก 3 ตัว มึนและเสียตัวเลือกผิด',push:.6,kick:.12,mag:8,shots:1,reload:1.5,rs:'reload_rifle',speed:320,chain:3,toon:true,len:1.75,size:1.8,color:0x8fe8ff},
-  bazooka:{n:'บาซูก้า',m:'RocketLauncher',cost:2600,d:'จรวดระเบิดวงกว้าง ตัวรอบเป้าเสียคำหรือตาย',push:1,kick:.25,mag:2,shots:1,reload:2.8,rs:'reload_shotgun',speed:30,blast:true,radius:3.6,toon:true,len:1.3,size:3.5,color:0xff9a4a},
+  pistol:{n:'ปืนพก',m:'Pistol',len:.95,cost:0,d:'ปืนเริ่มต้น',push:.25,kick:.05,mag:12,shots:2,reload:1.0,rs:'reload_pistol',speed:140},
+  shotgun:{n:'ลูกซอง',m:'Shotgun',cost:400,d:'ผลักถอยไกล',push:.9,kick:.12,mag:6,shots:1,reload:1.5,rs:'reload_shotgun',speed:110},
+  smg:{n:'ปืนกล',m:'SMG',cost:800,d:'ตัดตัวเลือกผิด 1 ข้อ',push:.3,kick:.04,auto1:true,mag:30,shots:4,reload:1.3,rs:'reload_rifle',speed:150},
+  revolver:{n:'ลูกโม่แม็กนั่ม',m:'Revolver',cost:600,d:'เฮดช็อตทุกนัด',push:1.4,kick:.16,mag:6,shots:1,reload:1.6,rs:'reload_pistol',speed:170,head:true,toon:true,len:1},
+  ak:{n:'AK-47',m:'AK',cost:1000,d:'ยิงโดนตัวข้างๆ ด้วย',push:.5,kick:.07,mag:30,shots:3,reload:1.2,rs:'reload_rifle',speed:180,splash:true,toon:true,len:1.45},
+  rifle:{n:'ไรเฟิล',m:'Rifle',len:1.6,cost:1200,d:'ทะลุไปโดนตัวถัดไป',push:.45,kick:.09,pierce:2,mag:8,shots:1,reload:1.4,rs:'reload_rifle',speed:260},
+  sniper:{n:'สไนเปอร์',m:'Sniper',cost:1600,d:'ทะลุทั้งแถว',push:1.2,kick:.18,mag:5,shots:1,reload:2,rs:'reload_rifle',speed:420,lane:true,toon:true,len:2.05},
+  launcher:{n:'ปืนยิงลูกระเบิด',m:'GrenadeLauncher',cost:2200,d:'ระเบิดรอบเป้า',push:.8,kick:.2,mag:4,shots:1,reload:2.2,rs:'reload_shotgun',speed:38,blast:true,toon:true,len:1.2},
+  freeze:{n:'ปืนแช่แข็ง',m:'ShortCannon',cost:1800,d:'แช่แข็ง 3 วิ',push:.2,kick:.1,mag:6,shots:1,reload:1.6,rs:'reload_rifle',speed:80,freeze:true,toon:true,len:1.25,size:2.4,color:0x9fdcff},
+  tesla:{n:'ไรเฟิลสายฟ้า',m:'Sniper_2',cost:2000,d:'สายฟ้าโดน 3 ตัว',push:.6,kick:.12,mag:8,shots:1,reload:1.5,rs:'reload_rifle',speed:320,chain:3,toon:true,len:1.75,size:1.8,color:0x8fe8ff},
+  bazooka:{n:'บาซูก้า',m:'RocketLauncher',cost:2600,d:'ระเบิดวงกว้าง',push:1,kick:.25,mag:2,shots:1,reload:2.8,rs:'reload_shotgun',speed:30,blast:true,radius:3.6,toon:true,len:1.3,size:3.5,color:0xff9a4a},
 };
 const UPG={
   mag:{n:'แม็กกาซีนเสริม',d:'กระสุนต่อแม็ก +25%',ic:'gun',cost:[140,300,600]},
-  knife:{n:'ลับมีด',d:'มีดพร้อมใช้เร็วขึ้น 20%',ic:'knife',cost:[120,260,520]},
+  knife:{n:'ลับมีด',d:'เบา ใช้บ่อยได้',ic:'knife',cost:[120,260,520]},
   wall:{n:'เสริมเครื่องกีดขวาง',d:'ความทนทาน +25',ic:'wall',cost:[150,320,650]},
   hint:{n:'กล้องส่องเป้า',d:'คำใบ้ต่อคืน +1',ic:'scope',cost:[120,260,520]},
   oil:{n:'น้ำมันปืน',d:'ปืนติดสั้นลง 20%',ic:'oil',cost:[100,220,450]},
@@ -860,9 +860,9 @@ const allies=[];
 /* helpers you buy: they only slow zombies down, never kill or answer for you */
 const ALLY={
   man:{n:'ผู้รอดชีวิต',cost:500,up:[300,600],cd:[12,10,8],push:[1.5,1.8,2.2],
-    d:l=>`ยิงซอมบี้ที่ใกล้ที่สุดให้ถอย ${ALLY.man.push[l]} ม. ทุก ${ALLY.man.cd[l]} วิ (ไม่ฆ่า ไม่ตอบแทน)`},
+    d:l=>`ยิงผลักซอมบี้ · ทุก ${ALLY.man.cd[l]} วิ`,nx:l=>`ทุก ${ALLY.man.cd[l]} วิ`},
   dog:{n:'สุนัขเฝ้ายาม',cost:400,up:[250,500],cd:[16,13,10],stun:[1.5,2,2.5],
-    d:l=>`กระโจนกัดซอมบี้ที่กำลังทุบเครื่องกีดขวาง หยุดมัน ${ALLY.dog.stun[l]} วิ ทุก ${ALLY.dog.cd[l]} วิ`},
+    d:l=>`กัดให้หยุด ${ALLY.dog.stun[l]} วิ · ทุก ${ALLY.dog.cd[l]} วิ`,nx:l=>`หยุด ${ALLY.dog.stun[l]} วิ · ทุก ${ALLY.dog.cd[l]} วิ`},
 };
 let allyCrate=null;
 function allyVisibility(){const [man,dog]=allies;if(man)man.obj.visible=P.allies.man>0;if(dog)dog.obj.visible=P.allies.dog>0;if(allyCrate)allyCrate.visible=P.allies.dog>0;}
@@ -1339,11 +1339,11 @@ function bumpTag(z){if(!z.tag)return;z.tag.classList.remove('hit');void z.tag.of
 /* ---------------- knife: swipe across a zombie at the barricade ---------------- */
 const MELEE={
   knife:{n:'มีด',m:'Knife',cost:0,d:'เบา คูลดาวน์สั้น',cd:3.5,push:2.6,stun:1.2,cut:1,scale:.55},
-  bat:{n:'ไม้หนามเหล็ก',m:'WoodenBat_Barbed',cost:300,d:'ตีกระเด็นไกลมาก',cd:4,push:4.2,stun:1.5,cut:1,scale:.36},
-  axe:{n:'ขวาน',m:'Axe',cost:700,d:'ตัดตัวเลือกผิด 2 ข้อ / เปิด 2 ตัวอักษร',cd:4.5,push:2,stun:1.6,cut:2,scale:.36},
-  spear:{n:'หอก',m:'Spear',cost:900,d:'แทงไกล โดนซอมบี้ที่ยังอยู่ห่างได้',cd:3.5,push:3,stun:1.2,cut:1,reach:7,scale:.3},
-  guitar:{n:'กีตาร์หนาม',m:'Guitar',cost:1500,d:'ฟาดทุกตัวใกล้ๆ คลื่นเสียงทำให้มึน 3 วินาที',cd:4.5,push:2.5,stun:3,cut:1,all:true,scale:.3},
-  saw:{n:'ไม้เลื่อย',m:'WoodenBat_Saw',cost:1200,d:'ฟาดทุกตัวที่อยู่ใกล้พร้อมกัน มึนนาน',cd:4,push:3,stun:2.5,cut:1,all:true,scale:.34},
+  bat:{n:'ไม้หนามเหล็ก',m:'WoodenBat_Barbed',cost:300,d:'ตีกระเด็นไกล',cd:4,push:4.2,stun:1.5,cut:1,scale:.36},
+  axe:{n:'ขวาน',m:'Axe',cost:700,d:'ตัดตัวเลือกผิด 2 ข้อ',cd:4.5,push:2,stun:1.6,cut:2,scale:.36},
+  spear:{n:'หอก',m:'Spear',cost:900,d:'แทงได้ไกล',cd:3.5,push:3,stun:1.2,cut:1,reach:7,scale:.3},
+  guitar:{n:'กีตาร์หนาม',m:'Guitar',cost:1500,d:'ฟาดทุกตัว มึนนาน',cd:4.5,push:2.5,stun:3,cut:1,all:true,scale:.3},
+  saw:{n:'ไม้เลื่อย',m:'WoodenBat_Saw',cost:1200,d:'ฟาดทุกตัวใกล้ๆ',cd:4,push:3,stun:2.5,cut:1,all:true,scale:.34},
 };
 let knifeObj=null,knifeSwing=0,swipe=null;
 function equipKnife(){if(knifeObj)camera.remove(knifeObj);const W=MELEE[P.melee]||MELEE.knife,m=MODELS[W.m];if(!m)return;knifeObj=m.scene.clone();knifeObj.scale.setScalar(W.scale);knifeObj.visible=false;camera.add(knifeObj);}
@@ -1638,13 +1638,13 @@ function shop(tab){
   state='menu';
   let body='';
   if(tab==='guns')body=Object.entries(GUNS).map(([id,g])=>{const own=P.owned.includes(id),eq=P.gun===id;
-    return `<div class="it"><span class="ic">${THUMB[id]?`<img src="${THUMB[id]}" alt="">`:SV.gun}</span><span class="tx"><b>${g.n}</b><small>${g.d} · แม็ก ${g.mag} นัด · ยิง ${g.shots} นัดต่อคำ</small></span>${eq?'<span class="buy eq">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-eq="${id}">ใช้</button>`:`<button class="buy" type="button" data-gun="${id}" ${P.coins<g.cost?'disabled':''}>${SV.coin}${fmt(g.cost)}</button>`}</div>`;}).join('');
+    return `<div class="it"><span class="ic">${THUMB[id]?`<img src="${THUMB[id]}" alt="">`:SV.gun}</span><span class="tx"><b>${g.n}</b><small>${g.d} · ${g.mag} นัด</small></span>${eq?'<span class="buy eq">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-eq="${id}">ใช้</button>`:`<button class="buy" type="button" data-gun="${id}" ${P.coins<g.cost?'disabled':''}>${SV.coin}${fmt(g.cost)}</button>`}</div>`;}).join('');
   else if(tab==='ally')body=Object.entries(ALLY).map(([id,a])=>{const lv=P.allies[id],max=lv>=3;
-    const desc=lv?a.d(lv-1)+(max?'':`<br><span style="color:var(--toxic)">ขั้นต่อไป: ${a.d(lv)}</span>`):a.d(0);
+    const desc=lv?a.d(lv-1)+(max?'':`<br><span style="color:var(--toxic)">ขั้นถัดไป: ${a.nx(lv)}</span>`):a.d(0);
     const price=lv?a.up[lv-1]:a.cost;
     return `<div class="it"><span class="ic">${THUMB['ally_'+id]?`<img src="${THUMB['ally_'+id]}" alt="">`:SV.wall}</span><span class="tx"><b>${a.n}${lv?' · ขั้น '+lv:''}</b><small>${desc}</small><span class="lv">${[1,2,3].map(i=>`<i class="${i<=lv?'on':''}"></i>`).join('')}</span></span>${max?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" data-ally="${id}" ${P.coins<price?'disabled':''}>${lv?'':'ซื้อ '}${SV.coin}${fmt(price)}</button>`}</div>`;}).join('');
   else if(tab==='melee')body=Object.entries(MELEE).map(([id,w])=>{const own=P.ownedMelee.includes(id),eq=P.melee===id,th=THUMB['m_'+id];
-    return `<div class="it"><span class="ic">${th?`<img src="${th}" alt="">`:SV.knife}</span><span class="tx"><b>${w.n}</b><small>${w.d} · พร้อมใช้ทุก ${w.cd} วิ</small></span>${eq?'<span class="buy eq">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-meq="${id}">ใช้</button>`:`<button class="buy" type="button" data-mel="${id}" ${P.coins<w.cost?'disabled':''}>${SV.coin}${fmt(w.cost)}</button>`}</div>`;}).join('');
+    return `<div class="it"><span class="ic">${th?`<img src="${th}" alt="">`:SV.knife}</span><span class="tx"><b>${w.n}</b><small>${w.d} · ทุก ${w.cd} วิ</small></span>${eq?'<span class="buy eq">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-meq="${id}">ใช้</button>`:`<button class="buy" type="button" data-mel="${id}" ${P.coins<w.cost?'disabled':''}>${SV.coin}${fmt(w.cost)}</button>`}</div>`;}).join('');
   else body=Object.entries(UPG).map(([id,u])=>{const lv=P.up[id],max=lv>=u.cost.length;
     return `<div class="it"><span class="ic">${SV[u.ic]}</span><span class="tx"><b>${u.n}</b><small>${u.d}</small><span class="lv">${u.cost.map((_,i)=>`<i class="${i<lv?'on':''}"></i>`).join('')}</span></span>${max?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" data-up="${id}" ${P.coins<u.cost[lv]?'disabled':''}>${SV.coin}${fmt(u.cost[lv])}</button>`}</div>`;}).join('')
     +`<div class="it"><span class="ic">${SV.gren}</span><span class="tx"><b>ระเบิดมือ</b><small>ฆ่าซอมบี้รอบเป้าหมายทั้งหมด (มี ${P.gren}/${GREN_MAX})</small></span>${P.gren>=GREN_MAX?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" id="bGren" ${P.coins<GREN_COST?'disabled':''}>${SV.coin}${GREN_COST}</button>`}</div>`;
