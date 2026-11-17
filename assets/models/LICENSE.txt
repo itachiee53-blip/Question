@@ -15,3 +15,5 @@ https://creativecommons.org/publicdomain/zero/1.0/
 Also included from the same author under the same CC0 1.0 license:
 - Zombie Apocalypse Kit: https://quaternius.com/packs/zombieapocalypsekit.html
 - Toon Shooter Game Kit: https://quaternius.com/packs/toonshootergamekit.html
+- Animated Zombie: https://quaternius.com/packs/animatedzombie.html (converted FBX to glb)
+- Animated Men / Animated Women: https://quaternius.com/packs/animatedmen.html , https://quaternius.com/packs/animatedwomen.html (converted FBX to glb, recoloured in-game as infected civilians)
