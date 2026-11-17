@@ -1,0 +1,978 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#07100c">
+<title>Dead Words</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400;600;800&display=swap">
+<style>
+:root{
+  --bg:#07100c;--panel:#0f1a15e6;--line:#ffffff1f;--text:#e9e6dc;--dim:#e9e6dc99;
+  --toxic:#a6e05a;--blood:#d8402f;--amber:#f2b33d;--steel:#8fa3a0;
+  --f-th:"Kanit",system-ui,sans-serif;--f-disp:"Bebas Neue","Kanit",sans-serif;
+  --safe-l:env(safe-area-inset-left,0px);--safe-r:env(safe-area-inset-right,0px);--safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:var(--f-th);overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button:focus-visible{outline:2px solid var(--toxic);outline-offset:2px}
+button[disabled]{cursor:not-allowed;opacity:.4}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+/* film look */
+.fx{position:fixed;inset:0;pointer-events:none;z-index:5}
+.vig{background:radial-gradient(ellipse at 50% 55%,transparent 45%,#000a 100%)}
+.grain{opacity:.07;mix-blend-mode:overlay;background-size:180px 180px}
+.hurt{background:radial-gradient(ellipse at 50% 50%,transparent 40%,#c0201099 100%);opacity:0;transition:opacity .25s}
+.hurt.on{opacity:1;transition:none}
+.danger{background:radial-gradient(ellipse at 50% 50%,transparent 50%,#a0100c66 100%);animation:beat 1s infinite}
+@keyframes beat{50%{opacity:.35}}
+
+/* zombie word tags */
+#tags{position:fixed;inset:0;z-index:6;pointer-events:none;overflow:hidden}
+.tag{position:absolute;left:0;top:0;transform-origin:50% 100%;pointer-events:auto;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 10px 6px;border-radius:8px;background:#0b120fcc;border:1px solid #ffffff22;box-shadow:0 6px 18px #0008;white-space:nowrap;will-change:transform}
+.tag .th{font-size:20px;font-weight:600;line-height:1.1;color:#fff}
+.tag .en{display:flex;gap:2px;font-family:var(--f-disp);font-size:20px;letter-spacing:1px;line-height:1}
+.tag .en i{font-style:normal;min-width:11px;text-align:center;color:#ffffff55;border-bottom:2px solid #ffffff44}
+.tag .en i.on{color:var(--toxic);border-color:var(--toxic)}
+.tag .en i.sp{border:0;min-width:8px}
+.tag .pips{display:flex;gap:4px}.tag .pips b{width:7px;height:7px;border-radius:50%;background:var(--blood)}.tag .pips b.off{background:#fff3}
+.tag.tgt{background:#1a2a12ee;border-color:var(--toxic);box-shadow:0 0 0 2px #a6e05a55,0 8px 24px #000a}
+.tag.tgt::after{content:"";position:absolute;bottom:-9px;left:50%;width:12px;height:12px;background:inherit;border-right:1px solid var(--toxic);border-bottom:1px solid var(--toxic);transform:translateX(-50%) rotate(45deg)}
+.tag.near{border-color:var(--blood)}
+.tag.dead{opacity:0;transition:opacity .3s}
+.tag.hit{animation:tagHit .18s}
+@keyframes tagHit{40%{transform:var(--tf) scale(1.08)}}
+
+/* HUD */
+.hud{position:fixed;left:0;right:0;top:0;z-index:8;display:flex;align-items:flex-start;gap:12px;padding:calc(10px + var(--safe-t)) calc(12px + var(--safe-r)) 0 calc(12px + var(--safe-l));pointer-events:none}
+.hud>*{pointer-events:auto}
+.iconbtn{width:42px;height:42px;border-radius:10px;background:#0b120fb3;border:1px solid var(--line);display:grid;place-items:center}
+.iconbtn svg{width:20px;height:20px}
+.hinfo{display:flex;flex-direction:column;line-height:1.15}
+.hinfo b{font-family:var(--f-disp);font-size:24px;font-weight:400;letter-spacing:1px}
+.hinfo small{font-size:13px;color:var(--dim)}
+.wall{flex:1;max-width:440px;margin:0 auto;display:flex;flex-direction:column;gap:4px;align-items:stretch}
+.wall .lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--dim)}
+.wall .bar{height:12px;border-radius:6px;background:#0008;border:1px solid var(--line);overflow:hidden}
+.wall .bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#c9381f,#f2b33d 55%,#a6e05a);transition:width .2s}
+.hright{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.score{font-family:var(--f-disp);font-size:28px;line-height:1;letter-spacing:1px}
+.combo{font-family:var(--f-disp);font-size:22px;color:var(--amber);line-height:1}
+.combo.bump{animation:bump .25s}
+@keyframes bump{50%{transform:scale(1.35)}}
+.banner{position:fixed;left:50%;top:34%;transform:translate(-50%,-50%);z-index:9;text-align:center;pointer-events:none}
+.banner b{display:block;font-family:var(--f-disp);font-size:clamp(44px,9vw,88px);font-weight:400;letter-spacing:3px;line-height:.9;color:#fff;text-shadow:0 4px 30px #000}
+.banner small{font-size:18px;color:var(--dim)}
+.banner.show{animation:ban 2.2s forwards}
+@keyframes ban{0%{opacity:0;transform:translate(-50%,-40%) scale(1.1)}12%{opacity:1;transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
+.float{position:fixed;z-index:9;pointer-events:none;font-family:var(--f-disp);font-size:26px;letter-spacing:1px;transform:translate(-50%,-50%);animation:fl 1s forwards;text-shadow:0 2px 8px #000}
+@keyframes fl{to{transform:translate(-50%,-160%);opacity:0}}
+
+/* bottom: items + letter pad */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:8;display:flex;align-items:flex-end;gap:10px;padding:10px calc(12px + var(--safe-r)) calc(10px + var(--safe-b)) calc(12px + var(--safe-l));background:linear-gradient(transparent,#000c 45%)}
+.items{display:flex;gap:8px;flex:none}
+.item{position:relative;width:50px;height:50px;border-radius:12px;background:#0b120fd9;border:1px solid var(--line);display:grid;place-items:center}
+.item svg{width:26px;height:26px}
+.item b{position:absolute;right:-5px;top:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--amber);color:#111;font-size:13px;font-weight:600;display:grid;place-items:center}
+.pad{flex:1;display:flex;flex-wrap:wrap;justify-content:center;gap:var(--g,8px);min-height:50px;align-content:flex-end}
+.key{width:var(--k,52px);height:var(--k,52px);border-radius:10px;background:linear-gradient(#2a3530,#1a2320);border:1px solid #ffffff2a;border-bottom:4px solid #0a0f0d;font-family:var(--f-disp);font-size:calc(var(--k,52px)*.56);letter-spacing:0;display:grid;place-items:center;color:#f2efe6;text-transform:uppercase;transition:transform .05s}
+.key:active{transform:translateY(2px);border-bottom-width:2px}
+.key.used{visibility:hidden}
+.pad.shake{animation:shake .35s}
+@keyframes shake{20%{transform:translateX(-10px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+.pad.jam .key{filter:grayscale(1) brightness(.6)}
+.jamtag{position:fixed;left:50%;bottom:calc(84px + var(--safe-b));transform:translateX(-50%);z-index:9;font-family:var(--f-disp);font-size:30px;letter-spacing:2px;color:var(--blood);text-shadow:0 2px 10px #000;pointer-events:none}
+
+/* menus */
+.scr{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:calc(12px + var(--safe-t)) calc(12px + var(--safe-r)) calc(12px + var(--safe-b)) calc(12px + var(--safe-l));background:linear-gradient(90deg,#000c,#0006 60%,#0003)}
+.scr.solid{background:#000b}
+.card{width:min(980px,100%);max-height:100%;display:flex;flex-direction:column;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 20px 60px #000c;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:in .25s}
+@keyframes in{from{transform:translateY(12px);opacity:0}}
+.card>*{flex-shrink:0}.card>.scroll{flex-shrink:1}
+.it .ic img{width:100%;height:100%;object-fit:contain}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.top h2{margin:0;font-family:var(--f-disp);font-weight:400;font-size:34px;letter-spacing:2px;line-height:1}
+.top .sp{flex:1}
+.back{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;font-size:20px}
+.coins{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-disp);font-size:24px;letter-spacing:1px;padding:2px 12px;border-radius:999px;background:#f2b33d1f;border:1px solid #f2b33d66;color:var(--amber)}
+.coins svg{width:18px;height:18px}
+.scroll{overflow:auto;min-height:0;-webkit-overflow-scrolling:touch}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:10px 20px;border-radius:10px;background:#ffffff12;border:1px solid var(--line);font-size:18px;font-weight:400}
+.btn:hover{background:#ffffff1c}
+.btn.main{background:var(--toxic);color:#10170c;border-color:transparent;font-weight:600}
+.btn.main:hover{background:#b8ef6a}
+.btn.red{background:var(--blood);color:#fff;border-color:transparent}
+.btn small{font-size:13px;opacity:.75;font-weight:400}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* home */
+.home{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;width:min(1040px,100%);align-items:center}
+.brand h1{margin:0;font-family:var(--f-disp);font-weight:400;font-size:clamp(64px,11vw,132px);line-height:.82;letter-spacing:4px;color:#f1eee4;text-shadow:0 6px 40px #000}
+.brand h1 span{color:var(--toxic)}
+.brand p{margin:10px 0 0;font-size:18px;color:var(--dim)}
+.brand .ver{margin-top:16px;font-size:13px;color:#fff6}
+.menu{display:flex;flex-direction:column;gap:10px}
+.mbtn{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:12px;background:#0d1612d9;border:1px solid var(--line);text-align:left;font-size:20px;transition:background .15s,transform .1s}
+.mbtn:hover{background:#16221cee}
+.mbtn:active{transform:scale(.98)}
+.mbtn svg{width:24px;height:24px;flex:none;color:var(--toxic)}
+.mbtn small{margin-left:auto;font-size:14px;color:var(--dim)}
+.mbtn.main{background:var(--toxic);color:#10170c;font-weight:600;font-size:24px}
+.mbtn.main svg{color:#10170c}.mbtn.main small{color:#10170cb0;font-weight:400}
+.toggles{display:flex;gap:8px;flex-wrap:wrap}
+.tog{padding:6px 12px;border-radius:999px;border:1px solid var(--line);font-size:14px;color:var(--dim)}
+.tog[aria-pressed="true"]{color:var(--toxic);border-color:#a6e05a77;background:#a6e05a14}
+.news{border:1px solid #f2b33d55;background:#f2b33d12;border-radius:12px;padding:10px 40px 10px 14px;position:relative;font-size:14px;line-height:1.45}
+.news b{color:var(--amber);font-weight:600}
+.news ul{margin:4px 0 0;padding-left:18px}
+.news button{position:absolute;right:8px;top:6px;width:28px;height:28px;font-size:18px;color:var(--dim)}
+
+/* zones & nights */
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;padding:7px 14px;border-radius:999px;border:1px solid var(--line);font-size:15px;color:var(--dim);white-space:nowrap}
+.tab small{font-family:var(--f-disp);letter-spacing:1px;font-size:15px;margin-left:4px}
+.tab[aria-pressed="true"]{color:#10170c;background:var(--c,var(--toxic));border-color:transparent;font-weight:600}
+.zinfo{font-size:14px;color:var(--dim)}
+.unit{margin:12px 0 6px;font-size:15px;color:var(--dim);display:flex;align-items:center;gap:8px}
+.unit::after{content:"";flex:1;height:1px;background:var(--line)}
+.nights{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px}
+.nt{position:relative;aspect-ratio:1;border-radius:12px;border:1px solid var(--line);background:#ffffff08;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.nt b{font-family:var(--f-disp);font-size:26px;font-weight:400;line-height:1}
+.nt .st{font-size:11px;letter-spacing:1px;color:var(--amber);height:12px}
+.nt .st i{font-style:normal;color:#fff3}
+.nt.done{background:#a6e05a12;border-color:#a6e05a44}
+.nt.next{border-color:var(--toxic);box-shadow:0 0 0 2px #a6e05a44;animation:glow 1.6s infinite}
+@keyframes glow{50%{box-shadow:0 0 0 5px #a6e05a22}}
+.nt.boss b{color:var(--blood)}
+.nt[disabled]{opacity:.28}
+
+/* briefing word list */
+.wlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 18px}
+.w{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid var(--line);min-width:0}
+.w .say{width:30px;height:30px;flex:none;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center}
+.w .say svg{width:14px;height:14px}
+.w .en{font-family:var(--f-disp);font-size:22px;letter-spacing:1px;line-height:1}
+.w .th{margin-left:auto;font-size:15px;color:var(--dim);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.w.ok .en{color:var(--toxic)}
+.w.bad .en{color:var(--blood)}
+.search{width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:#0006;color:var(--text);font:inherit;font-size:16px}
+
+/* shop */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.it{display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px;border:1px solid var(--line);background:#ffffff08}
+.it .ic{width:54px;height:54px;flex:none;border-radius:12px;background:#0006;display:grid;place-items:center}
+.it .ic svg{width:30px;height:30px;color:var(--toxic)}
+.it .tx{flex:1;min-width:0;line-height:1.3}
+.it .tx b{display:block;font-size:17px;font-weight:600}
+.it .tx small{font-size:13px;color:var(--dim)}
+.it .lv{display:flex;gap:4px;margin-top:4px}.it .lv i{width:16px;height:5px;border-radius:3px;background:#fff2}.it .lv i.on{background:var(--toxic)}
+.buy{flex:none;padding:7px 12px;border-radius:9px;background:#f2b33d22;border:1px solid #f2b33d77;color:var(--amber);font-family:var(--f-disp);font-size:20px;letter-spacing:1px;display:inline-flex;align-items:center;gap:5px}
+.buy svg{width:15px;height:15px}
+.buy.eq{background:var(--toxic);border-color:transparent;color:#10170c;font-family:var(--f-th);font-size:15px;font-weight:600}
+.buy.own{background:#ffffff12;border-color:var(--line);color:var(--text);font-family:var(--f-th);font-size:15px}
+
+/* results */
+.res{align-items:center;text-align:center}
+.res h2{margin:0;font-family:var(--f-disp);font-weight:400;font-size:clamp(48px,9vw,84px);letter-spacing:3px;line-height:.9}
+.res h2.win{color:var(--toxic)}.res h2.lose{color:var(--blood)}
+.stars{display:flex;gap:8px;justify-content:center}
+.stars svg{width:44px;height:44px}
+.stars svg.on{color:var(--amber);animation:pop .4s backwards}
+.stars svg.off{color:#fff2}
+@keyframes pop{from{transform:scale(0) rotate(-60deg)}}
+.stats{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;font-size:15px;color:var(--dim)}
+.stats b{display:block;font-family:var(--f-disp);font-size:30px;font-weight:400;color:var(--text);letter-spacing:1px}
+
+/* loading */
+.load{flex-direction:column;gap:16px;background:var(--bg)}
+.load h1{margin:0;font-family:var(--f-disp);font-weight:400;font-size:72px;letter-spacing:4px}
+.load h1 span{color:var(--toxic)}
+.load .pb{width:min(320px,70vw);height:6px;border-radius:3px;background:#fff1;overflow:hidden}
+.load .pb i{display:block;height:100%;width:0;background:var(--toxic);transition:width .2s}
+.load small{color:var(--dim)}
+.toast{position:fixed;left:50%;top:calc(14px + var(--safe-t));transform:translateX(-50%);z-index:40;padding:8px 18px;border-radius:999px;background:#000d;border:1px solid var(--line);font-size:15px;animation:in .2s}
+
+@media (max-width:760px){.home{grid-template-columns:1fr;gap:16px}.brand{text-align:center}.toggles{justify-content:center}}
+@media (orientation:landscape) and (max-height:520px){
+  .card{padding:12px 14px;gap:8px}
+  .top h2{font-size:26px}.back{width:34px;height:34px}
+  .home{grid-template-columns:1fr 1fr;gap:18px}.brand{text-align:left}
+  .brand h1{font-size:64px}.brand p{font-size:15px;margin-top:6px}.brand .ver{margin-top:8px}
+  .mbtn{padding:8px 12px;font-size:17px}.mbtn.main{font-size:20px}.menu{gap:7px}
+  .news{font-size:12px;padding:6px 34px 6px 10px}
+  .hinfo b{font-size:20px}.iconbtn{width:36px;height:36px}.score{font-size:24px}
+  .tag .th{font-size:16px}.tag .en{font-size:17px}
+  .item{width:44px;height:44px}.item svg{width:22px;height:22px}
+  .dock{padding-top:6px;padding-bottom:calc(6px + var(--safe-b))}
+  .nights{grid-template-columns:repeat(auto-fill,minmax(54px,1fr))}.nt b{font-size:22px}
+  .res h2{font-size:52px}.stars svg{width:34px;height:34px}.stats b{font-size:24px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="fx vig"></div>
+<div class="fx grain" id="grain"></div>
+<div class="fx hurt" id="hurt"></div>
+<div class="fx danger" id="danger" hidden></div>
+<div id="tags"></div>
+
+<div class="hud" id="hud" hidden>
+  <button class="iconbtn" id="pauseBtn" type="button" aria-label="หยุดเกม"><svg viewBox="0 0 20 20" fill="currentColor"><rect x="4" y="3" width="4" height="14" rx="1"/><rect x="12" y="3" width="4" height="14" rx="1"/></svg></button>
+  <div class="hinfo"><b id="hNight">NIGHT 1</b><small id="hWave">คลื่น 1/3</small></div>
+  <div class="wall"><div class="lbl"><span>เครื่องกีดขวาง</span><span id="wallN">100</span></div><div class="bar"><i id="wallBar"></i></div></div>
+  <div class="hright"><div class="score" id="score">0</div><div class="combo" id="combo" hidden></div></div>
+</div>
+<div class="banner" id="banner" hidden><b id="banT"></b><small id="banS"></small></div>
+<div class="jamtag" id="jamTag" hidden>ปืนติด!</div>
+<div class="dock" id="dock" hidden>
+  <div class="items">
+    <button class="item" type="button" id="hintBtn" aria-label="คำใบ้"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 7v8M7 11h8M16.5 16.5 21 21"/></svg><b id="hintN">3</b></button>
+    <button class="item" type="button" id="grenBtn" aria-label="ระเบิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="14" r="7"/><path d="M10 7V4h4v3M14 4l4-1"/></svg><b id="grenN">1</b></button>
+  </div>
+  <div class="pad" id="pad"></div>
+</div>
+
+<div class="scr load" id="loading"><h1>DEAD <span>WORDS</span></h1><div class="pb"><i id="loadBar"></i></div><small id="loadTxt">กำลังโหลด…</small></div>
+<div class="scr" id="screen" hidden></div>
+
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+
+const WORDS=/*WORDS*/{};
+const VERSION='2.0.0',VERSION_DATE='17 พ.ย. 2569';
+const CHANGES=['เกมใหม่ทั้งหมด: ยิงซอมบี้ด้วยการสะกดคำ','เห็นคำไทยบนหัวซอมบี้ กดตัวอักษรเรียงให้ถูกเพื่อยิง','อาวุธ 4 แบบ ระเบิด และคำใบ้','ฉาก 3 มิติ ถนนยามค่ำคืน'];
+
+/* ---------------- helpers ---------------- */
+const $=s=>document.querySelector(s);
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[Math.random()*a.length|0];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const isL=c=>/[a-z]/.test(c);
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+const SV={
+  coin:'<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="#f2b33d"/><circle cx="10" cy="10" r="5.5" fill="none" stroke="#7a4f07" stroke-width="1.6"/></svg>',
+  star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg>',
+  map:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>',
+  gun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M2 8h17l2 2v2H11l-2 3v4H5l1-6-4-1z"/><path d="M13 12v2h-2"/></svg>',
+  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-4a3 3 0 0 0-3 3"/><path d="M20 4v14h-6"/></svg>',
+  rev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4"/></svg>',
+  say:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 8a5 5 0 0 1 0 8" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+  wall:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18v12H3zM3 12h18M9 6v6M15 12v6"/></svg>',
+  scope:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/></svg>',
+  oil:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/></svg>',
+  gren:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="14" r="7"/><path d="M10 7V4h4v3M14 4l4-1"/></svg>',
+};
+
+/* ---------------- data ---------------- */
+const ZONES={
+  a1:{name:'ลานจอดรถ',lvl:'A1',c:'#a6e05a'},
+  a2:{name:'ชานเมือง',lvl:'A2',c:'#5ad1c0'},
+  b1:{name:'ตัวเมือง',lvl:'B1',c:'#6aa6ff'},
+  b2:{name:'นิคมอุตสาหกรรม',lvl:'B2',c:'#c98cff'},
+  c1:{name:'ใจกลางการระบาด',lvl:'C1',c:'#ff7a5c'},
+};
+const ORDER=['a1','a2','b1','b2','c1'];
+const RANK={a1:0,a2:1,b1:2,b2:3,c1:4};
+const PER_NIGHT=10;
+// each zone splits its word list into nights of 10 words, keeping topics together
+for(const k of ORDER){
+  const nights=[];
+  for(const [unit,ws] of (WORDS[k]||[])){
+    for(let i=0;i<ws.length;i+=PER_NIGHT){
+      const chunk=ws.slice(i,i+PER_NIGHT).map(([en,th])=>({en,th}));
+      if(chunk.length<5&&nights.length&&nights[nights.length-1].unit===unit)nights[nights.length-1].words.push(...chunk);
+      else nights.push({unit,words:chunk});
+    }
+  }
+  ZONES[k].nights=nights;
+  ZONES[k].words=nights.flatMap(n=>n.words);
+}
+const ALL=ORDER.flatMap(k=>ZONES[k].words);
+const BYEN=new Map(ALL.map(w=>[w.en,w]));
+const isBossNight=i=>(i+1)%5===0;
+
+const GUNS={
+  pistol:{n:'ปืนพก',m:'Pistol',cost:0,d:'อาวุธเริ่มต้น ยิงแม่น',push:.25,kick:.05},
+  shotgun:{n:'ลูกซอง',m:'Shotgun',cost:400,d:'ยิงถูกแต่ละตัวอักษร ผลักซอมบี้ถอยหลังไกล',push:.9,kick:.12},
+  smg:{n:'ปืนกล',m:'SMG',cost:800,d:'เติมตัวอักษรแรกของทุกคำให้อัตโนมัติ',push:.3,kick:.04,auto1:true},
+  rifle:{n:'ไรเฟิล',m:'Rifle',cost:1200,d:'ยิงตายแล้วกระสุนทะลุ เปิดตัวอักษร 2 ตัวของตัวถัดไป',push:.45,kick:.09,pierce:2},
+};
+const UPG={
+  wall:{n:'เสริมเครื่องกีดขวาง',d:'ความทนทาน +25',ic:'wall',cost:[150,320,650]},
+  hint:{n:'กล้องส่องเป้า',d:'คำใบ้ต่อคืน +1',ic:'scope',cost:[120,260,520]},
+  oil:{n:'น้ำมันปืน',d:'ปืนติดสั้นลง 20%',ic:'oil',cost:[100,220,450]},
+};
+const GREN_COST=60,GREN_MAX=5;
+const ZT={
+  walker:{m:'Zombie_Basic',h:1.75,speed:1.1,anim:'Walk',dps:5,words:1,coin:3},
+  runner:{m:'Zombie_Ribcage',h:1.7,speed:2.3,anim:'Run',dps:4,words:1,coin:4},
+  brute:{m:'Zombie_Chubby',h:2.05,speed:.72,anim:'Walk',dps:9,words:2,coin:8},
+  giant:{m:'Zombie_Arm',h:3.4,speed:.55,anim:'Walk',dps:18,words:4,coin:30},
+};
+
+/* ---------------- save ---------------- */
+const SAVE_KEY='dw-save-v1';
+const DEF={coins:0,prog:{},gun:'pistol',owned:['pistol'],up:{wall:0,hint:0,oil:0},gren:1,learned:[],weak:[],opts:{sfx:true,amb:true,voice:true},zone:'a1',seen:null};
+let P=Object.assign(structuredClone(DEF),store.get(SAVE_KEY,{}));
+for(const k of ORDER)P.prog[k]=P.prog[k]||[];
+P.up=Object.assign({wall:0,hint:0,oil:0},P.up);P.opts=Object.assign({},DEF.opts,P.opts);
+let LEARNED=new Set(P.learned),WEAK=new Set(P.weak);
+function save(){P.learned=[...LEARNED];P.weak=[...WEAK];store.set(SAVE_KEY,P);}
+const nextNight=k=>Math.min(ZONES[k].nights.length-1,P.prog[k].filter(Boolean).length);
+const zoneStars=k=>P.prog[k].reduce((a,b)=>a+(b||0),0);
+
+/* ---------------- audio (all synthesized) ---------------- */
+let ac=null,master=null,noiseBuf=null,ambNodes=null;
+function audio(){
+  try{
+    if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=.8;master.connect(ac.destination);
+      noiseBuf=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}
+    if(ac.state!=='running')ac.resume();
+    ambience();
+  }catch(e){ac=null;}
+}
+addEventListener('pointerdown',audio,{capture:true,passive:true});
+addEventListener('keydown',audio,{capture:true});
+function nz(dur,vol,type,f,{q=1,at=0,f2=0,dest=master}={}){
+  if(!ac||!P.opts.sfx)return;const t=ac.currentTime+at,s=ac.createBufferSource(),fl=ac.createBiquadFilter(),g=ac.createGain();
+  s.buffer=noiseBuf;fl.type=type;fl.frequency.setValueAtTime(f,t);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,t+dur);fl.Q.value=q;
+  g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+.005);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  s.connect(fl).connect(g).connect(dest);s.start(t,Math.random()*1.2);s.stop(t+dur+.05);
+}
+function tn(f,dur,type,vol,{f2=0,at=0,dest=master}={}){
+  if(!ac||!P.opts.sfx)return;const t=ac.currentTime+at,o=ac.createOscillator(),g=ac.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+.005);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g).connect(dest);o.start(t);o.stop(t+dur+.05);
+}
+const SFX={
+  shot(kind){const big=kind==='shotgun',rf=kind==='rifle';
+    nz(big?.35:rf?.28:.18,big?.9:.7,'lowpass',big?2200:3200,{f2:300});nz(.05,.5,'highpass',3000);
+    tn(big?70:95,big?.3:.18,'sine',.7,{f2:35});if(rf)nz(.6,.12,'bandpass',900,{q:.7,at:.05,f2:200});},
+  jam(){tn(2300,.03,'square',.15);tn(1500,.04,'square',.12,{at:.06});nz(.08,.2,'bandpass',4000,{q:3,at:.02});},
+  flesh(){nz(.12,.35,'lowpass',700,{f2:200});},
+  key(){tn(1800,.02,'triangle',.05);},
+  thud(){tn(110,.25,'sine',.55,{f2:45});nz(.2,.35,'lowpass',500);},
+  boom(){nz(1.4,1,'lowpass',1600,{f2:60});tn(55,1,'sine',.9,{f2:25});nz(.3,.6,'highpass',1500);},
+  groan(vol=.15,low=false){if(!ac||!P.opts.sfx)return;const t=ac.currentTime,o=ac.createOscillator(),f=ac.createBiquadFilter(),g=ac.createGain(),l=ac.createOscillator(),lg=ac.createGain();
+    const base=low?rnd(45,60):rnd(70,105),d=rnd(.7,1.3);o.type='sawtooth';o.frequency.setValueAtTime(base,t);o.frequency.linearRampToValueAtTime(base*rnd(.75,.9),t+d);
+    l.frequency.value=rnd(5,8);lg.gain.value=base*.06;l.connect(lg).connect(o.frequency);
+    f.type='bandpass';f.frequency.setValueAtTime(rnd(380,520),t);f.frequency.linearRampToValueAtTime(rnd(250,350),t+d);f.Q.value=4;
+    g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+.15);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+    o.connect(f).connect(g).connect(master);o.start(t);l.start(t);o.stop(t+d+.05);l.stop(t+d+.05);},
+  die(){SFX.groan(.22);nz(.3,.25,'lowpass',400,{at:.1});},
+  win(){[392,494,587,784].forEach((f,i)=>tn(f,.5,'triangle',.12,{at:i*.12}));},
+  lose(){[220,196,165,131].forEach((f,i)=>tn(f,.7,'sawtooth',.08,{at:i*.2}));},
+  coin(){tn(1320,.08,'square',.06);tn(1760,.18,'square',.06,{at:.07});},
+  ui(){tn(900,.04,'triangle',.06);},
+};
+function ambience(){
+  if(!ac)return;
+  const want=P.opts.amb;
+  if(want&&!ambNodes){
+    const g=ac.createGain();g.gain.value=0;g.connect(master);
+    const s=ac.createBufferSource();s.buffer=noiseBuf;s.loop=true;const f=ac.createBiquadFilter();f.type='lowpass';f.frequency.value=400;f.Q.value=.6;
+    const lfo=ac.createOscillator(),lg=ac.createGain();lfo.frequency.value=.07;lg.gain.value=220;lfo.connect(lg).connect(f.frequency);
+    const wg=ac.createGain();wg.gain.value=.11;s.connect(f).connect(wg).connect(g);
+    const o1=ac.createOscillator(),o2=ac.createOscillator(),dg=ac.createGain();o1.frequency.value=55;o2.frequency.value=55.6;o1.type=o2.type='sine';dg.gain.value=.05;o1.connect(dg);o2.connect(dg);dg.connect(g);
+    s.start();lfo.start();o1.start();o2.start();g.gain.linearRampToValueAtTime(1,ac.currentTime+2);
+    ambNodes={g,stop(){g.gain.linearRampToValueAtTime(0,ac.currentTime+.5);setTimeout(()=>{try{s.stop();lfo.stop();o1.stop();o2.stop();}catch(e){}},700);}};
+  }else if(!want&&ambNodes){ambNodes.stop();ambNodes=null;}
+}
+function speak(t){if(!P.opts.voice||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.95;speechSynthesis.speak(u);}catch(e){}}
+
+/* ---------------- three.js scene ---------------- */
+const canvas=$('#c');
+let renderer;
+try{renderer=new THREE.WebGLRenderer({canvas,antialias:(devicePixelRatio||1)<2,powerPreference:'high-performance'});}
+catch(e){$('#loadTxt').textContent='เบราว์เซอร์นี้เปิด WebGL ไม่ได้ ลองเปิดด้วย Chrome หรือ Safari รุ่นใหม่';throw e;}
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.75));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;
+const scene=new THREE.Scene();
+const FOG=0x0a1511;
+scene.background=new THREE.Color(FOG);
+scene.fog=new THREE.FogExp2(FOG,.03);
+const camera=new THREE.PerspectiveCamera(60,1,.05,200);
+const CAM=new THREE.Vector3(0,1.95,-.7);
+camera.position.copy(CAM);
+scene.add(camera);
+
+scene.add(new THREE.HemisphereLight(0x5f7f9a,0x1a1a12,1.1));
+const moon=new THREE.DirectionalLight(0x9fb8ff,1.1);moon.position.set(-8,14,-20);scene.add(moon);
+const flash=new THREE.SpotLight(0xfff2d8,60,45,.32,.55,1.4);flash.position.set(.35,1.6,1);scene.add(flash);scene.add(flash.target);
+const muzzleLight=new THREE.PointLight(0xffb050,0,8,2);camera.add(muzzleLight);muzzleLight.position.set(.3,-.2,-.9);
+
+function canvasTex(w,h,draw){const c=document.createElement('canvas');c.width=w;c.height=h;draw(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;}
+// ground + sidewalks
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(80,180),new THREE.MeshStandardMaterial({color:0x1b1e1a,roughness:1}));
+ground.rotation.x=-Math.PI/2;ground.position.set(0,-.02,-70);scene.add(ground);
+const walkMat=new THREE.MeshStandardMaterial({color:0x35372f,roughness:.95});
+for(const s of [-1,1]){const w=new THREE.Mesh(new THREE.BoxGeometry(4,.18,170),walkMat);w.position.set(s*6,.07,-70);scene.add(w);}
+// buildings with lit windows
+function windowTex(seed){return canvasTex(128,256,(g,w,h)=>{g.fillStyle='#14181a';g.fillRect(0,0,w,h);
+  for(let y=8;y<h-8;y+=22)for(let x=8;x<w-8;x+=20){const r=Math.random();g.fillStyle=r<.08?'#f6c56a':r<.12?'#7fb4ff':'#0a0c0d';g.fillRect(x,y,12,14);}});}
+const winTex=[windowTex(),windowTex(),windowTex()];
+for(const s of [-1,1]){let z=6;while(z>-150){const d=rnd(9,18),h=rnd(9,26),w=rnd(7,12),t=pick(winTex).clone();t.needsUpdate=true;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(Math.max(1,Math.round(d/4)),Math.max(1,Math.round(h/7)));
+  const m=new THREE.MeshStandardMaterial({color:0x6b6f6a,map:t,emissive:0xffffff,emissiveMap:t,emissiveIntensity:.55,roughness:1});
+  const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);b.position.set(s*(8+w/2+rnd(0,1.5)),h/2,z-d/2);scene.add(b);z-=d+rnd(.5,3);}}
+// moon glow
+const moonSpr=new THREE.Sprite(new THREE.SpriteMaterial({map:canvasTex(128,128,(g,w,h)=>{const gr=g.createRadialGradient(64,64,6,64,64,64);gr.addColorStop(0,'#fff');gr.addColorStop(.18,'#dfe8ff');gr.addColorStop(.3,'#9fb8ff66');gr.addColorStop(1,'#9fb8ff00');g.fillStyle=gr;g.fillRect(0,0,w,h);}),fog:false,depthWrite:false,transparent:true}));
+moonSpr.scale.set(26,26,1);moonSpr.position.set(-30,48,-150);scene.add(moonSpr);
+// soft blob shadow
+const blobTex=canvasTex(64,64,(g)=>{const gr=g.createRadialGradient(32,32,2,32,32,32);gr.addColorStop(0,'#000c');gr.addColorStop(1,'#0000');g.fillStyle=gr;g.fillRect(0,0,64,64);});
+const blobMat=new THREE.MeshBasicMaterial({map:blobTex,transparent:true,depthWrite:false});
+// sprites for effects
+const glowTex=canvasTex(64,64,(g)=>{const gr=g.createRadialGradient(32,32,1,32,32,32);gr.addColorStop(0,'#fff');gr.addColorStop(.3,'#ffd38a');gr.addColorStop(1,'#ff800000');g.fillStyle=gr;g.fillRect(0,0,64,64);});
+const bloodTex=canvasTex(32,32,(g)=>{g.fillStyle='#7a0c0c';g.beginPath();g.arc(16,16,12,0,7);g.fill();});
+const smokeTex=canvasTex(64,64,(g)=>{const gr=g.createRadialGradient(32,32,2,32,32,32);gr.addColorStop(0,'#5a5a55aa');gr.addColorStop(1,'#5a5a5500');g.fillStyle=gr;g.fillRect(0,0,64,64);});
+// grain overlay texture
+(()=>{const c=document.createElement('canvas');c.width=c.height=180;const g=c.getContext('2d'),d=g.createImageData(180,180);for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255;}g.putImageData(d,0,0);$('#grain').style.backgroundImage=`url(${c.toDataURL()})`;})();
+
+/* ---------------- model loading ---------------- */
+const MODELS={};
+const MODEL_LIST=['Zombie_Basic','Zombie_Ribcage','Zombie_Chubby','Zombie_Arm','Pistol','Shotgun','SMG','Rifle','StreetLights','Street_Straight','Street_Straight_Crack1','TrafficBarrier_1','TrafficBarrier_2','Pallet','Pallet_Broken','CinderBlock','Barrel','Container_Red','Container_Green','TrashBag_1','FireHydrant','Wheels_Stack','TrafficCone_1','Vehicle_Pickup','Vehicle_Sports','Vehicle_Truck','Blood_1'];
+async function loadModels(){
+  const loader=new GLTFLoader();let done=0;
+  await Promise.all(MODEL_LIST.map(n=>new Promise(res=>{
+    loader.load(`assets/models/${n}.glb`,g=>{MODELS[n]=g;g.scene.traverse(o=>{if(o.isMesh){o.frustumCulled=!o.isSkinnedMesh;if(o.material){o.material.roughness=Math.max(.55,o.material.roughness??1);o.material.metalness=Math.min(.3,o.material.metalness??0);}}});
+      done++;$('#loadBar').style.width=done/MODEL_LIST.length*100+'%';res();},undefined,()=>{done++;res();});
+  })));
+}
+function place(n,x,y,z,ry=0,s=1){const m=MODELS[n];if(!m)return null;const o=m.scene.clone();o.position.set(x,y,z);o.rotation.y=ry;o.scale.setScalar(s);scene.add(o);return o;}
+const STOP_Z=-4.4,BARR_Z=-3.4,SPAWN_Z=-31;
+function buildWorld(){
+  for(let z=4,i=0;z>-160;z-=8,i++)place(i%4===2?'Street_Straight_Crack1':'Street_Straight',0,0,z,0);
+  for(let z=-6,i=0;z>-120;z-=16,i++){const s=i%2?1:-1;const l=place('StreetLights',s*4.6,0,z,s>0?-Math.PI/2:Math.PI/2);
+    const pl=new THREE.PointLight(0xffb468,i<3?28:18,18,1.6);pl.position.set(s*1.9,6.3,z);scene.add(pl);}
+  // barricade
+  const B=[['TrafficBarrier_1',-2.6,0],['Pallet',-1.2,.2],['TrafficBarrier_2',.1,0],['Pallet_Broken',1.4,-.1],['TrafficBarrier_1',2.8,.05]];
+  B.forEach(([n,x,r])=>{const o=place(n,x,0,BARR_Z,r+(n.startsWith('Pallet')?Math.PI/2:0));if(o&&n.startsWith('Pallet')){o.rotation.z=Math.PI/2-.25;o.position.y=.6;}});
+  place('Wheels_Stack',-3.9,0,BARR_Z+.3,.4);place('CinderBlock',.9,0,BARR_Z+.35,.3);place('CinderBlock',1.3,0,BARR_Z+.3,-.2);place('CinderBlock',1.1,.23,BARR_Z+.32,.1);place('Barrel',3.9,0,BARR_Z+.2);
+  // street dressing
+  place('Vehicle_Pickup',-3.3,0,-14,.35);place('Vehicle_Sports',3.4,0,-24,-2.9);place('Vehicle_Truck',-3.6,0,-34,.15);place('Vehicle_Pickup',3.1,0,-52,3.3);
+  place('Container_Red',-6.5,.1,-44,.1);place('Container_Green',6.6,.1,-18,-.08);
+  place('TrashBag_1',-4.6,.15,-8);place('TrashBag_1',-4.9,.15,-8.5,1);place('FireHydrant',4.6,.15,-11);place('TrafficCone_1',2.2,0,-9,.3);place('TrafficCone_1',-1.6,0,-19);
+  place('Barrel',4.7,.15,-30);place('Barrel',5,.15,-30.8,.7);place('Blood_1',-.8,.02,-16,1,.6);
+}
+
+/* ---------------- gun thumbnails for the armory ---------------- */
+const THUMB={};
+function makeThumbs(){
+  const r=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});r.setSize(160,160);r.outputColorSpace=THREE.SRGBColorSpace;
+  const sc=new THREE.Scene();sc.add(new THREE.HemisphereLight(0xffffff,0x334433,2.2));const dl=new THREE.DirectionalLight(0xffffff,2);dl.position.set(2,3,2);sc.add(dl);
+  const cam=new THREE.PerspectiveCamera(30,1,.01,20);
+  for(const [id,g] of Object.entries(GUNS)){const m=MODELS[g.m];if(!m)continue;const o=m.scene.clone();sc.add(o);
+    o.rotation.set(0,-Math.PI/2,0);o.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(o),c=b.getCenter(new THREE.Vector3()),sz=b.getSize(new THREE.Vector3()).length();
+    cam.position.set(c.x+sz*.1,c.y+sz*.18,c.z+sz*1.05);cam.lookAt(c);r.render(sc,cam);THUMB[id]=r.domElement.toDataURL();sc.remove(o);}
+  r.dispose();
+}
+
+/* ---------------- viewmodel gun ---------------- */
+let gunObj=null,recoil=0;
+function equipGun(){
+  if(gunObj)camera.remove(gunObj);
+  const G=GUNS[P.gun],m=MODELS[G.m];if(!m)return;
+  gunObj=m.scene.clone();
+  const len=G.m==='Rifle'?1.6:G.m==='Pistol'?.95:1;
+  gunObj.scale.setScalar(.3/len);gunObj.rotation.set(0,Math.PI+.1,0);
+  gunObj.position.set(.3,-.3,-.55);
+  camera.add(gunObj);
+}
+
+/* ---------------- game state ---------------- */
+let state='load',G=null,target=null,jamUntil=0,last=performance.now(),shake=0,clock=0,menuZ=[];
+const zombies=[],fx=[];
+const tagsEl=$('#tags');
+function makeZombie(type,word,x,z,menu=false){
+  const T=ZT[type],m=MODELS[T.m];if(!m)return null;
+  const obj=SkeletonUtils.clone(m.scene);obj.updateMatrixWorld(true);
+  const box=new THREE.Box3().setFromObject(obj),h=box.max.y-box.min.y||1;
+  const s=T.h/h;obj.scale.setScalar(s);obj.position.set(x,-box.min.y*s,z);
+  obj.rotation.y=0;
+  const wrap=new THREE.Group();wrap.add(obj);wrap.position.set(x,0,z);obj.position.set(0,-box.min.y*s,0);
+  const blob=new THREE.Mesh(new THREE.PlaneGeometry(1,1),blobMat);blob.rotation.x=-Math.PI/2;blob.position.y=.03;blob.scale.setScalar(T.h*.55);wrap.add(blob);
+  scene.add(wrap);
+  const mixer=new THREE.AnimationMixer(obj),clips={};
+  for(const c of m.animations)clips[c.name]=c;
+  const z0={type,T,obj:wrap,mixer,clips,act:null,words:word,wi:0,p:0,dead:false,at:false,hp:1,
+    speed:T.speed*rnd(.9,1.1),x,z,groanT:rnd(1,6),hitT:0,atkT:rnd(0,.5),menu,miss:false,hinted:false,tag:null,born:clock};
+  play(z0,T.anim,true);z0.act.time=rnd(0,1);
+  if(!menu){const el=document.createElement('div');el.className='tag';el.innerHTML='<div class="th"></div><div class="en"></div><div class="pips"></div>';
+    el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(!z0.dead){setTarget(z0);SFX.ui();}});tagsEl.appendChild(el);z0.tag=el;renderTag(z0);}
+  zombies.push(z0);return z0;
+}
+function play(z,name,loop=true,fade=.2){
+  const c=z.clips[name]||z.clips.Walk;if(!c)return;const a=z.mixer.clipAction(c);
+  if(z.act===a)return;a.reset();a.setLoop(loop?THREE.LoopRepeat:THREE.LoopOnce,Infinity);a.clampWhenFinished=!loop;
+  if(z.act)a.crossFadeFrom(z.act,fade,false);a.play();z.act=a;
+}
+const curWord=z=>z.words[z.wi];
+function needIdx(z){const w=curWord(z).en.toLowerCase();let i=z.p;while(i<w.length&&!isL(w[i]))i++;return i;}
+function renderTag(z){
+  if(!z.tag)return;const w=curWord(z),en=w.en.toLowerCase();
+  z.tag.querySelector('.th').textContent=w.th;
+  z.tag.querySelector('.en').innerHTML=[...en].map((c,i)=>isL(c)?`<i class="${i<z.p?'on':''}">${i<z.p?c.toUpperCase():''}</i>`:`<i class="sp">${c===' '?'':esc(c)}</i>`).join('');
+  z.tag.querySelector('.pips').innerHTML=z.words.length>1?z.words.map((_,i)=>`<b class="${i<z.wi?'off':''}"></b>`).join(''):'';
+}
+function removeZombie(z){scene.remove(z.obj);z.tag&&z.tag.remove();const i=zombies.indexOf(z);if(i>=0)zombies.splice(i,1);if(target===z)target=null;}
+const live=()=>zombies.filter(z=>!z.dead&&!z.menu);
+
+/* ---------------- words for a night ---------------- */
+function nightWords(k,i,mode){
+  if(mode==='review'){const ws=[...WEAK].map(e=>BYEN.get(e)).filter(Boolean);return {fresh:shuffle(ws).slice(0,14),old:[]};}
+  const N=ZONES[k].nights;const fresh=N[i].words;
+  const old=N.slice(Math.max(0,i-3),i).flatMap(n=>n.words);
+  const weakOld=old.filter(w=>WEAK.has(w.en));
+  return {fresh,old:[...weakOld,...shuffle(old.filter(w=>!WEAK.has(w.en)))]};
+}
+function takeWord(short=false){
+  const onScreen=new Set(live().flatMap(z=>z.words.map(w=>w.en)));
+  const ok=w=>!onScreen.has(w.en)&&(!short||w.en.replace(/[^a-z]/gi,'').length<=6);
+  // new words come first and repeat; older words from earlier nights mix in as review
+  let src=G.old.length&&Math.random()<.28?G.old:G.fresh;
+  let c=src.filter(ok);if(!c.length)c=G.fresh.filter(ok);if(!c.length)c=[...G.fresh,...G.old].filter(w=>!onScreen.has(w.en));if(!c.length)c=G.fresh;
+  // least-used first so every new word appears
+  c.sort((a,b)=>(G.used.get(a.en)||0)-(G.used.get(b.en)||0));
+  const minU=G.used.get(c[0].en)||0,pool=c.filter(w=>(G.used.get(w.en)||0)===minU);
+  const w=pick(pool);G.used.set(w.en,(G.used.get(w.en)||0)+1);return w;
+}
+
+/* ---------------- night flow ---------------- */
+function waves(k,i,mode){
+  const d=RANK[k]*1.2+(mode==='review'?0:i*.04);
+  const n=Math.round(4+d*.8);
+  const W=[
+    {list:Array(n).fill('walker'),gap:3.2},
+    {list:shuffle([...Array(n).fill('walker'),'runner','runner']),gap:2.8},
+    {list:shuffle([...Array(n+1).fill('walker'),'runner','runner','brute']),gap:2.5},
+  ];
+  if(mode!=='review'&&isBossNight(i))W[2].list.push('giant');
+  return {W,speed:1+Math.min(.45,d*.05)};
+}
+function startNight(k,i,mode='night'){
+  clearZombies();
+  const nw=nightWords(k,i,mode),wv=waves(k,i,mode);
+  const wallMax=100+25*P.up.wall;
+  G={k,i,mode,fresh:nw.fresh,old:nw.old,used:new Map(),W:wv.W,speedMul:wv.speed,wave:-1,queue:[],spawnT:0,wall:wallMax,wallMax,
+     score:0,combo:0,best:0,kills:0,hints:2+P.up.hint,gren:P.gren,mash:0,lastWrong:-9,hit:new Set(),miss:new Set(),t:0,ended:false};
+  state='play';target=null;jamUntil=0;
+  $('#hud').hidden=false;$('#dock').hidden=false;$('#screen').hidden=true;
+  $('#hNight').textContent=mode==='review'?'REVIEW':'NIGHT '+(i+1);
+  equipGun();nextWave();hud();renderPad();
+}
+function nextWave(){
+  G.wave++;
+  if(G.wave>=G.W.length){endNight(true);return;}
+  G.queue=[...G.W[G.wave].list];G.spawnT=G.wave===0?1.2:3;
+  const boss=G.queue.includes('giant');
+  banner(G.wave===G.W.length-1?(boss?'BOSS WAVE':'FINAL WAVE'):'WAVE '+(G.wave+1),G.wave===0?(G.mode==='review'?'ทบทวนคำที่เคยพลาด':ZONES[G.k].name+' · '+ZONES[G.k].nights[G.i].unit):'');
+  $('#hWave').textContent=`คลื่น ${G.wave+1}/${G.W.length}`;
+  if(boss)setTimeout(()=>SFX.groan(.35,true),900);
+}
+function spawn(type){
+  const T=ZT[type],ws=Array.from({length:T.words},()=>takeWord(type==='runner'));
+  const lane=[-2.6,-1.3,0,1.3,2.6],x=pick(lane)+rnd(-.4,.4);
+  const z=makeZombie(type,ws,type==='giant'?0:x,SPAWN_Z+rnd(-4,2));
+  if(z){z.speed*=G.speedMul;if(GUNS[P.gun].auto1)autoFirst(z);renderTag(z);if(!target)setTarget(nearest());}
+}
+function clearZombies(){while(zombies.length)removeZombie(zombies[0]);fx.forEach(f=>scene.remove(f.o));fx.length=0;}
+function endNight(win){
+  if(G.ended)return;G.ended=true;state='end';
+  const stars=win?(G.wall/G.wallMax>=.7?3:G.wall/G.wallMax>=.35?2:1):0;
+  let coins=G.kills*2+Math.round(G.score/40);
+  if(win&&G.mode!=='review'){coins+=stars*10;const prev=P.prog[G.k][G.i]||0;if(stars>prev)P.prog[G.k][G.i]=stars;}
+  P.coins+=coins;P.gren=G.gren;
+  for(const e of G.hit)if(!G.miss.has(e)){LEARNED.add(e);WEAK.delete(e);}
+  for(const e of G.miss)WEAK.add(e);
+  save();
+  win?SFX.win():SFX.lose();
+  setTimeout(()=>results(win,stars,coins),win?900:1400);
+}
+
+/* ---------------- targeting & shooting ---------------- */
+function nearest(){let b=null;for(const z of live())if(!b||z.z>b.z)b=z;return b;}
+function setTarget(z){if(target===z)return;target=z;for(const o of zombies)o.tag&&o.tag.classList.toggle('tgt',o===z);renderPad();}
+function autoFirst(z){const i=needIdx(z);if(i<curWord(z).en.length)z.p=i+1;skipNon(z);}
+function skipNon(z){const w=curWord(z).en.toLowerCase();while(z.p<w.length&&!isL(w[z.p]))z.p++;}
+function press(ch,fromKey){
+  if(state!=='play'||!G)return;
+  if(G.t<jamUntil){SFX.jam();return;}
+  if(!target||target.dead)setTarget(nearest());
+  const z=target;if(!z)return;
+  const w=curWord(z).en.toLowerCase(),i=needIdx(z);
+  if(w[i]===ch){
+    z.p=i+1;skipNon(z);consumeKey(ch);shoot(z,false);
+    if(z.p>=w.length)wordDone(z);else{renderTag(z);bumpTag(z);}
+  }else wrong(z,ch);
+}
+function consumeKey(ch){const k=[...$('#pad').querySelectorAll('.key:not(.used)')].find(b=>b.dataset.k===ch);if(k)k.classList.add('used');}
+function wrong(z,ch){
+  G.mash=G.t-G.lastWrong<3?G.mash+1:1;G.lastWrong=G.t;
+  const m=Math.min(G.mash,4),dur=[0,.6,1,1.5,2][m]*(1-.2*P.up.oil);
+  jamUntil=G.t+dur;G.combo=0;G.miss.add(curWord(z).en);z.miss=true;
+  G.score=Math.max(0,G.score-5*m);
+  SFX.jam();try{navigator.vibrate&&navigator.vibrate(60);}catch(e){}
+  const pad=$('#pad');pad.classList.remove('shake');void pad.offsetWidth;pad.classList.add('shake','jam');
+  $('#jamTag').hidden=false;$('#jamTag').textContent=m>=3?'อย่ากดมั่ว!':'ปืนติด!';
+  setTimeout(()=>{if(G&&G.t>=jamUntil-.05){pad.classList.remove('jam');$('#jamTag').hidden=true;renderPad();}},dur*1000+30);
+  hud();
+}
+function wordDone(z){
+  const w=curWord(z);G.hit.add(w.en);
+  G.combo++;G.best=Math.max(G.best,G.combo);
+  const pts=10+w.en.length*2+Math.min(G.combo,20);G.score+=pts;floatAt(z,'+'+pts,'#a6e05a');
+  speak(w.en);
+  if(z.wi<z.words.length-1){z.wi++;z.p=0;if(GUNS[P.gun].auto1)autoFirst(z);renderTag(z);bumpTag(z);z.obj.position.z-=.8;play(z,'HitReact',false,.05);z.hitT=.5;renderPad();hud();return;}
+  kill(z,true);
+}
+function kill(z,byWord){
+  z.dead=true;G.kills++;
+  play(z,'Death',false,.1);z.dieT=0;
+  z.tag&&z.tag.classList.add('dead');
+  const c=z.T.coin;G.score+=c*5;
+  SFX.die();
+  if(byWord&&GUNS[P.gun].pierce){const n=live().filter(o=>o!==z).sort((a,b)=>Math.abs(a.x-z.x)-Math.abs(b.x-z.x))[0];
+    if(n){for(let k=0;k<GUNS[P.gun].pierce;k++){const i=needIdx(n);if(i<curWord(n).en.length-1){n.p=i+1;skipNon(n);}}renderTag(n);bumpTag(n);tracer(n);}}
+  if(target===z){target=null;setTarget(nearest());}
+  hud();
+}
+function useHint(){
+  if(state!=='play'||!G||G.hints<=0)return;
+  if(!target||target.dead)setTarget(nearest());const z=target;if(!z)return;
+  G.hints--;z.hinted=true;G.miss.add(curWord(z).en);
+  const ch=curWord(z).en.toLowerCase()[needIdx(z)];jamUntil=0;press(ch);hud();
+}
+function useGrenade(){
+  if(state!=='play'||!G||G.gren<=0)return;
+  if(!target||target.dead)setTarget(nearest());const z=target;if(!z)return;
+  G.gren--;const cx=z.obj.position.x,cz=z.obj.position.z;
+  SFX.boom();shake=1;explosion(cx,cz);
+  for(const o of live()){const d=Math.hypot(o.obj.position.x-cx,o.obj.position.z-cz);if(d<3.2){
+    if(o.type==='giant'){o.wi=Math.min(o.wi+1,o.words.length-1);o.p=0;renderTag(o);o.obj.position.z-=2;}
+    else{G.miss.add(curWord(o).en);kill(o,false);}}}
+  hud();
+}
+function shoot(z,quiet){
+  const g=GUNS[P.gun];SFX.shot(P.gun);SFX.flesh();
+  recoil=1;muzzleLight.intensity=12;shake=Math.max(shake,g.kick*2);
+  z.obj.position.z=Math.max(SPAWN_Z-6,z.obj.position.z-g.push*(z.type==='giant'?.3:z.type==='brute'?.6:1));
+  if(z.at){z.at=false;play(z,z.T.anim,true);}
+  if(z.hitT<=0){play(z,'HitReact',false,.05);z.hitT=.35;}
+  tracer(z);blood(z);
+}
+function bumpTag(z){if(!z.tag)return;z.tag.classList.remove('hit');void z.tag.offsetWidth;z.tag.classList.add('hit');}
+
+/* ---------------- effects ---------------- */
+const tmpV=new THREE.Vector3();
+function chest(z){return tmpV.set(z.obj.position.x,z.T.h*.62,z.obj.position.z).clone();}
+function tracer(z){
+  const from=new THREE.Vector3(.29,-.24,-.85).applyMatrix4(camera.matrixWorld),to=chest(z);
+  const geo=new THREE.BufferGeometry().setFromPoints([from,to]);
+  const l=new THREE.Line(geo,new THREE.LineBasicMaterial({color:0xffe0a0,transparent:true,opacity:.9,fog:false}));scene.add(l);fx.push({o:l,life:.06,max:.06,kind:'line'});
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));
+  s.position.copy(from);s.scale.setScalar(.45);scene.add(s);fx.push({o:s,life:.06,max:.06,kind:'spr'});
+}
+function blood(z){
+  const c=chest(z);
+  for(let i=0;i<7;i++){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:bloodTex,transparent:true,depthWrite:false}));s.position.copy(c);s.scale.setScalar(rnd(.05,.12));scene.add(s);
+    fx.push({o:s,life:rnd(.35,.6),max:.6,kind:'drop',v:new THREE.Vector3(rnd(-1.5,1.5),rnd(.5,2.5),rnd(-1.5,.5))});}
+}
+function explosion(x,z){
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));s.position.set(x,1,z);s.scale.setScalar(5);scene.add(s);fx.push({o:s,life:.5,max:.5,kind:'boom'});
+  const pl=new THREE.PointLight(0xff9a40,200,25,1.5);pl.position.set(x,1.5,z);scene.add(pl);fx.push({o:pl,life:.6,max:.6,kind:'light'});
+  for(let i=0;i<14;i++){const m=new THREE.Sprite(new THREE.SpriteMaterial({map:smokeTex,transparent:true,depthWrite:false}));m.position.set(x+rnd(-1,1),rnd(.3,1.5),z+rnd(-1,1));m.scale.setScalar(rnd(1,2));scene.add(m);fx.push({o:m,life:rnd(1,1.8),max:1.8,kind:'smoke',v:new THREE.Vector3(rnd(-.5,.5),rnd(.5,1.2),rnd(-.5,.5))});}
+}
+function stepFx(dt){
+  for(let i=fx.length-1;i>=0;i--){const f=fx[i];f.life-=dt;const k=Math.max(0,f.life/f.max);
+    if(f.kind==='drop'){f.v.y-=9*dt;f.o.position.addScaledVector(f.v,dt);f.o.material.opacity=k;}
+    else if(f.kind==='smoke'){f.o.position.addScaledVector(f.v,dt);f.o.scale.multiplyScalar(1+dt*.8);f.o.material.opacity=k*.8;}
+    else if(f.kind==='boom'){f.o.scale.setScalar(5+(1-k)*6);f.o.material.opacity=k;}
+    else if(f.kind==='light'){f.o.intensity=200*k;}
+    else if(f.o.material)f.o.material.opacity=k;
+    if(f.life<=0){scene.remove(f.o);f.o.geometry&&f.o.geometry.dispose();fx.splice(i,1);}}
+}
+function floatAt(z,text,color){
+  const p=chest(z).project(camera),el=document.createElement('div');el.className='float';el.textContent=text;el.style.color=color;
+  el.style.left=(p.x*.5+.5)*innerWidth+'px';el.style.top=(-p.y*.5+.5)*innerHeight+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),1000);
+}
+function banner(t,s){const b=$('#banner');$('#banT').textContent=t;$('#banS').textContent=s||'';b.hidden=false;b.classList.remove('show');void b.offsetWidth;b.classList.add('show');}
+
+/* ---------------- HUD & pad ---------------- */
+let shownCombo=-1;
+function hud(){
+  if(!G)return;
+  $('#score').textContent=fmt(G.score);
+  const pct=clamp(G.wall/G.wallMax,0,1);$('#wallBar').style.width=pct*100+'%';$('#wallN').textContent=Math.ceil(G.wall)+'/'+G.wallMax;
+  $('#danger').hidden=pct>.3||state!=='play';
+  const c=$('#combo');c.hidden=G.combo<3;if(G.combo!==shownCombo){c.textContent='x'+G.combo+' COMBO';c.classList.remove('bump');void c.offsetWidth;c.classList.add('bump');shownCombo=G.combo;}
+  $('#hintN').textContent=G.hints;$('#hintBtn').disabled=G.hints<=0;
+  $('#grenN').textContent=G.gren;$('#grenBtn').disabled=G.gren<=0;
+}
+const DECOY='etaoinshrdlucmfwypvbgk';
+function renderPad(){
+  const pad=$('#pad');if(!G){pad.innerHTML='';return;}
+  const z=target&&!target.dead?target:null;
+  if(!z){pad.innerHTML='';return;}
+  const w=curWord(z).en.toLowerCase(),rest=[...w.slice(z.p)].filter(isL);
+  const n=rest.length,decoys=n<=3?3:n<=7?3:2,ds=[];
+  for(let i=0;i<decoys;i++){let c;do c=pick(DECOY);while(rest.includes(c)&&Math.random()<.7);ds.push(c);}
+  const keys=shuffle([...rest,...ds]);
+  const avail=Math.min(innerWidth-(innerWidth>700?190:150),900),gap=innerWidth<500?5:8;
+  const k=clamp(Math.floor((avail-gap*(keys.length-1))/keys.length),34,58);
+  const rows=k*keys.length+gap*(keys.length-1)>avail?2:1;
+  pad.style.setProperty('--k',(rows>1?clamp(Math.floor((avail-gap*(Math.ceil(keys.length/2)-1))/Math.ceil(keys.length/2)),30,52):k)+'px');pad.style.setProperty('--g',gap+'px');
+  pad.innerHTML=keys.map(c=>`<button class="key" type="button" data-k="${c}">${c}</button>`).join('');
+}
+$('#pad').addEventListener('pointerdown',e=>{const b=e.target.closest('.key');if(!b||b.classList.contains('used'))return;e.preventDefault();SFX.key();press(b.dataset.k);});
+$('#hintBtn').addEventListener('click',useHint);
+$('#grenBtn').addEventListener('click',useGrenade);
+$('#pauseBtn').addEventListener('click',()=>pause());
+addEventListener('keydown',e=>{
+  if(state==='play'){
+    if(e.key==='Escape'){pause();return;}
+    if(e.key==='Tab'){e.preventDefault();const L=live().sort((a,b)=>b.z-a.z);if(L.length){const i=L.indexOf(target);setTarget(L[(i+1)%L.length]);}return;}
+    if(e.key==='1'){useHint();return;}if(e.key==='2'){useGrenade();return;}
+    const k=e.key.toLowerCase();if(/^[a-z]$/.test(k)){e.preventDefault();press(k,true);}
+  }else if(state==='paused'&&e.key==='Escape')resume();
+});
+addEventListener('visibilitychange',()=>{if(document.hidden&&state==='play')pause();});
+
+/* ---------------- menus ---------------- */
+const scr=$('#screen');
+function show(html,cls=''){scr.className='scr '+cls;scr.innerHTML=html;scr.hidden=false;}
+function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),1700);}
+const coinTag=()=>`<span class="coins">${SV.coin}${fmt(P.coins)}</span>`;
+function hideGame(){$('#hud').hidden=true;$('#dock').hidden=true;$('#danger').hidden=true;$('#jamTag').hidden=true;}
+function home(){
+  state='menu';G=null;target=null;hideGame();clearZombies();menuScene();if(gunObj)gunObj.visible=false;
+  const k=P.zone,ni=nextNight(k),weak=WEAK.size;
+  const learned=LEARNED.size;
+  const fresh=P.seen!==VERSION;
+  show(`<div class="home">
+    <div class="brand">
+      <h1>DEAD<br><span>WORDS</span></h1>
+      <p>สะกดคำให้ถูก ก่อนพวกมันจะถึงตัวคุณ</p>
+      <div class="toggles" style="margin-top:14px">
+        <button class="tog" type="button" id="oS" aria-pressed="${P.opts.sfx}">เสียงเอฟเฟกต์</button>
+        <button class="tog" type="button" id="oA" aria-pressed="${P.opts.amb}">เสียงบรรยากาศ</button>
+        <button class="tog" type="button" id="oV" aria-pressed="${P.opts.voice}">อ่านออกเสียง</button>
+      </div>
+      <div class="ver">เวอร์ชัน ${VERSION} · ${VERSION_DATE} · โมเดล 3D: Quaternius (CC0)</div>
+    </div>
+    <div class="menu">
+      ${fresh?`<div class="news" id="news"><button type="button" id="newsX" aria-label="ปิด">✕</button><b>อัปเดต v${VERSION}</b><ul>${CHANGES.map(c=>`<li>${c}</li>`).join('')}</ul></div>`:''}
+      <button class="mbtn main" type="button" id="mPlay">${SV.play}เล่นต่อ<small>${ZONES[k].lvl} · คืนที่ ${ni+1}</small></button>
+      <button class="mbtn" type="button" id="mMap">${SV.map}เลือกพื้นที่<small>${ORDER.reduce((a,z)=>a+zoneStars(z),0)} ดาว</small></button>
+      ${weak>=4?`<button class="mbtn" type="button" id="mRev">${SV.rev}ทบทวนคำที่พลาด<small>${weak} คำ</small></button>`:''}
+      <button class="mbtn" type="button" id="mShop">${SV.gun}คลังแสง<small>${SV.coin.replace('<svg','<svg style="width:14px;height:14px;vertical-align:-2px"')} ${fmt(P.coins)}</small></button>
+      <button class="mbtn" type="button" id="mBook">${SV.book}สมุดคำศัพท์<small>${learned}/${ALL.length}</small></button>
+    </div></div>`);
+  $('#mPlay').onclick=()=>{SFX.ui();brief(k,ni);};
+  $('#mMap').onclick=()=>{SFX.ui();zoneMap(k);};
+  if($('#mRev'))$('#mRev').onclick=()=>{SFX.ui();brief(k,0,'review');};
+  $('#mShop').onclick=()=>{SFX.ui();shop('guns');};
+  $('#mBook').onclick=()=>{SFX.ui();wordBook(k);};
+  if(fresh)$('#newsX').onclick=()=>{P.seen=VERSION;save();$('#news').remove();};
+  const tg=(id,key)=>$(id).onclick=e=>{P.opts[key]=!P.opts[key];save();e.currentTarget.setAttribute('aria-pressed',P.opts[key]);if(key==='amb')ambience();SFX.ui();};
+  tg('#oS','sfx');tg('#oA','amb');tg('#oV','voice');
+}
+const zoneTabs=(sel,attr)=>`<div class="tabs">${ORDER.map(k=>`<button class="tab" type="button" ${attr}="${k}" style="--c:${ZONES[k].c}" aria-pressed="${k===sel}">${ZONES[k].name}<small>${ZONES[k].lvl}</small></button>`).join('')}</div>`;
+function zoneMap(k){
+  state='menu';P.zone=k;save();
+  const Z=ZONES[k],pr=P.prog[k],nx=nextNight(k);let html='',lastU=null;
+  Z.nights.forEach((n,i)=>{
+    if(n.unit!==lastU){if(lastU!==null)html+='</div>';html+=`<div class="unit">${esc(n.unit)}</div><div class="nights">`;lastU=n.unit;}
+    const st=pr[i]||0,open=i<=nx;
+    html+=`<button class="nt ${st?'done':''} ${i===nx?'next':''} ${isBossNight(i)?'boss':''}" type="button" data-n="${i}" ${open?'':'disabled'}><b>${i+1}</b><span class="st">${st?'★'.repeat(st)+`<i>${'★'.repeat(3-st)}</i>`:''}</span></button>`;});
+  html+='</div>';
+  show(`<div class="card" style="height:100%">
+    <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>เลือกพื้นที่</h2><span class="sp"></span>${coinTag()}</div>
+    ${zoneTabs(k,'data-z')}
+    <div class="zinfo">${Z.lvl} · ${Z.nights.length} คืน · ★ ${zoneStars(k)}/${Z.nights.length*3} · คืนที่มีตัวสีแดงคือคืนที่มีบอส</div>
+    <div class="scroll" id="mapScroll">${html}</div></div>`);
+  $('#back').onclick=home;
+  scr.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{SFX.ui();zoneMap(b.dataset.z);});
+  scr.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{SFX.ui();brief(k,+b.dataset.n);});
+  const n=scr.querySelector('.nt.next');if(n)n.scrollIntoView({block:'center'});
+}
+function wordRow(w,cls=''){return `<div class="w ${cls}"><button class="say" type="button" data-say="${esc(w.en)}" aria-label="ฟังเสียง">${SV.say}</button><span class="en">${esc(w.en)}</span><span class="th">${esc(w.th)}</span></div>`;}
+function bindSay(){scr.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>{audio();const o=P.opts.voice;P.opts.voice=true;speak(b.dataset.say);P.opts.voice=o;});}
+function brief(k,i,mode='night'){
+  state='menu';
+  const rev=mode==='review';
+  const ws=rev?[...WEAK].map(e=>BYEN.get(e)).filter(Boolean).slice(0,14):ZONES[k].nights[i].words;
+  const boss=!rev&&isBossNight(i);
+  show(`<div class="card" style="max-height:100%">
+    <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>${rev?'ทบทวน':'คืนที่ '+(i+1)}</h2><span class="zinfo">${rev?'คำที่เคยพลาด':esc(ZONES[k].name+' · '+ZONES[k].nights[i].unit)}${boss?' · <b style="color:var(--blood)">มีบอส</b>':''}</span><span class="sp"></span></div>
+    <div class="zinfo">ซอมบี้แต่ละตัวมีคำไทยติดอยู่ กดตัวอักษรเรียงเป็นคำภาษาอังกฤษให้ถูกเพื่อยิง ทำความรู้จักคำของคืนนี้ก่อน</div>
+    <div class="scroll"><div class="wlist">${ws.map(w=>wordRow(w,LEARNED.has(w.en)?'ok':'')).join('')}</div></div>
+    <div class="row"><button class="btn main" type="button" id="go">${SV.play.replace('<svg','<svg style="width:18px;height:18px"')}เริ่มป้องกัน</button></div></div>`,'solid');
+  $('#back').onclick=()=>rev?home():zoneMap(k);
+  $('#go').onclick=()=>{audio();SFX.ui();if(matchMedia('(pointer:coarse)').matches){try{document.documentElement.requestFullscreen?.().then(()=>screen.orientation?.lock?.('landscape').catch(()=>{})).catch(()=>{});}catch(e){}}startNight(k,i,mode);};
+  bindSay();
+}
+function results(win,stars,coins){
+  hideGame();state='end';
+  const missed=[...G.miss].map(e=>BYEN.get(e)).filter(Boolean);
+  const got=[...G.hit].filter(e=>!G.miss.has(e)).map(e=>BYEN.get(e)).filter(Boolean);
+  const Z=ZONES[G.k],hasNext=G.mode!=='review'&&win&&G.i<Z.nights.length-1;
+  show(`<div class="card res" style="max-height:100%">
+    <h2 class="${win?'win':'lose'}">${win?'รอดแล้ว':'แนวป้องกันแตก'}</h2>
+    ${win&&G.mode!=='review'?`<div class="stars">${[0,1,2].map(i=>SV.star.replace('<svg',`<svg class="${i<stars?'on':'off'}" style="animation-delay:${.15+i*.15}s"`)).join('')}</div>`:''}
+    <div class="stats"><div><b>${G.kills}</b>ซอมบี้</div><div><b>${fmt(G.score)}</b>คะแนน</div><div><b>x${G.best}</b>คอมโบสูงสุด</div><div><b style="color:var(--amber)">+${coins}</b>เหรียญ</div></div>
+    <div class="scroll" style="width:100%"><div class="wlist">${missed.map(w=>wordRow(w,'bad')).join('')}${got.map(w=>wordRow(w,'ok')).join('')}</div></div>
+    ${missed.length?`<div class="zinfo">คำสีแดงคือคำที่สะกดผิดหรือใช้คำใบ้ จะกลับมาให้ทบทวนอีก</div>`:''}
+    <div class="row">${hasNext?`<button class="btn main" type="button" id="rNext">คืนต่อไป</button>`:''}<button class="btn ${hasNext?'':'main'}" type="button" id="rAgain">${win?'เล่นอีกครั้ง':'ลองใหม่'}</button><button class="btn" type="button" id="rHome">เมนู</button></div></div>`,'solid');
+  const g=G;
+  if($('#rNext'))$('#rNext').onclick=()=>{SFX.ui();brief(g.k,g.i+1);};
+  $('#rAgain').onclick=()=>{SFX.ui();startNight(g.k,g.i,g.mode);};
+  $('#rHome').onclick=()=>{SFX.ui();home();};
+  bindSay();
+}
+function pause(){
+  if(state!=='play')return;state='paused';
+  show(`<div class="card res" style="width:min(420px,100%)"><h2>PAUSED</h2><div class="row"><button class="btn main" type="button" id="pRes">เล่นต่อ</button><button class="btn" type="button" id="pQuit">ออกจากคืนนี้</button></div></div>`,'solid');
+  $('#pRes').onclick=resume;$('#pQuit').onclick=()=>{SFX.ui();home();};
+}
+function resume(){if(state!=='paused')return;state='play';scr.hidden=true;last=performance.now();}
+function shop(tab){
+  state='menu';
+  let body='';
+  if(tab==='guns')body=Object.entries(GUNS).map(([id,g])=>{const own=P.owned.includes(id),eq=P.gun===id;
+    return `<div class="it"><span class="ic">${THUMB[id]?`<img src="${THUMB[id]}" alt="">`:SV.gun}</span><span class="tx"><b>${g.n}</b><small>${g.d}</small></span>${eq?'<span class="buy eq">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-eq="${id}">ใช้</button>`:`<button class="buy" type="button" data-gun="${id}" ${P.coins<g.cost?'disabled':''}>${SV.coin}${fmt(g.cost)}</button>`}</div>`;}).join('');
+  else body=Object.entries(UPG).map(([id,u])=>{const lv=P.up[id],max=lv>=u.cost.length;
+    return `<div class="it"><span class="ic">${SV[u.ic]}</span><span class="tx"><b>${u.n}</b><small>${u.d}</small><span class="lv">${u.cost.map((_,i)=>`<i class="${i<lv?'on':''}"></i>`).join('')}</span></span>${max?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" data-up="${id}" ${P.coins<u.cost[lv]?'disabled':''}>${SV.coin}${fmt(u.cost[lv])}</button>`}</div>`;}).join('')
+    +`<div class="it"><span class="ic">${SV.gren}</span><span class="tx"><b>ระเบิดมือ</b><small>ฆ่าซอมบี้รอบเป้าหมายทั้งหมด (มี ${P.gren}/${GREN_MAX})</small></span>${P.gren>=GREN_MAX?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" id="bGren" ${P.coins<GREN_COST?'disabled':''}>${SV.coin}${GREN_COST}</button>`}</div>`;
+  show(`<div class="card" style="max-height:100%">
+    <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>คลังแสง</h2><div class="tabs"><button class="tab" type="button" data-t="guns" aria-pressed="${tab==='guns'}">อาวุธ</button><button class="tab" type="button" data-t="up" aria-pressed="${tab==='up'}">อัปเกรดและของใช้</button></div><span class="sp"></span>${coinTag()}</div>
+    <div class="scroll"><div class="grid">${body}</div></div></div>`);
+  $('#back').onclick=home;
+  scr.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{SFX.ui();shop(b.dataset.t);});
+  scr.querySelectorAll('[data-gun]').forEach(b=>b.onclick=()=>{const id=b.dataset.gun,g=GUNS[id];if(P.coins<g.cost)return;P.coins-=g.cost;P.owned.push(id);P.gun=id;save();SFX.coin();toast('ได้ '+g.n+' แล้ว');shop('guns');});
+  scr.querySelectorAll('[data-eq]').forEach(b=>b.onclick=()=>{P.gun=b.dataset.eq;save();SFX.ui();shop('guns');});
+  scr.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const id=b.dataset.up,c=UPG[id].cost[P.up[id]];if(P.coins<c)return;P.coins-=c;P.up[id]++;save();SFX.coin();toast('อัปเกรดแล้ว');shop('up');});
+  if($('#bGren'))$('#bGren').onclick=()=>{if(P.coins<GREN_COST||P.gren>=GREN_MAX)return;P.coins-=GREN_COST;P.gren++;save();SFX.coin();shop('up');};
+}
+function wordBook(k){
+  state='menu';const Z=ZONES[k];
+  show(`<div class="card" style="height:100%">
+    <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>สมุดคำศัพท์</h2>${zoneTabs(k,'data-z')}</div>
+    <input class="search" id="q" type="search" placeholder="ค้นหาคำ อังกฤษหรือไทย" autocomplete="off">
+    <div class="zinfo">${Z.lvl} · ยิงได้แล้ว ${Z.words.filter(w=>LEARNED.has(w.en)).length}/${Z.words.length} · ต้องทบทวน ${Z.words.filter(w=>WEAK.has(w.en)).length}</div>
+    <div class="scroll"><div class="wlist" id="wl">${Z.words.map(w=>wordRow(w,WEAK.has(w.en)?'bad':LEARNED.has(w.en)?'ok':'')).join('')}</div></div></div>`);
+  $('#back').onclick=home;
+  scr.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{SFX.ui();wordBook(b.dataset.z);});
+  $('#q').oninput=e=>{const q=e.target.value.trim().toLowerCase();scr.querySelectorAll('#wl .w').forEach(r=>{r.hidden=!!q&&!r.textContent.toLowerCase().includes(q);});};
+  bindSay();
+}
+
+/* ---------------- menu backdrop: a few zombies shuffling in the fog ---------------- */
+function menuScene(){
+  if(menuZ.length&&menuZ.every(z=>zombies.includes(z)))return;
+  menuZ=[];
+  const set=[['walker',-1.8,-13],['brute',1.6,-17],['walker',.2,-21],['runner',-3,-26],['walker',2.8,-29]];
+  for(const [t,x,z] of set){const o=makeZombie(t,[{en:'',th:''}],x,z,true);if(o){o.speed=ZT[t].speed*.25;menuZ.push(o);}}
+}
+
+/* ---------------- main loop ---------------- */
+function resize(){
+  const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;
+  camera.fov=w/h<1?78:w/h<1.5?66:58;camera.updateProjectionMatrix();
+  if(state==='play')renderPad();
+}
+addEventListener('resize',resize);
+const proj=new THREE.Vector3();
+function frame(now){
+  requestAnimationFrame(frame);
+  const dt=Math.min(.05,(now-last)/1000);last=now;clock+=dt;
+  const playing=state==='play';
+  if(playing){G.t+=dt;step(dt);}
+  // zombies animate in every state except pause
+  if(state!=='paused'){
+    for(const z of [...zombies]){
+      z.mixer.update(dt*(z.menu?.6:1));
+      if(z.menu){z.obj.position.z+=z.speed*dt;if(z.obj.position.z>-9){z.obj.position.z=-32;}continue;}
+      if(z.dead){z.dieT+=dt;if(z.dieT>1.8)z.obj.position.y-=dt*.6;if(z.dieT>3.2)removeZombie(z);}
+    }
+    stepFx(dt);
+  }
+  // camera: idle sway, recoil, shake
+  recoil=Math.max(0,recoil-dt*9);shake=Math.max(0,shake-dt*2.2);
+  const sway=Math.sin(clock*.7)*.03;
+  camera.position.set(CAM.x+sway+(Math.random()-.5)*shake*.25,CAM.y+Math.sin(clock*1.3)*.015+(Math.random()-.5)*shake*.25,CAM.z);
+  const look=target&&!target.dead&&playing?chest(target):new THREE.Vector3(0,1.1,-20);
+  const aim=new THREE.Vector3(0,1.05,-20).lerp(look,.15);
+  camera.lookAt(aim);
+  if(gunObj){gunObj.position.set(.3,-.3+Math.sin(clock*2)*.004,-.55+recoil*.06);gunObj.rotation.x=recoil*.22;}
+  muzzleLight.intensity=Math.max(0,muzzleLight.intensity-dt*120);
+  // flashlight follows the target
+  const ft=target&&!target.dead?chest(target):new THREE.Vector3(Math.sin(clock*.3)*2,.6,-14);
+  flash.target.position.lerp(ft,Math.min(1,dt*6));flash.position.set(camera.position.x+.3,camera.position.y-.15,camera.position.z);
+  renderer.render(scene,camera);
+  // word tags follow heads
+  if(playing||state==='end'||state==='paused'){
+    const W=innerWidth,H=innerHeight;
+    for(const z of zombies){if(!z.tag)continue;
+      proj.set(z.obj.position.x,z.T.h+.35+z.obj.position.y,z.obj.position.z).project(camera);
+      const d=camera.position.distanceTo(z.obj.position),s=clamp(8/d,.78,1.15);
+      const x=(proj.x*.5+.5)*W,y=(-proj.y*.5+.5)*H;
+      const tf=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,-100%) scale(${s.toFixed(3)})`;
+      z.tag.style.transform=tf;z.tag.style.setProperty('--tf',tf);z.tag.style.zIndex=1000-Math.round(d*10);
+      z.tag.style.display=proj.z>1?'none':'';
+      z.tag.classList.toggle('near',z.obj.position.z>STOP_Z-4&&!z.dead);
+    }
+  }
+}
+function step(dt){
+  // spawning
+  if(G.queue.length){G.spawnT-=dt;if(G.spawnT<=0&&live().length<8){spawn(G.queue.shift());G.spawnT=G.W[G.wave].gap*rnd(.75,1.2);}}
+  else if(!live().length&&!G.ended){G.waveGap=(G.waveGap||2.2)-dt;if(G.waveGap<=0){G.waveGap=0;nextWave();}}
+  // zombies walk, separate, attack
+  const L=live();
+  for(const z of L){
+    z.hitT-=dt;z.groanT-=dt;
+    if(z.groanT<=0){z.groanT=rnd(4,9);const d=-z.obj.position.z;SFX.groan(clamp(.22-d*.004,.03,.2),z.type==='giant'||z.type==='brute');}
+    const p=z.obj.position;
+    if(!z.at){
+      if(z.hitT<=0){if(z.act!==z.mixer.clipAction(z.clips[z.T.anim]))play(z,z.T.anim,true);p.z+=z.speed*dt;}
+      for(const o of L)if(o!==z){const dx=p.x-o.obj.position.x,dz=p.z-o.obj.position.z;if(Math.abs(dz)<1.2&&Math.abs(dx)<.9){p.x+=Math.sign(dx||rnd(-1,1))*dt*.8;}}
+      p.x=clamp(p.x,-3.6,3.6);
+      if(p.z>=STOP_Z-(z.type==='giant'?.8:0)){p.z=STOP_Z-(z.type==='giant'?.8:0);z.at=true;play(z,z.clips.Punch?'Punch':'Idle_Attack',true);}
+    }else{
+      z.atkT-=dt;G.wall-=z.T.dps*dt;
+      if(z.atkT<=0){z.atkT=.9;SFX.thud();shake=Math.max(shake,.25);const h=$('#hurt');h.classList.add('on');setTimeout(()=>h.classList.remove('on'),90);z.miss=true;G.miss.add(curWord(z).en);}
+    }
+    z.x=p.x;z.z=p.z;
+  }
+  if(G.wall<=0&&!G.ended){G.wall=0;hud();for(const z of L)play(z,'Idle',true);endNight(false);}
+  if(target&&target.dead)setTarget(nearest());
+  if(!target&&L.length)setTarget(nearest());
+  if(Math.random()<dt*4)hud();
+}
+
+/* ---------------- boot ---------------- */
+resize();
+requestAnimationFrame(frame);
+loadModels().then(()=>{
+  buildWorld();try{makeThumbs();}catch(e){}equipGun();if(gunObj)gunObj.visible=false;
+  $('#loading').hidden=true;home();
+  window.__dw={get G(){return G;},zombies,press,live,get target(){return target;},P};
+});
+</script>
+</body>
+</html>
