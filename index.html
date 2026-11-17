@@ -103,6 +103,10 @@ button[disabled]{cursor:not-allowed}
 @keyframes fade{from{opacity:0}}
 .sheet{position:relative;width:min(860px,100%);max-height:100%;display:flex;flex-direction:column;background:#fbfaf3;background-image:linear-gradient(90deg,transparent 40px,var(--margin) 40px 42px,transparent 42px),repeating-linear-gradient(transparent 0 31px,var(--rule) 31px 32px);padding:18px 16px 16px 54px;box-shadow:0 10px 0 -4px #e9e4d2,0 12px 30px #0006;transform:rotate(-.5deg);animation:slide .4s cubic-bezier(.2,1.4,.4,1)}
 @keyframes slide{from{transform:translateY(60px) rotate(-4deg);opacity:0}}
+/* menu to menu: the sheet turns like a page instead of fading out, so the game behind never shows through */
+.sheet.turn{animation:turn .34s cubic-bezier(.2,.7,.3,1);transform-origin:left center}
+@keyframes turn{0%{transform:perspective(1600px) rotateY(16deg) translateX(-6px) rotate(-.5deg);filter:brightness(.93)}100%{transform:perspective(1600px) rotateY(0) rotate(-.5deg)}}
+.panel.still>*{animation:none}
 .sheet::before,.sheet::after{content:"";position:absolute;top:-10px;width:80px;height:24px;background:#f1e6bccc;z-index:1}
 .sheet::before{left:26px;transform:rotate(-8deg)} .sheet::after{right:26px;transform:rotate(7deg)}
 .holes{position:absolute;left:12px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-evenly}
@@ -471,6 +475,7 @@ const SFX={
   split(){tn(500,.1,'sine',.1,900);tn(500,.1,'sine',.1,900,.09);},
   woo(){tn(300,.6,'sine',.04,500);},
   star(){tn(1568,.12,'triangle',.07);tn(2093,.2,'triangle',.06,0,.08);},
+  paper(){nz(.24,.13,'bandpass',1600,.9,0,4800);nz(.09,.08,'highpass',3200,1,.13);tn(180,.07,'sine',.04,0,.16);},
   page2(){nz(.3,.18,'highpass',1200,.7,0,6000);tn(660,.12,'triangle',.05,0,.15);}
 };
 const MUS={next:0,step:0};
@@ -980,8 +985,18 @@ function frame(now){
 
 /* ---------- menus ---------- */
 const ov=$('#ov'),panel=$('#panel'),sheet=$('#sheet');
-function show(html){panel.innerHTML=html;ov.hidden=false;for(const el of [ov,sheet]){el.style.animation='none';void el.offsetWidth;el.style.animation='';}}
-function hide(){ov.hidden=true;}
+let sheetKey='';
+function show(html){
+  const open=!ov.hidden,key=(html.match(/<h[12][^>]*>([\s\S]*?)<\/h[12]>/)||[])[1]||html.slice(0,80),same=open&&key===sheetKey;
+  sheetKey=key;panel.innerHTML=html;ov.hidden=false;panel.classList.toggle('still',same);
+  if(same)return; // re-render of the same menu (buying, switching tabs): no animation, no flash
+  sheet.classList.remove('turn');
+  if(open){void sheet.offsetWidth;sheet.classList.add('turn');}
+  else for(const el of [ov,sheet]){el.style.animation='none';void el.offsetWidth;el.style.animation='';}
+  SFX.paper();
+}
+function hide(){ov.hidden=true;sheetKey='';}
+addEventListener('pointerdown',audio,{capture:true,passive:true});
 function toast(msg){const d=document.createElement('div');d.className='toast';d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),1600);}
 const coinsTag=()=>`<span class="coins">${COIN}<span id="coinN">${fmt(P.coins)}</span></span>`;
 const bookStars=k=>P.prog[k].reduce((a,b)=>a+(b||0),0);
