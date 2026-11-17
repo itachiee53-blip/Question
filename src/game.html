@@ -28,6 +28,9 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .grain{opacity:.07;mix-blend-mode:overlay;background-size:180px 180px}
 .hurt{background:radial-gradient(ellipse at 50% 50%,transparent 40%,#c0201099 100%);opacity:0;transition:opacity .25s}
 .hurt.on{opacity:1;transition:none}
+.bolt{background:#dfe8ff;opacity:0}.bolt.on{animation:bolt .45s}
+@keyframes bolt{0%{opacity:.75}15%{opacity:.1}25%{opacity:.55}100%{opacity:0}}
+.slow{background:radial-gradient(ellipse at 50% 50%,transparent 35%,#2a6aa088 100%);mix-blend-mode:screen;animation:beat .9s infinite}
 .danger{background:radial-gradient(ellipse at 50% 50%,transparent 50%,#a0100c66 100%);animation:beat 1s infinite}
 @keyframes beat{50%{opacity:.35}}
 
@@ -62,6 +65,7 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .wall{flex:1;max-width:440px;margin:0 auto;display:flex;flex-direction:column;gap:4px;align-items:stretch}
 .wall .lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--dim)}
 .wall .bar{height:12px;border-radius:6px;background:#0008;border:1px solid var(--line);overflow:hidden}
+.wall .bar i.sh{background:linear-gradient(90deg,#5ab0ff,#bfe3ff);box-shadow:0 0 10px #5ab0ff}
 .wall .bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#c9381f,#f2b33d 55%,#a6e05a);transition:width .2s}
 .hright{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 .score{font-family:var(--f-disp);font-size:28px;line-height:1;letter-spacing:1px}
@@ -99,6 +103,26 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .seg button small{margin-left:6px;font-size:12px;opacity:.7}
 .seg button[aria-pressed="true"]{background:var(--toxic);color:#10170c;font-weight:600}
 @media (max-width:560px){.pad.choice{grid-template-columns:1fr 1fr}.opt{min-height:46px}}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:3px 10px;border-radius:999px;font-size:13px;background:#ffffff12;border:1px solid var(--line)}
+.chip.warn{background:#d8402f22;border-color:#d8402f88;color:#ffb8a8}
+.perks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:100%}
+.perk{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 10px;border-radius:14px;border:1px solid var(--line);background:#ffffff0a;text-align:center;transition:transform .12s,background .12s}
+.perk:hover{background:#a6e05a18;transform:translateY(-3px)}
+.perk .ic{width:52px;height:52px;border-radius:50%;background:#0006;display:grid;place-items:center}.perk .ic svg{width:28px;height:28px;color:var(--toxic)}
+.perk b{font-size:17px}.perk small{font-size:13px;color:var(--dim);line-height:1.35}
+.rank{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.rank b{font-size:16px;color:var(--amber)}
+.rbar{flex:1;min-width:90px;max-width:220px;height:6px;border-radius:3px;background:#ffffff1a;overflow:hidden;display:block}.rbar i{display:block;height:100%;background:var(--toxic)}
+.rank small{font-size:12px;color:var(--dim)}
+.mbtn.hot{border-color:#f2b33d88;box-shadow:0 0 0 2px #f2b33d33}
+.dlist{display:flex;flex-direction:column;gap:8px}
+.dq{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#ffffff08}
+.dq .tx{flex:1;display:flex;flex-direction:column;gap:5px}.dq .tx b{font-weight:400;font-size:16px}.dq .tx small{font-size:12px;color:var(--dim)}.dq .rbar{max-width:none;flex:none;width:100%}
+.dq.claimed{opacity:.5}
+.adrbar{height:4px;border-radius:2px;background:#ffffff1a;overflow:hidden;margin-top:3px}.adrbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5ab0ff,#a6e05a);transition:width .2s}
+@media (max-width:560px){.perks{grid-template-columns:1fr}}
+@media (orientation:landscape) and (max-height:520px){.perk{padding:10px 8px}.perk .ic{width:40px;height:40px}.rank{margin-top:6px}}
 .jamtag{position:fixed;left:50%;bottom:calc(84px + var(--safe-b));transform:translateX(-50%);z-index:9;font-family:var(--f-disp);font-size:30px;letter-spacing:2px;color:var(--blood);text-shadow:0 2px 10px #000;pointer-events:none}
 
 /* menus */
@@ -236,12 +260,14 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 <div class="fx grain" id="grain"></div>
 <div class="fx hurt" id="hurt"></div>
 <div class="fx danger" id="danger" hidden></div>
+<div class="fx bolt" id="bolt"></div>
+<div class="fx slow" id="slowfx" hidden></div>
 <div id="tags"></div>
 
 <div class="hud" id="hud" hidden>
   <button class="iconbtn" id="pauseBtn" type="button" aria-label="หยุดเกม"><svg viewBox="0 0 20 20" fill="currentColor"><rect x="4" y="3" width="4" height="14" rx="1"/><rect x="12" y="3" width="4" height="14" rx="1"/></svg></button>
   <div class="hinfo"><b id="hNight">NIGHT 1</b><small id="hWave">คลื่น 1/3</small></div>
-  <div class="wall"><div class="lbl"><span>เครื่องกีดขวาง</span><span id="wallN">100</span></div><div class="bar"><i id="wallBar"></i></div></div>
+  <div class="wall"><div class="lbl"><span>เครื่องกีดขวาง</span><span id="wallN">100</span></div><div class="bar"><i id="wallBar"></i></div><div class="adrbar" title="อะดรีนาลีน"><i id="adrBar"></i></div></div>
   <div class="hright"><div class="score" id="score">0</div><div class="combo" id="combo" hidden></div></div>
 </div>
 <div class="banner" id="banner" hidden><b id="banT"></b><small id="banS"></small></div>
@@ -263,8 +289,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.2.0',VERSION_DATE='17 พ.ย. 2569';
-const CHANGES=['ฉากใหม่ 5 แบบ แต่ละพื้นที่ไม่ซ้ำกัน: ชานเมือง ตัวเมือง นิคมอุตสาหกรรม ใจกลางการระบาดมีไฟลุก','ถังระเบิดบนถนน แตะเพื่อระเบิดซอมบี้รอบๆ','ซอมบี้บางตัวทิ้งชุดปฐมพยาบาล แตะเพื่อซ่อมเครื่องกีดขวาง','มีผู้รอดชีวิตกับสุนัขช่วยเฝ้าเครื่องกีดขวาง','อัปเกรดเครื่องกีดขวางแล้วมีกระสอบทรายเพิ่ม'];
+const VERSION='2.3.0',VERSION_DATE='17 พ.ย. 2569';
+const CHANGES=['บรรยากาศใหม่ 6 แบบ: พระอาทิตย์ตก กลางวัน หมอกรุ่งสาง พายุฝนฟ้าผ่า จันทร์สีเลือด และกลางคืน','ตึกเปลี่ยนตามพื้นที่: บ้านชานเมือง โกดัง ตึกพังไฟลุก ป้ายร้านเรืองแสง','โหมดเอาชีวิตรอด ซอมบี้มาไม่หยุด','เสบียงหลังจบแต่ละคลื่น เลือก 1 ใน 3','อะดรีนาลีน: ตอบถูกติดกัน 8 ครั้งเวลาจะช้าลง','คืนพิเศษ: ฝูงใหญ่ วิ่งพล่าน ไฟดับ หมอกหนา','ซอมบี้คลาน ภารกิจรายวัน และยศ'];
 
 /* ---------------- helpers ---------------- */
 const $=s=>document.querySelector(s);
@@ -335,16 +361,37 @@ const ZT={
   walker:{m:'Zombie_Basic',h:1.75,speed:1.1,anim:'Walk',dps:5,words:1,coin:3},
   runner:{m:'Zombie_Ribcage',h:1.7,speed:2.3,anim:'Run',dps:4,words:1,coin:4},
   brute:{m:'Zombie_Chubby',h:2.05,speed:.72,anim:'Walk',dps:9,words:2,coin:8},
+  crawler:{m:'Zombie_Basic',h:1.75,speed:1.3,anim:'Crawl',atk:'Crawl',dps:4,words:1,coin:4,tagH:.7},
   giant:{m:'Zombie_Arm',h:3.4,speed:.55,anim:'Walk',dps:18,words:4,coin:30},
 };
 
 /* ---------------- save ---------------- */
 const SAVE_KEY='dw-save-v1';
-const DEF={coins:0,prog:{},gun:'pistol',owned:['pistol'],up:{wall:0,hint:0,oil:0},gren:1,learned:[],weak:[],opts:{sfx:true,amb:true,voice:true},zone:'a1',seen:null,mode:'choice'};
+const DEF={coins:0,prog:{},gun:'pistol',owned:['pistol'],up:{wall:0,hint:0,oil:0},gren:1,learned:[],weak:[],opts:{sfx:true,amb:true,voice:true},zone:'a1',seen:null,mode:'choice',xp:0,best:{},daily:null};
 let P=Object.assign(structuredClone(DEF),store.get(SAVE_KEY,{}));
 for(const k of ORDER)P.prog[k]=P.prog[k]||[];
 P.up=Object.assign({wall:0,hint:0,oil:0},P.up);if(P.mode!=='spell')P.mode='choice';
-const CHOICE=()=>P.mode==='choice';P.opts=Object.assign({},DEF.opts,P.opts);
+const CHOICE=()=>P.mode==='choice';
+P.best=P.best||{};P.xp=P.xp||0;
+/* ranks grow with experience from answering */
+const RANKS=[[0,'มือใหม่'],[150,'ผู้รอดชีวิต'],[500,'นักล่า'],[1200,'ทหารพราน'],[2600,'ผู้พิทักษ์'],[5000,'ฮีโร่'],[9000,'ตำนาน']];
+const rankOf=xp=>{let i=0;while(i<RANKS.length-1&&xp>=RANKS[i+1][0])i++;return i;};
+function addXP(n){const before=rankOf(P.xp);P.xp+=n;const after=rankOf(P.xp);if(after>before)setTimeout(()=>toast('เลื่อนยศเป็น '+RANKS[after][1]+'!'),400);}
+/* daily missions */
+const MISS={kills:{n:'ฆ่าซอมบี้',g:[30,60]},words:{n:'ตอบถูก',g:[25,45],u:'คำ'},combo:{n:'ทำคอมโบ',g:[10,16],max:true},nights:{n:'ผ่านคืน',g:[2,3]},barrel:{n:'ระเบิดถังน้ำมัน',g:[2,4],u:'ครั้ง'},perfect:{n:'ผ่านคืนโดยไม่ตอบผิด',g:[1,1]},surv:{n:'รอดในโหมดเอาชีวิตรอด',g:[4,7],u:'คลื่น',max:true},adr:{n:'เปิดอะดรีนาลีน',g:[2,4],u:'ครั้ง'}};
+const dayKey=d=>{const x=d||new Date();return x.getFullYear()+'-'+(x.getMonth()+1)+'-'+x.getDate();};
+function dailyInit(){
+  const today=dayKey();if(P.daily&&P.daily.day===today)return;
+  const y=new Date();y.setDate(y.getDate()-1);
+  const streak=P.daily&&P.daily.day===dayKey(y)?(P.daily.streak||1)+1:1;
+  const ids=shuffle(Object.keys(MISS)).slice(0,3);
+  P.daily={day:today,streak,list:ids.map(id=>{const [a,b]=MISS[id].g;return {id,p:0,g:a+Math.round(Math.random()*(b-a)),c:false};})};
+  const bonus=10*Math.min(streak,7);P.coins+=bonus;save();
+  setTimeout(()=>toast(`เข้าเล่นติดกัน ${streak} วัน · รับ ${bonus} เหรียญ`),800);
+}
+function quest(id,v=1){
+  if(!P.daily)return;for(const q of P.daily.list){if(q.id!==id||q.c)continue;const was=q.p>=q.g;q.p=MISS[id].max?Math.max(q.p,v):q.p+v;if(!was&&q.p>=q.g)toast('ภารกิจสำเร็จ: '+MISS[id].n);}
+}P.opts=Object.assign({},DEF.opts,P.opts);
 let LEARNED=new Set(P.learned),WEAK=new Set(P.weak);
 function save(){P.learned=[...LEARNED];P.weak=[...WEAK];store.set(SAVE_KEY,P);}
 const nextNight=k=>Math.min(ZONES[k].nights.length-1,P.prog[k].filter(Boolean).length);
@@ -394,6 +441,9 @@ const SFX={
   lose(){[220,196,165,131].forEach((f,i)=>tn(f,.7,'sawtooth',.08,{at:i*.2}));},
   coin(){tn(1320,.08,'square',.06);tn(1760,.18,'square',.06,{at:.07});},
   ui(){tn(900,.04,'triangle',.06);},
+  thunder(){nz(2.4,.7,'lowpass',260,{f2:50});nz(.4,.3,'lowpass',900,{f2:120});},
+  adr(){tn(80,.6,'sine',.5,{f2:40});tn(80,.6,'sine',.4,{at:.5,f2:40});nz(.6,.2,'highpass',2500,{f2:8000});},
+  perk(){[523,659,880].forEach((f,i)=>tn(f,.25,'triangle',.1,{at:i*.07}));},
   bark(){nz(.09,.25,'bandpass',900,{q:2,f2:500});tn(420,.09,'sawtooth',.08,{f2:260});nz(.08,.18,'bandpass',800,{q:2,at:.16,f2:450});},
 };
 function ambience(){
@@ -408,6 +458,12 @@ function ambience(){
     s.start();lfo.start();o1.start();o2.start();g.gain.linearRampToValueAtTime(1,ac.currentTime+2);
     ambNodes={g,stop(){g.gain.linearRampToValueAtTime(0,ac.currentTime+.5);setTimeout(()=>{try{s.stop();lfo.stop();o1.stop();o2.stop();}catch(e){}},700);}};
   }else if(!want&&ambNodes){ambNodes.stop();ambNodes=null;}
+}
+let rainNode=null;
+function rainSound(on){
+  if(!ac)return;
+  if(on&&!rainNode&&P.opts.amb){const s=ac.createBufferSource();s.buffer=noiseBuf;s.loop=true;const f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=1200;const g=ac.createGain();g.gain.value=0;s.connect(f).connect(g).connect(master);s.start();g.gain.linearRampToValueAtTime(.09,ac.currentTime+1.5);rainNode={s,g};}
+  else if((!on||!P.opts.amb)&&rainNode){const r=rainNode;rainNode=null;r.g.gain.linearRampToValueAtTime(0,ac.currentTime+.6);setTimeout(()=>{try{r.s.stop();}catch(e){}},800);}
 }
 function speak(t){if(!P.opts.voice||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.95;speechSynthesis.speak(u);}catch(e){}}
 
@@ -428,7 +484,7 @@ const CAM=new THREE.Vector3(0,1.95,-.7);
 camera.position.copy(CAM);
 scene.add(camera);
 
-scene.add(new THREE.HemisphereLight(0x5f7f9a,0x1a1a12,1.1));
+const hemi=new THREE.HemisphereLight(0x5f7f9a,0x1a1a12,1.1);scene.add(hemi);
 const moon=new THREE.DirectionalLight(0x9fb8ff,1.1);moon.position.set(-8,14,-20);scene.add(moon);
 const flash=new THREE.SpotLight(0xfff2d8,60,45,.32,.55,1.4);flash.position.set(.35,1.6,1);scene.add(flash);scene.add(flash.target);
 const muzzleLight=new THREE.PointLight(0xffb050,0,8,2);camera.add(muzzleLight);muzzleLight.position.set(.3,-.2,-.9);
@@ -439,16 +495,116 @@ const ground=new THREE.Mesh(new THREE.PlaneGeometry(80,180),new THREE.MeshStanda
 ground.rotation.x=-Math.PI/2;ground.position.set(0,-.02,-70);scene.add(ground);
 const walkMat=new THREE.MeshStandardMaterial({color:0x35372f,roughness:.95});
 for(const s of [-1,1]){const w=new THREE.Mesh(new THREE.BoxGeometry(4,.18,170),walkMat);w.position.set(s*6,.07,-70);scene.add(w);}
-// buildings with lit windows
-function windowTex(seed){return canvasTex(128,256,(g,w,h)=>{g.fillStyle='#14181a';g.fillRect(0,0,w,h);
-  for(let y=8;y<h-8;y+=22)for(let x=8;x<w-8;x+=20){const r=Math.random();g.fillStyle=r<.08?'#f6c56a':r<.12?'#7fb4ff':'#0a0c0d';g.fillRect(x,y,12,14);}});}
-const winTex=[windowTex(),windowTex(),windowTex()];
-for(const s of [-1,1]){let z=6;while(z>-150){const d=rnd(9,18),h=rnd(9,26),w=rnd(7,12),t=pick(winTex).clone();t.needsUpdate=true;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(Math.max(1,Math.round(d/4)),Math.max(1,Math.round(h/7)));
-  const m=new THREE.MeshStandardMaterial({color:0x6b6f6a,map:t,emissive:0xffffff,emissiveMap:t,emissiveIntensity:.55,roughness:1});
-  const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);b.position.set(s*(8+w/2+rnd(0,1.5)),h/2,z-d/2);scene.add(b);z-=d+rnd(.5,3);}}
 // moon glow
 const moonSpr=new THREE.Sprite(new THREE.SpriteMaterial({map:canvasTex(128,128,(g,w,h)=>{const gr=g.createRadialGradient(64,64,6,64,64,64);gr.addColorStop(0,'#fff');gr.addColorStop(.18,'#dfe8ff');gr.addColorStop(.3,'#9fb8ff66');gr.addColorStop(1,'#9fb8ff00');g.fillStyle=gr;g.fillRect(0,0,w,h);}),fog:false,depthWrite:false,transparent:true}));
 moonSpr.scale.set(26,26,1);moonSpr.position.set(-30,48,-150);scene.add(moonSpr);
+
+/* ---------------- atmosphere: time of day and weather ---------------- */
+const LAMPS=[],BMATS=[];
+const SKIES={
+  dusk:{n:'พระอาทิตย์ตก',top:'#2b2340',mid:'#a0503c',bot:'#e7905a',fog:0x6e4a3c,fd:.02,hemi:[0xffc4a0,0x3a2a24,1.7],sun:[0xff9a5a,2.6],sunPos:[14,5,-40],lamps:.55,win:.45,orb:['sun',0xffb070,60,[22,9,-150]],exp:1.05,flash:20},
+  night:{n:'กลางคืน',top:'#04080b',mid:'#0b1612',bot:'#132019',fog:0x0a1511,fd:.03,hemi:[0x5f7f9a,0x1a1a12,1.1],sun:[0x9fb8ff,1.1],sunPos:[-8,14,-20],lamps:1,win:.9,orb:['moon',0xdfe8ff,26,[-30,48,-150]],exp:1.15,flash:60},
+  rain:{n:'พายุฝน',top:'#06090c',mid:'#141b20',bot:'#26313a',fog:0x1a232a,fd:.042,hemi:[0x7a8c9c,0x181b1e,1.2],sun:[0xaab8cc,.5],sunPos:[-8,14,-20],lamps:1,win:.75,orb:null,rain:true,lightning:true,exp:1.12,flash:60},
+  mist:{n:'หมอกรุ่งสาง',top:'#7e8c93',mid:'#a8b3b1',bot:'#c4ccc5',fog:0xa4aea9,fd:.055,hemi:[0xe2ebec,0x5c6057,2.3],sun:[0xfff1d6,1.3],sunPos:[10,12,-30],lamps:0,win:.08,orb:['sun',0xfff6e0,40,[18,20,-150]],exp:.95,flash:8},
+  day:{n:'กลางวันฟ้าครึ้ม',top:'#5f7f9c',mid:'#93a9b8',bot:'#c2ced2',fog:0x9aa8ae,fd:.017,hemi:[0xeef4ff,0x6c6a5a,2.5],sun:[0xfff5e0,2.4],sunPos:[-10,22,-8],lamps:0,win:.04,orb:null,exp:1,flash:0},
+  blood:{n:'จันทร์สีเลือด',top:'#0e0207',mid:'#2a060d',bot:'#4a0e14',fog:0x2a0a0c,fd:.032,hemi:[0xb05050,0x1a0808,1.25],sun:[0xff5a4a,1.5],sunPos:[-8,14,-20],lamps:.45,win:.4,orb:['moon',0xff4a3a,34,[-24,38,-150]],ash:true,exp:1.15,flash:45},
+};
+function skyTex(c){return canvasTex(4,256,(g,w,h)=>{const gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,c.top);gr.addColorStop(.55,c.mid);gr.addColorStop(1,c.bot);g.fillStyle=gr;g.fillRect(0,0,w,h);});}
+// rain: long thin streaks around the camera
+const RAIN_N=1500,rainPos=new Float32Array(RAIN_N*6);
+for(let i=0;i<RAIN_N;i++){const x=rnd(-10,10),y=rnd(0,14),z=rnd(-34,2);rainPos.set([x,y,z,x+.03,y-.55,z],i*6);}
+const rainGeo=new THREE.BufferGeometry();rainGeo.setAttribute('position',new THREE.BufferAttribute(rainPos,3));
+const rain=new THREE.LineSegments(rainGeo,new THREE.LineBasicMaterial({color:0xa9bccc,transparent:true,opacity:.32}));rain.visible=false;rain.frustumCulled=false;scene.add(rain);
+// ash and embers drifting down
+const ASH_N=600,ashPos=new Float32Array(ASH_N*3);for(let i=0;i<ASH_N;i++)ashPos.set([rnd(-10,10),rnd(0,12),rnd(-34,2)],i*3);
+const ashGeo=new THREE.BufferGeometry();ashGeo.setAttribute('position',new THREE.BufferAttribute(ashPos,3));
+const ash=new THREE.Points(ashGeo,new THREE.PointsMaterial({color:0xff8a5a,size:.07,transparent:true,opacity:.8}));ash.visible=false;ash.frustumCulled=false;scene.add(ash);
+let atm=SKIES.night,atmMod=null,lightningT=8,flashT=0;
+function setAtmosphere(id,mod=null){
+  const c=SKIES[id]||SKIES.night;atm=c;atmMod=mod;
+  scene.background=skyTex(c);
+  scene.fog.color.setHex(c.fog);scene.fog.density=c.fd*(mod==='fog'?1.9:1);
+  hemi.color.setHex(c.hemi[0]);hemi.groundColor.setHex(c.hemi[1]);hemi.intensity=c.hemi[2]*(mod==='blackout'?.6:1);
+  moon.color.setHex(c.sun[0]);moon.intensity=c.sun[1];moon.position.set(...c.sunPos);
+  renderer.toneMappingExposure=c.exp;
+  const lamp=mod==='blackout'?0:c.lamps;
+  for(const l of LAMPS){if(l.isLight)l.intensity=l.userData.base*lamp;else l.visible=lamp>0;}
+  for(const m of BMATS)m.emissiveIntensity=c.win*(mod==='blackout'?.15:1);
+  flash.intensity=c.flash||0;
+  if(c.orb){moonSpr.visible=true;moonSpr.material.color.setHex(c.orb[1]);moonSpr.scale.setScalar(c.orb[2]);moonSpr.position.set(...c.orb[3]);}else moonSpr.visible=false;
+  rain.visible=!!c.rain;ash.visible=!!c.ash;rainSound(!!c.rain);
+}
+function stepAtmosphere(dt){
+  if(rain.visible){const a=rainGeo.attributes.position.array;for(let i=0;i<RAIN_N;i++){const o=i*6;a[o+1]-=26*dt;a[o+4]-=26*dt;if(a[o+4]<0){const y=rnd(10,14);a[o+1]=y;a[o+4]=y-.55;}}rainGeo.attributes.position.needsUpdate=true;}
+  if(ash.visible){const a=ashGeo.attributes.position.array;for(let i=0;i<ASH_N;i++){const o=i*3;a[o+1]-=.6*dt;a[o]+=Math.sin(clock+i)*.2*dt;if(a[o+1]<0)a[o+1]=12;}ashGeo.attributes.position.needsUpdate=true;}
+  if(atm.lightning){lightningT-=dt;if(lightningT<=0){lightningT=rnd(7,15);flashT=.35;const f=$('#bolt');f.classList.remove('on');void f.offsetWidth;f.classList.add('on');setTimeout(()=>SFX.thunder(),rnd(300,1200));}}
+  if(flashT>0){flashT-=dt;hemi.intensity=atm.hemi[2]*(1+Math.max(0,flashT)*12*(Math.random()<.5?1:.3));if(flashT<=0)hemi.intensity=atm.hemi[2];}
+}
+
+/* ---------------- buildings drawn per zone style ---------------- */
+const FACADES={};
+function facade(style,seed){
+  const key=style+seed;if(FACADES[key])return FACADES[key];
+  const W=256,H=512,col=document.createElement('canvas'),emi=document.createElement('canvas');col.width=emi.width=W;col.height=emi.height=H;
+  const g=col.getContext('2d'),e=emi.getContext('2d');e.fillStyle='#000';e.fillRect(0,0,W,H);
+  const P_={city:['#6d6a63','#7a5a4a','#5c6670','#8a8478','#4f5552'],ruin:['#3e3a36','#4a3f38','#353a3c'],house:['#c9b79a','#9fb3a8','#c7a49a','#a6b1c4','#d6cdb6'],ware:['#6f7a80','#8a7f6a','#5f6b5a','#7a6a62']}[style];
+  const base=P_[seed%P_.length];g.fillStyle=base;g.fillRect(0,0,W,H);
+  // grime
+  for(let i=0;i<60;i++){g.fillStyle=`rgba(0,0,0,${Math.random()*.08})`;g.fillRect(Math.random()*W,Math.random()*H,Math.random()*60,Math.random()*30);}
+  const win=(x,y,w,h,lit,litCol='#ffd690')=>{g.fillStyle='#1d252b';g.fillRect(x,y,w,h);g.fillStyle='rgba(160,190,210,.18)';g.fillRect(x+2,y+2,w/2,h-4);
+    g.strokeStyle='rgba(0,0,0,.45)';g.lineWidth=2;g.strokeRect(x,y,w,h);if(lit){g.fillStyle=litCol;g.fillRect(x+2,y+2,w-4,h-4);e.fillStyle=litCol;e.fillRect(x+2,y+2,w-4,h-4);}};
+  if(style==='city'||style==='ruin'){
+    const floors=10,fh=(H-80)/floors;
+    for(let f=0;f<floors;f++){g.fillStyle='rgba(0,0,0,.12)';g.fillRect(0,f*fh+fh-4,W,4);
+      for(let c=0;c<5;c++){const x=14+c*48,y=f*fh+10,lit=Math.random()<(style==='ruin'?.08:.22);
+        if(style==='ruin'&&Math.random()<.35){g.fillStyle='#0b0b0b';g.fillRect(x,y,30,fh-18);const gr=g.createLinearGradient(0,y,0,y-40);gr.addColorStop(0,'rgba(0,0,0,.55)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(x-6,y-40,42,40);if(Math.random()<.25){e.fillStyle='#ff7a2a';e.fillRect(x+4,y+fh-30,22,10);}}
+        else win(x,y,30,fh-18,lit,Math.random()<.2?'#bcd4ff':'#ffd690');}}
+    // ground floor: shopfront with a sign
+    const sy=H-80;g.fillStyle='#2a2a2a';g.fillRect(0,sy,W,80);
+    const hue=[0,30,190,120,280,50][seed%6],sc=`hsl(${hue},70%,55%)`;
+    g.fillStyle=style==='ruin'?'#3a2a22':sc;g.fillRect(8,sy+4,W-16,18);
+    if(style!=='ruin'){e.fillStyle=sc;e.fillRect(8,sy+4,W-16,18);}
+    g.fillStyle='#16202a';g.fillRect(12,sy+28,W-24,48);g.fillStyle='rgba(180,210,230,.15)';g.fillRect(14,sy+30,90,44);
+    if(style!=='ruin'&&Math.random()<.5){e.fillStyle='#5a4a2a';e.fillRect(12,sy+28,W-24,48);}
+  }else if(style==='house'){
+    for(let i=0;i<H;i+=12){g.fillStyle='rgba(0,0,0,.08)';g.fillRect(0,i,W,2);}
+    for(const fy of [60,250])for(const fx of [30,150]){win(fx,fy,70,90,Math.random()<.35);g.fillStyle='#f3efe6';g.fillRect(fx-6,fy+90,82,8);}
+    g.fillStyle='#5a3a2a';g.fillRect(100,H-150,56,150);g.fillStyle='#d8b56a';g.fillRect(144,H-80,6,6);
+  }else{ // warehouse: corrugated metal and a roller door
+    for(let x=0;x<W;x+=10){g.fillStyle='rgba(0,0,0,.14)';g.fillRect(x,0,4,H);}
+    for(let x=10;x<W-10;x+=40)win(x,40,30,40,Math.random()<.3,'#cfe2ff');
+    g.fillStyle='#4a4f52';g.fillRect(50,H-230,156,230);for(let y=H-230;y<H;y+=12){g.fillStyle='rgba(0,0,0,.25)';g.fillRect(50,y,156,3);}
+    for(let x=50;x<206;x+=24){g.fillStyle='#e0b020';g.fillRect(x,H-240,12,10);g.fillStyle='#222';g.fillRect(x+12,H-240,12,10);}
+    const lc=Math.random()<.5?'#ff9a3a':'#9ad0ff';e.fillStyle=lc;e.beginPath();e.arc(128,H-250,8,0,7);e.fill();
+  }
+  const t=new THREE.CanvasTexture(col),te=new THREE.CanvasTexture(emi);t.colorSpace=te.colorSpace=THREE.SRGBColorSpace;
+  t.anisotropy=te.anisotropy=4;
+  return FACADES[key]={t,te};
+}
+function block(x,z,w,h,d,style,seed){
+  const f=facade(style,seed);
+  const m=new THREE.MeshStandardMaterial({color:0xffffff,map:f.t,emissive:0xffffff,emissiveMap:f.te,emissiveIntensity:atm.win,roughness:.95});BMATS.push(m);
+  const roof=new THREE.MeshStandardMaterial({color:0x2a2c2c,roughness:1});
+  const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),[m,m,roof,roof,m,m]);mesh.position.set(x,h/2,z);PLACE_TO.add(mesh);return mesh;
+}
+function skyline(style){
+  for(const s of [-1,1]){let z=6;
+    while(z>-150){
+      if(style==='house'){const w=8,d=rnd(9,11),h=5,x=s*(10.5+w/2);block(x,z-d/2,w,h,d,'house',(Math.random()*9)|0);
+        const roof=new THREE.Mesh(new THREE.CylinderGeometry(w*.62,w*.62,d+.6,3,1),new THREE.MeshStandardMaterial({color:pick([0x7a3b2e,0x3d4b5a,0x5a4a3a,0x2f4a3a]),roughness:.9}));
+        roof.rotation.x=Math.PI/2;roof.rotation.y=Math.PI/2;roof.rotation.z=Math.PI/2;roof.position.set(x,h+w*.3,z-d/2);roof.scale.set(1,1,.55);PLACE_TO.add(roof);
+        z-=d+rnd(5,9);continue;}
+      if(style==='ware'){const w=rnd(12,16),d=rnd(14,20),h=rnd(6,8.5);block(s*(9+w/2),z-d/2,w,h,d,'ware',(Math.random()*9)|0);
+        if(Math.random()<.5){const c=new THREE.Mesh(new THREE.CylinderGeometry(.7,.9,rnd(10,15),10),new THREE.MeshStandardMaterial({color:0x6a5a50,roughness:.9}));c.position.set(s*(12+rnd(0,3)),c.geometry.parameters.height/2,z-d*.6);PLACE_TO.add(c);}
+        z-=d+rnd(1,4);continue;}
+      const d=rnd(9,16),h=style==='ruin'?rnd(8,20):rnd(10,28),w=rnd(7,12),x=s*(8+w/2+rnd(0,1.5));
+      block(x,z-d/2,w,h,d,style,(Math.random()*9)|0);
+      if(style==='ruin'&&Math.random()<.5){const b=block(x+rnd(-1,1),z-d/2+rnd(-2,2),w*.6,rnd(2,5),d*.5,'ruin',(Math.random()*9)|0);b.position.y=h+b.geometry.parameters.height/2-1;b.rotation.z=rnd(-.25,.25);if(Math.random()<.4)fire(x-s*w/2,h-.5,z-d/2,1.2);}
+      z-=d+rnd(.5,3);
+    }}
+  if(style==='house'){const lawn=new THREE.MeshStandardMaterial({color:0x2f4a2a,roughness:1});for(const s of [-1,1]){const g=new THREE.Mesh(new THREE.PlaneGeometry(20,170),lawn);g.rotation.x=-Math.PI/2;g.position.set(s*18,.005,-70);PLACE_TO.add(g);}}
+}
+const ZSTYLE={a1:'city',a2:'house',b1:'city',b2:'ware',c1:'ruin'};
 // soft blob shadow
 const blobTex=canvasTex(64,64,(g)=>{const gr=g.createRadialGradient(32,32,2,32,32,32);gr.addColorStop(0,'#000c');gr.addColorStop(1,'#0000');g.fillStyle=gr;g.fillRect(0,0,64,64);});
 const blobMat=new THREE.MeshBasicMaterial({map:blobTex,transparent:true,depthWrite:false});
@@ -491,7 +647,8 @@ const STOP_Z=-4.4,BARR_Z=-3.4,SPAWN_Z=-31;
 function buildWorld(){
   for(let z=4,i=0;z>-160;z-=8,i++)place(i%4===2?'Street_Straight_Crack1':'Street_Straight',0,0,z,0);
   for(let z=-6,i=0;z>-120;z-=16,i++){const s=i%2?1:-1;place('StreetLights',s*4.6,0,z,s>0?-Math.PI/2:Math.PI/2);
-    const pl=new THREE.PointLight(0xffb468,i<3?28:18,18,1.6);pl.position.set(s*1.9,6.3,z);scene.add(pl);}
+    const pl=new THREE.PointLight(0xffb468,i<3?28:18,18,1.6);pl.position.set(s*1.9,6.3,z);pl.userData.base=pl.intensity;scene.add(pl);LAMPS.push(pl);
+    const gl=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:0xffc070,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));gl.scale.setScalar(1.6);gl.position.set(s*1.95,6.25,z);scene.add(gl);LAMPS.push(gl);}
   // barricade
   const B=[['TrafficBarrier_1',-2.6,0],['Pallet',-1.2,.2],['TrafficBarrier_2',.1,0],['Pallet_Broken',1.4,-.1],['TrafficBarrier_1',2.8,.05]];
   B.forEach(([n,x,r])=>{const o=place(n,x,0,BARR_Z,r+(n.startsWith('Pallet')?Math.PI/2:0));if(o&&n.startsWith('Pallet')){o.rotation.z=Math.PI/2-.25;o.position.y=.6;}});
@@ -540,10 +697,9 @@ function setZone(k){
   if(builtZone===k)return;
   if(zoneGrp)scene.remove(zoneGrp);
   for(let i=FIRES.length-1;i>=0;i--)FIRES.splice(i,1);
-  OBST=OBST.filter(o=>!o.zone);
+  OBST=OBST.filter(o=>!o.zone);BMATS.length=0;
   zoneGrp=new THREE.Group();scene.add(zoneGrp);PLACE_TO=zoneGrp;
-  (DRESS[k]||DRESS.a1)();PLACE_TO=scene;builtZone=k;
-  const [c,d]=ZFOG[k]||ZFOG.a1;scene.fog.color.setHex(c);scene.fog.density=d;scene.background.setHex(c);
+  skyline(ZSTYLE[k]||'city');(DRESS[k]||DRESS.a1)();PLACE_TO=scene;builtZone=k;
 }
 
 /* ---------------- survivor and dog behind the barricade ---------------- */
@@ -586,7 +742,7 @@ function clearProps(){while(props.length)removeProp(props[0]);}
 function useProp(pr){
   if(state!=='play'||pr.dead)return;
   if(pr.kind==='barrel'){
-    const {x,z}=pr;removeProp(pr);SFX.boom();shake=1;explosion(x,z);
+    const {x,z}=pr;removeProp(pr);SFX.boom();shake=1;explosion(x,z);quest('barrel');
     for(const o of live()){const d=Math.hypot(o.obj.position.x-x,o.obj.position.z-z);if(d<3){
       if(o.type==='giant'||o.wi<o.words.length-1){o.wi=Math.min(o.wi+1,o.words.length-1);o.p=0;o.opts=null;renderTag(o);const nz=o.obj.position.z-1.5;if(!blocked(o.obj.position.x,nz))o.obj.position.z=nz;}
       else kill(o,false);}}
@@ -598,7 +754,7 @@ function useProp(pr){
 }
 function waveProps(){
   // one or two barrels sit on the road each wave
-  const n=G.W[G.wave].list.length>6?2:1;
+  const n=(G.W[G.wave].list.length>6?2:1)+G.extraBarrels;G.extraBarrels=0;
   for(let i=0;i<n;i++){for(let k=0;k<10;k++){const x=rnd(-2.6,2.6),z=rnd(-22,-10);if(!blocked(x,z)&&!props.some(p=>Math.hypot(p.x-x,p.z-z)<3)){addProp('barrel',x,z);break;}}}
 }
 
@@ -627,7 +783,7 @@ function equipGun(){
 }
 
 /* ---------------- game state ---------------- */
-let state='load',G=null,target=null,jamUntil=0,last=performance.now(),shake=0,clock=0,menuZ=[];
+let TS=1,state='load',G=null,target=null,jamUntil=0,last=performance.now(),shake=0,clock=0,menuZ=[];
 const zombies=[],fx=[];
 const tagsEl=$('#tags');
 function makeZombie(type,word,x,z,menu=false){
@@ -685,35 +841,65 @@ function takeWord(short=false){
 }
 
 /* ---------------- night flow ---------------- */
-function waves(k,i,mode){
+const MODS={horde:{n:'ฝูงใหญ่',d:'ซอมบี้มากกว่าปกติแต่เดินช้าลง'},rush:{n:'วิ่งพล่าน',d:'ซอมบี้วิ่งเร็วเต็มถนน'},blackout:{n:'ไฟดับ',d:'ไฟถนนดับหมด เหลือแค่ไฟฉาย'},fog:{n:'หมอกหนา',d:'มองเห็นได้แค่ระยะใกล้'}};
+const ZSKY={a1:['dusk','night','day','rain','night','mist'],a2:['mist','dusk','day','night','rain'],b1:['night','rain','dusk','night','day'],b2:['day','dusk','night','mist','rain'],c1:['blood','night','rain','dusk','blood']};
+function nightInfo(k,i,mode){
+  if(mode==='review')return {sky:'mist',mod:null};
+  if(mode==='survival')return {sky:k==='c1'?'blood':'night',mod:null};
+  if(isBossNight(i))return {sky:'blood',mod:null};
+  const L=ZSKY[k]||ZSKY.a1,sky=L[(i*7+3)%L.length];
+  const mod=i>=2&&i%4===2?['horde','rush','blackout','fog'][(i>>2)%4]:null;
+  return {sky:i===0&&k==='a1'?'dusk':sky,mod};
+}
+function waves(k,i,mode,mod){
   const d=RANK[k]*1.2+(mode==='review'?0:i*.04);
-  const n=Math.round(4+d*.8);
+  let n=Math.round(4+d*.8);if(mod==='horde')n=Math.round(n*1.6);
+  const cr=RANK[k]>=1||i>=6?1:0;
   const W=[
     {list:Array(n).fill('walker'),gap:3.2},
-    {list:shuffle([...Array(n).fill('walker'),'runner','runner']),gap:2.8},
-    {list:shuffle([...Array(n+1).fill('walker'),'runner','runner','brute']),gap:2.5},
+    {list:shuffle([...Array(n).fill('walker'),'runner','runner',...Array(cr).fill('crawler')]),gap:2.8},
+    {list:shuffle([...Array(n+1).fill('walker'),'runner','runner','brute',...Array(cr*2).fill('crawler')]),gap:2.5},
   ];
+  if(mod==='rush')W.forEach(w=>w.list=w.list.map(t=>t==='walker'&&Math.random()<.6?'runner':t));
   if(mode!=='review'&&isBossNight(i))W[2].list.push('giant');
-  return {W,speed:1+Math.min(.45,d*.05)};
+  return {W,speed:(1+Math.min(.45,d*.05))*(mod==='horde'?.85:1)};
+}
+// survival: waves keep coming and get harder
+function survWords(k){
+  const Z=ZONES[k],upto=Math.max(3,nextNight(k)+1);
+  return {fresh:shuffle(Z.nights.slice(0,upto).flatMap(n=>n.words)),old:[]};
+}
+function survWave(n){
+  const c=Math.round(4+n*1.3),list=[...Array(c).fill('walker')];
+  for(let i=0;i<Math.min(6,Math.floor(n/1.5));i++)list.push('runner');
+  for(let i=0;i<Math.min(4,Math.floor(n/2));i++)list.push('crawler');
+  for(let i=0;i<Math.min(3,Math.floor(n/3));i++)list.push('brute');
+  if(n>0&&(n+1)%5===0)list.push('giant');
+  return {list:shuffle(list),gap:Math.max(1.1,2.8-n*.12)};
 }
 function startNight(k,i,mode='night'){
   clearZombies();clearProps();setZone(mode==='review'?P.zone:k);barricadeLook();allyReact('reset');
-  const nw=nightWords(k,i,mode),wv=waves(k,i,mode);
+  const info=nightInfo(k,i,mode);setAtmosphere(info.sky,info.mod);
+  const nw=mode==='survival'?survWords(k):nightWords(k,i,mode),wv=mode==='survival'?{W:[],speed:1+RANK[k]*.06}:waves(k,i,mode,info.mod);
   const wallMax=100+25*P.up.wall;
   G={k,i,mode,fresh:nw.fresh,old:nw.old,used:new Map(),W:wv.W,speedMul:wv.speed,wave:-1,queue:[],spawnT:0,wall:wallMax,wallMax,
-     score:0,combo:0,best:0,kills:0,hints:2+P.up.hint,gren:P.gren,mash:0,lastWrong:-9,hit:new Set(),miss:new Set(),t:0,ended:false};
+     score:0,combo:0,best:0,kills:0,hints:2+P.up.hint,gren:P.gren,mash:0,lastWrong:-9,hit:new Set(),miss:new Set(),t:0,ended:false,
+     sky:info.sky,mod:info.mod,adr:0,slow:0,slowMul:1,coinMul:info.mod?1.3:1,shieldT:0,xp:0,wrongs:0,extraBarrels:0};
   state='play';target=null;jamUntil=0;
   $('#hud').hidden=false;$('#dock').hidden=false;$('#screen').hidden=true;
-  $('#hNight').textContent=mode==='review'?'REVIEW':'NIGHT '+(i+1);
+  $('#hNight').textContent=mode==='review'?'REVIEW':mode==='survival'?'SURVIVAL':'NIGHT '+(i+1);
   equipGun();nextWave();hud();renderPad();
 }
 function nextWave(){
   G.wave++;
+  if(G.mode==='survival'){G.W.push(survWave(G.wave));quest('surv',G.wave);}
   if(G.wave>=G.W.length){endNight(true);return;}
   G.queue=[...G.W[G.wave].list];G.spawnT=G.wave===0?1.2:3;waveProps();
   const boss=G.queue.includes('giant');
-  banner(G.wave===G.W.length-1?(boss?'BOSS WAVE':'FINAL WAVE'):'WAVE '+(G.wave+1),G.wave===0?(G.mode==='review'?'ทบทวนคำที่เคยพลาด':ZONES[G.k].name+' · '+ZONES[G.k].nights[G.i].unit):'');
-  $('#hWave').textContent=`คลื่น ${G.wave+1}/${G.W.length}`;
+  const surv=G.mode==='survival';
+  banner(surv?'WAVE '+(G.wave+1):G.wave===G.W.length-1?(boss?'BOSS WAVE':'FINAL WAVE'):'WAVE '+(G.wave+1),
+    G.wave===0?(G.mode==='review'?'ทบทวนคำที่เคยพลาด':surv?ZONES[G.k].name+' · อยู่ให้รอดนานที่สุด':ZONES[G.k].name+' · '+SKIES[G.sky].n+(G.mod?' · '+MODS[G.mod].n:'')):'');
+  $('#hWave').textContent=surv?`คลื่น ${G.wave+1}`:`คลื่น ${G.wave+1}/${G.W.length}`;
   if(boss)setTimeout(()=>SFX.groan(.35,true),900);
 }
 function spawn(type){
@@ -725,16 +911,43 @@ function spawn(type){
 function clearZombies(){while(zombies.length)removeZombie(zombies[0]);fx.forEach(f=>scene.remove(f.o));fx.length=0;}
 function endNight(win){
   if(G.ended)return;G.ended=true;state='end';
-  const stars=win?(G.wall/G.wallMax>=.7?3:G.wall/G.wallMax>=.35?2:1):0;
-  let coins=G.kills*2+Math.round(G.score/40);
-  if(win&&G.mode!=='review'){coins+=stars*10;const prev=P.prog[G.k][G.i]||0;if(stars>prev)P.prog[G.k][G.i]=stars;}
-  P.coins+=coins;P.gren=G.gren;
+  TS=1;$('#slowfx').hidden=true;
+  const surv=G.mode==='survival';
+  const stars=win&&!surv?(G.wall/G.wallMax>=.7?3:G.wall/G.wallMax>=.35?2:1):0;
+  let coins=G.kills*2+Math.round(G.score/40)+(surv?G.wave*6:0);
+  if(win&&G.mode==='night'){coins+=stars*10;const prev=P.prog[G.k][G.i]||0;if(stars>prev)P.prog[G.k][G.i]=stars;quest('nights');if(G.wrongs===0&&!G.miss.size)quest('perfect');G.xp+=20;}
+  if(surv){G.newBest=G.wave>(P.best[G.k]||0);if(G.newBest)P.best[G.k]=G.wave;}
+  coins=Math.round(coins*G.coinMul);
+  P.coins+=coins;P.gren=G.gren;addXP(G.xp);
   for(const e of G.hit)if(!G.miss.has(e)){LEARNED.add(e);WEAK.delete(e);}
   for(const e of G.miss)WEAK.add(e);
   save();
   win?SFX.win():SFX.lose();if(win)allyReact('win');
   setTimeout(()=>results(win,stars,coins),win?900:1400);
 }
+
+/* ---------------- supply drop between waves ---------------- */
+const PERKS=[
+  {id:'fix',n:'ซ่อมเครื่องกีดขวาง',d:'ฟื้นความทนทาน 40',ic:'wall',ok:()=>G.wall<G.wallMax,f(){G.wall=Math.min(G.wallMax,G.wall+40);}},
+  {id:'hint',n:'กล้องส่องเป้า',d:'คำใบ้ +2',ic:'scope',f(){G.hints+=2;}},
+  {id:'gren',n:'ลังระเบิด',d:'ระเบิดมือ +1',ic:'gren',f(){G.gren++;}},
+  {id:'slow',n:'ยาพิษซอมบี้',d:'ซอมบี้ช้าลง 20% จนจบคืน',ic:'oil',ok:()=>G.slowMul>.7,f(){G.slowMul*=.8;}},
+  {id:'coin',n:'ตู้เซฟ',d:'เหรียญคืนนี้ +50%',ic:'coin',f(){G.coinMul+=.5;}},
+  {id:'barrel',n:'ถังน้ำมัน',d:'ถังระเบิดเพิ่ม 2 ถังคลื่นหน้า',ic:'gren',f(){G.extraBarrels+=2;}},
+  {id:'shield',n:'โล่ไฟฟ้า',d:'15 วินาทีแรกของคลื่นหน้า เครื่องกีดขวางไม่เสียหาย',ic:'wall',f(){G.shieldT=15;}},
+  {id:'adr',n:'เข็มอะดรีนาลีน',d:'เติมเกจอะดรีนาลีนเต็ม',ic:'scope',f(){G.adr=ADR_NEED-1;}},
+];
+function perkPick(){
+  state='perk';SFX.perk();
+  const opts=shuffle(PERKS.filter(p=>!p.ok||p.ok())).slice(0,3);
+  show(`<div class="card res" style="width:min(760px,100%)"><h2 style="font-size:44px">เสบียงมาถึง</h2><div class="zinfo">ผ่านคลื่นที่ ${G.wave+1} แล้ว เลือกของ 1 อย่าง</div>
+    <div class="perks">${opts.map((p,i)=>`<button class="perk" type="button" data-p="${i}"><span class="ic">${p.ic==='coin'?SV.coin:SV[p.ic]}</span><b>${p.n}</b><small>${p.d}</small></button>`).join('')}</div></div>`,'solid');
+  scr.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{opts[+b.dataset.p].f();SFX.coin();scr.hidden=true;state='play';last=performance.now();hud();nextWave();});
+}
+
+/* ---------------- adrenaline: a streak of right answers slows time ---------------- */
+const ADR_NEED=8;
+function adrenaline(){G.slow=6;G.adr=0;banner('ADRENALINE','เวลาช้าลง 6 วินาที');SFX.adr();quest('adr');$('#slowfx').hidden=false;}
 
 /* ---------------- targeting & shooting ---------------- */
 function nearest(){let b=null;for(const z of live())if(!b||z.z>b.z)b=z;return b;}
@@ -756,7 +969,7 @@ function consumeKey(ch){const k=[...$('#pad').querySelectorAll('.key:not(.used)'
 function wrong(z){
   G.mash=G.t-G.lastWrong<3?G.mash+1:1;G.lastWrong=G.t;
   const m=Math.min(G.mash,4),dur=[0,.6,1,1.5,2][m]*(1-.2*P.up.oil);
-  jamUntil=G.t+dur;G.combo=0;G.miss.add(curWord(z).en);z.miss=true;
+  jamUntil=G.t+dur;G.combo=0;G.adr=Math.max(0,G.adr-2);G.wrongs++;G.miss.add(curWord(z).en);z.miss=true;
   G.score=Math.max(0,G.score-5*m);
   SFX.jam();try{navigator.vibrate&&navigator.vibrate(60);}catch(e){}
   const pad=$('#pad');pad.classList.remove('shake');void pad.offsetWidth;pad.classList.add('shake','jam');
@@ -765,14 +978,15 @@ function wrong(z){
 }
 function wordDone(z){
   const w=curWord(z);G.hit.add(w.en);
-  G.combo++;G.best=Math.max(G.best,G.combo);
+  G.combo++;G.best=Math.max(G.best,G.combo);quest('words');quest('combo',G.combo);G.xp+=2;
+  if(G.slow<=0){G.adr++;if(G.adr>=ADR_NEED)adrenaline();}
   const pts=10+w.en.length*2+Math.min(G.combo,20);G.score+=pts;floatAt(z,'+'+pts,'#a6e05a');
   speak(w.en);
   if(z.wi<z.words.length-1){z.wi++;z.p=0;z.opts=null;if(GUNS[P.gun].auto1&&!CHOICE())autoFirst(z);renderTag(z);bumpTag(z);z.obj.position.z-=.8;play(z,'HitReact',false,.05);z.hitT=.5;renderPad();hud();return;}
   kill(z,true);
 }
 function kill(z,byWord){
-  z.dead=true;G.kills++;
+  z.dead=true;G.kills++;quest('kills');G.xp+=1;
   play(z,'Death',false,.1);z.dieT=0;
   z.tag&&z.tag.classList.add('dead');
   const c=z.T.coin;G.score+=c*5;allyReact('kill');
@@ -814,7 +1028,7 @@ function bumpTag(z){if(!z.tag)return;z.tag.classList.remove('hit');void z.tag.of
 
 /* ---------------- effects ---------------- */
 const tmpV=new THREE.Vector3();
-function chest(z){return tmpV.set(z.obj.position.x,z.T.h*.62,z.obj.position.z).clone();}
+function chest(z){return tmpV.set(z.obj.position.x,(z.T.tagH?z.T.tagH*.5:z.T.h*.62),z.obj.position.z).clone();}
 function tracer(z){
   const from=new THREE.Vector3(.29,-.24,-.85).applyMatrix4(camera.matrixWorld),to=chest(z);
   const geo=new THREE.BufferGeometry().setFromPoints([from,to]);
@@ -857,6 +1071,8 @@ function hud(){
   const c=$('#combo');c.hidden=G.combo<3;if(G.combo!==shownCombo){c.textContent='x'+G.combo+' COMBO';c.classList.remove('bump');void c.offsetWidth;c.classList.add('bump');shownCombo=G.combo;}
   $('#hintN').textContent=G.hints;$('#hintBtn').disabled=G.hints<=0;
   $('#grenN').textContent=G.gren;$('#grenBtn').disabled=G.gren<=0;
+  $('#wallBar').classList.toggle('sh',G.shieldT>0);
+  $('#adrBar').style.width=(G.slow>0?G.slow/6*100:G.adr/ADR_NEED*100)+'%';
 }
 const DECOY='etaoinshrdlucmfwypvbgk';
 // four answers for the targeted zombie, made once per word so switching targets back and forth keeps them stable
@@ -922,11 +1138,15 @@ function home(){
   state='menu';G=null;target=null;hideGame();clearZombies();clearProps();setZone(P.zone);barricadeLook();allyReact('reset');menuScene();if(gunObj)gunObj.visible=false;
   const k=P.zone,ni=nextNight(k),weak=WEAK.size;
   const learned=LEARNED.size;
-  const fresh=P.seen!==VERSION;
+  const fresh=P.seen!==VERSION;dailyInit();
+  const ri=rankOf(P.xp),nextR=RANKS[ri+1],rp=nextR?(P.xp-RANKS[ri][0])/(nextR[0]-RANKS[ri][0]):1;
+  const dDone=P.daily.list.filter(q=>q.p>=q.g).length,dClaim=P.daily.list.filter(q=>q.p>=q.g&&!q.c).length;
+  setAtmosphere(ZSKY[k]?ZSKY[k][0]:'night');
   show(`<div class="home">
     <div class="brand">
       <h1>DEAD<br><span>WORDS</span></h1>
       <p>ตอบคำให้ถูก ก่อนพวกมันจะถึงตัวคุณ</p>
+      <div class="rank"><b>${RANKS[ri][1]}</b><span class="rbar"><i style="width:${(rp*100).toFixed(0)}%"></i></span><small>${fmt(P.xp)} XP${nextR?' · อีก '+fmt(nextR[0]-P.xp)+' สู่ '+nextR[1]:''}</small></div>
       <div class="seg" role="group" aria-label="วิธีตอบ"><button type="button" data-m="choice" aria-pressed="${CHOICE()}">เลือกคำตอบ<small>ง่าย</small></button><button type="button" data-m="spell" aria-pressed="${!CHOICE()}">สะกดคำ<small>ยาก</small></button></div>
       <div class="toggles" style="margin-top:14px">
         <button class="tog" type="button" id="oS" aria-pressed="${P.opts.sfx}">เสียงเอฟเฟกต์</button>
@@ -938,6 +1158,8 @@ function home(){
     <div class="menu">
       ${fresh?`<div class="news" id="news"><button type="button" id="newsX" aria-label="ปิด">✕</button><b>อัปเดต v${VERSION}</b><ul>${CHANGES.map(c=>`<li>${c}</li>`).join('')}</ul></div>`:''}
       <button class="mbtn main" type="button" id="mPlay">${SV.play}เล่นต่อ<small>${ZONES[k].lvl} · คืนที่ ${ni+1}</small></button>
+      <button class="mbtn" type="button" id="mSurv">${SV.wall}เอาชีวิตรอด<small>${ZONES[k].lvl} · สถิติ ${P.best[k]||0} คลื่น</small></button>
+      <button class="mbtn${dClaim?' hot':''}" type="button" id="mDaily">${SV.star.replace('<svg','<svg style="color:var(--amber)"')}ภารกิจวันนี้<small>${dDone}/3${dClaim?' · รับรางวัล!':''}</small></button>
       <button class="mbtn" type="button" id="mMap">${SV.map}เลือกพื้นที่<small>${ORDER.reduce((a,z)=>a+zoneStars(z),0)} ดาว</small></button>
       ${weak>=4?`<button class="mbtn" type="button" id="mRev">${SV.rev}ทบทวนคำที่พลาด<small>${weak} คำ</small></button>`:''}
       <button class="mbtn" type="button" id="mShop">${SV.gun}คลังแสง<small>${SV.coin.replace('<svg','<svg style="width:14px;height:14px;vertical-align:-2px"')} ${fmt(P.coins)}</small></button>
@@ -945,6 +1167,8 @@ function home(){
     </div></div>`);
   $('#mPlay').onclick=()=>{SFX.ui();brief(k,ni);};
   $('#mMap').onclick=()=>{SFX.ui();zoneMap(k);};
+  $('#mSurv').onclick=()=>{SFX.ui();survBrief(k);};
+  $('#mDaily').onclick=()=>{SFX.ui();daily();};
   if($('#mRev'))$('#mRev').onclick=()=>{SFX.ui();brief(k,0,'review');};
   $('#mShop').onclick=()=>{SFX.ui();shop('guns');};
   $('#mBook').onclick=()=>{SFX.ui();wordBook(k);};
@@ -981,6 +1205,7 @@ function brief(k,i,mode='night'){
   const boss=!rev&&isBossNight(i);
   show(`<div class="card" style="max-height:100%">
     <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>${rev?'ทบทวน':'คืนที่ '+(i+1)}</h2><span class="zinfo">${rev?'คำที่เคยพลาด':esc(ZONES[k].name+' · '+ZONES[k].nights[i].unit)}${boss?' · <b style="color:var(--blood)">มีบอส</b>':''}</span><span class="sp"></span></div>
+    ${rev?'':(()=>{const ni=nightInfo(k,i,mode);return `<div class="chips"><span class="chip">${SKIES[ni.sky].n}</span>${ni.mod?`<span class="chip warn">${MODS[ni.mod].n}: ${MODS[ni.mod].d} · เหรียญ +30%</span>`:''}</div>`;})()}
     <div class="zinfo">${CHOICE()?'ซอมบี้แต่ละตัวมีคำไทยติดอยู่ เลือกคำภาษาอังกฤษที่ตรงกันเพื่อยิง':'ซอมบี้แต่ละตัวมีคำไทยติดอยู่ กดตัวอักษรเรียงเป็นคำภาษาอังกฤษให้ถูกเพื่อยิง'} ทำความรู้จักคำของคืนนี้ก่อน</div>
     <div class="scroll"><div class="wlist">${ws.map(w=>wordRow(w,LEARNED.has(w.en)?'ok':'')).join('')}</div></div>
     <div class="row"><button class="btn main" type="button" id="go">${SV.play.replace('<svg','<svg style="width:18px;height:18px"')}เริ่มป้องกัน</button></div></div>`,'solid');
@@ -988,21 +1213,45 @@ function brief(k,i,mode='night'){
   $('#go').onclick=()=>{audio();SFX.ui();if(matchMedia('(pointer:coarse)').matches){try{document.documentElement.requestFullscreen?.().then(()=>screen.orientation?.lock?.('landscape').catch(()=>{})).catch(()=>{});}catch(e){}}startNight(k,i,mode);};
   bindSay();
 }
+function survBrief(k){
+  state='menu';
+  const ws=survWords(k).fresh;
+  show(`<div class="card" style="max-height:100%">
+    <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>เอาชีวิตรอด</h2><span class="sp"></span>${zoneTabs(k,'data-z')}</div>
+    <div class="zinfo">ซอมบี้มาไม่หยุด แต่ละคลื่นยากขึ้น ได้เสบียงทุกคลื่น ใช้คำจากคืนที่ปลดล็อกแล้วในพื้นที่นี้ (${ws.length} คำ) · สถิติดีที่สุด <b style="color:var(--amber)">${P.best[k]||0}</b> คลื่น</div>
+    <div class="scroll"><div class="wlist">${ws.slice(0,40).map(w=>wordRow(w,LEARNED.has(w.en)?'ok':'')).join('')}</div></div>
+    <div class="row"><button class="btn main" type="button" id="go">${SV.play.replace('<svg','<svg style="width:18px;height:18px"')}เริ่มเอาชีวิตรอด</button></div></div>`,'solid');
+  $('#back').onclick=home;
+  scr.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{SFX.ui();P.zone=b.dataset.z;save();setZone(P.zone);survBrief(P.zone);});
+  $('#go').onclick=()=>{audio();SFX.ui();startNight(k,0,'survival');};
+  bindSay();
+}
+function daily(){
+  state='menu';dailyInit();
+  const ri=rankOf(P.xp);
+  show(`<div class="card" style="width:min(640px,100%)">
+    <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>ภารกิจวันนี้</h2><span class="sp"></span>${coinTag()}</div>
+    <div class="zinfo">เข้าเล่นติดกัน ${P.daily.streak} วัน · ยศ ${RANKS[ri][1]} · ภารกิจใหม่ทุกวัน</div>
+    <div class="dlist">${P.daily.list.map((q,i)=>{const M=MISS[q.id],done=q.p>=q.g;return `<div class="dq ${q.c?'claimed':''}"><div class="tx"><b>${M.n} ${q.g}${M.u?' '+M.u:''}</b><span class="rbar"><i style="width:${Math.min(100,q.p/q.g*100).toFixed(0)}%"></i></span><small>${Math.min(q.p,q.g)}/${q.g}</small></div>${q.c?'<span class="buy own">รับแล้ว</span>':done?`<button class="buy" type="button" data-c="${i}">${SV.coin}50</button>`:`<span class="buy own" style="opacity:.5">${SV.coin}50</span>`}</div>`;}).join('')}</div></div>`);
+  $('#back').onclick=home;
+  scr.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const q=P.daily.list[+b.dataset.c];if(q.c)return;q.c=true;P.coins+=50;addXP(30);save();SFX.coin();daily();});
+}
 function results(win,stars,coins){
   hideGame();state='end';
   const missed=[...G.miss].map(e=>BYEN.get(e)).filter(Boolean);
   const got=[...G.hit].filter(e=>!G.miss.has(e)).map(e=>BYEN.get(e)).filter(Boolean);
   const Z=ZONES[G.k],hasNext=G.mode!=='review'&&win&&G.i<Z.nights.length-1;
   show(`<div class="card res" style="max-height:100%">
-    <h2 class="${win?'win':'lose'}">${win?'รอดแล้ว':'แนวป้องกันแตก'}</h2>
+    <h2 class="${win||G.mode==='survival'?'win':'lose'}">${G.mode==='survival'?'รอดได้ '+G.wave+' คลื่น':win?'รอดแล้ว':'แนวป้องกันแตก'}</h2>
+    ${G.mode==='survival'?`<div class="zinfo">${G.newBest?'<b style="color:var(--amber)">สถิติใหม่!</b> ':''}สถิติดีที่สุด ${P.best[G.k]||0} คลื่น</div>`:''}
     ${win&&G.mode!=='review'?`<div class="stars">${[0,1,2].map(i=>SV.star.replace('<svg',`<svg class="${i<stars?'on':'off'}" style="animation-delay:${.15+i*.15}s"`)).join('')}</div>`:''}
-    <div class="stats"><div><b>${G.kills}</b>ซอมบี้</div><div><b>${fmt(G.score)}</b>คะแนน</div><div><b>x${G.best}</b>คอมโบสูงสุด</div><div><b style="color:var(--amber)">+${coins}</b>เหรียญ</div></div>
+    <div class="stats"><div><b>${G.kills}</b>ซอมบี้</div><div><b>${fmt(G.score)}</b>คะแนน</div><div><b>x${G.best}</b>คอมโบสูงสุด</div><div><b style="color:var(--amber)">+${coins}</b>เหรียญ</div><div><b style="color:var(--toxic)">+${G.xp}</b>XP</div></div>
     <div class="scroll" style="width:100%"><div class="wlist">${missed.map(w=>wordRow(w,'bad')).join('')}${got.map(w=>wordRow(w,'ok')).join('')}</div></div>
     ${missed.length?`<div class="zinfo">คำสีแดงคือคำที่สะกดผิดหรือใช้คำใบ้ จะกลับมาให้ทบทวนอีก</div>`:''}
     <div class="row">${hasNext?`<button class="btn main" type="button" id="rNext">คืนต่อไป</button>`:''}<button class="btn ${hasNext?'':'main'}" type="button" id="rAgain">${win?'เล่นอีกครั้ง':'ลองใหม่'}</button><button class="btn" type="button" id="rHome">เมนู</button></div></div>`,'solid');
   const g=G;
   if($('#rNext'))$('#rNext').onclick=()=>{SFX.ui();brief(g.k,g.i+1);};
-  $('#rAgain').onclick=()=>{SFX.ui();startNight(g.k,g.i,g.mode);};
+  $('#rAgain').onclick=()=>{SFX.ui();if(g.mode==='night')brief(g.k,g.i);else startNight(g.k,g.i,g.mode);};
   $('#rHome').onclick=()=>{SFX.ui();home();};
   bindSay();
 }
@@ -1072,11 +1321,11 @@ function frame(now){
   // zombies animate in every state except pause
   if(state!=='paused'){
     for(const z of [...zombies]){
-      z.mixer.update(dt*(z.menu?.6:1));
+      z.mixer.update(dt*(z.menu?.6:z.dead?1:TS));
       if(z.menu){walk(z,z.speed*dt);if(z.obj.position.z>-9){z.obj.position.z=-32;z.obj.position.x=freeX(z.obj.position.x,-32);}continue;}
       if(z.dead){z.dieT+=dt;if(z.dieT>1.8)z.obj.position.y-=dt*.6;if(z.dieT>3.2)removeZombie(z);}
     }
-    stepFx(dt);stepAllies(dt);
+    stepFx(dt);stepAllies(dt);stepAtmosphere(dt);
     for(const f of FIRES){f.ph+=dt*9;const k=.75+Math.sin(f.ph)*.12+Math.sin(f.ph*2.3)*.08;f.l.intensity=f.base*k;f.g.children.forEach((c,i)=>{if(c.isSprite)c.material.rotation=Math.sin(f.ph*.5+i)*.15;});}
     if(state==='play')for(const pr of [...props]){if(pr.ttl!=null){pr.ttl-=dt;if(pr.ttl<=0){removeProp(pr);continue;}}pr.obj.rotation.y+=pr.kind==='med'?dt*1.5:0;}
   }
@@ -1097,7 +1346,7 @@ function frame(now){
   if(playing||state==='end'||state==='paused'){
     const W=innerWidth,H=innerHeight,items=[];
     for(const z of zombies){if(!z.tag)continue;
-      proj.set(z.obj.position.x,z.T.h+.35+z.obj.position.y,z.obj.position.z).project(camera);
+      proj.set(z.obj.position.x,(z.T.tagH||z.T.h)+.35+z.obj.position.y,z.obj.position.z).project(camera);
       const d=camera.position.distanceTo(z.obj.position),s=clamp(8/d,.78,1.15);
       if(!z.tw||z.tagDirty!==z.tag.textContent){z.tw=z.tag.offsetWidth;z.th=z.tag.offsetHeight;z.tagDirty=z.tag.textContent;}
       items.push({z,d,s,x:(proj.x*.5+.5)*W,y:(-proj.y*.5+.5)*H,w:z.tw*s,h:z.th*s,hide:proj.z>1});
@@ -1124,7 +1373,10 @@ function step(dt){
   if(!$('#jamTag').hidden&&G.t>=jamUntil){$('#jamTag').hidden=true;$('#pad').classList.remove('jam');renderPad();}
   // spawning
   if(G.queue.length){G.spawnT-=dt;if(G.spawnT<=0&&live().length<8){spawn(G.queue.shift());G.spawnT=G.W[G.wave].gap*rnd(.75,1.2);}}
-  else if(!live().length&&!G.ended){G.waveGap=(G.waveGap||2.2)-dt;if(G.waveGap<=0){G.waveGap=0;nextWave();}}
+  else if(!live().length&&!G.ended){G.waveGap=(G.waveGap||2.2)-dt;if(G.waveGap<=0){G.waveGap=0;const last=G.mode!=='survival'&&G.wave>=G.W.length-1;if(!last&&G.mode!=='review')perkPick();else nextWave();}}
+  if(G.slow>0){G.slow-=dt;if(G.slow<=0)$('#slowfx').hidden=true;}
+  if(G.shieldT>0&&live().length)G.shieldT-=dt;
+  TS=(G.slow>0?.45:1)*G.slowMul;
   // zombies walk, separate, attack
   const L=live();
   for(const z of L){
@@ -1132,12 +1384,12 @@ function step(dt){
     if(z.groanT<=0){z.groanT=rnd(4,9);const d=-z.obj.position.z;SFX.groan(clamp(.22-d*.004,.03,.2),z.type==='giant'||z.type==='brute');}
     const p=z.obj.position;
     if(!z.at){
-      if(z.hitT<=0){if(z.act!==z.mixer.clipAction(z.clips[z.T.anim]))play(z,z.T.anim,true);walk(z,z.speed*dt);}
+      if(z.hitT<=0){if(z.act!==z.mixer.clipAction(z.clips[z.T.anim]))play(z,z.T.anim,true);walk(z,z.speed*dt*TS);}
       for(const o of L)if(o!==z){const dx=p.x-o.obj.position.x,dz=p.z-o.obj.position.z;if(Math.abs(dz)<1.2&&Math.abs(dx)<.9){const nx=p.x+Math.sign(dx||rnd(-1,1))*dt*.8;if(!blocked(nx,p.z))p.x=nx;}}
       p.x=clamp(p.x,-3.6,3.6);
-      if(p.z>=STOP_Z-(z.type==='giant'?.8:0)){p.z=STOP_Z-(z.type==='giant'?.8:0);z.at=true;play(z,z.clips.Punch?'Punch':'Idle_Attack',true);}
+      if(p.z>=STOP_Z-(z.type==='giant'?.8:0)){p.z=STOP_Z-(z.type==='giant'?.8:0);z.at=true;play(z,z.T.atk||(z.clips.Punch?'Punch':'Idle_Attack'),true);}
     }else{
-      z.atkT-=dt;G.wall-=z.T.dps*dt;
+      z.atkT-=dt*TS;if(G.shieldT<=0)G.wall-=z.T.dps*dt*TS;
       if(z.atkT<=0){z.atkT=.9;SFX.thud();shake=Math.max(shake,.25);const h=$('#hurt');h.classList.add('on');setTimeout(()=>h.classList.remove('on'),90);z.miss=true;G.miss.add(curWord(z).en);}
     }
     z.x=p.x;z.z=p.z;
@@ -1154,7 +1406,7 @@ requestAnimationFrame(frame);
 loadModels().then(()=>{
   buildWorld();try{makeThumbs();}catch(e){}equipGun();if(gunObj)gunObj.visible=false;
   $('#loading').hidden=true;home();
-  window.__dw={get G(){return G;},zombies,press,live,get target(){return target;},P,OBST,blocked};
+  window.__dw={get G(){return G;},zombies,press,live,get target(){return target;},P,get OBST(){return OBST;},blocked,setZone,setAtmosphere,perkPick,startNight};
 });
 </script>
 </body>
