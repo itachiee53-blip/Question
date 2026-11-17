@@ -92,6 +92,8 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .scr.solid{background:#000b}
 .card{width:min(980px,100%);max-height:100%;display:flex;flex-direction:column;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 20px 60px #000c;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:in .25s}
 @keyframes in{from{transform:translateY(12px);opacity:0}}
+.card>*{flex-shrink:0}.card>.scroll{flex-shrink:1}
+.it .ic img{width:100%;height:100%;object-fit:contain}
 .top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .top h2{margin:0;font-family:var(--f-disp);font-weight:400;font-size:34px;letter-spacing:2px;line-height:1}
 .top .sp{flex:1}
@@ -316,10 +318,10 @@ const UPG={
 };
 const GREN_COST=60,GREN_MAX=5;
 const ZT={
-  walker:{m:'Zombie_Basic',h:1.75,speed:.95,anim:'Walk',dps:5,words:1,coin:3},
-  runner:{m:'Zombie_Ribcage',h:1.7,speed:2.1,anim:'Run',dps:4,words:1,coin:4},
-  brute:{m:'Zombie_Chubby',h:2.05,speed:.62,anim:'Walk',dps:9,words:2,coin:8},
-  giant:{m:'Zombie_Arm',h:3.4,speed:.5,anim:'Walk',dps:18,words:4,coin:30},
+  walker:{m:'Zombie_Basic',h:1.75,speed:1.1,anim:'Walk',dps:5,words:1,coin:3},
+  runner:{m:'Zombie_Ribcage',h:1.7,speed:2.3,anim:'Run',dps:4,words:1,coin:4},
+  brute:{m:'Zombie_Chubby',h:2.05,speed:.72,anim:'Walk',dps:9,words:2,coin:8},
+  giant:{m:'Zombie_Arm',h:3.4,speed:.55,anim:'Walk',dps:18,words:4,coin:30},
 };
 
 /* ---------------- save ---------------- */
@@ -452,7 +454,7 @@ async function loadModels(){
   })));
 }
 function place(n,x,y,z,ry=0,s=1){const m=MODELS[n];if(!m)return null;const o=m.scene.clone();o.position.set(x,y,z);o.rotation.y=ry;o.scale.setScalar(s);scene.add(o);return o;}
-const STOP_Z=-4.4,BARR_Z=-3.4,SPAWN_Z=-46;
+const STOP_Z=-4.4,BARR_Z=-3.4,SPAWN_Z=-31;
 function buildWorld(){
   for(let z=4,i=0;z>-160;z-=8,i++)place(i%4===2?'Street_Straight_Crack1':'Street_Straight',0,0,z,0);
   for(let z=-6,i=0;z>-120;z-=16,i++){const s=i%2?1:-1;const l=place('StreetLights',s*4.6,0,z,s>0?-Math.PI/2:Math.PI/2);
@@ -466,6 +468,18 @@ function buildWorld(){
   place('Container_Red',-6.5,.1,-44,.1);place('Container_Green',6.6,.1,-18,-.08);
   place('TrashBag_1',-4.6,.15,-8);place('TrashBag_1',-4.9,.15,-8.5,1);place('FireHydrant',4.6,.15,-11);place('TrafficCone_1',2.2,0,-9,.3);place('TrafficCone_1',-1.6,0,-19);
   place('Barrel',4.7,.15,-30);place('Barrel',5,.15,-30.8,.7);place('Blood_1',-.8,.02,-16,1,.6);
+}
+
+/* ---------------- gun thumbnails for the armory ---------------- */
+const THUMB={};
+function makeThumbs(){
+  const r=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});r.setSize(160,160);r.outputColorSpace=THREE.SRGBColorSpace;
+  const sc=new THREE.Scene();sc.add(new THREE.HemisphereLight(0xffffff,0x334433,2.2));const dl=new THREE.DirectionalLight(0xffffff,2);dl.position.set(2,3,2);sc.add(dl);
+  const cam=new THREE.PerspectiveCamera(30,1,.01,20);
+  for(const [id,g] of Object.entries(GUNS)){const m=MODELS[g.m];if(!m)continue;const o=m.scene.clone();sc.add(o);
+    o.rotation.set(0,-Math.PI/2,0);o.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(o),c=b.getCenter(new THREE.Vector3()),sz=b.getSize(new THREE.Vector3()).length();
+    cam.position.set(c.x+sz*.1,c.y+sz*.18,c.z+sz*1.05);cam.lookAt(c);r.render(sc,cam);THUMB[id]=r.domElement.toDataURL();sc.remove(o);}
+  r.dispose();
 }
 
 /* ---------------- viewmodel gun ---------------- */
@@ -840,7 +854,7 @@ function shop(tab){
   state='menu';
   let body='';
   if(tab==='guns')body=Object.entries(GUNS).map(([id,g])=>{const own=P.owned.includes(id),eq=P.gun===id;
-    return `<div class="it"><span class="ic">${SV.gun}</span><span class="tx"><b>${g.n}</b><small>${g.d}</small></span>${eq?'<span class="buy eq">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-eq="${id}">ใช้</button>`:`<button class="buy" type="button" data-gun="${id}" ${P.coins<g.cost?'disabled':''}>${SV.coin}${fmt(g.cost)}</button>`}</div>`;}).join('');
+    return `<div class="it"><span class="ic">${THUMB[id]?`<img src="${THUMB[id]}" alt="">`:SV.gun}</span><span class="tx"><b>${g.n}</b><small>${g.d}</small></span>${eq?'<span class="buy eq">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-eq="${id}">ใช้</button>`:`<button class="buy" type="button" data-gun="${id}" ${P.coins<g.cost?'disabled':''}>${SV.coin}${fmt(g.cost)}</button>`}</div>`;}).join('');
   else body=Object.entries(UPG).map(([id,u])=>{const lv=P.up[id],max=lv>=u.cost.length;
     return `<div class="it"><span class="ic">${SV[u.ic]}</span><span class="tx"><b>${u.n}</b><small>${u.d}</small><span class="lv">${u.cost.map((_,i)=>`<i class="${i<lv?'on':''}"></i>`).join('')}</span></span>${max?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" data-up="${id}" ${P.coins<u.cost[lv]?'disabled':''}>${SV.coin}${fmt(u.cost[lv])}</button>`}</div>`;}).join('')
     +`<div class="it"><span class="ic">${SV.gren}</span><span class="tx"><b>ระเบิดมือ</b><small>ฆ่าซอมบี้รอบเป้าหมายทั้งหมด (มี ${P.gren}/${GREN_MAX})</small></span>${P.gren>=GREN_MAX?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" id="bGren" ${P.coins<GREN_COST?'disabled':''}>${SV.coin}${GREN_COST}</button>`}</div>`;
@@ -955,7 +969,7 @@ function step(dt){
 resize();
 requestAnimationFrame(frame);
 loadModels().then(()=>{
-  buildWorld();equipGun();if(gunObj)gunObj.visible=false;
+  buildWorld();try{makeThumbs();}catch(e){}equipGun();if(gunObj)gunObj.visible=false;
   $('#loading').hidden=true;home();
   window.__dw={get G(){return G;},zombies,press,live,get target(){return target;},P};
 });
