@@ -67,6 +67,10 @@ button[disabled]{cursor:not-allowed}
 .shav{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:64px;width:74px;height:8px;border:2px solid var(--ink);border-radius:var(--hand);overflow:hidden;background:#fff}
 .shav i{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,#e8b26a 0 6px,#c98a3d 6px 9px);transition:width .25s}
 .typed{position:absolute;left:50%;bottom:32%;transform:translateX(-50%) rotate(-2deg);font-family:var(--f-en);font-size:34px;color:var(--ink);background:linear-gradient(transparent 55%,var(--hl-y) 55% 90%,transparent 90%);padding:0 6px;pointer-events:none}
+.ver{font-size:14px;opacity:.55;font-family:var(--f-en)}
+.newver{position:relative;width:min(420px,100%);background:#fff6cc;border:2.5px solid var(--gold);border-radius:12px;padding:6px 34px 8px 12px;text-align:left;font-size:16px;line-height:1.35}
+.newver b{display:block;font-size:18px}.newver ul{margin:2px 0 0;padding-left:18px}
+.newver button{position:absolute;right:6px;top:4px;width:26px;height:26px;font-size:18px}
 .toast{position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:40;background:var(--ink);color:#fff;border-radius:10px;padding:6px 16px;font-size:17px;animation:fade .2s}
 .flip{position:absolute;inset:0;pointer-events:none;background:var(--flipbg,var(--paper));transform-origin:left center;box-shadow:-20px 0 40px #0004;opacity:0}
 .flip.go{animation:flip .8s cubic-bezier(.5,0,.75,0) forwards}
@@ -268,6 +272,9 @@ const buzz=ms=>{try{navigator.vibrate&&navigator.vibrate(ms);}catch(e){}};
 function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 const rpick=(r,a)=>a[Math.floor(r()*a.length)];
 const rshuffle=(r,a)=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const VERSION='1.6.0',VERSION_DATE='17 พ.ย. 2569';
+// shown once on the home screen after the player gets a new version
+const CHANGES=['เปลี่ยนหน้าเมนูแบบพลิกกระดาษ ไม่กระพริบจอแล้ว พร้อมเสียงกระดาษ','คำตอบสุ่มไปทุกช่องสี คำหลอกเปลี่ยนตลอด','กดมั่วจะโดนหักหนักขึ้นและกระดาษสลับที่','เหรียญลายใหม่'];
 const COIN='<i class="coin"></i>';
 document.documentElement.style.setProperty('--coin-img',`url(${ART.coin})`);
 
@@ -1033,7 +1040,9 @@ function home(){
   const nextI=Math.min(BOOKS[curBook].stages.length-1,P.prog[curBook].filter(Boolean).length);
   const wl=weakList().length;
   const qs=P.daily.q.map((q,qi)=>{const Q=QUESTS[q.id],done=q.prog>=Q.goal;return `<div class="q ${q.claimed?'claimed':''}"><span>${Q.n} ${Math.min(q.prog,Q.goal)}/${Q.goal}${Q.unit?' '+Q.unit:''}</span><i style="--p:${Math.min(1,q.prog/Q.goal)}"></i>${q.claimed?'<b>✓</b>':done?`<button class="buy" type="button" data-claim="${qi}">${COIN}30</button>`:`<small>${COIN}30</small>`}</div>`;}).join('');
-  show(`<h1 class="title"><span>Notebook</span><br>Monsters<small>ปีศาจหน้าสมุด</small></h1>
+  const fresh=store.get('nm-ver',null)!==VERSION;
+  const news=fresh?`<div class="newver" id="newver"><button type="button" id="newverX" aria-label="ปิด">✕</button><b>อัปเดตใหม่ v${VERSION}</b><ul>${CHANGES.map(c=>`<li>${c}</li>`).join('')}</ul></div>`:'';
+  show(`${news}<h1 class="title"><span>Notebook</span><br>Monsters<small>ปีศาจหน้าสมุด</small></h1>
     <div class="cast">${cast}</div>
     <div class="menu">
       <button class="mbtn main" type="button" id="goNext">${NAV.play}เล่นต่อ<small>${BOOKS[curBook].name} · ด่าน ${nextI+1}</small></button>
@@ -1043,7 +1052,9 @@ function home(){
       <button class="mbtn" type="button" id="goWords">${NAV.words}สมุดคำศัพท์<small>${learned}/${total}</small></button>
     </div>
     <div class="quests"><div class="qh">ภารกิจวันนี้ <small>เข้าเล่นติดกัน ${P.daily.streak} วัน</small></div>${qs}</div>
-    <div class="toggles"><button class="chk" type="button" id="tSfx"><i>${OPT.sfx?'✓':''}</i>เสียง</button><button class="chk" type="button" id="tMus"><i>${OPT.music?'✓':''}</i>เพลง</button><button class="chk" type="button" id="tVoice"><i>${OPT.voice?'✓':''}</i>อ่านคำ</button></div>`);
+    <div class="toggles"><button class="chk" type="button" id="tSfx"><i>${OPT.sfx?'✓':''}</i>เสียง</button><button class="chk" type="button" id="tMus"><i>${OPT.music?'✓':''}</i>เพลง</button><button class="chk" type="button" id="tVoice"><i>${OPT.voice?'✓':''}</i>อ่านคำ</button></div>
+    <div class="ver">เวอร์ชัน ${VERSION} · ${VERSION_DATE}</div>`);
+  if(fresh)$('#newverX').onclick=()=>{store.set('nm-ver',VERSION);$('#newver').remove();};
   $('#goPlay').onclick=()=>{SFX.tap();map(curBook);};
   $('#goNext').onclick=()=>{audio();SFX.tap();preStage(curBook,nextI);};
   if($('#goRev'))$('#goRev').onclick=()=>start('review',curBook,0);
