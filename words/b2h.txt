@@ -2,7 +2,7 @@
 prioritize|จัดลำดับความสำคัญ;procrastination|การผัดวันประกันพรุ่ง;time management|การบริหารเวลา;goal-oriented|มุ่งเป้าหมาย;self-motivated|มีแรงจูงใจในตัวเอง;to-do list|รายการสิ่งที่ต้องทำ;long-term goal|เป้าหมายระยะยาว;short-term goal|เป้าหมายระยะสั้น;checklist|รายการตรวจสอบ;reminder|การเตือนความจำ
 multitask|ทำหลายอย่างพร้อมกัน;delegate tasks|กระจายงาน;meet a deadline|ส่งงานทันกำหนด;miss a deadline|ส่งงานไม่ทัน;burn out|หมดไฟ;recharge|ชาร์จพลัง;reflect on|ไตร่ตรองถึง;set priorities|กำหนดลำดับความสำคัญ;track progress|ติดตามความก้าวหน้า;evaluate results|ประเมินผลลัพธ์
 # การคมนาคมและการวางผังเมือง
-urban planning|การวางผังเมือง;zoning|การแบ่งเขต;public housing|ที่อยู่อาศัยของรัฐ;mass transit|ระบบขนส่งมวลชน;bike lane|ช่องทางจักรยาน;pedestrian zone|เขตคนเดิน;ring road|ถนนวงแหวน;flyover|สะพานลอยรถยนต์;interchange|ทางแยกต่างระดับ;terminal station|สถานีปลายทาง
+urban planning|การวางผังเมือง;zoning|การแบ่งเขต;public housing|ที่อยู่อาศัยของรัฐ;mass transit|ระบบขนส่งมวลชน;bike lane|ช่องทางจักรยาน;pedestrian zone|เขตคนเดิน;ring road|ถนนวงแหวน;flyover|สะพานข้ามแยก;interchange|ทางแยกต่างระดับ;terminal station|สถานีปลายทาง
 ride-sharing|การแชร์รถ;autonomous vehicle|รถยนต์ไร้คนขับ;traffic congestion|การจราจรติดขัด;emission zone|เขตควบคุมการปล่อยมลพิษ;fare|ค่าโดยสาร;timetable change|การเปลี่ยนตารางเวลา;commuting time|เวลาเดินทางไปทำงาน;road safety|ความปลอดภัยบนถนน;speeding|การขับรถเร็วเกินกำหนด;drunk driving|การเมาแล้วขับ
 # การศึกษาวิทยาศาสตร์ชีวิต
 habitat loss|การสูญเสียถิ่นที่อยู่;food chain|ห่วงโซ่อาหาร;food web|สายใยอาหาร;natural selection|การคัดเลือกโดยธรรมชาติ;adaptation skill|ทักษะการปรับตัว;life cycle|วงจรชีวิต;metamorphosis|การเปลี่ยนรูปร่าง;pollinator|ผู้ผสมเกสร;invasive species|ชนิดพันธุ์รุกราน;keystone species|ชนิดพันธุ์หลัก

@@ -9,7 +9,7 @@ phone call|การโทรศัพท์;missed call|สายที่ไ�
 reply soon|ตอบกลับเร็ว ๆ;attach a file|แนบไฟล์;forward|ส่งต่อ;inbox|กล่องข้อความเข้า;subject line|หัวเรื่องอีเมล;signature|ลายเซ็น;video call|วิดีโอคอล;mute|ปิดเสียง;unmute|เปิดเสียง;screen share|แชร์หน้าจอ
 # สุขภาพจิตและการดูแลตัวเอง
 self-care|การดูแลตัวเอง;take a break|พักสักครู่;deep breath|หายใจลึก ๆ;feel stressed|รู้สึกเครียด;feel better|รู้สึกดีขึ้น;get enough sleep|นอนให้พอ;drink water|ดื่มน้ำ;healthy habit|นิสัยที่ดีต่อสุขภาพ;bad habit|นิสัยไม่ดี;balance|สมดุล
-positive thinking|การคิดบวก;negative thought|ความคิดลบ;talk to someone|คุยกับใครสักคน;ask for help|ขอความช่วยเหลือ;support group|กลุ่มช่วยเหลือ;comfort zone|พื้นที่ปลอดภัยในใจ;give it a try|ลองดู;step by step|ทีละขั้น;keep going|ทำต่อไป;never give up|ไม่ยอมแพ้
+positive thinking|การคิดบวก;negative thought|ความคิดลบ;talk to someone|คุยกับใครสักคน;ask for help|ขอความช่วยเหลือ;support group|กลุ่มช่วยเหลือ;comfort zone|พื้นที่สบายใจ;give it a try|ลองดู;step by step|ทีละขั้น;keep going|ทำต่อไป;never give up|ไม่ยอมแพ้
 # การซื้อขายออนไลน์
 online shop|ร้านค้าออนไลน์;shopping cart|ตะกร้าสินค้า;checkout|ชำระเงิน;delivery fee|ค่าส่ง;tracking number|เลขพัสดุ;out of stock|สินค้าหมด;in stock|มีสินค้า;customer review|รีวิวจากลูกค้า;star rating|คะแนนดาว;flash sale|ลดราคาช่วงสั้น
 promo code|โค้ดส่วนลด;free shipping|ส่งฟรี;cash on delivery|เก็บเงินปลายทาง;return policy|นโยบายคืนสินค้า;size guide|คู่มือขนาด;wish list|รายการสิ่งที่อยากได้;order history|ประวัติคำสั่งซื้อ;seller|ผู้ขาย;buyer|ผู้ซื้อ;genuine product|สินค้าแท้

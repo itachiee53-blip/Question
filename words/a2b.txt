@@ -2,14 +2,14 @@
 neighbour friend|เพื่อนข้างบ้าน;classmate|เพื่อนร่วมชั้น;roommate|เพื่อนร่วมห้อง;boyfriend|แฟนหนุ่ม;girlfriend|แฟนสาว;grandchild|หลาน;nephew|หลานชาย;niece|หลานสาว;stepmother|แม่เลี้ยง;teenage|ช่วงวัยรุ่น
 visitor|ผู้มาเยือน;owner|เจ้าของ;leader|ผู้นำ;hero|ฮีโร่;queen|ราชินี;king|กษัตริย์;prince|เจ้าชาย;princess|เจ้าหญิง;crowd|ฝูงชน;group|กลุ่ม
 # ที่บ้านและห้องต่าง ๆ
-dining room|ห้องทานอาหาร;hall|ห้องโถง;toilet|ห้องสุขา;sink|อ่างล้างจาน;tap|ก๊อกน้ำ;drawer|ลิ้นชัก;wardrobe|ตู้เสื้อผ้า;carpet|พรม;rug|พรมผืนเล็ก;sheet|ผ้าปูที่นอน
-alarm clock|นาฬิกาปลุก;hairdryer|ไดร์เป่าผม;remote control|รีโมต;vase|แจกัน;frame|กรอบ;cushion|เบาะรอง;bookcase|ตู้หนังสือ;armchair|เก้าอี้นวม;bunk bed|เตียงสองชั้น;doorbell|กริ่งประตู
+dining room|ห้องทานอาหาร;hall|ห้องโถง;toilet|ห้องสุขา;sink|อ่างล้างจาน;tap|ก๊อกน้ำ;drawer|ลิ้นชัก;wardrobe|ตู้เสื้อผ้า;carpet|พรม;rug|พรมผืนเล็ก;sheet|ผ้าปูที่นอน, แผ่น
+alarm clock|นาฬิกาปลุก;hairdryer|ไดร์เป่าผม;remote control|รีโมต;vase|แจกัน;frame|กรอบ;cushion|หมอนอิง;bookcase|ตู้หนังสือ;armchair|เก้าอี้นวม;bunk bed|เตียงสองชั้น;doorbell|กริ่งประตู
 # การเดินทางในเมือง
 underground|รถไฟใต้ดิน;subway|รถไฟใต้ดิน;tram|รถราง;ferry|เรือข้ามฟาก;helicopter|เฮลิคอปเตอร์;scooter|สกู๊ตเตอร์;van|รถตู้;lorry|รถบรรทุก;petrol|น้ำมันเบนซิน;parking|ที่จอดรถ
 turn left|เลี้ยวซ้าย;turn right|เลี้ยวขวา;straight on|ตรงไป;crossing|ทางม้าลาย;traffic light|ไฟจราจร;roundabout|วงเวียน;corner|หัวมุม;opposite|ตรงข้าม;along|ไปตาม;through|ผ่าน ทะลุ
 # เวลาว่าง
 free time|เวลาว่าง;weekend trip|ทริปวันหยุด;picnic|ปิกนิก;barbecue|บาร์บีคิว;fishing|การตกปลา;hiking|การเดินป่า;gardening|การทำสวน;cooking class|คลาสทำอาหาร;board game|บอร์ดเกม;video game|วิดีโอเกม
-museum visit|การชมพิพิธภัณฑ์;sightsee|เที่ยวชม;relaxing|น่าผ่อนคลาย;enjoyable|น่าสนุก;favorite|ที่ชอบที่สุด;bored with|เบื่อกับ;interested in|สนใจใน;good at|เก่งเรื่อง;keen on|ชื่นชอบ;crazy about|คลั่งไคล้
+museum visit|การชมพิพิธภัณฑ์;sightsee|เที่ยวชม;relaxing|น่าผ่อนคลาย;enjoyable|น่าสนุก;favorite|ที่ชอบ, โปรด;bored with|เบื่อกับ;interested in|สนใจใน;good at|เก่งเรื่อง;keen on|ชื่นชอบ;crazy about|คลั่งไคล้
 # อาหารนานาชาติ
 spaghetti|สปาเกตตี;sushi|ซูชิ;noodle soup|ก๋วยเตี๋ยวน้ำ;dumpling|เกี๊ยว;pancake|แพนเค้ก;omelette|ไข่เจียว;bacon|เบคอน;sausage|ไส้กรอก;ham|แฮม;toast|ขนมปังปิ้ง
 cereal|ซีเรียล;biscuit|บิสกิต;popcorn|ป๊อปคอร์น;crisps|มันฝรั่งทอดกรอบ;lemonade|น้ำมะนาว;smoothie|สมูทตี้;milkshake|มิลค์เชค;mineral water|น้ำแร่;bubble tea|ชานมไข่มุก;takeaway|อาหารกลับบ้าน
@@ -17,18 +17,18 @@ cereal|ซีเรียล;biscuit|บิสกิต;popcorn|ป๊อปค�
 hairdresser|ช่างทำผม;barber|ช่างตัดผมชาย;butcher|คนขายเนื้อ;florist|ร้านดอกไม้;department store|ห้างสรรพสินค้า;gift shop|ร้านของขวัญ;newsagent|ร้านขายหนังสือพิมพ์;launderette|ร้านซักรีด;petrol station|ปั๊มน้ำมัน;car park|ที่จอดรถ
 open hours|เวลาเปิด;closed|ปิด, ปิดแล้ว;queue|เข้าแถว คิว;deliver|ส่งของ;delivery|การจัดส่ง;package|พัสดุ;parcel|ห่อพัสดุ;price tag|ป้ายราคา;bargain|ของถูก ต่อรอง;brand new|ใหม่เอี่ยม
 # สภาพอากาศและฤดู
-foggy|มีหมอก;stormy|มีพายุ;icy|เป็นน้ำแข็ง;freezing|หนาวจัด;boiling|ร้อนจัด;humid|ชื้น;dry season|ฤดูแล้ง;rainy season|ฤดูฝน;forecast|พยากรณ์;thunderstorm|พายุฝนฟ้าคะนอง
+foggy|มีหมอก;stormy|มีพายุ;icy|เย็นเฉียบ, มีน้ำแข็ง;freezing|หนาวจัด;boiling|ร้อนจัด;humid|ชื้น;dry season|ฤดูแล้ง;rainy season|ฤดูฝน;forecast|พยากรณ์;thunderstorm|พายุฝนฟ้าคะนอง
 degree|องศา ปริญญา;sunshine|แสงแดด;shade|ร่มเงา;rainfall|ปริมาณน้ำฝน;breeze|ลมอ่อน ๆ;heatwave|คลื่นความร้อน;snowman|ตุ๊กตาหิมะ;umbrella stand|ที่วางร่ม;raincoat|เสื้อกันฝน;sunglasses|แว่นกันแดด
 # คำกริยา A2 เพิ่มเติม
-arrange|จัดเตรียม;belong|เป็นของ;borrow money|ยืมเงิน;celebrate a birthday|ฉลองวันเกิด;collect stamps|สะสมแสตมป์;complete|ทำให้สมบูรณ์;connect|เชื่อมต่อ;contain|บรรจุ;cover|คลุม ปก;cross out|ขีดฆ่า
-cycle|ปั่นจักรยาน;deliver a letter|ส่งจดหมาย;design a poster|ออกแบบโปสเตอร์;dig|ขุด;disagree|ไม่เห็นด้วย;dive|ดำน้ำ;divide|แบ่ง;exercise daily|ออกกำลังกายทุกวัน;fill|เติมให้เต็ม;fold|พับ
+arrange|จัด, จัดเตรียม;belong|เป็นของ;borrow money|ยืมเงิน;celebrate a birthday|ฉลองวันเกิด;collect stamps|สะสมแสตมป์;complete|ทำให้สมบูรณ์;connect|เชื่อมต่อ;contain|บรรจุ;cover|คลุม ปก;cross out|ขีดฆ่า
+cycle|ปั่นจักรยาน;deliver a letter|ส่งจดหมาย;design a poster|ออกแบบโปสเตอร์;dig|ขุด;disagree|ไม่เห็นด้วย;dive|ดำน้ำ;divide|แบ่ง;exercise daily|ออกกำลังกายทุกวัน;fill|เติม, ใส่ให้เต็ม;fold|พับ
 hang|แขวน;hate waiting|เกลียดการรอ;hurt yourself|ทำตัวเองเจ็บ;knock|เคาะ;lie down|นอนลง;lift up|ยกขึ้น;lock|ล็อก;mark homework|ตรวจการบ้าน;melt|ละลาย;mend|ซ่อมแซม
-pack|แพ็กของ;pick|เก็บ เลือก;post a letter|ส่งจดหมาย;print out|พิมพ์ออกมา;protect animals|ปกป้องสัตว์;rain heavily|ฝนตกหนัก;ring|แหวน, กดกริ่ง, โทรหา;rush|รีบเร่ง;scream|กรีดร้อง;shut|ปิด
+pack|แพ็กของ;pick|เลือก, เก็บ;post a letter|ส่งจดหมาย;print out|พิมพ์ออกมา;protect animals|ปกป้องสัตว์;rain heavily|ฝนตกหนัก;ring|แหวน, กดกริ่ง, โทรหา;rush|รีบเร่ง;scream|กรีดร้อง;shut|ปิด
 sign up|ลงทะเบียน;sink (verb)|จม;smell good|กลิ่นหอม;snow heavily|หิมะตกหนัก;sneeze|จาม;solve a puzzle|แก้ปริศนา;spill|ทำหก;stay|อยู่, พักอยู่;stick|ติด แปะ;suggest an idea|เสนอความคิด
 surf|โต้คลื่น;switch on|เปิดสวิตช์;switch off|ปิดสวิตช์;tear|ฉีก น้ำตา;tie|ผูก;touch screen|จอสัมผัส;train hard|ฝึกหนัก;travel abroad|ไปต่างประเทศ;trust friends|ไว้ใจเพื่อน;unlock|ปลดล็อก
 # คำคุณศัพท์ A2 เพิ่มเติม
 awake|ตื่นอยู่;asleep|หลับอยู่;alive|มีชีวิต;dead|ตาย;broken|แตก เสีย;crowded|แออัด;empty room|ห้องว่าง;excellent|ยอดเยี่ยม;fair|ยุติธรรม;fantastic|ยอดเยี่ยม เหลือเชื่อ
-fresh air|อากาศบริสุทธิ์;glad|ดีใจ;helpless|ช่วยตัวเองไม่ได้;lucky|โชคดี;unlucky|โชคร้าย;nervous about|ประหม่าเกี่ยวกับ;ready|พร้อม;silly|งี่เง่า;sure|แน่ใจ;wonderful day|วันที่วิเศษ
+fresh air|อากาศบริสุทธิ์;glad|ดีใจ;helpless|ช่วยตัวเองไม่ได้;lucky|โชคดี;unlucky|โชคร้าย;nervous about|ประหม่าเกี่ยวกับ;ready|พร้อม;silly|โง่ ๆ, ไร้สาระ;sure|แน่ใจ;wonderful day|วันที่วิเศษ
 dangerous road|ถนนอันตราย;comfortable|สบาย;uncomfortable|ไม่สบายตัว;delicious food|อาหารอร่อย;friendly dog|สุนัขที่เป็นมิตร;hungry cat|แมวหิว;independent|เป็นอิสระ;polite boy|เด็กชายสุภาพ;proud of|ภูมิใจใน;terrible weather|อากาศแย่
 # เทคโนโลยี A2
 camera phone|กล้องโทรศัพท์;headphones|หูฟัง;speaker|ลำโพง ผู้พูด;microphone|ไมโครโฟน;charger|ที่ชาร์จ;cable|สายเคเบิล;mouse pad|แผ่นรองเมาส์;printer|เครื่องพิมพ์;file|ไฟล์ แฟ้ม;folder|โฟลเดอร์

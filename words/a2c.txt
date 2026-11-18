@@ -8,7 +8,7 @@ cockroach|แมลงสาบ;ladybird|เต่าทอง;dragonfly|แม�
 # ร่างกายและการแต่งตัว A2
 eyebrow|คิ้ว;eyelash|ขนตา;forehead|หน้าผาก;wrist|ข้อมือ;ankle|ข้อเท้า;heel|ส้นเท้า;hip|สะโพก;waist|เอว;chest|หน้าอก;throat|ลำคอ
 necklace|สร้อยคอ;earring|ต่างหู;bracelet|สร้อยข้อมือ;ring finger|นิ้วนาง;scarf|ผ้าพันคอ;gloves|ถุงมือ;boots|รองเท้าบูท;sandals|รองเท้าแตะ;trainers|รองเท้าผ้าใบ;pyjamas|ชุดนอน
-sweater|เสื้อไหมพรม;hoodie|เสื้อฮู้ด;jeans|กางเกงยีนส์;tie (clothes)|เนกไท;button|กระดุม;zip|ซิป;sleeve|แขนเสื้อ;collar|ปกเสื้อ;fashion|แฟชั่น;style|สไตล์
+sweater|เสื้อสเวตเตอร์, เสื้อไหมพรม;hoodie|เสื้อฮู้ด;jeans|กางเกงยีนส์;tie (clothes)|เนกไท;button|กระดุม;zip|ซิป;sleeve|แขนเสื้อ;collar|ปกเสื้อ;fashion|แฟชั่น;style|สไตล์
 # ประเทศและภาษา
 Thailand|ประเทศไทย;Japan|ญี่ปุ่น;China|จีน;Korea|เกาหลี;India|อินเดีย;England|ประเทศอังกฤษ;France|ฝรั่งเศส;Germany|เยอรมนี;America|อเมริกา;Australia|ออสเตรเลีย
 Japanese|ภาษาญี่ปุ่น;Chinese|ภาษาจีน;Korean|ภาษาเกาหลี;French|ภาษาฝรั่งเศส;German|ภาษาเยอรมัน;Spanish|ภาษาสเปน;nationality|สัญชาติ;Asia|เอเชีย;Europe|ยุโรป;Africa|แอฟริกา

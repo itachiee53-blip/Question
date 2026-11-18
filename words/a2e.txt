@@ -1,5 +1,5 @@
 # ที่โรงพยาบาลและร้านขายยา
-doctor's office|ห้องตรวจแพทย์;waiting room|ห้องรอ;nurse station|เคาน์เตอร์พยาบาล;thermometer|ปรอทวัดไข้;cough syrup|ยาแก้ไอ;eye drops|ยาหยอดตา;cream|ครีม;bandage roll|ม้วนผ้าพันแผล;get well soon|หายไว ๆ;feel sick|รู้สึกคลื่นไส้
+doctor's office|ห้องตรวจแพทย์;waiting room|ห้องรอ;nurse station|เคาน์เตอร์พยาบาล;thermometer|ปรอทวัดไข้;cough syrup|ยาแก้ไอ;eye drops|ยาหยอดตา;cream|ครีม;bandage roll|ม้วนผ้าพันแผล;get well soon|หายไว ๆ;feel sick|รู้สึกไม่สบาย, คลื่นไส้
 runny nose|น้ำมูกไหล;sneezing|การจาม;high fever|ไข้สูง;earache|ปวดหู;backache|ปวดหลัง;broken arm|แขนหัก;take medicine|กินยา;see a doctor|ไปหาหมอ;stay in bed|นอนพักบนเตียง;rest well|พักผ่อนให้เพียงพอ
 # การเงินในชีวิตประจำวัน
 piggy bank|กระปุกออมสิน;pocket|กระเป๋าเสื้อกางเกง;change money|แลกเงิน;how much is it|ราคาเท่าไร;too expensive|แพงเกินไป;on sale|ลดราคาอยู่;half price|ครึ่งราคา;buy one get one|ซื้อหนึ่งแถมหนึ่ง;pay by card|จ่ายด้วยบัตร;pay in cash|จ่ายเงินสด

@@ -7,7 +7,7 @@ diaspora|กลุ่มคนพลัดถิ่น;ethnocentric|ยึดช
 # คำบรรยายบุคลิก C1
 abrasive manner|ท่าทีกระด้าง;assiduous|ขยันขันแข็ง;blasé|เฉยชาเพราะชินแล้ว;brusque|ห้วน;charismatic|มีเสน่ห์ดึงดูด;churlish|หยาบคายไร้มารยาท;contrarian|ชอบเห็นต่าง;demure|เรียบร้อยสงบเสงี่ยม;erudite|รอบรู้;fickle|โลเล
 garrulous person|คนพูดมาก;haughty|หยิ่งยโส;impetuous|หุนหัน;irascible|โกรธง่าย;judicious|มีวิจารณญาณ;magnetic|มีแรงดึงดูด;ingenuous|ซื่อไร้เดียงสา;obstreperous|เอะอะดื้อด้าน;phlegmatic|เยือกเย็นไม่ตื่นเต้น;querulous|ขี้บ่น
-sanctimonious|ทำทีเป็นคนดี;supercilious|ดูถูกผู้อื่น;timorous|ขี้ขลาด;unflappable|ไม่หวั่นไหว;urbane|สุภาพเรียบร้อยแบบคนเมือง;vivacious|มีชีวิตชีวาร่าเริง;wily|เจ้าเล่ห์;witty|มีไหวพริบตลก;astuteness|ความหลักแหลม;self-effacing|ถ่อมตัวไม่โอ้อวด
+sanctimonious|ทำทีเป็นคนดี;supercilious|ดูถูกผู้อื่น;timorous|ขี้ขลาด;unflappable|ไม่หวั่นไหว;urbane|สุภาพเรียบร้อยแบบคนเมือง;vivacious|มีชีวิตชีวาร่าเริง;wily|เจ้าเล่ห์;witty|มีไหวพริบ, พูดตลกคมคาย;astuteness|ความหลักแหลม;self-effacing|ถ่อมตัวไม่โอ้อวด
 # วลีกริยาขั้นสูง
 brush off|ปัดตก;bow out|ถอนตัว;buckle down|ตั้งใจทำงาน;butt in|แทรกขัดจังหวะ;chip in|ช่วยกันออกเงิน;clamp down on|ปราบปราม;crop up|เกิดขึ้นโดยไม่คาดคิด;dawn on|เริ่มเข้าใจ;dwell on|คิดวนเวียน;egg on|ยุให้ทำ
 fend off|ปัดป้อง;fizzle out|ค่อย ๆ หมดไป;flesh out|ขยายรายละเอียด;gloss over|ทำเป็นมองข้าม;hammer out|ตกลงกันได้หลังถกเถียง;iron out|แก้ปัญหาเล็ก ๆ;mull over|ครุ่นคิด;phase out|ค่อย ๆ ยกเลิก;rein in|ควบคุม;stave off|ป้องกันไว้ก่อน

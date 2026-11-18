@@ -370,8 +370,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.13.4',VERSION_DATE='17 พ.ย. 2569';
-const CHANGES=['ตรวจคำแปลครบทั้ง 6,014 คำ แก้คำที่แปลแปลกหรือผิด 147 คำ','แก้คำที่มี ๆ ที่ถูกแบ่งผิด เช่น นาน ๆ ครั้ง, เร็ว ๆ นี้'];
+const VERSION='2.13.5',VERSION_DATE='17 พ.ย. 2569';
+const CHANGES=['ปรับคำแปลอีก 98 คำให้เป็นความหมายที่คนใช้บ่อยที่สุดก่อน เช่น dog = หมา, head = หัว, bus = รถเมล์'];
 
 /* ---------------- helpers ---------------- */
 const $=s=>document.querySelector(s);
@@ -1249,7 +1249,10 @@ function bossIntro(z,then){
 }
 
 /* ---------------- mini games between waves ---------------- */
-function mgPool(n){const ws=shuffle([...G.fresh,...G.old.slice(0,10)]);const out=[],seen=new Set();for(const w of ws){if(seen.has(w.th)||seen.has(w.en))continue;seen.add(w.th);seen.add(w.en);out.push(w);if(out.length>=n)break;}return out;}
+// two words clash when they share any Thai meaning ('การแข่งขัน, ไม้ขีดไฟ' vs 'การแข่งขัน, เชื้อชาติ')
+const MEAN=th=>th.split(', ');
+const clash=(a,b)=>a.en===b.en||MEAN(a.th).some(m=>MEAN(b.th).includes(m));
+function mgPool(n){const ws=shuffle([...G.fresh,...G.old.slice(0,10)]);const out=[];for(const w of ws){if(out.some(o=>clash(o,w)))continue;out.push(w);if(out.length>=n)break;}return out;}
 function mgTimer(sec,onEnd){const t0=performance.now();const iv=setInterval(()=>{const k=1-(performance.now()-t0)/1000/sec;const bar=$('#mgT');if(bar)bar.style.width=Math.max(0,k*100)+'%';if(k<=0){clearInterval(iv);onEnd();}},100);return ()=>clearInterval(iv);}
 function mgReward(ok,total,title){
   const good=ok/total>=.75;let rew='';
@@ -1291,7 +1294,7 @@ function mgCode(){
 function mgTrue(){
   const ws=mgPool(10);let ok=0,n=0,cur=null,truth=false,over=false;
   const stop=mgTimer(18,()=>{over=true;mgReward(ok,Math.max(n,1),'ตรวจสอบเสบียง');});
-  const draw=()=>{if(over)return;const w=ws[n%ws.length];truth=Math.random()<.5;const shown=truth?w:ws[(n+1+Math.floor(Math.random()*(ws.length-1)))%ws.length];cur=w;
+  const draw=()=>{if(over)return;const w=ws[n%ws.length];truth=Math.random()<.5;const others=ws.filter(o=>!clash(o,w));if(!others.length)truth=true;const shown=truth?w:pick(others);cur=w;
     show(`<div class="card res mg"><h2>ตรวจสอบเสบียง</h2><div class="zinfo">ป้ายตรงกันไหม ตอบให้ได้มากที่สุด · ถูก ${ok}</div><div class="mgbar"><i id="mgT"></i></div>
       <div class="mgbig">${esc(w.en)}<small>= ${esc(shown.th)} ?</small></div>
       <div class="mgrow"><button class="btn main" type="button" id="mgY">ถูก</button><button class="btn red" type="button" id="mgN">ผิด</button></div></div>`,'solid');
@@ -1662,7 +1665,7 @@ const DECOY='etaoinshrdlucmfwypvbgk';
 // four answers for the targeted zombie, made once per word so switching targets back and forth keeps them stable
 function choicesFor(z){
   if(z.opts&&z.opts.word===curWord(z).en)return z.opts.list;
-  const w=curWord(z),pool=[...G.fresh,...G.old,...ZONES[G.k].words].filter(o=>o.en!==w.en&&o.th!==w.th);
+  const w=curWord(z),pool=[...G.fresh,...G.old,...ZONES[G.k].words].filter(o=>!clash(o,w));
   const L=w.en.length,near=pool.filter(o=>Math.abs(o.en.length-L)<=3),src=near.length>=6?near:pool;
   const picks=[];const seen=new Set([w.en]);
   for(const o of shuffle(src)){if(seen.has(o.en))continue;seen.add(o.en);picks.push(o);if(picks.length===3)break;}

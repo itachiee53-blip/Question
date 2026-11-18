@@ -8,12 +8,12 @@ landlord|เจ้าของที่ให้เช่า;tenant|ผู้เ
 condominium|คอนโดมิเนียม;skyscraper|ตึกระฟ้า;commuter|ผู้เดินทางไปทำงาน;rush hour|ชั่วโมงเร่งด่วน;congestion|ความแออัด;public transport|ขนส่งสาธารณะ;amenities|สิ่งอำนวยความสะดวก;gentrification|การปรับปรุงย่านให้หรูขึ้น;slum|สลัม;metropolis|มหานคร
 # อาหารและโภชนาการ B2
 carbohydrate|คาร์โบไฮเดรต;fibre|ใยอาหาร;cholesterol|คอเลสเตอรอล;additive|สารเติมแต่ง;preservative|สารกันบูด;processed food|อาหารแปรรูป;nutritious|มีคุณค่าทางอาหาร;malnutrition|ภาวะขาดสารอาหาร;intake|ปริมาณที่ได้รับ;digestion|การย่อยอาหาร
-gourmet|นักชิมอาหาร;cuisine culture|วัฒนธรรมอาหาร;delicacy|อาหารรสเลิศ;savoury|รสเค็ม, ไม่หวาน;bitter taste|รสขม;aroma|กลิ่นหอม;garnish|ของแต่งหน้าอาหาร;marinate|หมัก;simmer|เคี่ยว;ferment|หมักบ่ม
+gourmet|นักชิมอาหาร;cuisine culture|วัฒนธรรมอาหาร;delicacy|อาหารพิเศษหายาก;savoury|รสเค็ม, ไม่หวาน;bitter taste|รสขม;aroma|กลิ่นหอม;garnish|ของแต่งหน้าอาหาร;marinate|หมัก;simmer|เคี่ยว;ferment|หมักบ่ม
 # การเดินทางและการท่องเที่ยว B2
 itinerary|แผนการเดินทาง;excursion|การทัศนศึกษา;expedition|การสำรวจ;landmark site|สถานที่สำคัญ;hospitality|การต้อนรับ;jet lag|อาการเจ็ตแล็ก;layover|การแวะพักต่อเครื่อง;visa|วีซ่า;check-in desk|เคาน์เตอร์เช็กอิน;boarding pass|บัตรขึ้นเครื่อง
 ecotourism|การท่องเที่ยวเชิงนิเวศ;backpacker|นักท่องเที่ยวแบกเป้;off the beaten track|นอกเส้นทางท่องเที่ยวหลัก;picturesque|งดงามราวภาพวาด;breathtaking|งดงามจนตะลึง;remote|ห่างไกล;secluded|เงียบสงบ, ห่างไกลผู้คน;bustling|คึกคัก;overcrowded|แออัดเกินไป;touristy|เต็มไปด้วยนักท่องเที่ยว
 # อารมณ์และความรู้สึก B2
-apprehensive|หวาดหวั่น;bewildered|งุนงง;content|พอใจ;devastated|เสียใจอย่างมาก;ecstatic|ปลื้มปีติ;exasperated|หงุดหงิดมาก;fed up|เบื่อหน่าย;flattered|ปลื้มที่ได้รับคำชม;gloomy|หม่นหมอง;heartbroken|อกหัก เสียใจมาก
+apprehensive|หวาดหวั่น;bewildered|งุนงง;content|พอใจ, เนื้อหา;devastated|เสียใจอย่างมาก;ecstatic|ปลื้มปีติ;exasperated|หงุดหงิดมาก;fed up|เบื่อหน่าย;flattered|ปลื้มที่ได้รับคำชม;gloomy|หม่นหมอง;heartbroken|อกหัก เสียใจมาก
 indignant|ขุ่นเคือง;irritated|รำคาญ;nostalgic|คิดถึงอดีต;overjoyed|ดีใจมาก;petrified|กลัวจนตัวแข็ง;puzzled|งงงวย;relieved|โล่งใจ;resentful|ขุ่นแค้น;startled|สะดุ้งตกใจ;thrilled|ตื่นเต้นดีใจ
 # คำนาม B2 ชุดเพิ่มเติม
 fraud|การฉ้อโกง;hostage|ตัวประกัน;inquiry|การสอบสวน;intellect|สติปัญญา;intuition|สัญชาตญาณ ความรู้สึกหยั่งรู้;jurisdiction|เขตอำนาจศาล;landmark decision|คำตัดสินสำคัญ;legacy|มรดก;longevity|อายุยืน;manifesto|แถลงการณ์
