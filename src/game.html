@@ -476,7 +476,7 @@ const CHANGES=[
   'ดูตัวอย่างของตกแต่งก่อนซื้อ · คืนเหรียญของที่ซื้อไปแล้ว',
   'กำแพง 9 แบบ ดูก่อนซื้อได้',
   'จัดจุดวางของใหม่ ไม่ทับกัน',
-  'ผู้ช่วยเก่งขึ้น: มือปืนยิงบอสได้ · สุนัขขู่ซอมบี้ได้',
+  'ผู้ช่วยเก่งขึ้น: ผู้รอดชีวิตยิงบอสได้ · สุนัขเฝ้ายามขู่ซอมบี้ได้',
   'ตกแต่งฐานได้ 22 อย่าง',
   'ปุ่มดูมุมเล่นจริง',
   'ถอดแนวกั้นสะสม คืนเหรียญอัตโนมัติ',
@@ -1492,11 +1492,11 @@ const allies=[];
 /* helpers you buy: each kills zombies in its own way, so they are worth the coins */
 const ALLY={
   // survivor: a marksman. picks off the zombie closest to the barricade from range
-  man:{n:'มือปืน',cost:500,up:[350,700],cd:[10,7.5,5],
+  man:{n:'ผู้รอดชีวิต',cost:500,up:[350,700],cd:[10,7.5,5],
     d:l=>`ยิงตัวใกล้สุด ทุก ${ALLY.man.cd[l]} วิ${l>=2?' · ยิงบอสได้':''}`,
     nx:l=>`ทุก ${ALLY.man.cd[l]} วิ${l>=2?' + ยิงบอสได้':''}`},
   // dog: a guard. kills whatever is hitting the barricade and scares the ones around it
-  dog:{n:'สุนัข',cost:400,up:[300,600],cd:[9,7,5],stun:[0,1.5,2.5],
+  dog:{n:'สุนัขเฝ้ายาม',cost:400,up:[300,600],cd:[9,7,5],stun:[0,1.5,2.5],
     d:l=>`กัดตัวที่ตีแนวกั้น ทุก ${ALLY.dog.cd[l]} วิ${ALLY.dog.stun[l]?` · ขู่ ${ALLY.dog.stun[l]} วิ`:''}`,
     nx:l=>`ทุก ${ALLY.dog.cd[l]} วิ${ALLY.dog.stun[l]?` + ขู่ ${ALLY.dog.stun[l]} วิ`:''}`},
 };
@@ -1529,8 +1529,8 @@ function stepAllies(dt){
   if(man&&lm>0){G.manT-=dt;if(G.manT<=0){const t=live().filter(z=>z.obj.position.z>-16&&(!z.T.boss||lm>=3)).sort((a,b)=>b.obj.position.z-a.obj.position.z)[0];
     if(t){G.manT=ALLY.man.cd[lm-1];allyPlay(man,'Punch',true);sample('pistol',.45)||SFX.shot('pistol');const from=new THREE.Vector3(-1.9,1.45,-3.3);muzzleFlash(from);
       bullet(from,chest(t).clone(),140,()=>{if(!zombies.includes(t)||t.dead)return;blood(t);
-        if(t.T.boss||t.wi<t.words.length-1){t.wi=Math.min(t.wi+1,t.words.length-1);t.p=0;t.opts=null;renderTag(t);knock(t,1,.4);if(t===target)renderPad();floatAt(t,'มือปืนยิง!','#a6e05a');hud();}
-        else{floatAt(t,'มือปืนยิง!','#a6e05a');kill(t,false);}},1);}else G.manT=.5;}}
+        if(t.T.boss||t.wi<t.words.length-1){t.wi=Math.min(t.wi+1,t.words.length-1);t.p=0;t.opts=null;renderTag(t);knock(t,1,.4);if(t===target)renderPad();floatAt(t,'ผู้รอดชีวิตยิง!','#a6e05a');hud();}
+        else{floatAt(t,'ผู้รอดชีวิตยิง!','#a6e05a');kill(t,false);}},1);}else G.manT=.5;}}
   // dog: kills a zombie that is hitting the barricade; from level 2 the ones around it freeze in fright
   if(dog&&ld>0){G.dogT-=dt;if(G.dogT<=0){const t=live().filter(z=>!z.T.boss&&(z.at||z.obj.position.z>STOP_Z-2.5)).sort((a,b)=>b.obj.position.z-a.obj.position.z)[0];
     if(t){G.dogT=ALLY.dog.cd[ld-1];allyPlay(dog,'Attack',true);SFX.bark();setTimeout(()=>{if(!zombies.includes(t)||t.dead)return;blood(t);floatAt(t,'ถูกกัด!','#ffb070');kill(t,false);

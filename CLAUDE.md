@@ -2,7 +2,7 @@
 
 ## UI text rule (from the owner, required)
 Every button, title, label, description, toast and hint in the game must be **short and easy to read at a glance**.
-- Names: 1–2 words (e.g. `มือปืน`, not `ผู้รอดชีวิต (มือปืน)`).
+- Names: short, no extra detail in parentheses (e.g. `ผู้รอดชีวิต`, `สุนัขเฝ้ายาม` — the owner likes these; not `ผู้รอดชีวิต (มือปืน)`).
 - Descriptions: one short phrase, about 2–5 words, numbers over sentences (e.g. `ยิงทุก 5 วิ`, `กระสุน +25%`).
 - No explanations of how to play inside menus, no parentheses with extra detail, no long sentences joined with `·`.
 - Changelog (`CHANGES`) entries: one short line each.
