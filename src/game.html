@@ -371,7 +371,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.14.0',VERSION_DATE='18 พ.ย. 2569';
+const VERSION='2.15.0',VERSION_DATE='18 พ.ย. 2569';
 const CHANGES=['สมุดคำศัพท์แสดงคำแปลเต็ม ไม่ตัดเป็น ... แล้ว'];
 
 /* ---------------- helpers ---------------- */
@@ -694,7 +694,7 @@ function facade(style,seed){
   const key=style+seed;if(FACADES[key])return FACADES[key];
   const W=256,H=512,col=document.createElement('canvas'),emi=document.createElement('canvas');col.width=emi.width=W;col.height=emi.height=H;
   const g=col.getContext('2d'),e=emi.getContext('2d');e.fillStyle='#000';e.fillRect(0,0,W,H);
-  const P_={city:['#6d6a63','#7a5a4a','#5c6670','#8a8478','#4f5552'],ruin:['#3e3a36','#4a3f38','#353a3c'],house:['#c9b79a','#9fb3a8','#c7a49a','#a6b1c4','#d6cdb6'],ware:['#6f7a80','#8a7f6a','#5f6b5a','#7a6a62'],school:['#d8c9a0','#c9b28a','#e0d6bc'],hosp:['#e6e6e0','#d8dcdc'],barn:['#8a2a20','#9a3424']}[style];
+  const P_={city:['#6d6a63','#7a5a4a','#5c6670','#8a8478','#4f5552'],ruin:['#3e3a36','#4a3f38','#353a3c'],house:['#c9b79a','#9fb3a8','#c7a49a','#a6b1c4','#d6cdb6'],ware:['#6f7a80','#8a7f6a','#5f6b5a','#7a6a62'],school:['#d8c9a0','#c9b28a','#e0d6bc'],hosp:['#e6e6e0','#d8dcdc'],police:['#cfd2d6','#bfc4ca'],temple:['#ece6d8'],mall:['#3a4a5a','#2e3e4e'],barn:['#8a2a20','#9a3424']}[style];
   const base=P_[seed%P_.length];g.fillStyle=base;g.fillRect(0,0,W,H);
   // grime
   for(let i=0;i<60;i++){g.fillStyle=`rgba(0,0,0,${Math.random()*.08})`;g.fillRect(Math.random()*W,Math.random()*H,Math.random()*60,Math.random()*30);}
@@ -717,10 +717,15 @@ function facade(style,seed){
     for(let i=0;i<H;i+=12){g.fillStyle='rgba(0,0,0,.08)';g.fillRect(0,i,W,2);}
     for(const fy of [60,250])for(const fx of [30,150]){win(fx,fy,70,90,Math.random()<.35);g.fillStyle='#f3efe6';g.fillRect(fx-6,fy+90,82,8);}
     g.fillStyle='#5a3a2a';g.fillRect(100,H-150,56,150);g.fillStyle='#d8b56a';g.fillRect(144,H-80,6,6);
-  }else if(style==='school'||style==='hosp'){
-    const floors=style==='hosp'?6:3,fh=H/floors;
-    for(let f=0;f<floors;f++){g.fillStyle=style==='hosp'?'#3a8a8a':'#8a5a3a';g.fillRect(0,f*fh+fh-10,W,10);
-      for(let c=0;c<4;c++)win(10+c*62,f*fh+fh*.25,50,fh*.5,Math.random()<.25,style==='hosp'?'#d8f0ff':'#ffd690');}
+  }else if(style==='school'||style==='hosp'||style==='police'){
+    const floors={hosp:6,police:4,school:3}[style],fh=H/floors;
+    for(let f=0;f<floors;f++){g.fillStyle={hosp:'#3a8a8a',police:'#2a4a9a',school:'#8a5a3a'}[style];g.fillRect(0,f*fh+fh-10,W,10);
+      for(let c=0;c<4;c++)win(10+c*62,f*fh+fh*.25,50,fh*.5,Math.random()<.25,style==='school'?'#ffd690':'#d8f0ff');}
+  }else if(style==='mall'){
+    for(let y=0;y<H;y+=40)for(let x=0;x<W;x+=32){g.fillStyle=Math.random()<.15?'#111':'#4a6a86';g.fillRect(x+2,y+2,28,36);if(Math.random()<.2){e.fillStyle='#9adfff';e.fillRect(x+2,y+2,28,36);}}
+  }else if(style==='temple'){
+    g.fillStyle='#8a2a1c';g.fillRect(0,0,W,20);g.fillStyle='#d8b040';g.fillRect(0,20,W,8);g.fillRect(0,H-24,W,24);
+    for(let c=0;c<4;c++){const x=18+c*60;g.fillStyle='#6a1a14';g.fillRect(x,120,40,260);g.fillStyle='#d8b040';g.fillRect(x+4,124,32,8);g.beginPath();g.moveTo(x,120);g.lineTo(x+20,80);g.lineTo(x+40,120);g.fill();if(Math.random()<.4){e.fillStyle='#ffa040';e.fillRect(x+6,140,28,220);}}
   }else if(style==='barn'){
     for(let x=0;x<W;x+=16){g.fillStyle='rgba(0,0,0,.18)';g.fillRect(x,0,3,H);}
     g.fillStyle='#e8e0d0';g.fillRect(60,H-260,136,260);g.fillStyle=base;g.fillRect(68,H-252,120,252);
@@ -898,7 +903,9 @@ function cy(x,y,z,r,h,c,seg=12,r2=r){const m=new THREE.Mesh(new THREE.CylinderGe
 // many copies of one shape in a single draw call
 function inst(geo,m,list){const im=new THREE.InstancedMesh(geo,m,list.length),o=new THREE.Object3D();
   list.forEach((p,i)=>{o.position.set(p[0],p[1],p[2]);o.rotation.set(0,p[3]||0,0);o.scale.set(p[4]||1,p[5]||1,p[6]||1);o.updateMatrix();im.setMatrixAt(i,o.matrix);});PLACE_TO.add(im);return im;}
-function gable(x,z,w,d,y,c){const r=new THREE.Mesh(new THREE.CylinderGeometry(w*.62,w*.62,d+.6,3,1),mat(c));r.rotation.set(Math.PI/2,Math.PI/2,Math.PI/2);r.position.set(x,y+w*.3,z);r.scale.set(1,1,.55);PLACE_TO.add(r);}
+// pitched roof: a triangle w wide and run d long along the road
+function gable(x,z,w,d,y,c){const sh=new THREE.Shape();sh.moveTo(-w/2-.3,0);sh.lineTo(w/2+.3,0);sh.lineTo(0,w*.42);sh.closePath();
+  const geo=new THREE.ExtrudeGeometry(sh,{depth:d+.6,bevelEnabled:false});geo.translate(0,0,-(d+.6)/2);const r=new THREE.Mesh(geo,mat(c));r.position.set(x,y,z);PLACE_TO.add(r);return r;}
 function trees(x0,x1,z0,z1,step,s=1){const T=['Tree_1','Tree_2','Tree_3','Tree_4'];for(let z=z0;z>z1;z-=rnd(step*.6,step*1.4))place(pick(T),s*rnd(x0,x1),0,z,rnd(0,6),rnd(.8,1.3));}
 function fenceRow(x,z0,z1,n='Fence_Long'){for(let z=z0;z>z1;z-=1.33)place(n,x,.15,z,Math.PI/2);}
 function bus(x,z,ry){const g=new THREE.Group(),y=mat(0xe0a81c),dk=mat(0x1d252b);
@@ -994,9 +1001,106 @@ Object.assign(DRESS,{
     place('WoodPlanks',5.6,.15,-18,.2);place('Pallet',-5.4,.15,-11,.3);place('CinderBlock',-5,.15,-13);place('CinderBlock',-5.3,.15,-13.4,.6);place('CinderBlock',-5.1,.38,-13.2,.2);place('Pipes',5.4,.15,-30,.1);
     place('TrafficBarrier_1',-1.6,0,-15,.2);place('TrafficBarrier_2',2.2,0,-26,-.3);place('Vehicle_Truck',-3,0,-33,.2);place('Container_Small',5.8,.15,-44,Math.PI/2);place('TrafficCone_1',1,0,-20);place('Debris_Pile',2.4,0,-40,1);place('Blood_1',.4,.02,-22,1,.6);},
 });
+function carShape(x,z,ry,body,bar){const g=new THREE.Group(),dk=mat(0x1d252b);
+  const add=(geo,m,px,py,pz)=>{const o=new THREE.Mesh(geo,m);o.position.set(px,py,pz);g.add(o);return o;};
+  add(new THREE.BoxGeometry(1.8,.7,4.2),mat(body),0,.75,0);add(new THREE.BoxGeometry(1.6,.6,2.2),mat(0xe8e8e8),0,1.4,-.2);add(new THREE.BoxGeometry(1.62,.4,2),dk,0,1.45,-.2);
+  if(bar){add(new THREE.BoxGeometry(.6,.15,.3),glow(0xff2020),-.35,1.78,-.2);add(new THREE.BoxGeometry(.6,.15,.3),glow(0x2050ff),.35,1.78,-.2);}
+  for(const sx of [-.92,.92])for(const sz of [-1.3,1.3])add(new THREE.CylinderGeometry(.36,.36,.25,10).rotateZ(Math.PI/2),dk,sx,.36,sz);
+  g.position.set(x,0,z);g.rotation.y=ry;PLACE_TO.add(g);solid(g);return g;}
+function parkLines(x0,x1,z0,z1,dx){const l=[];for(let x=x0;x<=x1;x+=dx)for(let z=z0;z>z1;z-=12)l.push([x,.01,z]);inst(new THREE.BoxGeometry(.1,.02,5),mat(0xd8d8c8),l);}
+function palm(x,z){const t=cy(x,0,z,.22,6,0x7a6040,7,.16);t.rotation.z=rnd(-.06,.06);const top=new THREE.Vector3(x,5.9,z);
+  for(let i=0;i<7;i++){const f=bx(top.x,top.y,top.z,.6,.06,3.4,0x3f7a34);f.rotation.set(rnd(.25,.5),i*Math.PI*2/7,0);f.translateZ(1.4);}}
+function umbrella(x,z,c){cy(x,0,z,.04,2.3,0xdddddd,5);const u=new THREE.Mesh(new THREE.ConeGeometry(1.4,.6,10),mat(c));u.position.set(x,2.4,z);PLACE_TO.add(u);}
+function stands(x,z,len){const s=Math.sign(x),c=[0x6a6e74,0x7c8086];for(let r=0;r<7;r++)bx(x+s*r*1.2,0,z,1.2,1+r*1.1,len,c[r%2]);
+  const seat=[];for(let r=0;r<7;r++)for(let k=-len/2+.5;k<len/2;k+=.7)seat.push([x+s*r*1.2-s*.3,1+r*1.1,z+k]);inst(new THREE.BoxGeometry(.4,.3,.5),mat(pick([0xc03030,0x2a5ac0,0xe0b020])),seat);}
+function floodlight(x,z){cy(x,0,z,.25,18,0x888888,6);bx(x,18,z,3,1.6,.4,glow(0xf4f8ff));const l=new THREE.SpotLight(0xf4f8ff,120,70,.5,.5,1.1);l.position.set(x,18.5,z);l.target.position.set(0,0,z-6);PLACE_TO.add(l);PLACE_TO.add(l.target);}
+function plane(x,z){const w=mat(0xe8eaec),b=mat(0x2a5aa0);const f=new THREE.Mesh(new THREE.CylinderGeometry(1.8,1.8,26,14),w);f.rotation.x=Math.PI/2;f.position.set(x,2.6,z);PLACE_TO.add(f);
+  const nose=new THREE.Mesh(new THREE.SphereGeometry(1.8,14,8),w);nose.position.set(x,2.6,z+13);nose.scale.z=1.6;PLACE_TO.add(nose);
+  bx(x,2.1,z+1,30,.3,4.5,w);bx(x,2.6,z-12,9,.2,2.2,w);bx(x,3.6,z-12,.25,4.4,2.6,b);bx(x,2.9,z,3.7,.35,26.2,b);
+  for(const d of [-6,6])cy(x+d,.5,z+2,.7,2.8,0x9aa0a6,12).rotation.x=Math.PI/2;for(const d of [-3,3])cy(x+d,0,z+1,.08,1,0x333333,5);cy(x,0,z+10,.08,1,0x333333,5);}
+function chedi(x,z){const g=mat(0xd8b040,{metalness:.4,roughness:.5});cy(x,0,z,4,1.5,0xe8e2d4,12);cy(x,1.5,z,3,1.2,0xe8e2d4,12);
+  const bell=new THREE.Mesh(new THREE.SphereGeometry(2.4,16,10),g);bell.position.set(x,4.4,z);bell.scale.y=1.1;PLACE_TO.add(bell);
+  const sp=new THREE.Mesh(new THREE.ConeGeometry(.9,7,12),g);sp.position.set(x,9.8,z);PLACE_TO.add(sp);}
+function thaiRoof(x,z,w,d,y){gable(x,z,w,d,y,0xc8501c);gable(x,z,w*.7,d*.8,y+w*.16,0x2a7a4a);for(const e of [-1,1]){const f=cy(x,y+w*.42,z+e*d*.38,.07,1.6,mat(0xd8b040,{metalness:.4}),5);f.rotation.x=e*.5;}}
+
+Object.assign(DRESS,{
+  lot(){const asph=new THREE.Mesh(new THREE.PlaneGeometry(60,120),mat(0x2a2c2e));asph.rotation.x=-Math.PI/2;asph.position.set(0,.005,-60);PLACE_TO.add(asph);
+    parkLines(9,33,-6,-80,3);parkLines(-33,-9,-6,-80,3);
+    const cars=['Vehicle_Pickup','Vehicle_Sports','Debris_BrokenCar'];
+    for(let z=-8;z>-80;z-=12)for(let x=10.5;x<33;x+=3){if(Math.random()<.35)continue;place(pick(cars),-x,0,z+rnd(-.3,.3),rnd(-.1,.1)+(Math.random()<.5?0:Math.PI));if(Math.random()<.6)place(pick(cars),x,0,z-6+rnd(-.3,.3),rnd(-.1,.1)+(Math.random()<.5?0:Math.PI));}
+    bus(6.3,-16,0);bus(6.3,-28,0);bx(6.3,3,-40,2.6,.15,4,0x555555);for(const z of [-38.4,-41.6])cy(7.4,0,z,.08,3,0x555555,6);bx(7.5,1,-40,.05,1.6,3.6,glow(0x9adfff));
+    bx(-5.6,0,-11,.3,1.1,.3,0xe0b020);const arm=bx(-5,.9,-11,4.4,.14,.14,0xd03030);arm.rotation.z=-1.25;
+    cy(-5.8,0,-18,.12,4.5,0x777777,6);bx(-5.8,4,-18,.2,1.2,2.6,glow(0x30d060));
+    for(let z=-14;z>-80;z-=16)for(const s of [-1,1]){cy(s*20,0,z,.15,8,0x777777,6);bx(s*20,8,z,1.6,.25,.6,glow(0xffe0a0));}
+    block(0,-96,60,9,14,'mall',1);bx(0,9,-89,18,2.4,.3,glow(0xffffff));
+    place('TrafficCone_1',2,0,-12);place('TrafficCone_1',-1.5,0,-21,.4);place('TrashBag_1',-4.4,0,-26);place('Blood_1',-.6,.02,-17,1,.6);place('Debris_Papers_1',1.2,.02,-24,2);},
+  temple(){for(const s of [-1,1]){bx(s*8.6,0,-50,.5,1.3,100,0xe8e2d4);for(let z=-2;z>-100;z-=4)bx(s*8.6,1.3,z,.7,.5,.7,0xd8d0c0);}
+    block(-17,-30,10,6,18,'temple',1);thaiRoof(-17,-30,11,19,6);block(16,-58,9,5,14,'temple',2);thaiRoof(16,-58,10,15,5);
+    chedi(15,-30);chedi(-14,-60);
+    for(const pz of [-12,-18])for(const px of [11,15])cy(px,0,pz,.2,3,0xe8e2d4,8);bx(13,3,-15,6,.3,9,0x8a3a1c);gable(13,-15,6,9,3.3,0xc8501c);
+    trees(11,22,-4,-90,7,-1);trees(20,26,-4,-90,8,1);
+    for(let z=-8;z>-60;z-=6)for(const s of [-1,1])cy(s*7.6,0,z,.18,.5,glow(0xffa040),8);
+    place('Debris_BrokenCar',-3,0,-20,.5);place('Vehicle_Pickup',3,0,-34,-.4);place('Crate',-5,.15,-14,.3);place('Blood_1',.4,.02,-15,1,.6);fire(-5.4,.4,-40,.6);},
+  mall(){block(18,-36,14,14,56,'mall',2);bx(10.9,10,-30,.3,2.4,16,glow(0xff4a8a));bx(10.95,10.4,-30,.3,1.4,12,0xffffff);
+    skeleton(-16,-26,12,26,4);for(const s of [-16])for(let z=-14;z>-38;z-=4)place(pick(['Vehicle_Pickup','Vehicle_Sports']),s+rnd(-3,3),3.5,z,Math.PI/2+rnd(-.2,.2));
+    for(let z=-12;z>-60;z-=6)bx(7.6,0,z,.6,1,.9,0x8a9aa6);
+    for(let i=0;i<6;i++)bx(rnd(5,8),0,rnd(-10,-50),.6,.9,.9,mat(0x9aa4aa,{metalness:.6}));
+    place('TrashBag_1',4.6,.15,-12);place('TrashBag_1',4.9,.15,-12.6,1);place('CardboardBoxes_1',-4.6,.15,-15);place('Debris_BrokenCar',-3,0,-22,.4);place('Vehicle_Sports',3.2,0,-33,-2.8);place('Debris_Papers_1',.4,.02,-14,1);place('Blood_1',-.4,.02,-20,1,.6);fire(-3,1,-22,.8);},
+  police(){block(-17,-28,12,9,30,'police',1);bx(-10.9,7,-28,.3,1.2,10,glow(0x3060ff));cy(-8,0,-14,.08,8,0xcccccc,6);bx(-7.2,6.6,-14,1.6,1,.05,0x2a4aa0);
+    carShape(-6.4,-12,.1,0xf0f0f0,true);carShape(6.2,-18,-.2,0x1a2a4a,true);carShape(2.6,-36,.7,0xf0f0f0,true);
+    for(let z=-8;z>-60;z-=3.8)place('Barrier_Large',7.4,0,z,Math.PI/2);
+    place('SackTrench',-2.4,0,-20,.1);place('SackTrench_Small',2.6,0,-26,-.2);place('Barrier_Large',-2.8,0,-44,.3);place('Crate',-5,.15,-33);place('Crate',-5,.95,-33,.5);
+    block(18,-46,12,12,24,'city',3);place('Blood_1',.6,.02,-16,1,.6);place('Debris_Papers_1',-.8,.02,-12,2);searchlight(-6,-30);},
+  airport(){const grass=mat(0x2f3f2a);for(const s of [-1,1]){const g=new THREE.Mesh(new THREE.PlaneGeometry(40,160),grass);g.rotation.x=-Math.PI/2;g.position.set(s*28,.006,-70);PLACE_TO.add(g);}
+    const rl=[];for(let z=-4;z>-140;z-=6)for(const s of [-1,1])rl.push([s*9,.1,z]);inst(new THREE.BoxGeometry(.3,.2,.3),glow(0x9ad0ff),rl);
+    plane(19,-38);
+    const hg=new THREE.Mesh(new THREE.CylinderGeometry(9,9,26,18,1,false,0,Math.PI),mat(0x8a9096,{metalness:.4}));hg.rotation.set(Math.PI/2,0,Math.PI/2);hg.position.set(-22,0,-24);PLACE_TO.add(hg);
+    cy(-18,0,-62,1.6,16,0xd8d8d0,12);bx(-18,16,-62,6,3,6,glow(0x6ab0d0));bx(-18,19,-62,6.4,.4,6.4,0x444444);
+    for(let i=0;i<4;i++){bx(-6.4,0,-12-i*2.6,1.4,.7,2.2,0x5a6a7a);place('CardboardBoxes_1',-6.4,.7,-12-i*2.6,rnd(0,3));}
+    place('Vehicle_Truck',3.2,0,-22,.2);place('Debris_BrokenCar',-3,0,-30,.6);place('GasTank',6,.15,-10);place('TrafficCone_1',1.4,0,-14);place('Blood_1',-.2,.02,-18,1,.6);fire(-3,1,-30,.9);},
+  stadium(){stands(10,-34,52);stands(-10,-34,52);for(const s of [-1,1])bx(s*8.6,0,-34,.4,1.2,52,0x2a5ac0);
+    floodlight(-12,-12);floodlight(12,-56);bx(0,0,-64,24,8,.6,0x6a6e74);bx(0,4,-63.6,10,3,.2,glow(0x30d060));
+    place('Sign',-6,.15,-11,.3);place('Crate',5,.15,-14);place('Debris_BrokenCar',3,0,-24,-.5);place('Vehicle_Pickup',-3,0,-38,.3);place('Debris_Papers_1',.4,.02,-12,1);place('Debris_Papers_1',-1,.02,-26,3);place('Blood_1',.6,.02,-20,1,.6);},
+  beach(){water();const sand=mat(0xc8b48a);const s1=new THREE.Mesh(new THREE.PlaneGeometry(14,160),sand);s1.rotation.x=-Math.PI/2;s1.position.set(-15,.02,-70);PLACE_TO.add(s1);
+    for(let z=-6;z>-90;z-=rnd(5,8)){palm(rnd(-9,-13),z);palm(rnd(9,12),z-3);}
+    for(let z=-10;z>-60;z-=9)umbrella(rnd(-15,-19),z,pick([0xd03030,0x2a7ad0,0xe0b020,0x3aa060]));
+    for(const z of [-22,-50]){for(const dx of [-.9,.9])for(const dz of [-.9,.9])cy(-12+dx,0,z+dz,.08,2.6,0xeeeeee,5);bx(-12,2.6,z,2.4,1.4,2.4,0xd03030);}
+    for(let z=-10;z>-90;z-=12)block(15,z-5,7,4,8,'house',(Math.random()*9)|0);
+    for(const z of [-30,-42]){const h=new THREE.Mesh(new THREE.CylinderGeometry(1.1,1.1,6,12,1,false,0,Math.PI),mat(0x2a6a9a));h.rotation.set(Math.PI/2,0,Math.PI);h.position.set(-16,1,z);PLACE_TO.add(h);}
+    place('Debris_BrokenCar',3,0,-18,-.4);place('Vehicle_Sports',-3,0,-30,.5);place('Crate',-5,.15,-12);place('Blood_1',.2,.02,-14,1,.6);fire(-6,.4,-36,.6);},
+});
+// what the radio says the first time you reach each place
+const SCN_RADIO={
+  lot:'ลานจอดรถคือจุดขึ้นรถบัสอพยพ ยันไว้จนกว่ารถคันสุดท้ายจะออก',
+  park:'ผู้รอดชีวิตหลบอยู่ในสวน เราจะพาพวกเขาข้ามถนนมา ช่วยกันไว้',
+  gas:'รถบัสต้องเติมน้ำมันที่ปั๊มนี้ อย่าให้พวกมันเข้าใกล้หัวจ่าย',
+  market:'ตลาดนัดยังมีอาหารเหลือ ทีมเสบียงกำลังขนของ คุ้มกันพวกเขา',
+  school:'โรงเรียนเป็นศูนย์พักพิงชั่วคราว เด็ก ๆ กำลังขึ้นรถบัสเหลือง',
+  forest:'ถนนตัดป่าเป็นทางลัดไปค่ายผู้อพยพ ในป่ามืดมาก ฟังเสียงให้ดี',
+  beach:'เรือมารับผู้อพยพที่ชายหาด ยันไว้จนกว่าเรือลำสุดท้ายจะออก',
+  mall:'ห้างนี้มีผู้รอดชีวิตติดอยู่ชั้นบน รอให้ทีมพาพวกเขาลงมา',
+  suburb:'ยังมีคนติดอยู่ในบ้านแถวนี้ รถรับคนกำลังมา',
+  highway:'ทางด่วนเต็มไปด้วยรถร้าง พวกมันจะเดินแทรกระหว่างรถมา',
+  farm:'ไร่นี้มีเสบียงพอเลี้ยงค่ายได้ทั้งเดือน อย่าให้พวกมันยึดไป',
+  bridge:'สะพานนี้เป็นทางเดียวข้ามแม่น้ำ ถ้าเสียสะพาน เราเสียทั้งฝั่ง',
+  junkyard:'สุสานรถมีอะไหล่ที่เราต้องใช้ซ่อมรถบัส ช่างกำลังรื้ออยู่',
+  temple:'ชาวบ้านมาหลบที่วัด กำแพงวัดช่วยได้แค่ส่วนเดียว ที่เหลือคือคุณ',
+  downtown:'ใจกลางเมืองมีพวกมันมากที่สุด ระวังตัวที่หน้าตาไม่เหมือนตัวอื่น',
+  harbor:'เรือขนเสบียงจอดที่ท่า ยันไว้จนกว่าจะขนของลงเสร็จ',
+  hospital:'โรงพยาบาลสนามมีผู้บาดเจ็บเต็ม ห้ามให้พวกมันเข้าใกล้เต็นท์',
+  police:'สถานีตำรวจยังมีอาวุธในคลัง ทีมกำลังเปิดตู้เซฟ',
+  stadium:'สนามกีฬาคือจุดรวมพลใหญ่ ไฟสนามยังติด พวกมันจะตามแสงมา',
+  trainyard:'รถไฟขบวนสุดท้ายกำลังติดเครื่อง ยันไว้จนกว่ามันจะออก',
+  industrial:'นักวิจัยในโรงงานอาจรู้ต้นตอของเชื้อ คุ้มกันเราไว้',
+  military:'ฐานทหารยังมีเฮลิคอปเตอร์ เราต้องการเวลาเติมเชื้อเพลิง',
+  construction:'ไซต์ก่อสร้างมีของหนักพอสร้างกำแพงใหม่ ช่วยกันพวกมันไว้',
+  airport:'เครื่องบินลำสุดท้ายกำลังจะขึ้น ห้ามให้พวกมันขึ้นรันเวย์',
+  ruins:'นี่คือจุดที่เชื้อเริ่มระบาด ถ้าผ่านไปได้ เมืองจะเริ่มปลอดภัย',
+  hellway:'ทางด่วนไฟลุกท่วม ทางเดียวที่จะไปถึงต้นตอเชื้อ',
+};
 const ZFOG={a1:[0x0a1511,.03],a2:[0x0c1418,.028],b1:[0x0d1214,.03],b2:[0x12130e,.032],c1:[0x1a0d0a,.034]};
 const SCN={
-  city:{n:'ลานจอดรถ',sky:'city',dress:'a1'},suburb:{n:'ชานเมือง',sky:'house',dress:'a2'},downtown:{n:'ตัวเมือง',sky:'city',dress:'b1'},
+  city:{n:'ถนนในเมือง',sky:'city',dress:'a1'},suburb:{n:'ชานเมือง',sky:'house',dress:'a2'},downtown:{n:'ตัวเมือง',sky:'city',dress:'b1'},
   industrial:{n:'นิคมอุตสาหกรรม',sky:'ware',dress:'b2'},ruins:{n:'ใจกลางการระบาด',sky:'ruin',dress:'c1'},
   park:{n:'สวนสาธารณะ',sky:'far',dress:'park',ground:0x24361f},highway:{n:'ทางด่วนร้าง',sky:'far',dress:'highway'},
   harbor:{n:'ท่าเรือ',sky:'far',dress:'harbor'},military:{n:'ฐานทหาร',sky:'far',dress:'military',ground:0x34301f},hellway:{n:'ทางด่วนไฟลุก',sky:'far',dress:'hellway'},
@@ -1005,10 +1109,14 @@ const SCN={
   bridge:{n:'สะพานข้ามแม่น้ำ',sky:'far',dress:'bridge'},junkyard:{n:'สุสานรถ',sky:'far',dress:'junkyard',ground:0x2a261e},
   hospital:{n:'โรงพยาบาลสนาม',sky:'far',dress:'hospital'},trainyard:{n:'ลานรถไฟ',sky:'far',dress:'trainyard',ground:0x2a2620},
   construction:{n:'ไซต์ก่อสร้าง',sky:'far',dress:'construction',ground:0x3a3428},
+  lot:{n:'ลานจอดรถ',sky:'none',dress:'lot'},temple:{n:'วัดร้าง',sky:'none',dress:'temple',ground:0x24301f},mall:{n:'ห้างร้าง',sky:'far',dress:'mall'},
+  police:{n:'สถานีตำรวจ',sky:'far',dress:'police'},airport:{n:'สนามบิน',sky:'far',dress:'airport'},stadium:{n:'สนามกีฬา',sky:'far',dress:'stadium'},
+  beach:{n:'ชายหาด',sky:'none',dress:'beach',ground:0xc8b48a},
 };
-// every zone rotates through six places so back-to-back nights rarely look the same
-const ZSCN={a1:['city','park','gas','market','school','forest'],a2:['suburb','highway','farm','bridge','junkyard','school'],b1:['downtown','harbor','hospital','market','gas','trainyard'],
-  b2:['industrial','military','construction','trainyard','junkyard','bridge'],c1:['ruins','hellway','hospital','construction','forest','military']};
+// every zone rotates through eight or nine places so back-to-back nights rarely look the same
+const ZSCN={a1:['lot','park','gas','market','school','forest','beach','mall','city'],a2:['suburb','highway','farm','bridge','junkyard','school','temple','beach'],
+  b1:['downtown','harbor','hospital','market','police','mall','stadium','trainyard'],b2:['industrial','military','construction','trainyard','junkyard','airport','bridge','gas'],
+  c1:['ruins','hellway','hospital','construction','police','stadium','airport','temple']};
 let curScene='city';
 function setZone(k){setScene((ZSCN[k]||ZSCN.a1)[0]);}
 function setScene(k){
@@ -1217,6 +1325,16 @@ function takeWord(short=false){
 /* ---------------- night flow ---------------- */
 const MODS={horde:{n:'ฝูงใหญ่',d:'ซอมบี้มากกว่าปกติแต่เดินช้าลง'},rush:{n:'วิ่งพล่าน',d:'ซอมบี้วิ่งเร็วเต็มถนน'},blackout:{n:'ไฟดับ',d:'ไฟถนนดับหมด เหลือแค่ไฟฉาย'},fog:{n:'หมอกหนา',d:'มองเห็นได้แค่ระยะใกล้'}};
 const ZSKY={a1:['dusk','night','day','rain','night','mist'],a2:['mist','dusk','snow','day','night','rain'],b1:['night','rain','dusk','snow','night','day'],b2:['day','dusk','night','mist','rain'],c1:['blood','night','rain','dusk','blood']};
+// a side goal on most nights: optional, pays extra coins, and changes how you want to play that night
+const CHAL={
+  clean:{n:'แม่นยำ',d:'ตอบผิดไม่เกิน 2 ครั้ง',ok:g=>g.wrongs<=2},
+  wall:{n:'กำแพงเหล็ก',d:'กำแพงเหลืออย่างน้อย 80%',ok:g=>g.wall/g.wallMax>=.8},
+  head:{n:'มือแม่น',d:'เฮดช็อตอย่างน้อย 4 ครั้ง',ok:g=>g.heads>=4},
+  combo:{n:'คอมโบ',d:'ทำคอมโบให้ถึง x8',ok:g=>g.best>=8},
+  nohint:{n:'ไม่พึ่งคำใบ้',d:'ไม่ใช้คำใบ้เลย',ok:g=>g.hints>=g.hints0},
+  fast:{n:'เร็วทันใจ',d:'ผ่านคืนนี้ภายใน 4 นาที',ok:g=>g.t<=240},
+};
+const CHAL_KEYS=Object.keys(CHAL),CHAL_COINS=25;
 function nightInfo(k,i,mode){
   if(mode==='review')return {sky:'mist',mod:null,scene:(ZSCN[k]||ZSCN.a1)[0]};
   if(mode==='survival')return {sky:k==='c1'?'blood':'night',mod:null,scene:(ZSCN[k]||ZSCN.a1)[1]};
@@ -1225,7 +1343,8 @@ function nightInfo(k,i,mode){
   const mod=i>=2&&i%4===2?['horde','rush','blackout','fog'][(i>>2)%4]:null;
   const L2=ZSCN[k]||ZSCN.a1,j=i-Math.floor((i+1)/5)-1,alt=L2.slice(1);
   const scene=j<0?L2[0]:alt[(j+Math.floor(j/alt.length))%alt.length];
-  return {sky:i===0&&k==='a1'?'dusk':sky,mod,scene};
+  const chal=i>0?CHAL_KEYS[(i*5+RANK[k]*2)%CHAL_KEYS.length]:null;
+  return {sky:i===0&&k==='a1'?'dusk':sky,mod,scene,chal};
 }
 function waves(k,i,mode,mod){
   const d=RANK[k]*1.2+(mode==='review'?0:i*.04);
@@ -1276,7 +1395,7 @@ function startNight(k,i,mode='night'){
   G={k,i,mode,fresh:nw.fresh,old:nw.old,used:new Map(),W:wv.W,speedMul:wv.speed,wave:-1,queue:[],spawnT:0,wall:wallMax,wallMax,
      score:0,combo:0,best:0,kills:0,hints:2+P.up.hint,gren:P.gren,mash:0,lastWrong:-9,hit:new Set(),miss:new Set(),t:0,ended:false,
      manT:4,dogT:6,ammo:0,mag:0,reloadT:0,bonusCoins:0,heads:0,knifeT:0,pendingImpact:0,
-     sky:info.sky,mod:info.mod,adr:0,slow:0,slowMul:1,coinMul:info.mod?1.3:1,shieldT:0,xp:0,wrongs:0,extraBarrels:0};
+     sky:info.sky,mod:info.mod,chal:mode==='night'?info.chal||null:null,hints0:2+P.up.hint,adr:0,slow:0,slowMul:1,coinMul:info.mod?1.3:1,shieldT:0,xp:0,wrongs:0,extraBarrels:0};
   state='play';target=null;jamUntil=0;
   $('#hud').hidden=false;$('#dock').hidden=false;$('#screen').hidden=true;
   $('#hNight').textContent=mode==='review'?'REVIEW':mode==='survival'?'SURVIVAL':'NIGHT '+(i+1);
@@ -1286,7 +1405,10 @@ function startNight(k,i,mode='night'){
   const key=!P.seenStory.includes('intro')?'intro':(mode==='night'&&i===0&&!P.seenStory.includes(k))?k:null;
   if(key){P.seenStory.push(key);if(key==='intro'&&!P.seenStory.includes(k))P.seenStory.push(k);save();
     const lines=key==='intro'?[...STORY.intro,...STORY[k]]:STORY[k];cutscene({lines,cam:introCam(),then:nextWave});}
+  else if(mode==='night'&&SCN_RADIO[info.scene]&&!P.seenStory.includes(k+':'+info.scene)){P.seenStory.push(k+':'+info.scene);save();
+    cutscene({lines:[{who:'วิทยุ',txt:SCN_RADIO[info.scene]}],cam:introCam(),name:SCN[info.scene].n,sub:'พื้นที่ใหม่',then:nextWave});}
   else nextWave();
+  if(key)P.seenStory.includes(k+':'+info.scene)||(P.seenStory.push(k+':'+info.scene),save());
 }
 function nextWave(){
   G.wave++;
@@ -1296,7 +1418,7 @@ function nextWave(){
   const boss=G.queue.find(t=>ZT[t]&&ZT[t].boss);
   const surv=G.mode==='survival',introBoss=boss&&boss!=='twins';
   if(!introBoss)banner(surv?'WAVE '+(G.wave+1):G.wave===G.W.length-1?(boss?'BOSS: '+ZT[boss].boss:'FINAL WAVE'):'WAVE '+(G.wave+1),
-    G.wave===0?(GUNS[P.gun].n+' · ')+(G.mode==='review'?'ทบทวนคำที่เคยพลาด':surv?ZONES[G.k].name+' · อยู่ให้รอดนานที่สุด':SCN[curScene].n+' · '+SKIES[G.sky].n+(G.mod?' · '+MODS[G.mod].n:'')):'');
+    G.wave===0?(GUNS[P.gun].n+' · ')+(G.mode==='review'?'ทบทวนคำที่เคยพลาด':surv?ZONES[G.k].name+' · อยู่ให้รอดนานที่สุด':SCN[curScene].n+' · '+SKIES[G.sky].n+(G.mod?' · '+MODS[G.mod].n:'')+(G.chal?' · ภารกิจ: '+CHAL[G.chal].d:'')):'');
   $('#hWave').textContent=surv?`คลื่น ${G.wave+1}`:`คลื่น ${G.wave+1}/${G.W.length}`;
   if(boss){setTimeout(()=>SFX.groan(.35,true),900);
     if(boss!=='twins'){G.queue.splice(G.queue.indexOf(boss),1);spawn(boss);const bz=live().find(z=>z.type===boss);if(bz){bz.obj.position.z=-22;bossIntro(bz,()=>banner('BOSS WAVE','ตอบให้ครบทุกคำเพื่อล้มบอส'));}}}
@@ -1321,7 +1443,9 @@ function endNight(win){
   let coins=G.kills*2+Math.round(G.score/40)+(surv?G.wave*6:0);
   if(win&&G.mode==='night'){coins+=stars*10;const prev=P.prog[G.k][G.i]||0;if(stars>prev)P.prog[G.k][G.i]=stars;quest('nights');if(G.wrongs===0&&!G.miss.size)quest('perfect');G.xp+=20;}
   if(surv){G.newBest=G.wave>(P.best[G.k]||0);if(G.newBest)P.best[G.k]=G.wave;}
+  G.chalOK=!!(win&&G.chal&&CHAL[G.chal].ok(G));
   coins=Math.round(coins*G.coinMul)+G.bonusCoins;
+  if(G.chalOK)coins+=CHAL_COINS;
   P.coins+=coins;P.gren=G.gren;addXP(G.xp);
   for(const e of G.hit)if(!G.miss.has(e)){LEARNED.add(e);WEAK.delete(e);}
   for(const e of G.miss)WEAK.add(e);
@@ -1920,7 +2044,7 @@ function brief(k,i,mode='night'){
   const boss=!rev&&isBossNight(i);
   show(`<div class="card" style="max-height:100%">
     <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>${rev?'ทบทวน':'คืนที่ '+(i+1)}</h2><span class="zinfo">${rev?'คำที่เคยพลาด':esc(ZONES[k].name+' · '+ZONES[k].nights[i].unit)}${boss?' · <b style="color:var(--blood)">มีบอส</b>':''}</span><span class="sp"></span></div>
-    ${rev?'':(()=>{const ni=nightInfo(k,i,mode);return `<div class="chips"><span class="chip">${SCN[ni.scene].n}</span><span class="chip">${SKIES[ni.sky].n}</span>${ni.mod?`<span class="chip warn">${MODS[ni.mod].n}: ${MODS[ni.mod].d} · เหรียญ +30%</span>`:''}</div>`;})()}
+    ${rev?'':(()=>{const ni=nightInfo(k,i,mode);return `<div class="chips"><span class="chip">${SCN[ni.scene].n}</span><span class="chip">${SKIES[ni.sky].n}</span>${ni.mod?`<span class="chip warn">${MODS[ni.mod].n}: ${MODS[ni.mod].d} · เหรียญ +30%</span>`:''}${ni.chal?`<span class="chip">ภารกิจเสริม: ${CHAL[ni.chal].d} · +${CHAL_COINS} เหรียญ</span>`:''}</div>`;})()}
     <div class="zinfo">${CHOICE()?'ซอมบี้แต่ละตัวมีคำไทยติดอยู่ เลือกคำภาษาอังกฤษที่ตรงกันเพื่อยิง':'ซอมบี้แต่ละตัวมีคำไทยติดอยู่ กดตัวอักษรเรียงเป็นคำภาษาอังกฤษให้ถูกเพื่อยิง'} ทำความรู้จักคำของคืนนี้ก่อน · ปัดนิ้วผ่านซอมบี้ที่เข้ามาใกล้เพื่อปาดมีด · ตอบเร็วได้เฮดช็อต</div>
     <div class="scroll"><div class="wlist">${ws.map(w=>wordRow(w,LEARNED.has(w.en)?'ok':'')).join('')}</div></div>
     <div class="row"><button class="btn main" type="button" id="go">${SV.play.replace('<svg','<svg style="width:18px;height:18px"')}เริ่มป้องกัน</button></div></div>`,'solid');
@@ -1966,6 +2090,7 @@ function results(win,stars,coins){
     <h2 class="${win||G.mode==='survival'?'win':'lose'}">${G.mode==='survival'?'รอดได้ '+G.wave+' คลื่น':win?'รอดแล้ว':'แนวป้องกันแตก'}</h2>
     ${G.mode==='survival'?`<div class="zinfo">${G.newBest?'<b style="color:var(--amber)">สถิติใหม่!</b> ':''}สถิติดีที่สุด ${P.best[G.k]||0} คลื่น</div>`:''}
     ${win&&G.mode!=='review'?`<div class="stars">${[0,1,2].map(i=>SV.star.replace('<svg',`<svg class="${i<stars?'on':'off'}" style="animation-delay:${.15+i*.15}s"`)).join('')}</div>`:''}
+    ${G.chal&&win?`<div class="zinfo">ภารกิจเสริม · ${CHAL[G.chal].n}: ${CHAL[G.chal].d} · ${G.chalOK?`<b style="color:var(--toxic)">สำเร็จ +${CHAL_COINS} เหรียญ</b>`:'<b style="color:var(--blood)">ไม่สำเร็จ</b>'}</div>`:''}
     <div class="stats"><div><b>${G.kills}</b>ซอมบี้</div><div><b>${fmt(G.score)}</b>คะแนน</div><div><b>x${G.best}</b>คอมโบสูงสุด</div><div><b style="color:var(--amber)">+${coins}</b>เหรียญ</div><div><b style="color:var(--toxic)">+${G.xp}</b>XP</div><div><b>${G.heads}</b>เฮดช็อต</div></div>
     <div class="scroll" style="width:100%"><div class="wlist">${missed.map(w=>wordRow(w,'bad')).join('')}${got.map(w=>wordRow(w,'ok')).join('')}</div></div>
     ${missed.length?`<div class="zinfo">คำสีแดงคือคำที่สะกดผิดหรือใช้คำใบ้ จะกลับมาให้ทบทวนอีก</div>`:''}
@@ -2161,7 +2286,7 @@ requestAnimationFrame(frame);
 loadModels().then(()=>{
   buildWorld();try{makeThumbs();}catch(e){}equipGun();equipKnife();if(gunObj)gunObj.visible=false;
   $('#loading').hidden=true;home();
-  window.__dw={get G(){return G;},zombies,press,live,get target(){return target;},P,get OBST(){return OBST;},blocked,setZone,setScene,setAtmosphere,perkPick,startNight,equipKnife,MELEE,MINIS,miniGame,get CUT(){return CUT;}};
+  window.__dw={get G(){return G;},zombies,press,live,get target(){return target;},P,get OBST(){return OBST;},blocked,setZone,setScene,setAtmosphere,perkPick,startNight,endNight,brief,equipKnife,MELEE,MINIS,miniGame,get CUT(){return CUT;}};
 });
 </script>
 </body>
