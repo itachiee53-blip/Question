@@ -1,21 +1,21 @@
 # การท่องเที่ยว
 travel|เดินทาง;trip|ทริป การเดินทาง;journey|การเดินทางไกล;tour|ทัวร์;tourist|นักท่องเที่ยว;passport|หนังสือเดินทาง;luggage|กระเป๋าเดินทาง;suitcase|กระเป๋าเดินทางใบใหญ่;map reading|การอ่านแผนที่;guide|ไกด์ นำทาง
 visit|เยี่ยมชม;arrive|มาถึง;leave|ออกจาก;return|กลับ;book (verb)|จอง;reservation|การจอง;flight|เที่ยวบิน;seat|ที่นั่ง;platform|ชานชาลา;delay|ล่าช้า
-abroad|ต่างประเทศ;foreign|ต่างชาติ;country|ประเทศ;capital|เมืองหลวง;border|พรมแดน;souvenir|ของที่ระลึก;camping|การตั้งแคมป์;tent|เต็นท์;backpack|เป้;sightseeing|การเที่ยวชมสถานที่
+abroad|ต่างประเทศ;foreign|ต่างชาติ;country|ประเทศ;capital|เมืองหลวง;border|พรมแดน;souvenir|ของที่ระลึก;camping|การตั้งแคมป์;tent|เต็นท์;backpack|กระเป๋าเป้;sightseeing|การเที่ยวชมสถานที่
 # การซื้อของ
 shopping|การซื้อของ;customer|ลูกค้า;cashier|พนักงานเก็บเงิน;receipt|ใบเสร็จ;discount|ส่วนลด;cost|ราคา มีราคา;spend|ใช้จ่าย;save|ประหยัด เก็บ;afford|มีเงินพอซื้อ;size chart|ตารางไซซ์
 try on|ลองสวม;fit|พอดี;exchange|แลกเปลี่ยน;refund|คืนเงิน;cash|เงินสด;credit card|บัตรเครดิต;wallet|กระเป๋าสตางค์;purse|กระเป๋าถือ;basket|ตะกร้า;trolley|รถเข็น
 # สุขภาพ
 healthy|มีสุขภาพดี;ill|ป่วย;disease|โรค;injury|การบาดเจ็บ;accident|อุบัติเหตุ;ambulance|รถพยาบาล;patient|คนไข้ อดทน;clinic|คลินิก;appointment|นัดหมาย;pill|ยาเม็ด
-toothache|ปวดฟัน;sore throat|เจ็บคอ;stomachache|ปวดท้อง;temperature|อุณหภูมิ;allergy|ภูมิแพ้;exercise|ออกกำลังกาย;diet|อาหารการกิน;weight|น้ำหนัก;fit (healthy)|แข็งแรง;recover|ฟื้นตัว
+toothache|ปวดฟัน;sore throat|เจ็บคอ;stomachache|ปวดท้อง;temperature|อุณหภูมิ;allergy|ภูมิแพ้;exercise|ออกกำลังกาย;diet|การควบคุมอาหาร, อาหารการกิน;weight|น้ำหนัก;fit (healthy)|แข็งแรง;recover|ฟื้นตัว
 # งานบ้าน
 housework|งานบ้าน;sweep|กวาด;mop|ถูพื้น;dust|ฝุ่น ปัดฝุ่น;iron|รีดผ้า เหล็ก;laundry|ผ้าที่ต้องซัก;dishes|จานชาม;rubbish|ขยะ;bin|ถังขยะ;vacuum|ดูดฝุ่น
-repair|ซ่อม;fix|แก้ไข ซ่อม;paint (wall)|ทาสี;plant|ปลูก ต้นไม้;water the plants|รดน้ำต้นไม้;neighbor|เพื่อนบ้าน;rent|เช่า;flat|อพาร์ตเมนต์;apartment|อพาร์ตเมนต์ห้องชุด;move|ย้าย ขยับ
+repair|ซ่อม;fix|แก้ไข ซ่อม;paint (wall)|ทาสี;plant|ปลูก ต้นไม้;water the plants|รดน้ำต้นไม้;neighbor|เพื่อนบ้าน;rent|เช่า;flat|อพาร์ตเมนต์;apartment|อพาร์ตเมนต์, ห้องชุด;move|ย้าย ขยับ
 # เทคโนโลยี
 mobile phone|โทรศัพท์มือถือ;smartphone|สมาร์ตโฟน;laptop|แล็ปท็อป;tablet|แท็บเล็ต;screen|หน้าจอ;keyboard|แป้นพิมพ์;password|รหัสผ่าน;website|เว็บไซต์;app|แอป;online|ออนไลน์
-download|ดาวน์โหลด;upload|อัปโหลด;search|ค้นหา;click|คลิก;type|พิมพ์ ประเภท;print|พิมพ์ (เครื่องพิมพ์);battery|แบตเตอรี่;charge|ชาร์จ;wifi|ไวไฟ;account|บัญชี
+download|ดาวน์โหลด;upload|อัปโหลด;search|ค้นหา;click|คลิก;type|พิมพ์ ประเภท;print|พิมพ์;battery|แบตเตอรี่;charge|ชาร์จ;wifi|ไวไฟ;account|บัญชี
 # ความบันเทิง
-concert|คอนเสิร์ต;show|การแสดง แสดง;actor|นักแสดงชาย;actress|นักแสดงหญิง;film|ภาพยนตร์;cartoon|การ์ตูน;comedy|ตลก (ประเภท);horror|สยองขวัญ;ticket office|ห้องขายตั๋ว;audience|ผู้ชม
+concert|คอนเสิร์ต;show|การแสดง แสดง;actor|นักแสดงชาย;actress|นักแสดงหญิง;film|ภาพยนตร์;cartoon|การ์ตูน;comedy|เรื่องตลก, หนังตลก;horror|สยองขวัญ;ticket office|ห้องขายตั๋ว;audience|ผู้ชม
 band|วงดนตรี;drum|กลอง;festival|เทศกาล;theater|โรงละคร;stage|เวที;dance class|คลาสเต้น;hobby|งานอดิเรก;collect|สะสม;draw a picture|วาดภาพ;fan (person)|แฟนคลับ
 # ธรรมชาติและสิ่งแวดล้อม
 environment|สิ่งแวดล้อม;nature|ธรรมชาติ;plant (noun)|พืช;jungle|ป่าดงดิบ;desert|ทะเลทราย;ocean|มหาสมุทร;wave|คลื่น;coast|ชายฝั่ง;hill|เนินเขา;valley|หุบเขา
@@ -24,9 +24,9 @@ field|ทุ่ง;waterfall|น้ำตก;cave|ถ้ำ;air|อากาศ;
 personality|บุคลิกภาพ;polite|สุภาพ;rude|หยาบคาย;honest|ซื่อสัตย์;lazy|ขี้เกียจ;clever|ฉลาด;stupid|โง่;careful|ระมัดระวัง;careless|สะเพร่า;quiet|เงียบ
 noisy|เสียงดัง;calm|ใจเย็น;cheerful|ร่าเริง;generous|ใจกว้าง;selfish|เห็นแก่ตัว;helpful|ชอบช่วยเหลือ;patient person|คนอดทน;serious|จริงจัง;strange|แปลก;famous|มีชื่อเสียง
 # คำกริยาระดับ A2
-believe|เชื่อ;remember|จำได้;forget|ลืม;decide|ตัดสินใจ;choose|เลือก;plan|วางแผน;prepare|เตรียม;borrow|ยืม;lend|ให้ยืม;keep|เก็บรักษา
+believe|เชื่อ;remember|จำได้;forget|ลืม;decide|ตัดสินใจ;choose|เลือก;plan|วางแผน;prepare|เตรียม;borrow|ยืม;lend|ให้ยืม;keep|เก็บไว้, รักษา
 bring|นำมา;build|สร้าง;break (verb)|ทำแตก;drop|ทำตก;fall|ล้ม ตก;grow|เติบโต;hurry|รีบ;invite|เชิญ;promise|สัญญา;enjoy|สนุกกับ
-follow|ตาม;lead|นำ;join|เข้าร่วม;meet|พบ;miss the bus|ตกรถ;check|ตรวจสอบ;compare|เปรียบเทียบ;describe|บรรยาย;discuss|อภิปราย;guess|เดา
+follow|ตาม;lead|นำ;join|เข้าร่วม;meet|พบ, เจอ;miss the bus|ตกรถ;check|ตรวจสอบ;compare|เปรียบเทียบ;describe|บรรยาย;discuss|อภิปราย;guess|เดา
 improve|ปรับปรุง;practise|ฝึกฝน;continue|ทำต่อ;happen|เกิดขึ้น;become|กลายเป็น;seem|ดูเหมือน;allow|อนุญาต;let|ปล่อยให้;try|พยายาม ลอง;fail|ล้มเหลว
 # คำคุณศัพท์ระดับ A2
 dangerous|อันตราย;safe|ปลอดภัย;strong|แข็งแรง;weak|อ่อนแอ;busy|ยุ่ง;free|ว่าง ฟรี;important|สำคัญ;interesting|น่าสนใจ;boring|น่าเบื่อ;exciting|น่าตื่นเต้น
@@ -40,7 +40,7 @@ volleyball|วอลเลย์บอล;badminton|แบดมินตัน;
 goal|ประตู เป้าหมาย;champion|แชมป์;medal|เหรียญรางวัล;race|การแข่งวิ่ง;training|การฝึก;gym|ยิม;equipment|อุปกรณ์;helmet|หมวกกันน็อก;fan club|แฟนคลับ;referee|กรรมการ
 # การทำอาหาร
 recipe|สูตรอาหาร;ingredient|ส่วนผสม;boil|ต้ม;fry|ทอด;bake|อบ;grill|ย่าง;mix|ผสม;stir|คน;slice|หั่นเป็นแผ่น;chop|สับ
-pour|เท;peel|ปอก;add|เติม เพิ่ม;heat|ความร้อน อุ่น;oven|เตาอบ;bowl of soup|ซุปหนึ่งชาม;kettle|กาต้มน้ำ;meal|มื้ออาหาร;dish|อาหาร (จาน);vegetarian|มังสวิรัติ
+pour|เท;peel|ปอก;add|เติม เพิ่ม;heat|ความร้อน อุ่น;oven|เตาอบ;bowl of soup|ซุปหนึ่งชาม;kettle|กาต้มน้ำ;meal|มื้ออาหาร;dish|จาน, อาหารจานหนึ่ง;vegetarian|มังสวิรัติ
 # งานและการทำงาน
 company|บริษัท;manager|ผู้จัดการ;employee|ลูกจ้าง;salary|เงินเดือน;meeting|การประชุม;interview|สัมภาษณ์;career|อาชีพการงาน;business|ธุรกิจ;customer service|บริการลูกค้า;report|รายงาน
 lawyer|ทนายความ;scientist|นักวิทยาศาสตร์;journalist|นักข่าว;designer|นักออกแบบ;mechanic|ช่างเครื่อง;waiter job|งานเสิร์ฟ;secretary|เลขานุการ;receptionist|พนักงานต้อนรับ;builder|ช่างก่อสร้าง;cleaner|พนักงานทำความสะอาด
@@ -50,7 +50,7 @@ wedding|งานแต่งงาน;festival day|วันเทศกาล;
 afraid|กลัว;nervous|ประหม่า;relaxed|ผ่อนคลาย;upset|ไม่พอใจ;embarrassed|อาย;jealous|อิจฉา;confused|สับสน;disappointed|ผิดหวัง;satisfied|พอใจ;grateful|ซาบซึ้ง
 # ที่โรงเรียน (A2)
 university|มหาวิทยาลัย;college|วิทยาลัย;course|หลักสูตร;degree|ปริญญา;principal|ครูใหญ่;uniform rule|กฎเครื่องแบบ;timetable|ตารางเรียน;library card|บัตรห้องสมุด;canteen|โรงอาหาร;club|ชมรม
-project|โครงงาน;topic|หัวข้อ;example|ตัวอย่าง;mistake|ความผิดพลาด;result|ผลลัพธ์;knowledge|ความรู้;skill|ทักษะ;experience|ประสบการณ์;education|การศึกษา;pass|สอบผ่าน ส่ง
+project|โครงงาน;topic|หัวข้อ;example|ตัวอย่าง;mistake|ความผิดพลาด;result|ผลลัพธ์;knowledge|ความรู้;skill|ทักษะ;experience|ประสบการณ์;education|การศึกษา;pass|สอบผ่าน, ผ่าน, ส่งให้
 # เวลาและเหตุการณ์
 past|อดีต;future|อนาคต;moment|ขณะ;century|ศตวรรษ;age|อายุ;date|วันที่;calendar|ปฏิทิน;season|ฤดู;spring|ฤดูใบไม้ผลิ;summer|ฤดูร้อน
 autumn|ฤดูใบไม้ร่วง;winter|ฤดูหนาว;midnight|เที่ยงคืน;noon|เที่ยงวัน;daily|ทุกวัน;weekly|ทุกสัปดาห์;recently|เมื่อเร็ว ๆ นี้;once|ครั้งหนึ่ง;twice|สองครั้ง;during|ระหว่าง

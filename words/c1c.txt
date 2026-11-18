@@ -1,6 +1,6 @@
 # ธุรกิจและการบริหารขั้นสูง
 acquisition strategy|กลยุทธ์การเข้าซื้อกิจการ;conglomerate|บริษัทในเครือขนาดใหญ่;consortium|กลุ่มบริษัทร่วมทุน;contingency plan|แผนสำรองฉุกเฉิน;due diligence|การตรวจสอบสถานะ;franchise|แฟรนไชส์;governance|ธรรมาภิบาล;leverage|การใช้ประโยชน์ อำนาจต่อรอง;logistics|โลจิสติกส์;niche|ช่องว่างทางการตลาด
-paradigm shift|การเปลี่ยนกระบวนทัศน์;procurement|การจัดซื้อจัดจ้าง;restructure|ปรับโครงสร้าง;scalability|ความสามารถในการขยาย;synergy|การผนึกกำลัง;turnover|ยอดขาย อัตราการลาออก;underwrite|รับประกัน (การเงิน);valuation|การประเมินมูลค่า;viability|ความเป็นไปได้;workforce|กำลังแรงงาน
+paradigm shift|การเปลี่ยนกระบวนทัศน์;procurement|การจัดซื้อจัดจ้าง;restructure|ปรับโครงสร้าง;scalability|ความสามารถในการขยาย;synergy|การผนึกกำลัง;turnover|ยอดขาย อัตราการลาออก;underwrite|รับประกัน;valuation|การประเมินมูลค่า;viability|ความเป็นไปได้;workforce|กำลังแรงงาน
 # กฎหมายขั้นสูง
 adjudicate|ตัดสินคดี;affidavit|คำให้การเป็นลายลักษณ์อักษร;acquittal|การพิพากษายกฟ้อง;clemency|การอภัยโทษ;defendant|จำเลย;plaintiff|โจทก์;indictment|คำฟ้อง;injunction|คำสั่งห้าม;litigation|การฟ้องร้อง;statute|บทบัญญัติกฎหมาย
 precedent case|คดีตัวอย่าง;prosecute|ฟ้องร้องดำเนินคดี;prosecutor|อัยการ;subpoena|หมายเรียก;tribunal|ศาลพิเศษ;warrant|หมายจับ ความชอบธรรม;felony|อาชญากรรมร้ายแรง;misdemeanor|ความผิดลหุโทษ;perjury|การให้การเท็จ;extradition|การส่งผู้ร้ายข้ามแดน
@@ -12,9 +12,9 @@ atmosphere|ชั้นบรรยากาศ บรรยากาศ;biosphe
 predation|การล่าเหยื่อ;migration route|เส้นทางอพยพ;hibernate|จำศีล;camouflage|การพรางตัว;adaptation trait|ลักษณะการปรับตัว;fossil|ฟอสซิล;mineral|แร่ธาตุ;crystal|ผลึก;magma|หินหนืด;meteor|ดาวตก
 # ศิลปะ วรรณกรรม และการวิจารณ์
 allegory|นิทานเปรียบเทียบ;alliteration|การซ้ำเสียงพยัญชนะต้น;archetype|ต้นแบบ;cliché|ความซ้ำซาก;denouement|บทคลี่คลาย;epic|มหากาพย์;foreshadowing|การบอกเป็นนัยล่วงหน้า;irony in fiction|การประชดในนิยาย;motif|แนวคิดที่ซ้ำ ๆ;parody|การล้อเลียน
-prose|ร้อยแก้ว;verse|ร้อยกรอง;sonnet|โคลงซอนเน็ต;tragedy|โศกนาฏกรรม;protagonist role|บทตัวเอก;antagonist|ตัวปฏิปักษ์;aesthetics|สุนทรียศาสตร์;avant-garde|หัวก้าวหน้าล้ำยุค;renaissance|ยุคฟื้นฟูศิลปวิทยา;baroque|ศิลปะบาโรก
+prose|ร้อยแก้ว;verse|ร้อยกรอง;sonnet|บทกวีซอนเน็ต;tragedy|โศกนาฏกรรม;protagonist role|บทตัวเอก;antagonist|ตัวปฏิปักษ์;aesthetics|สุนทรียศาสตร์;avant-garde|หัวก้าวหน้าล้ำยุค;renaissance|ยุคฟื้นฟูศิลปวิทยา;baroque|ศิลปะบาโรก
 # คำคุณศัพท์ C1 เพิ่มเติม
-abrasive|หยาบกระด้าง;acrimonious|เผ็ดร้อนขมขื่น;affable|เป็นกันเอง;altruistic|เห็นแก่ผู้อื่น;ambivalent|รู้สึกสองจิตสองใจ;anachronistic|ผิดยุคสมัย;apathetic|เฉยเมย;arcane|ลึกลับรู้กันน้อย;auspicious|เป็นมงคล;austere|เคร่งครัด เรียบง่าย
+abrasive|หยาบกระด้าง;acrimonious|ดุเดือด, ขมขื่น;affable|เป็นกันเอง;altruistic|เห็นแก่ผู้อื่น;ambivalent|รู้สึกสองจิตสองใจ;anachronistic|ผิดยุคสมัย;apathetic|เฉยเมย;arcane|ลึกลับรู้กันน้อย;auspicious|เป็นมงคล;austere|เคร่งครัด เรียบง่าย
 benevolent|มีเมตตา;bucolic|แบบชนบท;capricious|เอาแต่ใจ เปลี่ยนแปลงง่าย;clandestine|ลับ ๆ;cohesive|เหนียวแน่น;commensurate|ได้สัดส่วนกัน;contentious|เป็นที่โต้แย้ง;convoluted|ซับซ้อนวกวน;copious|อุดมสมบูรณ์มาก;culpable|ควรถูกตำหนิ
 deleterious|เป็นอันตราย;despondent|สิ้นหวัง;didactic|มุ่งสั่งสอน;diffident|ขาดความมั่นใจ;dogmatic|ยึดมั่นถือมั่น;ebullient|ร่าเริงกระตือรือร้น;egregious|เลวร้ายอย่างเห็นได้ชัด;enigmatic|ลึกลับ;equitable|เป็นธรรม;esoteric|เข้าใจได้เฉพาะกลุ่ม
 exuberant|ร่าเริงเต็มไปด้วยพลัง;fallacious|ผิดตรรกะ;fervent|แรงกล้า;flagrant|โจ่งแจ้งน่าอับอาย;fortuitous|บังเอิญโชคดี;furtive|ลับ ๆ ล่อ ๆ;garrulous|ช่างพูด;idiosyncratic|มีลักษณะเฉพาะตัว;illicit|ผิดกฎหมาย;impervious|ไม่สะทกสะท้าน กันซึม

@@ -11,11 +11,11 @@ equator|เส้นศูนย์สูตร;tropical|เขตร้อน;v
 bend|งอ;stretch|ยืด;lift|ยก;crawl|คลาน;kneel|คุกเข่า;lean|เอน พิง;nod|พยักหน้า;wave hand|โบกมือ;point|ชี้ จุด;grab|คว้า
 hold|ถือ จับ;squeeze|บีบ;touch|สัมผัส;tap|เคาะ แตะ;slip|ลื่น;trip over|สะดุด;bump|ชน;roll|กลิ้ง;spin|หมุนติ้ว;bounce|เด้ง
 # การรับรู้และความคิด
-think|คิด;wonder|สงสัย;doubt|สงสัย ไม่แน่ใจ;suppose|สมมติ;assume|ทึกทัก;judge (verb)|ตัดสิน;prove|พิสูจน์;confirm|ยืนยัน;remind|เตือนความจำ;recall|นึกถึง
-focus|จดจ่อ;pay attention|ใส่ใจ;ignore|เพิกเฉย;intend|ตั้งใจ;prefer|ชอบมากกว่า;mind|รังเกียจ จิตใจ;memory|ความทรงจำ;idea|ความคิด;imagination|จินตนาการ;thought|ความคิด (นาม)
+think|คิด;wonder|สงสัย;doubt|สงสัย ไม่แน่ใจ;suppose|สมมติ;assume|สันนิษฐาน, ทึกทัก;judge (verb)|ตัดสิน;prove|พิสูจน์;confirm|ยืนยัน;remind|เตือนความจำ;recall|นึกถึง
+focus|จดจ่อ;pay attention|ใส่ใจ;ignore|เพิกเฉย;intend|ตั้งใจ;prefer|ชอบมากกว่า;mind|รังเกียจ จิตใจ;memory|ความทรงจำ;idea|ความคิด;imagination|จินตนาการ;thought|ความคิด
 # การพูดและการโต้ตอบ
 reply|ตอบกลับ;respond|ตอบสนอง;claim|อ้าง;state|ระบุ รัฐ;express|แสดงออก;describe in detail|บรรยายละเอียด;complain|บ่น ร้องเรียน;insist|ยืนกราน;persuade|โน้มน้าว;convince|ทำให้เชื่อ
-negotiate|เจรจา;interrupt|ขัดจังหวะ;pronounce|ออกเสียง;translate|แปล;summarize|สรุป;introduce|แนะนำตัว;greet|ทักทาย;thank|ขอบคุณ (กริยา);congratulate|แสดงความยินดี;criticize|วิจารณ์
+negotiate|เจรจา;interrupt|ขัดจังหวะ;pronounce|ออกเสียง;translate|แปล;summarize|สรุป;introduce|แนะนำตัว;greet|ทักทาย;thank|ขอบคุณ;congratulate|แสดงความยินดี;criticize|วิจารณ์
 # กีฬาและการแข่งขัน
 competition|การแข่งขัน;compete|แข่งขัน;opponent|คู่ต่อสู้;tournament|ทัวร์นาเมนต์;defeat|เอาชนะ;victory|ชัยชนะ;draw (match)|เสมอ;record|สถิติ บันทึก;athlete|นักกีฬา;stadium crowd|ฝูงชนในสนาม
 # การเปลี่ยนแปลงและการเคลื่อนที่
@@ -35,8 +35,8 @@ emergency|เหตุฉุกเฉิน;danger|อันตราย;alarm|�
 episode|ตอน;series|ซีรีส์;channel subscribe|กดติดตามช่อง;stream|สตรีม ลำธาร;podcast|พอดแคสต์;comment|ความคิดเห็น แสดงความเห็น;like button|ปุ่มถูกใจ;follower|ผู้ติดตาม;viral|เป็นกระแส;trend|เทรนด์
 # คำเชื่อมและวิเศษณ์ B1
 however|อย่างไรก็ตาม;therefore|ดังนั้น;although|แม้ว่า;unless|เว้นแต่;whether|ไม่ว่า หรือไม่;while|ขณะที่;instead|แทน;besides|นอกจากนี้;moreover|ยิ่งไปกว่านั้น;otherwise|มิฉะนั้น
-actually|จริง ๆ แล้ว;certainly|แน่นอน;definitely|แน่นอนที่สุด;nearly|เกือบ;hardly|แทบจะไม่;rarely|นาน ๆ ครั้ง;immediately|ทันที;eventually|ในที่สุด;gradually|ทีละน้อย;recently|เมื่อไม่นานนี้
+actually|จริง ๆ แล้ว;certainly|แน่นอน;definitely|แน่นอนที่สุด;nearly|เกือบ;hardly|แทบจะไม่;rarely|นาน ๆ ครั้ง;immediately|ทันที;eventually|ในที่สุด;gradually|ทีละน้อย;recently|เมื่อเร็ว ๆ นี้
 anyway|อย่างไรก็ตาม;apparently|เห็นได้ชัดว่า;fortunately|โชคดีที่;unfortunately|น่าเสียดายที่;luckily|โชคดี;obviously|อย่างเห็นได้ชัด;seriously|อย่างจริงจัง;exactly|อย่างแน่นอน ตรง;mostly|ส่วนใหญ่;mainly|โดยหลัก
 # ธรรมชาติและสัตว์ B1
-creature|สิ่งมีชีวิต;mammal|สัตว์เลี้ยงลูกด้วยนม;reptile|สัตว์เลื้อยคลาน;insect bite|แมลงกัด;hunt|ล่า;prey|เหยื่อ (สัตว์);predator|สัตว์นักล่า;herd|ฝูง (สัตว์);flock|ฝูง (นก);breed|ผสมพันธุ์ สายพันธุ์
+creature|สิ่งมีชีวิต;mammal|สัตว์เลี้ยงลูกด้วยนม;reptile|สัตว์เลื้อยคลาน;insect bite|แมลงกัด;hunt|ล่า;prey|เหยื่อ;predator|สัตว์นักล่า;herd|ฝูงสัตว์;flock|ฝูงนก;breed|ผสมพันธุ์ สายพันธุ์
 branch|กิ่งไม้ สาขา;trunk|ลำต้น;bush|พุ่มไม้;blossom|ดอกบาน;harvest|เก็บเกี่ยว;crop|พืชผล;dust storm|พายุฝุ่น;thunder|ฟ้าร้อง;lightning|ฟ้าแลบ;fog|หมอก

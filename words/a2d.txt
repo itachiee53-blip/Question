@@ -8,7 +8,7 @@ diary|ไดอารี่;photo album|อัลบั้มรูป;sticker|�
 sticky rice|ข้าวเหนียว;papaya salad|ส้มตำ;green curry|แกงเขียวหวาน;fish sauce|น้ำปลา;coconut cream|หัวกะทิ;lemongrass|ตะไคร้;basil|กะเพรา โหระพา;coriander|ผักชี;tamarind|มะขาม;palm sugar|น้ำตาลปี๊บ
 grilled chicken|ไก่ย่าง;fried egg|ไข่ดาว;boiled egg|ไข่ต้ม;rice porridge|ข้าวต้ม โจ๊ก;spring roll|ปอเปี๊ยะ;satay|สะเต๊ะ;mango sticky rice|ข้าวเหนียวมะม่วง;iced tea|ชาเย็น;soy milk|นมถั่วเหลือง;fruit shake|น้ำปั่น
 # กีฬาและการเล่นนอกบ้าน
-jogging|การวิ่งเหยาะ;skipping rope|เชือกกระโดด;tag game|เกมวิ่งไล่จับ;hide and seek|ซ่อนหา;football pitch|สนามฟุตบอล;court|สนาม (เทนนิส) ศาล;net|ตาข่าย;racket|ไม้แร็กเกต;bat (sport)|ไม้ตี;whistle|นกหวีด
+jogging|การวิ่งเหยาะ;skipping rope|เชือกกระโดด;tag game|เกมวิ่งไล่จับ;hide and seek|ซ่อนหา;football pitch|สนามฟุตบอล;court|สนามกีฬา, ศาล;net|ตาข่าย;racket|ไม้แร็กเกต;bat (sport)|ไม้ตี;whistle|นกหวีด
 swimming pool|สระว่ายน้ำ;goggles|แว่นว่ายน้ำ;float ring|ห่วงยาง;skateboard|สเกตบอร์ด;roller skates|รองเท้าสเกต;cartwheel|ตีลังกา;stretching|การยืดเหยียด;sweat|เหงื่อ;thirst|ความกระหาย;water break|พักดื่มน้ำ
 # คำกริยาความรู้สึกและการรับรู้
 notice something|สังเกตเห็นบางอย่าง;look like|ดูเหมือน;sound like|ฟังดูเหมือน;taste like|รสเหมือน;feel like|รู้สึกอยาก;seem happy|ดูมีความสุข;get angry|โกรธ;get bored|เบื่อ;get tired|เหนื่อย;get better|ดีขึ้น
@@ -18,10 +18,10 @@ sunrise|พระอาทิตย์ขึ้น;sunset|พระอาทิ�
 pond fish|ปลาในบ่อ;lotus|ดอกบัว;rose|ดอกกุหลาบ;sunflower|ดอกทานตะวัน;orchid|กล้วยไม้;bamboo|ไผ่;palm tree|ต้นปาล์ม;pine tree|ต้นสน;cactus|กระบองเพชร;vine|เถาวัลย์
 # คำคุณศัพท์ความรู้สึกต่อสิ่งของ
 useful tool|เครื่องมือที่มีประโยชน์;comfortable shoes|รองเท้าที่ใส่สบาย;colourful dress|ชุดสีสันสดใส;favourite song|เพลงโปรด;expensive watch|นาฬิกาแพง;heavy bag|กระเป๋าหนัก;light box|กล่องเบา;broken phone|โทรศัพท์เสีย;dirty shoes|รองเท้าสกปรก;clean room|ห้องสะอาด
-noisy children|เด็ก ๆ เสียงดัง;quiet library|ห้องสมุดที่เงียบ;crowded bus|รถบัสแออัด;empty street|ถนนว่าง;delicious meal|มื้ออาหารอร่อย;spicy soup|ซุปเผ็ด;sweet dessert|ของหวานหวาน;sour fruit|ผลไม้เปรี้ยว;fresh fish|ปลาสด;hot drink|เครื่องดื่มร้อน
+noisy children|เด็ก ๆ ที่เสียงดัง;quiet library|ห้องสมุดที่เงียบ;crowded bus|รถบัสแออัด;empty street|ถนนว่าง;delicious meal|มื้ออาหารอร่อย;spicy soup|ซุปเผ็ด;sweet dessert|ของหวานรสหวาน;sour fruit|ผลไม้เปรี้ยว;fresh fish|ปลาสด;hot drink|เครื่องดื่มร้อน
 # เวลาและความถี่ A2
 every day|ทุกวัน;every morning|ทุกเช้า;once a week|สัปดาห์ละครั้ง;twice a day|วันละสองครั้ง;all the time|ตลอดเวลา;at night|ตอนกลางคืน;in the morning|ในตอนเช้า;on Monday|ในวันจันทร์;last week|สัปดาห์ที่แล้ว;next year|ปีหน้า
 a long time ago|นานมาแล้ว;right now|ตอนนี้เลย;just now|เมื่อกี้;at first|ในตอนแรก;in the end|ในที่สุด;sooner|เร็วกว่า;since|ตั้งแต่;until|จนกระทั่ง;by then|ถึงตอนนั้น;meanwhile at home|ระหว่างนั้นที่บ้าน
 # งานบ้านและสัตว์เลี้ยง
-walk the dog|พาหมาเดินเล่น;clean the cage|ทำความสะอาดกรง;fish food|อาหารปลา;cat litter|ทรายแมว;dog bowl|ชามอาหารหมา;collar tag|ป้ายห้อยคอ;leash|สายจูง;bark|เห่า;meow|ร้องเหมียว;purr|ร้องครืด ๆ
+walk the dog|พาหมาเดินเล่น;clean the cage|ทำความสะอาดกรง;fish food|อาหารปลา;cat litter|ทรายแมว;dog bowl|ชามอาหารหมา;collar tag|ป้ายห้อยคอ;leash|สายจูง;bark|เห่า;meow|ร้องเหมียว;purr|ครางครืด ๆ
 make the bed|จัดที่นอน;set the table|จัดโต๊ะอาหาร;clear the table|เก็บโต๊ะ;take out the rubbish|เอาขยะไปทิ้ง;hang the washing|ตากผ้า;fold clothes|พับผ้า;water plants|รดน้ำต้นไม้;cook dinner|ทำอาหารเย็น;do the shopping|ไปจ่ายของ;feed the fish|ให้อาหารปลา

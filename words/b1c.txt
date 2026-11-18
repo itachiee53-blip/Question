@@ -8,12 +8,12 @@ waste money|ใช้เงินฟุ่มเฟือย;worth|มีค่�
 resident|ผู้อยู่อาศัย;suburb|ชานเมือง;countryside|ชนบท;urban|ในเมือง;rural|ในชนบท;neighborhood|ละแวกบ้าน;district|เขต;square|จัตุรัส;monument|อนุสาวรีย์;landmark|สถานที่สำคัญ
 facility|สิ่งอำนวยความสะดวก;transport system|ระบบขนส่ง;housing|ที่อยู่อาศัย;construction|การก่อสร้าง;infrastructure|โครงสร้างพื้นฐาน;sewer|ท่อระบายน้ำ;streetlight|ไฟถนน;litter|ขยะเกลื่อน;graffiti|ภาพพ่นบนกำแพง;noise|เสียงรบกวน
 # อารมณ์และความสัมพันธ์ B1
-attraction|แรงดึงดูด;affection|ความรักใคร่;friendship|มิตรภาพ;loneliness|ความเหงา;jealousy|ความอิจฉา;pride|ความภูมิใจ;shame|ความอับอาย;guilt|ความรู้สึกผิด;courage|ความกล้าหาญ;kindness|ความเมตตา
-gratitude|ความกตัญญู ขอบคุณ;patience|ความอดทน;humor|อารมณ์ขัน;temper|อารมณ์โมโห;tears|น้ำตา;comfort|ปลอบใจ ความสบาย;reassure|ให้ความมั่นใจ;upset someone|ทำให้คนเสียใจ;get along|เข้ากันได้;fall in love|ตกหลุมรัก
+attraction|สถานที่ท่องเที่ยว, แรงดึงดูด;affection|ความรักใคร่;friendship|มิตรภาพ;loneliness|ความเหงา;jealousy|ความอิจฉา;pride|ความภูมิใจ;shame|ความอับอาย;guilt|ความรู้สึกผิด;courage|ความกล้าหาญ;kindness|ความเมตตา
+gratitude|ความรู้สึกขอบคุณ, ความกตัญญู;patience|ความอดทน;humor|อารมณ์ขัน;temper|อารมณ์โมโห;tears|น้ำตา;comfort|ปลอบใจ ความสบาย;reassure|ให้ความมั่นใจ;upset someone|ทำให้คนเสียใจ;get along|เข้ากันได้;fall in love|ตกหลุมรัก
 # การเรียนภาษา
 grammar|ไวยากรณ์;vocabulary|คำศัพท์;pronunciation|การออกเสียง;accent|สำเนียง;fluent|คล่อง;native speaker|เจ้าของภาษา;meaning|ความหมาย;definition|คำนิยาม;synonym|คำพ้องความหมาย;opposite word|คำตรงข้าม
-paragraph|ย่อหน้า;chapter|บท;title|ชื่อเรื่อง;summary|บทสรุป;translation|การแปล;dictation|การเขียนตามคำบอก;spelling|การสะกดคำ;punctuation|เครื่องหมายวรรคตอน;tense|กาล (ไวยากรณ์);verb|คำกริยา
-noun|คำนาม;adjective|คำคุณศัพท์;adverb|คำวิเศษณ์;phrase|วลี;idiom|สำนวน;slang|คำแสลง;formal|เป็นทางการ;informal|ไม่เป็นทางการ;literature|วรรณกรรม;fiction|นวนิยาย เรื่องแต่ง
+paragraph|ย่อหน้า;chapter|บท;title|ชื่อเรื่อง;summary|บทสรุป;translation|การแปล;dictation|การเขียนตามคำบอก;spelling|การสะกดคำ;punctuation|เครื่องหมายวรรคตอน;tense|กาล, ตึงเครียด;verb|คำกริยา
+noun|คำนาม;adjective|คำคุณศัพท์;adverb|คำวิเศษณ์;phrase|วลี;idiom|สำนวน;slang|คำแสลง;formal|เป็นทางการ;informal|ไม่เป็นทางการ;literature|วรรณกรรม;fiction|เรื่องแต่ง, นิยาย
 # ภัยธรรมชาติและสภาพอากาศสุดขั้ว
 tsunami|สึนามิ;hurricane|เฮอริเคน;tornado|ทอร์นาโด;typhoon|ไต้ฝุ่น;landslide|ดินถล่ม;wildfire|ไฟป่า;avalanche|หิมะถล่ม;blizzard|พายุหิมะ;hail|ลูกเห็บ;evacuate|อพยพ
 shelter|ที่หลบภัย;survivor|ผู้รอดชีวิต;rescue team|ทีมกู้ภัย;relief|การบรรเทา ความโล่งใจ;aid|ความช่วยเหลือ;supply drop|การส่งเสบียง;warning|คำเตือน;siren|ไซเรน;destroyed|ถูกทำลาย;rebuild|สร้างใหม่
@@ -23,7 +23,7 @@ pedestrian|คนเดินเท้า;cyclist|นักปั่นจัก
 # คำกริยา B1 เพิ่มเติม
 achieve a goal|บรรลุเป้าหมาย;adopt|รับเลี้ยง นำมาใช้;afford to|มีกำลังพอที่จะ;announce news|ประกาศข่าว;apply for|สมัครเพื่อ;arrange a meeting|นัดประชุม;attach|แนบ;attract|ดึงดูด;bargain|ต่อราคา;behave well|ประพฤติดี
 calm down|ใจเย็นลง;cancel|ยกเลิก;capture|จับกุม จับภาพ;celebrate success|ฉลองความสำเร็จ;challenge|ท้าทาย;cheer|โห่ร้องเชียร์;combine|รวมกัน;commit a crime|ก่ออาชญากรรม;complete a form|กรอกแบบฟอร์ม;confuse|ทำให้สับสน
-connect with|เชื่อมโยงกับ;contact|ติดต่อ;convince someone|โน้มน้าวใคร;correct a mistake|แก้ข้อผิดพลาด;criticise|วิจารณ์ (อังกฤษ);deserve|สมควรได้รับ;disturb|รบกวน;doubt it|สงสัยเรื่องนั้น;earn money|หาเงิน;educate|ให้การศึกษา
+connect with|เชื่อมโยงกับ;contact|ติดต่อ;convince someone|โน้มน้าวใคร;correct a mistake|แก้ข้อผิดพลาด;criticise|วิจารณ์;deserve|สมควรได้รับ;disturb|รบกวน;doubt it|สงสัยเรื่องนั้น;earn money|หาเงิน;educate|ให้การศึกษา
 encourage someone|ให้กำลังใจใคร;entertain|ให้ความบันเทิง;examine|ตรวจสอบ;exist|มีอยู่;expand a business|ขยายธุรกิจ;experience something|ประสบบางสิ่ง;explore|สำรวจ;export goods|ส่งออกสินค้า;feed a family|เลี้ยงครอบครัว;gain|ได้รับ เพิ่มขึ้น
 hide a secret|ซ่อนความลับ;identify a problem|ระบุปัญหา;ignore advice|เพิกเฉยคำแนะนำ;impress|ทำให้ประทับใจ;inspire|สร้างแรงบันดาลใจ;install software|ติดตั้งซอฟต์แวร์;introduce a friend|แนะนำเพื่อน;judge a contest|ตัดสินการประกวด;laugh at|หัวเราะเยาะ;limit|จำกัด
 # คำคุณศัพท์ B1 เพิ่มเติม

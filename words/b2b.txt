@@ -1,11 +1,11 @@
 # สื่อและการสื่อสารมวลชน
 journalism|วารสารศาสตร์;editor|บรรณาธิการ;publish|ตีพิมพ์;publication|สิ่งพิมพ์;coverage|การรายงานข่าว;censorship|การเซ็นเซอร์;propaganda|การโฆษณาชวนเชื่อ;misinformation|ข้อมูลผิด;source|แหล่งที่มา;credibility|ความน่าเชื่อถือ
-editorial|บทบรรณาธิการ;documentary|สารคดี;press conference|การแถลงข่าว;spokesperson|โฆษก;scandal|เรื่องอื้อฉาว;rumor|ข่าวลือ;exaggerate|พูดเกินจริง;sensational|เร้าใจเกินจริง;audience share|ส่วนแบ่งผู้ชม;influencer|ผู้มีอิทธิพลทางโซเชียล
+editorial|บทบรรณาธิการ;documentary|สารคดี;press conference|การแถลงข่าว;spokesperson|โฆษก;scandal|เรื่องอื้อฉาว;rumor|ข่าวลือ;exaggerate|พูดเกินจริง;sensational|หวือหวา, เรียกความสนใจ;audience share|ส่วนแบ่งผู้ชม;influencer|ผู้มีอิทธิพลทางโซเชียล
 # เทคโนโลยีขั้นสูง
 artificial intelligence|ปัญญาประดิษฐ์;algorithm|อัลกอริทึม;automation|ระบบอัตโนมัติ;database|ฐานข้อมูล;encryption|การเข้ารหัส;cybersecurity|ความปลอดภัยไซเบอร์;hacker|แฮกเกอร์;privacy|ความเป็นส่วนตัว;surveillance|การสอดแนม;innovation|นวัตกรรม
-prototype|ต้นแบบ;interface|ส่วนติดต่อ;virtual|เสมือนจริง;bandwidth|แบนด์วิดท์;processor|หน่วยประมวลผล;storage|ที่เก็บข้อมูล;cloud computing|คลาวด์คอมพิวติง;breakthrough|ความก้าวหน้าครั้งสำคัญ;obsolete|ล้าสมัย;compatible|ใช้ร่วมกันได้
+prototype|ต้นแบบ;interface|ส่วนติดต่อผู้ใช้;virtual|เสมือนจริง;bandwidth|แบนด์วิดท์;processor|หน่วยประมวลผล;storage|ที่เก็บข้อมูล;cloud computing|คลาวด์คอมพิวติง;breakthrough|ความก้าวหน้าครั้งสำคัญ;obsolete|ล้าสมัย;compatible|ใช้ร่วมกันได้
 # การศึกษาและวิชาการ B2
-curriculum|หลักสูตร;discipline|ระเบียบวินัย สาขาวิชา;tutor|ครูสอนพิเศษ;thesis|วิทยานิพนธ์;dissertation|ปริญญานิพนธ์;reference|การอ้างอิง;citation|การอ้างอิงที่มา;plagiarism|การลอกเลียนงาน;journal|วารสาร;peer|เพื่อนร่วมรุ่น ผู้เท่าเทียม
+curriculum|หลักสูตร;discipline|ระเบียบวินัย สาขาวิชา;tutor|ครูสอนพิเศษ;thesis|วิทยานิพนธ์;dissertation|ปริญญานิพนธ์;reference|การอ้างอิง;citation|การอ้างอิงที่มา;plagiarism|การลอกเลียนงาน;journal|วารสาร;peer|เพื่อนรุ่นเดียวกัน
 literacy|การรู้หนังสือ;numeracy|ทักษะการคำนวณ;enrol|ลงทะเบียนเรียน;tuition|ค่าเล่าเรียน;faculty|คณะ;campus|วิทยาเขต;undergraduate|นักศึกษาปริญญาตรี;postgraduate|บัณฑิตศึกษา;academic|ทางวิชาการ;intellectual|ทางปัญญา
 # สุขภาพจิตและความเป็นอยู่
 wellbeing|ความเป็นอยู่ที่ดี;depression|ภาวะซึมเศร้า;burnout|ภาวะหมดไฟ;insomnia|โรคนอนไม่หลับ;addiction|การเสพติด;counselling|การให้คำปรึกษา;therapist|นักบำบัด;meditation|การทำสมาธิ;mindfulness|การมีสติ;exhausted|อ่อนเพลียมาก
@@ -14,16 +14,16 @@ overwhelmed|รู้สึกท่วมท้น;isolated|โดดเดี�
 globalization|โลกาภิวัตน์;immigration|การย้ายถิ่นเข้า;emigrate|ย้ายถิ่นออก;refugee|ผู้ลี้ภัย;minority|ชนกลุ่มน้อย;diversity|ความหลากหลาย;inequality|ความเหลื่อมล้ำ;discrimination|การเลือกปฏิบัติ;racism|การเหยียดเชื้อชาติ;gender|เพศสภาพ
 urbanization|การกลายเป็นเมือง;unemployment|การว่างงาน;homeless|ไร้บ้าน;crime rate|อัตราอาชญากรรม;life expectancy|อายุขัยเฉลี่ย;birth rate|อัตราการเกิด;aging society|สังคมผู้สูงอายุ;standard of living|มาตรฐานการครองชีพ;wealthy|ร่ำรวย;deprived|ขาดแคลน
 # คำกริยา B2 เพิ่มเติม
-abolish|ยกเลิก (กฎ);accelerate|เร่ง;accommodate|รองรับ;accumulate|สะสม;acknowledge|ยอมรับ;advocate|สนับสนุน;alter|เปลี่ยนแปลง;amend|แก้ไข;appoint|แต่งตั้ง;assemble|ประกอบ รวมตัว
-assert|ยืนยัน;assign|มอบหมาย;bias someone|ทำให้ลำเอียง;cease|หยุด;cite|อ้างอิง;compel|บังคับ;comprehend|เข้าใจ;conceal|ปกปิด;concede|ยอมรับ (อย่างไม่เต็มใจ);confront|เผชิญหน้า
+abolish|ยกเลิก;accelerate|เร่ง;accommodate|รองรับ;accumulate|สะสม;acknowledge|ยอมรับ;advocate|สนับสนุน;alter|เปลี่ยนแปลง;amend|แก้ไข;appoint|แต่งตั้ง;assemble|ประกอบ รวมตัว
+assert|ยืนยัน;assign|มอบหมาย;bias someone|ทำให้ลำเอียง;cease|หยุด;cite|อ้างอิง;compel|บังคับ;comprehend|เข้าใจ;conceal|ปกปิด;concede|ยอมรับอย่างไม่เต็มใจ;confront|เผชิญหน้า
 consolidate|รวมให้มั่นคง;constrain|จำกัด;contemplate|ใคร่ครวญ;deceive|หลอกลวง;dedicate|อุทิศ;deduce|อนุมาน;defy|ท้าทาย ขัดขืน;delegate|มอบหมายงาน;deliberate|จงใจ ไตร่ตรอง;deprive|ทำให้ขาด
 deteriorate|เสื่อมลง;devote|ทุ่มเท;diminish|ลดลง;disclose|เปิดเผย;discourage|ทำให้ท้อ;dispose|กำจัดทิ้ง;disrupt|ก่อกวน;dissolve|ละลาย สลาย;divert|เบี่ยงเบน;embrace|โอบรับ
 endure|อดทน;enforce a law|บังคับใช้กฎหมาย;exaggerate a story|เล่าเกินจริง;exploit|ใช้ประโยชน์ เอาเปรียบ;fluctuate|ขึ้นลง;forbid|ห้าม;foster|ส่งเสริม;fulfil|ทำให้สำเร็จ;grant|ให้ อนุญาต;hinder|ขัดขวาง
 # คำนาม B2 เพิ่มเติม
 accountability|ความรับผิดชอบที่ตรวจสอบได้;acquisition|การได้มา;adaptation|การปรับตัว;allegation|ข้อกล่าวหา;alliance|พันธมิตร;analogy|การเปรียบเทียบ;anxiety level|ระดับความวิตก;appliance store|ร้านเครื่องใช้ไฟฟ้า;bureaucracy|ระบบราชการ;catastrophe|หายนะ
-coalition|แนวร่วม;commodity|สินค้าโภคภัณฑ์;compassion|ความเมตตา;consensus|ฉันทามติ;controversy|ข้อถกเถียง;criterion|เกณฑ์ (เอกพจน์);dilemma|สถานการณ์กลืนไม่เข้าคายไม่ออก;discourse|วาทกรรม;dispute|ข้อพิพาท;doctrine|หลักคำสอน
+coalition|แนวร่วม;commodity|สินค้าโภคภัณฑ์;compassion|ความเมตตา;consensus|ฉันทามติ;controversy|ข้อถกเถียง;criterion|เกณฑ์;dilemma|สถานการณ์กลืนไม่เข้าคายไม่ออก;discourse|วาทกรรม;dispute|ข้อพิพาท;doctrine|หลักคำสอน
 endeavour|ความพยายาม;expertise|ความเชี่ยวชาญ;fatigue|ความเหนื่อยล้า;fraction|เศษส่วน;guideline|แนวทาง;heritage|มรดกตกทอด;hierarchy|ลำดับชั้น;ideology|อุดมการณ์;incidence|อุบัติการณ์;infrastructure project|โครงการโครงสร้างพื้นฐาน
 # คำคุณศัพท์ B2 เพิ่มเติม
-abundant|อุดมสมบูรณ์;acute|เฉียบพลัน;affluent|มั่งคั่ง;alarming|น่าตกใจ;anonymous|ไม่ระบุชื่อ;authentic|ของแท้;bold|กล้าหาญ ชัด;brief|สั้น กระชับ;candid|ตรงไปตรงมา;coherent|สอดคล้องเป็นเหตุผล
+abundant|อุดมสมบูรณ์;acute|เฉียบพลัน;affluent|มั่งคั่ง;alarming|น่าตกใจ;anonymous|ไม่ระบุชื่อ;authentic|ของแท้;bold|กล้าหาญ ชัด;brief|สั้น กระชับ;candid|ตรงไปตรงมา;coherent|สอดคล้อง, เป็นเหตุเป็นผล
 compulsory|ภาคบังคับ;concise|กระชับ;confidential|เป็นความลับ;crucial step|ขั้นตอนสำคัญ;decisive|เด็ดขาด;deliberate act|การกระทำโดยเจตนา;dense|หนาแน่น;diverse|หลากหลาย;domestic|ภายในประเทศ ในบ้าน;drastic|รุนแรง ฉับพลัน
 eloquent|พูดเก่ง คมคาย;eminent|มีชื่อเสียงโดดเด่น;excessive|มากเกินไป;exotic|แปลกถิ่น;fierce|ดุเดือด;fragile item|ของเปราะบาง;frank|ตรงไปตรงมา;futile|ไร้ประโยชน์;gradual|ทีละน้อย;hazardous|อันตราย

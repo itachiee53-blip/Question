@@ -1,23 +1,23 @@
 # คำกริยาขั้นสูง
 abdicate|สละราชสมบัติ;abhor|รังเกียจอย่างยิ่ง;absolve|ปลดเปลื้องความผิด;abstain|งดเว้น;accentuate|เน้นให้เด่น;acclaim|ยกย่อง;acquiesce|ยอมตาม;adhere|ยึดมั่น;admonish|ตักเตือน;aggravate|ทำให้แย่ลง
-alienate|ทำให้เหินห่าง;alleviate|บรรเทา;allude|พาดพิง;ameliorate|ทำให้ดีขึ้น;amplify|ขยาย (เสียง);annihilate|ทำลายล้าง;appease|ทำให้สงบ;apprehend|จับกุม เข้าใจ;articulate|พูดชัดเจน;ascertain|ตรวจสอบให้แน่ชัด
-aspire|ใฝ่ฝัน;assimilate|ดูดซึม กลมกลืน;attest|รับรอง;augment|เพิ่มพูน;banish|เนรเทศ;bolster|สนับสนุนให้แข็งแรง;circumvent|หลบเลี่ยง;coerce|บีบบังคับ;commemorate|รำลึก;compile data|รวบรวมข้อมูล
-condone|ยอมให้ (สิ่งผิด);corroborate|ยืนยันสนับสนุน;curtail|ตัดทอน;debilitate|ทำให้อ่อนแอ;decipher|ถอดรหัส;deem|ถือว่า;denounce|ประณาม;deplete|ทำให้หมดไป;deter|ยับยั้งไม่ให้ทำ;devise|คิดค้น
+alienate|ทำให้เหินห่าง;alleviate|บรรเทา;allude|พาดพิง;ameliorate|ทำให้ดีขึ้น;amplify|ขยายเสียง, ขยาย;annihilate|ทำลายล้าง;appease|ทำให้สงบ;apprehend|จับกุม เข้าใจ;articulate|พูดชัดเจน;ascertain|ตรวจสอบให้แน่ชัด
+aspire|ใฝ่ฝัน;assimilate|ดูดซึม กลมกลืน;attest|รับรอง;augment|เพิ่มพูน;banish|เนรเทศ;bolster|เสริมให้แข็งแรง;circumvent|หลบเลี่ยง;coerce|บีบบังคับ;commemorate|รำลึก;compile data|รวบรวมข้อมูล
+condone|ยอมให้;corroborate|ยืนยัน, สนับสนุนหลักฐาน;curtail|ตัดทอน;debilitate|ทำให้อ่อนแอ;decipher|ถอดรหัส;deem|ถือว่า;denounce|ประณาม;deplete|ทำให้หมดไป;deter|ยับยั้งไม่ให้ทำ;devise|คิดค้น
 discern|มองออก แยกแยะ;disparage|ดูหมิ่น;dissipate|สลายไป;elicit|ดึงออกมา;elucidate|อธิบายให้ชัด;emanate|แผ่ออกมา;embark|เริ่มต้น ลงเรือ;embellish|ตกแต่ง เสริมแต่ง;encompass|ครอบคลุม;endorse|รับรอง สนับสนุน
 engender|ก่อให้เกิด;entail|นำมาซึ่ง;eradicate|ขจัดให้หมดสิ้น;exacerbate|ทำให้รุนแรงขึ้น;exemplify|เป็นตัวอย่าง;exonerate|พ้นผิด;expedite|เร่งรัด;extrapolate|คาดการณ์จากข้อมูล;fabricate|กุเรื่อง ประดิษฐ์;forge|ปลอมแปลง หลอม
-galvanize|กระตุ้นให้ลงมือ;hamper|ขัดขวาง;harness|ควบคุมนำมาใช้;impede|ขัดขวาง (ความก้าวหน้า);implicate|พาดพิงถึง;incite|ยุยง;infer|อนุมาน;infringe|ละเมิด (สิทธิ์);instigate|ยุยงให้เกิด;jeopardize|ทำให้ตกอยู่ในอันตราย
-languish|อ่อนระโหย;lament|คร่ำครวญ;mitigate|ลดความรุนแรง;necessitate|ทำให้จำเป็น;nullify|ทำให้เป็นโมฆะ;obliterate|ลบล้าง;obstruct|กีดขวาง;orchestrate|วางแผนจัดการ;perpetuate|ทำให้คงอยู่ต่อไป;plummet|ดิ่งลง
+galvanize|กระตุ้นให้ลงมือ;hamper|ขัดขวาง;harness|นำมาใช้ประโยชน์;impede|ขัดขวาง;implicate|พาดพิงถึง;incite|ยุยง;infer|อนุมาน;infringe|ละเมิด;instigate|ยุยงให้เกิด;jeopardize|ทำให้ตกอยู่ในอันตราย
+languish|ซบเซา, อ่อนแรงลง;lament|คร่ำครวญ;mitigate|ลดความรุนแรง;necessitate|ทำให้จำเป็น;nullify|ทำให้เป็นโมฆะ;obliterate|ลบล้าง;obstruct|กีดขวาง;orchestrate|วางแผนจัดการ;perpetuate|ทำให้คงอยู่ต่อไป;plummet|ดิ่งลง
 ponder|ครุ่นคิด;precipitate|เร่งให้เกิด;procrastinate|ผัดวันประกันพรุ่ง;proliferate|แพร่หลายอย่างรวดเร็ว;propagate|เผยแพร่ ขยายพันธุ์;quantify|วัดเป็นปริมาณ;rectify|แก้ไขให้ถูก;refute|หักล้าง;reiterate|ย้ำ;relinquish|สละ
-replenish|เติมให้เต็ม;repudiate|ปฏิเสธไม่ยอมรับ;rescind|ยกเลิก (คำสั่ง);scrutinize|พินิจพิเคราะห์;substantiate|พิสูจน์ยืนยัน;supersede|เข้ามาแทนที่;suppress|ปราบปราม เก็บกด;surpass|เหนือกว่า;tamper|แอบแก้ไข;undermine|บ่อนทำลาย
+replenish|เติมให้เต็ม;repudiate|ปฏิเสธไม่ยอมรับ;rescind|ยกเลิก;scrutinize|พินิจพิเคราะห์;substantiate|พิสูจน์ยืนยัน;supersede|เข้ามาแทนที่;suppress|ปราบปราม เก็บกด;surpass|เหนือกว่า;tamper|แอบแก้ไข;undermine|บ่อนทำลาย
 # คำนามขั้นสูง
 aberration|ความผิดปกติ;accolade|คำยกย่อง รางวัล;acumen|ความเฉียบแหลม;adversity|ความยากลำบาก;affinity|ความชอบพอ ความใกล้ชิด;altruism|ความเห็นแก่ผู้อื่น;anomaly|ความผิดแปลก;antagonism|ความเป็นปฏิปักษ์;apathy|ความเฉยเมย;aptitude|ความถนัด
 arbitration|การอนุญาโตตุลาการ;ardour|ความกระตือรือร้นแรงกล้า;atrocity|ความโหดร้ายทารุณ;austerity|ความเข้มงวด มาตรการรัดเข็มขัด;benevolence|ความกรุณา;brevity|ความกระชับ;cacophony|เสียงอึกทึก;camaraderie|ความเป็นมิตรสหาย;candor|ความตรงไปตรงมา;catalyst|ตัวเร่ง
 complacency|ความชะล่าใจ;conjecture|การคาดคะเน;connotation|ความหมายแฝง;contingency|เหตุฉุกเฉินที่อาจเกิด;credence|ความเชื่อถือ;culmination|จุดสูงสุด;debacle|ความล้มเหลวยับเยิน;deference|ความนอบน้อม;demise|การล่มสลาย ความตาย;discrepancy|ความไม่ตรงกัน
 disdain|ความดูถูก;dissent|ความเห็นแย้ง;duplicity|ความตลบตะแลง;eloquence|ความคมคายในการพูด;emancipation|การปลดปล่อย;enigma|ปริศนา;epitome|แบบฉบับ;equilibrium|สภาวะสมดุล;euphoria|ความเบิกบานสุดขีด;fervor|ความแรงกล้า
 fiasco|ความล้มเหลวน่าอับอาย;fortitude|ความอดทนเข้มแข็ง;hegemony|การครองอำนาจ;hindrance|อุปสรรค;hubris|ความหยิ่งผยอง;impetus|แรงผลักดัน;inertia|ความเฉื่อย;ingenuity|ความเฉลียวฉลาด;integrity of data|ความถูกต้องของข้อมูล;irony|การประชด ความย้อนแย้ง
-juxtaposition|การวางเทียบเคียง;lethargy|ความเซื่องซึม;magnitude|ขนาด ความรุนแรง;malice|ความมุ่งร้าย;nostalgia|ความคิดถึงอดีต;nuance|ความแตกต่างเล็กน้อย;oblivion|การถูกลืม;onset|การเริ่มต้น (ของสิ่งไม่ดี);paradigm|กระบวนทัศน์;paucity|ความขาดแคลน
+juxtaposition|การวางเทียบเคียง;lethargy|ความเซื่องซึม;magnitude|ขนาด ความรุนแรง;malice|ความมุ่งร้าย;nostalgia|ความคิดถึงอดีต;nuance|ความแตกต่างเล็กน้อย;oblivion|การถูกลืม;onset|การเริ่มต้น;paradigm|กระบวนทัศน์;paucity|ความขาดแคลน
 pinnacle|จุดสูงสุด;plethora|ความมากล้น;pragmatism|ลัทธิปฏิบัตินิยม;precedent|แบบอย่างที่มีมาก่อน;predicament|สถานการณ์ลำบาก;prerogative|เอกสิทธิ์;propensity|แนวโน้มโดยธรรมชาติ;prudence|ความรอบคอบ;ramification|ผลสืบเนื่อง;rapport|ความสัมพันธ์ที่ดี
-rhetoric|วาทศิลป์;scrutiny|การพิจารณาอย่างละเอียด;semblance|ภาพลักษณ์ภายนอก;solace|การปลอบประโลม;stigma|ตราบาป;tenacity|ความยืดหยุ่นไม่ย่อท้อ;trajectory|วิถีโคจร เส้นทาง;turmoil|ความวุ่นวาย;upheaval|ความปั่นป่วนครั้งใหญ่;zeal|ความกระตือรือร้น
+rhetoric|วาทศิลป์;scrutiny|การพิจารณาอย่างละเอียด;semblance|ภาพลักษณ์ภายนอก;solace|การปลอบประโลม;stigma|ตราบาป;tenacity|ความไม่ย่อท้อ, ความเหนียวแน่น;trajectory|วิถีโคจร เส้นทาง;turmoil|ความวุ่นวาย;upheaval|ความปั่นป่วนครั้งใหญ่;zeal|ความกระตือรือร้น
 # คำคุณศัพท์ขั้นสูง
 adamant|ยืนกรานไม่เปลี่ยน;adept|ชำนาญ;admirable|น่าชื่นชม;amiable|เป็นมิตรน่ารัก;ample|มากพอ;antiquated|ล้าสมัย;arduous|ยากลำบาก;astute|เฉียบแหลม;audacious|อาจหาญ บ้าบิ่น;benign|ไม่ร้ายแรง ใจดี
 blatant|โจ่งแจ้ง;cogent|น่าเชื่อถือ มีน้ำหนัก;complacent|ชะล่าใจ;conducive|เอื้ออำนวย;conspicuous|เด่นชัด;cordial|เป็นมิตร อบอุ่น;cursory|ผิวเผิน;daunting|น่าหวั่นเกรง;deft|คล่องแคล่ว;detrimental|เป็นผลเสีย

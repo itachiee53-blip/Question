@@ -7,5 +7,5 @@ ride-sharing|การแชร์รถ;autonomous vehicle|รถยนต์�
 # การศึกษาวิทยาศาสตร์ชีวิต
 habitat loss|การสูญเสียถิ่นที่อยู่;food chain|ห่วงโซ่อาหาร;food web|สายใยอาหาร;natural selection|การคัดเลือกโดยธรรมชาติ;adaptation skill|ทักษะการปรับตัว;life cycle|วงจรชีวิต;metamorphosis|การเปลี่ยนรูปร่าง;pollinator|ผู้ผสมเกสร;invasive species|ชนิดพันธุ์รุกราน;keystone species|ชนิดพันธุ์หลัก
 # คำคุณศัพท์บรรยายประสบการณ์
-unforgettable|ไม่อาจลืมได้;eye-opening|เปิดหูเปิดตา;life-changing|เปลี่ยนชีวิต;nerve-racking|ชวนประหม่า;heart-warming|อบอุ่นหัวใจ;awe-inspiring|น่าเกรงขามตื่นตา;mind-blowing|น่าทึ่งสุด ๆ;thought-provoking|ชวนให้คิด;time-consuming|เสียเวลามาก;cost-effective|คุ้มค่าใช้จ่าย
+unforgettable|ไม่อาจลืมได้;eye-opening|เปิดหูเปิดตา;life-changing|เปลี่ยนชีวิต;nerve-racking|ชวนประหม่า;heart-warming|อบอุ่นหัวใจ;awe-inspiring|น่าเกรงขาม, น่าตื่นตา;mind-blowing|น่าทึ่งสุด ๆ;thought-provoking|ชวนให้คิด;time-consuming|เสียเวลามาก;cost-effective|คุ้มค่าใช้จ่าย
 well-organized|จัดการอย่างดี;user-friendly|ใช้งานง่าย;state-of-the-art|ล้ำสมัยที่สุด;high-quality|คุณภาพสูง;long-lasting|ใช้ได้นาน;world-famous|โด่งดังทั่วโลก;open-ended|ปลายเปิด;short-sighted|สายตาสั้น มองการณ์ใกล้;far-reaching|มีผลกว้างไกล;up-to-date|ทันสมัย
