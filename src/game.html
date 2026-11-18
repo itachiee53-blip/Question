@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#07100c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Dead Words</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400;600;800&display=swap">
@@ -461,9 +467,10 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.23.1',VERSION_DATE='18 พ.ย. 2569';
+const VERSION='2.23.2',VERSION_DATE='18 พ.ย. 2569';
 const CHANGES=[
-  'รั้วเหล็กต่อกันพอดีปลายชนปลาย ไม่ซ้อนกันแปลก ๆ แล้ว',
+  'รั้วเหล็กเป็นชุดเต็มแล้ว: ครึ่งแผงสองข้างต่อหัวชนหัว มีขาโค้งทั้งสองปลายเหมือนรั้วกั้นฝูงชนจริง',
+  'เต็มจอบนมือถือใช้ได้จริงแล้ว (แตะหน้าจอครั้งเดียว) · เพิ่มลงหน้าจอหลักได้ เปิดเป็นแอปเต็มจอแนวนอน',
   'เกมเล่นแนวนอนเท่านั้น: ถือแนวตั้งจะขึ้นให้หมุนจอ และแตะครั้งแรกจะเข้าเต็มจอล็อกแนวนอน (Android)',
   'ตกแต่งฐาน: แตะของแล้วดูตัวอย่างบนฐานก่อน จ่ายเหรียญเมื่อกด "ซื้อ" เท่านั้น · คืนเหรียญของตกแต่งที่ซื้อไปแล้วให้ (ของยังเป็นของคุณ)',
   'เปลี่ยนกำแพงหลักได้ 9 แบบ: รั้วเหล็ก, พาเลทไม้, แผงจราจร, ยางรถ, ถังน้ำมัน, ลังไม้, กระสอบทราย, ป้อมเฉพาะกิจ (ดูตัวอย่างก่อนซื้อได้)',
@@ -651,8 +658,10 @@ function audio(){
 }
 addEventListener('pointerdown',audio,{capture:true,passive:true});
 let triedLock=false;
-addEventListener('pointerdown',()=>{if(triedLock||!matchMedia('(pointer:coarse)').matches)return;triedLock=true;
-  try{const r=document.documentElement.requestFullscreen?.({navigationUI:'hide'});if(r)r.then(()=>screen.orientation?.lock?.('landscape').catch(()=>{})).catch(()=>{});}catch(e){}},{capture:true,passive:true});
+function goFullscreen(){if(!matchMedia('(pointer:coarse)').matches||document.fullscreenElement||document.webkitFullscreenElement)return;
+  try{const el=document.documentElement,f=el.requestFullscreen||el.webkitRequestFullscreen;const r=f&&f.call(el,{navigationUI:'hide'});
+    const lock=()=>screen.orientation?.lock?.('landscape').catch(()=>{});if(r&&r.then)r.then(lock).catch(()=>{});else lock();}catch(e){}}
+addEventListener('click',goFullscreen,{capture:true,passive:true});addEventListener('touchend',goFullscreen,{capture:true,passive:true});
 addEventListener('keydown',audio,{capture:true});
 function nz(dur,vol,type,f,{q=1,at=0,f2=0,dest=sfxBus}={}){
   if(!ac||!P.opts.sfx)return;const t=ac.currentTime+at,s=ac.createBufferSource(),fl=ac.createBiquadFilter(),g=ac.createGain();
@@ -1018,14 +1027,16 @@ function walk(z,dist){
 function freeX(x,z){for(let k=0;k<12&&blocked(x,z);k++)x=clamp(x+(x<0?.6:-.6),-3.4,3.4);return x;}
 const STOP_Z=-4.4,BARR_Z=-3.4,SPAWN_Z=-31;
 /* ---------------- barricade skins: built from the same zombie-kit models as the original ---------------- */
-// Fence_Long is 1.332 m long with its origin at the right-hand end: lay n panels end to end from x0 to x1
-function fenceRun(x0,x1,z,n,hs=.85){const s=(x1-x0)/n/1.332;for(let i=1;i<=n;i++){const o=place('Fence_Long',x0+(x1-x0)*i/n,0,z,0,hs);if(o)o.scale.x=s;}} // stretch along the run only, keep the height
+// Fence_Long is only half a crowd barrier: a curved leg at one end, open at the other (its origin, 1.332 m away).
+// Two halves joined at their open ends, the second turned 180 degrees, make one barrier with a leg at each end.
+function fenceRun(x0,x1,z,n,hs=.85){const L=(x1-x0)/n,s=L/2/1.332/hs;
+  for(let i=0;i<n;i++){const c=x0+L*(i+.5);for(const ry of [0,Math.PI]){const o=place('Fence_Long',c,0,z,ry,hs);if(o)o.scale.x=hs*s;}}}
 const SKINS={
   traffic:{n:'ด่านจราจร',cost:0,d:'แนวกั้นดั้งเดิม',b(){
     const B=[['TrafficBarrier_1',-2.6,0],['Pallet',-1.2,.2],['TrafficBarrier_2',.1,0],['Pallet_Broken',1.4,-.1],['TrafficBarrier_1',2.8,.05]];
     B.forEach(([n,x,r])=>{const o=place(n,x,0,0,r+(n.startsWith('Pallet')?Math.PI/2:0));if(o&&n.startsWith('Pallet')){o.rotation.z=Math.PI/2-.25;o.position.y=.6;}});
     place('Wheels_Stack',-3.9,0,.3,.4);place('CinderBlock',.9,0,.35,.3);place('CinderBlock',1.3,0,.3,-.2);place('CinderBlock',1.1,.23,.32,.1);}},
-  fence:{n:'รั้วเหล็กกั้นฝูงชน',cost:200,d:'รั้วเหล็กต่อกันเต็มถนน',b(){fenceRun(-3.6,3.6,0,5);}},
+  fence:{n:'รั้วเหล็กกั้นฝูงชน',cost:200,d:'รั้วกั้นฝูงชนสามชุดเรียงเต็มถนน',b(){fenceRun(-3.6,3.6,0,3);}},
   pallets:{n:'กำแพงพาเลทไม้',cost:250,d:'พาเลทตั้งเรียงค้ำด้วยอิฐบล็อก',b(){for(let x=-3.2,i=0;x<=3.3;x+=1.07,i++){const o=place(i%3===1?'Pallet_Broken':'Pallet',x,0,0,Math.PI/2+rnd(-.08,.08));if(o){o.rotation.z=Math.PI/2-.12;o.position.y=.6;}}
     for(const x of [-2.15,1.05])place('CinderBlock',x,0,.25,.2);}},
   barriers:{n:'แผงกั้นจราจรล้วน',cost:250,d:'แผงลายแดงขาวเรียงสองแบบสลับกัน',b(){for(let x=-3.2,i=0;x<=3.3;x+=1.3,i++)place(i%2?'TrafficBarrier_2':'TrafficBarrier_1',x,0,i%2?-.1:0,rnd(-.04,.04));}},
@@ -1034,7 +1045,7 @@ const SKINS={
   crates:{n:'กำแพงลังไม้',cost:400,d:'ลังไม้ซ้อนสองชั้น',b(){for(let x=-3.2,i=0;x<=3.3;x+=.95,i++){place('Crate',x,0,0,rnd(-.1,.1),.85);if(i%2===0)place('Crate',x+rnd(-.05,.05),.68,-.02,rnd(-.2,.2),.7);}}},
   checkpoint:{n:'ด่านกระสอบทราย',cost:600,d:'กระสอบทรายสองชั้น รั้วเหล็กเต็มช่องกลาง',b(){
     for(const s of [-1,1]){place('SackTrench',s*2.3,0,-.05,s<0?.05:Math.PI-.05,.55);place('SackTrench_Small',s*2.1,.42,-.08,s<0?-.08:Math.PI+.1,.55);}
-    fenceRun(-1.05,1.05,-.1,2);
+    fenceRun(-1.05,1.05,-.1,1);
     place('Crate',-1.4,.78,-.05,.35,.5);place('Sign',1.35,.7,-.1,-.25,.55);}},
   mixed:{n:'ป้อมเฉพาะกิจ',cost:700,d:'กระสอบทราย แผงจราจร พาเลท และถังน้ำมันรวมกัน',b(){
     place('SackTrench_Small',-2.6,0,0,0,.6);place('SackTrench_Small',-2.6,.42,-.03,.1,.55);place('TrafficBarrier_2',-1,0,0,0);
