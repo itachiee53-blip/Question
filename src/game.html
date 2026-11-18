@@ -222,6 +222,21 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .htop{position:fixed;top:calc(12px + var(--safe-t));right:calc(14px + var(--safe-r));display:flex;align-items:center;gap:10px;z-index:3}
 .gearbtn{position:relative;width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:#0d1612d9;border:1px solid var(--line)}
 .gearbtn svg{width:22px;height:22px;color:#e8efe4}.gearbtn.dot::after{content:"";position:absolute;right:-2px;top:-2px;width:10px;height:10px;border-radius:50%;background:var(--blood)}
+.skhead{display:flex;flex-wrap:wrap;align-items:center;gap:14px;justify-content:space-between;padding:4px 2px 12px}
+.skprog{display:flex;flex-direction:column;gap:6px;min-width:180px;flex:1}.skprog b{font-size:16px}.skprog .rbar{max-width:none;width:100%;display:block;flex:none}
+.sgoals{display:flex;gap:6px;flex-wrap:wrap}
+.sgoal{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:64px;padding:6px 8px;border-radius:10px;border:1px solid var(--line);background:#0006}
+.sgoal b{font-size:16px}.sgoal small{font-size:11px;color:var(--dim)}.sgoal.got{opacity:.55}.sgoal.can{border-color:var(--amber);box-shadow:0 0 0 2px #f2b33d33}
+.sgoal button{font-size:12px;color:#1a1405;background:var(--amber);border-radius:999px;padding:2px 8px}
+.skgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.sk{display:flex;flex-direction:column;border-radius:12px;border:1px solid color-mix(in srgb,var(--rc) 55%,transparent);background:linear-gradient(180deg,color-mix(in srgb,var(--rc) 16%,#0d1612) 0%,#0d1612 60%);overflow:hidden;position:relative}
+.sk.r3{box-shadow:0 0 0 1px #f2b33d55,0 0 18px #f2b33d22}.sk.r3::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,#fff3 50%,transparent 60%);background-size:250% 100%;animation:shine 3.5s infinite;pointer-events:none}
+@keyframes shine{0%{background-position:150% 0}60%,100%{background-position:-60% 0}}
+.skimg{position:relative;aspect-ratio:2/1;background:radial-gradient(ellipse at 50% 80%,color-mix(in srgb,var(--rc) 30%,transparent),transparent 70%)}
+.skimg img{width:100%;height:100%;object-fit:contain;display:block}.sk.no .skimg img{filter:saturate(.75) brightness(.85)}
+.sktx{display:flex;flex-direction:column;gap:2px;padding:8px 12px 4px}.sktx b{font-size:16px}.sktx small{font-size:12px;color:var(--dim);line-height:1.35}
+.rar{font-size:11px;font-weight:600;color:var(--rc);letter-spacing:.5px}
+.sk .buy{margin:6px 12px 12px;align-self:stretch;justify-content:center}.buy.lock{font-size:12px;color:var(--dim);border:1px dashed var(--line);background:transparent}
 .stabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:4px 0 0}
 .stabs button{position:relative;padding:10px 16px;font-size:15px;color:var(--dim);border-bottom:2px solid transparent;margin-bottom:-1px}
 .stabs button[aria-pressed="true"]{color:var(--toxic);border-bottom-color:var(--toxic);font-weight:600}
@@ -419,8 +434,11 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.18.0',VERSION_DATE='18 พ.ย. 2569';
+const VERSION='2.19.0',VERSION_DATE='18 พ.ย. 2569';
 const CHANGES=[
+  'แนวกั้นสะสม 21 แบบ! คลังแสง → แท็บแนวกั้น มีตั้งแต่ตุ๊กตาหมี เค้ก สายรุ้ง น้องแมว ไปจนถึงป้อมเหล็ก ลาวา และทองคำ',
+  'แบ่ง 4 ระดับความหายาก + 3 แบบพิเศษที่ได้จากการเล่นเท่านั้น (เรียนครบ 300 คำ, ผ่าน 20 คืน, ล้มบอส 5 ตัว)',
+  'รางวัลนักสะสม: มีครบ 3 / 6 / 10 / 15 / 21 ชิ้น รับเหรียญเพิ่มสูงสุด 2,000',
   'หน้าตั้งค่าใหม่แบบแท็บ: กราฟิก / เสียง / การเล่น / อื่น ๆ',
   'เลือกเฟรมเรตสูงสุด 30 / 60 / 120 FPS',
   'ปรับระดับเสียงแยกได้: เสียงหลัก, เอฟเฟกต์, บรรยากาศ, เสียงอ่านคำศัพท์',
@@ -555,7 +573,7 @@ P.up=Object.assign({wall:0,hint:0,oil:0,mag:0,knife:0},P.up);P.seenZ=P.seenZ||[]
 // older saves had on/off sound switches: a switched-off channel starts at volume 0
 if(!P.opts.vol)P.opts.vol={master:80,sfx:P.opts.sfx===false?0:100,amb:P.opts.amb===false?0:70,voice:P.opts.voice===false?0:100};if(P.mode!=='spell')P.mode='choice';
 const CHOICE=()=>P.mode==='choice';
-P.best=P.best||{};P.allies=Object.assign({man:0,dog:0},P.allies);P.melee=P.melee||'knife';P.ownedMelee=P.ownedMelee||['knife'];P.xp=P.xp||0;
+P.best=P.best||{};P.allies=Object.assign({man:0,dog:0},P.allies);P.melee=P.melee||'knife';P.ownedMelee=P.ownedMelee||['knife'];P.skins=P.skins||['traffic'];P.skin=P.skin||'traffic';P.skinGoals=P.skinGoals||[];P.xp=P.xp||0;
 /* ranks grow with experience from answering */
 const RANKS=[[0,'มือใหม่'],[150,'ผู้รอดชีวิต'],[500,'นักล่า'],[1200,'ทหารพราน'],[2600,'ผู้พิทักษ์'],[5000,'ฮีโร่'],[9000,'ตำนาน']];
 const rankOf=xp=>{let i=0;while(i<RANKS.length-1&&xp>=RANKS[i+1][0])i++;return i;};
@@ -962,6 +980,115 @@ function walk(z,dist){
 }
 function freeX(x,z){for(let k=0;k<12&&blocked(x,z);k++)x=clamp(x+(x<0?.6:-.6),-3.4,3.4);return x;}
 const STOP_Z=-4.4,BARR_Z=-3.4,SPAWN_Z=-31;
+/* ---------------- barricade skins: a collection to buy, earn and show off ---------------- */
+// built in local space: x across the road (about -3.6..3.6), z=0 on the barricade line, kept under ~1.3m so the view stays clear
+const SGLOW={};const sglow=(c,i=1.4)=>SGLOW[c+'_'+i]||(SGLOW[c+'_'+i]=new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:i,roughness:.5}));
+const metal=c=>mat(c,{metalness:.35,roughness:.35}); // no environment map in this game, so real metalness renders black
+function ball(x,y,z,r,c,sx=1,sy=1,sz=1){const m=new THREE.Mesh(new THREE.SphereGeometry(r,14,10),typeof c==='number'?mat(c):c);m.position.set(x,y,z);m.scale.set(sx,sy,sz);PLACE_TO.add(m);return m;}
+function cone(x,y,z,r,h,c,seg=10,rz=0){const m=new THREE.Mesh(new THREE.ConeGeometry(r,h,seg),typeof c==='number'?mat(c):c);m.position.set(x,y+h/2,z);m.rotation.z=rz;PLACE_TO.add(m);return m;}
+function ring(x,y,z,r,t,c,arc=Math.PI*2,rx=0,rz=0){const m=new THREE.Mesh(new THREE.TorusGeometry(r,t,8,28,arc),typeof c==='number'?mat(c):c);m.position.set(x,y,z);m.rotation.set(rx,0,rz);PLACE_TO.add(m);return m;}
+function sandbags(x0,x1,rows,c=[0xb39a6a,0xa68d5e,0xc2a878]){for(let r=0;r<rows;r++)for(let x=x0+(r%2)*.35;x<x1-.3;x+=.7){const b=bx(x+.35,r*.3,0,.68,.32,.5,c[(r+Math.round(x*3))%c.length]);b.rotation.y=rnd(-.06,.06);}}
+const SKINS={
+  traffic:{n:'ด่านจราจร',r:0,cost:0,d:'แนวกั้นเริ่มต้น',b(){
+    const B=[['TrafficBarrier_1',-2.6,0],['Pallet',-1.2,.2],['TrafficBarrier_2',.1,0],['Pallet_Broken',1.4,-.1],['TrafficBarrier_1',2.8,.05]];
+    B.forEach(([n,x,r])=>{const o=place(n,x,0,0,r+(n.startsWith('Pallet')?Math.PI/2:0));if(o&&n.startsWith('Pallet')){o.rotation.z=Math.PI/2-.25;o.position.y=.6;}});
+    place('Wheels_Stack',-3.9,0,.3,.4);place('CinderBlock',.9,0,.35,.3);place('CinderBlock',1.3,0,.3,-.2);place('CinderBlock',1.1,.23,.32,.1);}},
+  sandbag:{n:'กระสอบทรายทหาร',r:0,cost:150,d:'แนวรับมาตรฐานทหาร',b(){sandbags(-3.6,3.6,3);cy(-3.2,0,.1,.05,1.6,0x5a4a30,6);bx(-2.85,1.3,.1,.7,.45,.02,0x3a5a2a);}},
+  picket:{n:'รั้วไม้สีขาว',r:0,cost:180,d:'รั้วบ้านในฝัน มีกระถางดอกไม้',b(){const w=mat(0xf4f1ea);
+    for(let x=-3.5;x<=3.5;x+=.26){bx(x,0,0,.14,1,.05,w);cone(x,1,0,.1,.18,0xf4f1ea,4);}for(const y of [.3,.75])bx(0,y,-.05,7.2,.09,.05,w);
+    for(const x of [-2.4,.2,2.6]){cy(x,0,.35,.22,.35,0xb5653a,10,.27);for(let i=0;i<4;i++)ball(x+rnd(-.12,.12),.45+rnd(0,.1),.35+rnd(-.1,.1),.08,pick([0xff7aa8,0xffd34a,0xff5a5a,0xb58aff]));}}},
+  bamboo:{n:'รั้วไม้ไผ่',r:0,cost:200,d:'แข็งแรงแบบไทย ๆ',b(){for(let x=-3.55;x<=3.55;x+=.15)cy(x,0,rnd(-.03,.03),.07,rnd(1,1.3),pick([0x9aa84a,0x8a9a3a,0xa8b25a]),8);
+    for(const y of [.35,.85])bx(0,y,.08,7.3,.07,.04,0x6a4a24);}},
+  tires:{n:'กองยางรถยนต์',r:0,cost:220,d:'ของเหลือจากอู่ เอามากองกันไว้',b(){for(let x=-3.2;x<=3.3;x+=.8){const n=2+((x*10|0)%2+2)%2;for(let i=0;i<n;i++)ring(x+rnd(-.05,.05),.12+i*.26,rnd(-.05,.05),.3,.13,0x1e1e1e,Math.PI*2,Math.PI/2);}
+    bx(-.6,.62,.25,3.4,.06,.3,0x7a5a3a).rotation.z=.08;}},
+  container:{n:'ตู้คอนเทนเนอร์จิ๋ว',r:1,cost:450,d:'ตู้ขนของตัดครึ่ง หนักแน่นสุด ๆ',b(){for(const [x,c] of [[-1.85,0xb8341e],[1.85,0x1e5ab8]]){bx(x,0,0,3.4,1.15,.9,c);for(let k=-1.6;k<=1.6;k+=.2)bx(x+k,.05,-.46,.06,1.05,.04,c===0xb8341e?0x9a2a18:0x18489a);bx(x,1.15,0,3.45,.06,.95,0x333333);}}},
+  flowers:{n:'สวนดอกไม้พาสเทล',r:1,cost:500,d:'ปลูกดอกไม้ไว้หน้าฐาน สวยและแน่น',b(){const C=[0xffa8c8,0xffe08a,0xc8a8ff,0xa8e0ff,0xffffff];
+    for(const x of [-2.4,0,2.4]){bx(x,0,0,2.2,.55,.7,0xd8b890);bx(x,.55,0,2.25,.05,.75,0xb89a70);for(let i=0;i<9;i++){const fx=x+rnd(-.95,.95),fz=rnd(-.25,.25),h=rnd(.25,.6);cy(fx,.55,fz,.015,h,0x4a8a3a,4);ball(fx,.55+h,fz,rnd(.07,.11),pick(C));}
+      ball(x-.8,.75,0,.22,0x5a9a4a);ball(x+.8,.75,0,.2,0x5a9a4a);}}},
+  spikes:{n:'เม่นเหล็กกันรถถัง',r:1,cost:600,d:'เหล็กไขว้ 3 ทาง พร้อมลวดหนาม',b(){const st=metal(0x5a5e62);
+    for(const x of [-2.7,-.9,.9,2.7]){for(const [rx,rz] of [[0,.95],[0,-.95],[Math.PI/2,0]]){const b=bx(x,.1,0,.12,1.5,.12,st);b.rotation.set(rx,rz?0:0,rz);b.position.y=.65;}}
+    for(let x=-3.4;x<=3.4;x+=.32)ring(x,.95,.05,.17,.012,0x9a9a9a,Math.PI*2,0,0).rotation.y=Math.PI/2;}},
+  castle:{n:'ป้อมปราการหิน',r:1,cost:700,d:'กำแพงปราสาทพร้อมธงอัศวิน',b(){const S=[0x8a8a84,0x7a7a74,0x9a9a92];
+    for(let y=0;y<3;y++)for(let x=-3.6+(y%2)*.3;x<3.5;x+=.6)bx(x+.3,y*.3,0,.58,.29,.6,S[(y+Math.round(x*2))%3]);
+    for(let x=-3.4;x<=3.4;x+=.8)bx(x,.9,0,.42,.3,.6,S[1]);for(const x of [-3.2,3.2]){cy(x,1.2,0,.03,.8,0x5a4a30,5);const f=bx(x+.22,1.7,0,.42,.26,.02,x<0?0xc0302a:0x2a4ac0);}}},
+  teddy:{n:'ตุ๊กตาหมียักษ์',r:2,cost:1000,d:'หมีนุ่มนิ่มตัวโต ซอมบี้ผ่านไม่ได้',b(){
+    const bear=(x,c,bow)=>{ball(x,.45,0,.45,c,1,.95,.85);ball(x,1,0,.32,c);for(const s of [-1,1]){ball(x+s*.24,1.25,0,.1,c);ball(x+s*.24,1.25,.05,.05,0xf2d8c8);ball(x+s*.42,.35,.15,.14,c);ball(x+s*.2,.1,.3,.15,c);}
+      ball(x,.93,.27,.12,0xf2d8c8,1,.8,.8);ball(x,.97,.37,.035,0x1a1a1a);for(const s of [-1,1])ball(x+s*.11,1.07,.27,.035,0x1a1a1a);
+      for(const s of [-1,1])cone(x+s*.09,.62,.36,.08,.16,bow,8,s*Math.PI/2);ball(x,.7,.36,.04,bow);};
+    bear(-2.5,0x9a6a44,0xff6aa0);bear(0,0xf0b8c8,0x5aa8ff);bear(2.5,0xf4eee4,0xc84ad8);
+    for(const x of [-1.25,1.25]){const p=bx(x,0,0,.9,.55,.6,x<0?0xc8e8ff:0xffe0f0);p.rotation.y=.2*x;ball(x,.62,0,.22,0xfff4c8,1.6,.5,1);}}},
+  candy:{n:'กำแพงลูกกวาด',r:2,cost:1100,d:'หวานจนซอมบี้เมาน้ำตาล',b(){bx(0,0,0,7.2,.4,.6,0xffc8e0);for(let x=-3.4;x<=3.4;x+=.5)ball(x,.42,0,.16,pick([0xff5a8a,0x7ad0ff,0xfff06a,0x9aff8a,0xc89aff]),1,.75,1);
+    for(const x of [-3,-1.5,1.5,3]){for(let i=0;i<8;i++)cy(x,.4+i*.1,0,.06,.1,i%2?0xffffff:0xe02a3a,10);ring(x+.14,1.2,0,.14,.06,0xe02a3a,Math.PI,0,0);}
+    for(const x of [-2.25,0,2.25]){cy(x,.4,0,.02,.6,0xffffff,5);const d=cy(x,.95,.05,.3,.08,0xff6ab8,20);d.rotation.x=Math.PI/2;ring(x,1.0,.1,.18,.03,0xffffff);ring(x,1.0,.1,.09,.03,0xfff06a);}}},
+  ice:{n:'ป้อมน้ำแข็ง',r:2,cost:1200,d:'เย็นเฉียบ เรืองแสงจาง ๆ ตอนกลางคืน',b(){const ic=new THREE.MeshStandardMaterial({color:0xbfe8ff,emissive:0x4aa8ff,emissiveIntensity:.25,roughness:.1,metalness:.1,transparent:true,opacity:.78});
+    for(let y=0;y<3;y++)for(let x=-3.6+(y%2)*.35;x<3.5;x+=.7)bx(x+.35,y*.36,0,.68,.35,.6,ic);bx(0,1.08,0,7.2,.08,.66,0xffffff);
+    for(let x=-3.3;x<=3.3;x+=.42){const c=new THREE.Mesh(new THREE.ConeGeometry(.05,.25,6),ic);c.rotation.x=Math.PI;c.position.set(x,.9,.33);PLACE_TO.add(c);}}},
+  neon:{n:'กำแพงเลเซอร์ไซไฟ',r:2,cost:1400,d:'แผงเหล็กอนาคตพร้อมเส้นแสงนีออน',b(){const dk=metal(0x1a1f2a);
+    for(let x=-3;x<=3;x+=1.5){bx(x,0,0,1.38,1.05,.4,dk);bx(x,.2,.21,1.2,.05,.02,sglow(0x2af0ff));bx(x,.8,.21,1.2,.05,.02,sglow(0xff3ad8));bx(x,.48,.21,.05,.5,.02,sglow(0x2af0ff));}
+    for(const x of [-3.75,-2.25,-.75,.75,2.25,3.75]){cy(x,0,0,.07,1.3,dk,8);ball(x,1.33,0,.08,sglow(0x2af0ff,2));}
+    for(const y of [1.12,1.22])bx(0,y,0,7.5,.015,.015,sglow(0xff2a4a,2));}},
+  cats:{n:'กำแพงน้องแมว',r:2,cost:1300,d:'แมวเหมียวนั่งเฝ้าฐาน น่ารักแต่ดุ',b(){bx(0,0,0,7.2,.45,.6,0xe8d8c0);for(let x=-3.4;x<=3.4;x+=.45)ball(x,.46,.15,.07,0xff9ab0,1,.6,1);
+    const cat=(x,c,e)=>{ball(x,.75,0,.34,c,1,.9,.9);for(const s of [-1,1]){cone(x+s*.2,.95,0,.11,.24,c,4,-s*.25);cone(x+s*.2,.97,.03,.06,.14,0xffb0c0,4,-s*.25);ball(x+s*.13,.8,.27,.06,e);ball(x+s*.13,.8,.31,.03,0x111111);
+      for(const k of [-1,1])bx(x+s*.3,.66+k*.04,.25,.26,.012,.012,0x333333).rotation.z=s*k*.15;}ball(x,.68,.3,.04,0xff7a9a);ball(x,.62,.25,.1,0xffffff,1.2,.7,.8);};
+    cat(-2.7,0xf0a050,0x6ad04a);cat(-.9,0x555a60,0xf0d040);cat(.9,0x1e1e22,0x7ac8ff);cat(2.7,0xf4f0e8,0x5aa0ff);}},
+  cake:{n:'เค้กวันเกิดยักษ์',r:3,cost:2200,d:'เค้กสามชั้นพร้อมเทียนที่ลุกโชน',b(){
+    const cake=(x,s,c1,c2)=>{cy(x,0,0,.6*s,.4*s,c1,24);cy(x,.4*s,0,.45*s,.35*s,c2,24);cy(x,.75*s,0,.3*s,.3*s,c1,24);
+      for(const [r,y] of [[.6,.4],[.45,.75],[.3,1.05]])for(let a=0;a<12;a++)ball(x+Math.cos(a/12*6.28)*r*s,y*s,Math.sin(a/12*6.28)*r*s,.06*s,0xffffff);
+      for(let a=0;a<5;a++){const cx=x+Math.cos(a/5*6.28)*.16*s,cz=Math.sin(a/5*6.28)*.16*s;cy(cx,1.05*s,cz,.025,.2,pick([0x5ab0ff,0xff5a8a,0xfff06a]),6);ball(cx,1.05*s+.25,cz,.04,sglow(0xffb030,3),1,1.6,1);}
+      for(let a=0;a<6;a++)ball(x+Math.cos(a)*.5*s,.42*s,Math.sin(a)*.5*s,.06*s,0xe0202a);};
+    cake(-2.4,1,0xffc8e0,0xfff4e8);cake(0,1.1,0x7a4a2a,0xffe8c8);cake(2.4,1,0xc8e8ff,0xfff4e8);
+    const l=vPoint(0xffb050,6,5,1.6);l.position.set(0,1.6,.4);PLACE_TO.add(l);}},
+  rainbow:{n:'ยูนิคอร์นสายรุ้ง',r:3,cost:2500,d:'สายรุ้งสองโค้งบนก้อนเมฆ มีดาวระยิบระยับ',b(){const R=[0xff4a4a,0xff9a3a,0xffe04a,0x5ad05a,0x4a9aff,0xa05aff];
+    for(const cx of [-2.1,2.1])R.forEach((c,i)=>ring(cx,.2,0,.95-i*.09,.05,sglow(c,.5),Math.PI));
+    for(const x of [-3.2,-1,1,3.2])for(let i=0;i<4;i++)ball(x+rnd(-.35,.35),.25+rnd(0,.15),rnd(-.15,.15),rnd(.2,.3),0xffffff);
+    for(let x=-.6;x<=.6;x+=.3)ball(x,.2,0,.24,0xf4f4ff);
+    for(let i=0;i<8;i++){const s=new THREE.Mesh(new THREE.OctahedronGeometry(.07),sglow(0xfff08a,2.5));s.position.set(rnd(-3.4,3.4),rnd(.9,1.35),rnd(-.1,.2));PLACE_TO.add(s);}
+    cone(0,.4,.05,.06,.5,sglow(0xffe0f8,1),8);}},
+  lava:{n:'หินลาวาเดือด',r:3,cost:2800,d:'หินภูเขาไฟที่ยังร้อนระอุ แสงส้มเรืองตลอดเวลา',b(){const rock=mat(0x2a1c18,{roughness:1});
+    for(let x=-3.3;x<=3.3;x+=.75){const r=new THREE.Mesh(new THREE.DodecahedronGeometry(rnd(.42,.55)),rock);r.position.set(x,.38,rnd(-.08,.08));r.rotation.set(rnd(0,3),rnd(0,3),rnd(0,3));r.scale.y=.85;PLACE_TO.add(r);
+      const c=new THREE.Mesh(new THREE.DodecahedronGeometry(.3),sglow(0xff5a10,2.2));c.position.set(x+rnd(-.1,.1),.35,.2);PLACE_TO.add(c);}
+    for(let i=0;i<10;i++)ball(rnd(-3.4,3.4),rnd(.75,1),rnd(-.1,.25),.05,sglow(0xffa030,3));
+    const l=vPoint(0xff5a1a,10,6,1.6);l.position.set(0,1,.6);PLACE_TO.add(l);}},
+  gold:{n:'ขุมทรัพย์ทองคำ',r:3,cost:3000,d:'ทองคำแท่ง หีบสมบัติ และอัญมณี',b(){const g=metal(0xf2c040);
+    for(let x=-3.3;x<=3.3;x+=1.1)for(let r=0;r<3;r++)for(let k=0;k<3-r;k++)bx(x-.35+k*.35+r*.17,r*.17,0,.32,.16,.5,g);
+    for(const x of [-1.65,1.65]){bx(x,0,0,.9,.55,.6,0x6a3a1a);bx(x,.55,0,.92,.06,.62,g);bx(x,.0,.31,.08,.55,.02,g);const lid=bx(x,.6,-.25,.9,.06,.5,0x6a3a1a);lid.rotation.x=-.9;
+      for(let i=0;i<6;i++)cy(x+rnd(-.3,.3),.58+i*.02,rnd(-.15,.15),.08,.02,g,14);}
+    for(let i=0;i<7;i++){const s=new THREE.Mesh(new THREE.OctahedronGeometry(.09),sglow(pick([0xff2a5a,0x2affa0,0x3a8aff,0xd04aff]),1.2));s.position.set(rnd(-3.3,3.3),rnd(.55,.75),rnd(.1,.3));PLACE_TO.add(s);}}},
+  books:{n:'กำแพงหนังสือ',r:4,unlock:'learn300',d:'รางวัลนักเรียนดี: เรียนรู้ครบ 300 คำ',b(){const C=[0xc0302a,0x2a6ac0,0x3a9a4a,0xe0a020,0x8a3ac0,0x1e8a8a];let y=0;
+    for(let x=-3.2;x<=3.2;x+=1.6){y=0;for(let i=0;i<4;i++){const h=rnd(.16,.24),w=rnd(1.2,1.5);const b=bx(x+rnd(-.08,.08),y,0,w,h,.75,C[(i+Math.round(x+4))%6]);b.rotation.y=rnd(-.15,.15);bx(b.position.x+.02,y+.02,.0,w-.08,h-.04,.77,0xf4efe0).rotation.y=b.rotation.y;y+=h;}}}},
+  shields:{n:'โล่วีรบุรุษ',r:4,unlock:'a1_20',d:'รางวัลผ่าน 20 คืนในลานจอดรถ',b(){const blue=mat(0x2a4aa0),g=metal(0xe0b040);
+    for(let x=-3;x<=3;x+=1.2){const s=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,.08,20),blue);s.rotation.x=Math.PI/2;s.position.set(x,.6,0);s.scale.set(1,1,1.25);PLACE_TO.add(s);ring(x,.6,.05,.5,.04,g);
+      const st=new THREE.Mesh(new THREE.OctahedronGeometry(.16),g);st.position.set(x,.62,.08);st.scale.z=.3;PLACE_TO.add(st);}
+    for(const x of [-2.4,-1.2,0,1.2,2.4])for(const s of [-1,1]){const sw=bx(x,0,-.15,.06,1.2,.02,metal(0xd8dde2));sw.rotation.z=s*.5;sw.position.y=.55;}}},
+  skulls:{n:'กองกะโหลกบอส',r:4,unlock:'boss5',d:'รางวัลล้มบอสครบ 5 ตัว',b(){const bone=mat(0xe8e0c8);
+    for(let x=-3.3;x<=3.3;x+=.36)for(let k=0;k<2;k++){const b=cy(x,.1+k*.2,rnd(-.2,.2),.05,.7,bone,6);b.rotation.set(Math.PI/2,0,rnd(-1,1));ball(b.position.x,b.position.y,b.position.z,.07,bone);}
+    for(let x=-3;x<=3;x+=1){ball(x,.75,0,.3,bone,1,.95,.95);for(const s of [-1,1])ball(x+s*.11,.78,.26,.08,0x111111);bx(x,.52,.15,.22,.12,.18,bone);ball(x,.65,.29,.035,0x111111);}
+    for(const x of [-3.5,3.5]){cy(x,0,0,.06,.6,0x3a2a2a,6);ball(x,.68,0,.06,sglow(0xff3a2a,3),1,1.6,1);}}},
+};
+const RAR=[{n:'ธรรมดา',c:'#9aa4a8'},{n:'หายาก',c:'#4aa8ff'},{n:'มหากาพย์',c:'#c06aff'},{n:'ตำนาน',c:'#f2b33d'},{n:'รางวัลพิเศษ',c:'#a6e05a'}];
+const UNLOCK={
+  learn300:{t:'เรียนรู้ครบ 300 คำ',ok:()=>LEARNED.size>=300,p:()=>`${Math.min(LEARNED.size,300)}/300 คำ`},
+  a1_20:{t:'ผ่าน 20 คืนในลานจอดรถ',ok:()=>P.prog.a1.filter(Boolean).length>=20,p:()=>`${Math.min(20,P.prog.a1.filter(Boolean).length)}/20 คืน`},
+  boss5:{t:'ล้มบอสครบ 5 ตัว',ok:()=>bossesBeaten()>=5,p:()=>`${Math.min(5,bossesBeaten())}/5 บอส`},
+};
+function bossesBeaten(){let n=0;for(const k of ORDER)(P.prog[k]||[]).forEach((s,i)=>{if(s&&isBossNight(i))n++;});return n;}
+// owning more skins pays out once per milestone
+const SKIN_GOALS=[[3,100],[6,300],[10,600],[15,1000],[Object.keys(SKINS).length,2000]];
+const ownSkins=()=>Object.keys(SKINS).filter(id=>P.skins.includes(id));
+function checkSkinUnlocks(){let got=[];for(const [id,s] of Object.entries(SKINS))if(s.unlock&&!P.skins.includes(id)&&UNLOCK[s.unlock].ok()){P.skins.push(id);got.push(s.n);}
+  if(got.length){save();toast('ปลดล็อกแนวกั้นใหม่: '+got.join(', ')+' · ไปเลือกใช้ได้ที่คลังแสง',4500);}}
+let skinGrp=null;
+function buildSkin(id,parent=scene,z=BARR_Z){const g=new THREE.Group();g.position.set(0,0,z);parent.add(g);g.updateMatrixWorld(true);const prev=PLACE_TO;PLACE_TO=g;
+  const n0=OBST.length;try{(SKINS[id]||SKINS.traffic).b();}catch(e){console.error(e);}PLACE_TO=prev;OBST.length=Math.min(OBST.length,n0);return g;}
+function equipSkin(){if(skinGrp)scene.remove(skinGrp);skinGrp=buildSkin(SKINS[P.skin]?P.skin:'traffic');mergeStatic(skinGrp);}
+function skinThumbs(){
+  if(THUMB['skin_traffic'])return;
+  const r=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});r.setSize(320,160);r.outputColorSpace=THREE.SRGBColorSpace;r.toneMapping=THREE.ACESFilmicToneMapping;
+  const sc=new THREE.Scene();sc.add(new THREE.HemisphereLight(0xffffff,0x445544,2.4));const dl=new THREE.DirectionalLight(0xffffff,2.2);dl.position.set(2,4,5);sc.add(dl);
+  const cam=new THREE.PerspectiveCamera(32,2,.05,40);cam.position.set(1.2,2,5.1);cam.lookAt(0,.5,0);
+  for(const id of Object.keys(SKINS)){const g=buildSkin(id,sc,0);r.render(sc,cam);THUMB['skin_'+id]=r.domElement.toDataURL();sc.remove(g);}
+  r.dispose();
+}
 function buildWorld(){
   const road=new THREE.Group();scene.add(road);PLACE_TO=road;
   for(let z=4,i=0;z>-160;z-=8,i++)place(i%4===2?'Street_Straight_Crack1':'Street_Straight',0,0,z,0);
@@ -969,10 +1096,8 @@ function buildWorld(){
     const pl=vPoint(0xffb468,i<3?28:18,18,1.6);pl.position.set(s*1.9,6.3,z);pl.userData.base=pl.intensity;scene.add(pl);LAMPS.push(pl);
     if(z-16<=-120){PLACE_TO=scene;mergeStatic(road);}
     const gl=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:0xffc070,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));gl.scale.setScalar(1.6);gl.position.set(s*1.95,6.25,z);scene.add(gl);LAMPS.push(gl);}
-  // barricade
-  const B=[['TrafficBarrier_1',-2.6,0],['Pallet',-1.2,.2],['TrafficBarrier_2',.1,0],['Pallet_Broken',1.4,-.1],['TrafficBarrier_1',2.8,.05]];
-  B.forEach(([n,x,r])=>{const o=place(n,x,0,BARR_Z,r+(n.startsWith('Pallet')?Math.PI/2:0));if(o&&n.startsWith('Pallet')){o.rotation.z=Math.PI/2-.25;o.position.y=.6;}});
-  place('Wheels_Stack',-3.9,0,BARR_Z+.3,.4);place('CinderBlock',.9,0,BARR_Z+.35,.3);place('CinderBlock',1.3,0,BARR_Z+.3,-.2);place('CinderBlock',1.1,.23,BARR_Z+.32,.1);
+  // barricade: the skin the player picked
+  equipSkin();
   OBST=OBST.filter(o=>o.z0<STOP_Z-1); // the barricade itself is not something to walk around
   buildAllies();
 }
@@ -980,7 +1105,7 @@ function buildWorld(){
 let barrGrp=null;
 function barricadeLook(){
   if(barrGrp)scene.remove(barrGrp);barrGrp=new THREE.Group();scene.add(barrGrp);PLACE_TO=barrGrp;
-  const lv=P.up.wall;
+  const lv=['traffic','sandbag','tires','spikes'].includes(P.skin)?P.up.wall:0;
   if(lv>=1){place('SackTrench_Small',-1.9,0,BARR_Z-.55,0,.9);}
   if(lv>=2){place('SackTrench_Small',1.9,0,BARR_Z-.55,Math.PI,.9);}
   if(lv>=3){place('SackTrench',0,0,BARR_Z-.75,0,.8);place('Debris_Tires',-3.6,0,BARR_Z-.3,.6,.8);}
@@ -2219,6 +2344,7 @@ const coinTag=()=>`<span class="coins">${SV.coin}${fmt(P.coins)}</span>`;
 function hideGame(){$('#bossBar').hidden=true;$('#hud').hidden=true;$('#dock').hidden=true;$('#danger').hidden=true;$('#jamTag').hidden=true;}
 function home(){if(CUT){CUT.then=null;endCut();}CAM.copy(BASE_CAM);
   state='menu';G=null;target=null;hideGame();clearZombies();clearProps();setZone(P.zone);barricadeLook();allyVisibility();allyReact('reset');menuScene();if(gunObj)gunObj.visible=false;
+  checkSkinUnlocks();
   const k=P.zone,ni=nextNight(k),weak=WEAK.size;
   const learned=LEARNED.size;
   const fresh=P.seen!==VERSION;dailyInit();
@@ -2379,7 +2505,13 @@ function resume(){if(state!=='paused')return;state='play';scr.hidden=true;last=p
 function shop(tab){
   state='menu';
   let body='';
-  if(tab==='guns')body=Object.entries(GUNS).map(([id,g])=>{const own=P.owned.includes(id),eq=P.gun===id;
+  if(tab==='skin'){skinThumbs();const own=ownSkins().length,all=Object.keys(SKINS).length;
+    const goals=SKIN_GOALS.map(([n,c],i)=>{const got=P.skinGoals.includes(i),can=own>=n&&!got;return `<div class="sgoal ${got?'got':can?'can':''}"><b>${n} ชิ้น</b><small>${got?'รับแล้ว':can?`<button type="button" data-goal="${i}">รับ +${c}</button>`:'+'+c}</small></div>`;}).join('');
+    body=`<div class="skhead"><div class="skprog"><b>สะสมแล้ว ${own}/${all}</b><span class="rbar"><i style="width:${own/all*100}%"></i></span></div><div class="sgoals">${goals}</div></div><div class="skgrid">`+Object.entries(SKINS).sort((a,b)=>a[1].r-b[1].r||(a[1].cost||0)-(b[1].cost||0)).map(([id,s])=>{
+      const have=P.skins.includes(id),eq=P.skin===id,R=RAR[s.r],u=s.unlock&&UNLOCK[s.unlock];
+      const btn=eq?'<span class="buy eq">ใช้อยู่</span>':have?`<button class="buy own" type="button" data-skin="${id}">ใช้</button>`:u?`<span class="buy lock">🔒 ${u.p()}</span>`:`<button class="buy" type="button" data-sbuy="${id}" ${P.coins<s.cost?'disabled':''}>${SV.coin}${fmt(s.cost)}</button>`;
+      return `<div class="sk r${s.r} ${have?'':'no'}" style="--rc:${R.c}"><div class="skimg"><img src="${THUMB['skin_'+id]||''}" alt="">${have?'':'<i class="skq"></i>'}</div><div class="sktx"><span class="rar">${R.n}</span><b>${s.n}</b><small>${s.d}</small></div>${btn}</div>`;}).join('')+'</div>';}
+  else if(tab==='guns')body=Object.entries(GUNS).map(([id,g])=>{const own=P.owned.includes(id),eq=P.gun===id;
     return `<div class="it"><span class="ic">${THUMB[id]?`<img src="${THUMB[id]}" alt="">`:SV.gun}</span><span class="tx"><b>${g.n}</b><small>${g.d} · ${g.mag} นัด</small></span>${eq?'<span class="buy eq">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-eq="${id}">ใช้</button>`:`<button class="buy" type="button" data-gun="${id}" ${P.coins<g.cost?'disabled':''}>${SV.coin}${fmt(g.cost)}</button>`}</div>`;}).join('');
   else if(tab==='ally')body=Object.entries(ALLY).map(([id,a])=>{const lv=P.allies[id],max=lv>=3;
     const desc=lv?a.d(lv-1)+(max?'':`<br><span style="color:var(--toxic)">ขั้นถัดไป: ${a.nx(lv)}</span>`):a.d(0);
@@ -2391,9 +2523,12 @@ function shop(tab){
     return `<div class="it"><span class="ic">${SV[u.ic]}</span><span class="tx"><b>${u.n}</b><small>${u.d}</small><span class="lv">${u.cost.map((_,i)=>`<i class="${i<lv?'on':''}"></i>`).join('')}</span></span>${max?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" data-up="${id}" ${P.coins<u.cost[lv]?'disabled':''}>${SV.coin}${fmt(u.cost[lv])}</button>`}</div>`;}).join('')
     +`<div class="it"><span class="ic">${SV.gren}</span><span class="tx"><b>ระเบิดมือ</b><small>ฆ่าซอมบี้รอบเป้าหมายทั้งหมด (มี ${P.gren}/${GREN_MAX})</small></span>${P.gren>=GREN_MAX?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" id="bGren" ${P.coins<GREN_COST?'disabled':''}>${SV.coin}${GREN_COST}</button>`}</div>`;
   show(`<div class="card" style="max-height:100%">
-    <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>คลังแสง</h2><div class="tabs"><button class="tab" type="button" data-t="guns" aria-pressed="${tab==='guns'}">อาวุธ</button><button class="tab" type="button" data-t="melee" aria-pressed="${tab==='melee'}">ประชิด</button><button class="tab" type="button" data-t="ally" aria-pressed="${tab==='ally'}">ผู้ช่วย</button><button class="tab" type="button" data-t="up" aria-pressed="${tab==='up'}">อัปเกรดและของใช้</button></div><span class="sp"></span>${coinTag()}</div>
-    <div class="scroll"><div class="grid">${body}</div></div></div>`);
+    <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>คลังแสง</h2><div class="tabs"><button class="tab" type="button" data-t="guns" aria-pressed="${tab==='guns'}">อาวุธ</button><button class="tab" type="button" data-t="skin" aria-pressed="${tab==='skin'}">แนวกั้น</button><button class="tab" type="button" data-t="melee" aria-pressed="${tab==='melee'}">ประชิด</button><button class="tab" type="button" data-t="ally" aria-pressed="${tab==='ally'}">ผู้ช่วย</button><button class="tab" type="button" data-t="up" aria-pressed="${tab==='up'}">อัปเกรดและของใช้</button></div><span class="sp"></span>${coinTag()}</div>
+    <div class="scroll">${tab==='skin'?body:`<div class="grid">${body}</div>`}</div></div>`);
   $('#back').onclick=home;
+  scr.querySelectorAll('[data-skin]').forEach(b=>b.onclick=()=>{P.skin=b.dataset.skin;save();equipSkin();barricadeLook();SFX.ui();shop('skin');});
+  scr.querySelectorAll('[data-sbuy]').forEach(b=>b.onclick=()=>{const id=b.dataset.sbuy,s=SKINS[id];if(P.coins<s.cost||P.skins.includes(id))return;P.coins-=s.cost;P.skins.push(id);P.skin=id;save();equipSkin();barricadeLook();SFX.coin();toast('ได้แนวกั้น '+s.n+' แล้ว!');shop('skin');});
+  scr.querySelectorAll('[data-goal]').forEach(b=>b.onclick=()=>{const i=+b.dataset.goal,[n,c]=SKIN_GOALS[i];if(P.skinGoals.includes(i)||ownSkins().length<n)return;P.skinGoals.push(i);P.coins+=c;save();SFX.coin();toast('รางวัลนักสะสม +'+c+' เหรียญ');shop('skin');});
   scr.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{SFX.ui();shop(b.dataset.t);});
   scr.querySelectorAll('[data-gun]').forEach(b=>b.onclick=()=>{const id=b.dataset.gun,g=GUNS[id];if(P.coins<g.cost)return;P.coins-=g.cost;P.owned.push(id);P.gun=id;save();SFX.coin();toast('ได้ '+g.n+' แล้ว');shop('guns');});
   scr.querySelectorAll('[data-ally]').forEach(b=>b.onclick=()=>{const id=b.dataset.ally,a=ALLY[id],lv=P.allies[id],price=lv?a.up[lv-1]:a.cost;if(lv>=3||P.coins<price)return;P.coins-=price;P.allies[id]=lv+1;save();SFX.coin();toast(lv?a.n+' อัปเกรดเป็นขั้น '+(lv+1):'ได้ '+a.n+' แล้ว');allyVisibility();shop('ally');});
@@ -2563,7 +2698,7 @@ requestAnimationFrame(frame);
 loadModels().then(()=>{
   buildWorld();try{makeThumbs();}catch(e){}equipGun();equipKnife();if(gunObj)gunObj.visible=false;
   $('#loading').hidden=true;home();
-  window.__dw={get G(){return G;},zombies,press,live,get target(){return target;},P,get OBST(){return OBST;},blocked,setZone,setScene,setAtmosphere,perkPick,startNight,endNight,brief,renderer,scene,pickChoice,choicesFor,get SURV(){return SURV;},equipKnife,MELEE,MINIS,miniGame,get CUT(){return CUT;}};
+  window.__dw={get G(){return G;},zombies,press,live,get target(){return target;},P,get OBST(){return OBST;},blocked,setZone,setScene,setAtmosphere,equipSkin,perkPick,startNight,endNight,brief,renderer,scene,pickChoice,choicesFor,get SURV(){return SURV;},equipKnife,MELEE,MINIS,miniGame,get CUT(){return CUT;}};
 });
 </script>
 </body>
