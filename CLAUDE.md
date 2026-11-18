@@ -10,3 +10,6 @@ Every button, title, label, description, toast and hint in the game must be **sh
 
 ## Build
 Edit `src/game.html` and `words/*.txt`, then run `python3 build.py` to regenerate `index.html`.
+
+## Deploy rule (from the owner, required)
+The game is played from `main`. After every change: build, commit, push the working branch, open a PR to `main`, and **merge it yourself right away**. Do not ask the owner to press Merge.
