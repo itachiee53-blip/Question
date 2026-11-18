@@ -229,6 +229,22 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .sgoal b{font-size:16px}.sgoal small{font-size:11px;color:var(--dim)}.sgoal.got{opacity:.55}.sgoal.can{border-color:var(--amber);box-shadow:0 0 0 2px #f2b33d33}
 .sgoal button{font-size:12px;color:#1a1405;background:var(--amber);border-radius:999px;padding:2px 8px}
 .sk{--rc:#a6e05a}
+.scr.deco{background:none;padding:0;display:block;pointer-events:none}
+.deco{position:fixed;inset:0;pointer-events:none}.deco>*{pointer-events:auto}
+.dtop{position:absolute;top:calc(10px + var(--safe-t));left:calc(12px + var(--safe-l));right:calc(12px + var(--safe-r));display:flex;align-items:center;gap:10px}
+.dtop h2{margin:0;font-size:24px;text-shadow:0 2px 10px #000}
+.dbase{position:absolute;top:calc(64px + var(--safe-t));left:calc(12px + var(--safe-l));display:flex;align-items:center;gap:8px;font-size:13px;color:#fffd;text-shadow:0 1px 6px #000}
+.dbase .sseg{background:#000a}.dbase svg{width:13px;height:13px;vertical-align:-2px}
+.dslot{position:absolute;left:0;top:0;width:44px;height:44px;border-radius:50%;border:2px dashed #ffffffcc;background:#0009;color:#fff;font-size:26px;line-height:1;display:grid;place-items:center;box-shadow:0 2px 12px #0008}
+.dslot.full{width:30px;height:30px;border:2px solid var(--toxic);background:#a6e05a40}
+.dslot.sel{border:3px solid var(--amber);box-shadow:0 0 0 5px #f2b33d55;background:#f2b33d33}
+.dtray{position:absolute;left:0;right:0;bottom:0;padding:10px calc(12px + var(--safe-r)) calc(10px + var(--safe-b)) calc(12px + var(--safe-l));background:linear-gradient(#0000,#000d 28%)}
+.dhint{text-align:center;color:#fffd;padding:10px;font-size:15px}
+.dhead{display:flex;align-items:center;gap:8px;margin-bottom:8px}.dhead b{font-size:17px}.dhead small{font-size:12px;color:var(--dim)}
+.dkl{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.dcard{flex:none;width:96px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border-radius:10px;border:1px solid var(--line);background:#0d1612ee}
+.dcard img{width:70px;height:70px;object-fit:contain}.dcard b{font-size:13px;font-weight:500;white-space:nowrap}.dcard small{font-size:12px;color:var(--amber);display:inline-flex;align-items:center;gap:3px}.dcard small svg{width:12px;height:12px}
+.dcard.on{border-color:var(--toxic);background:#1b2a14ee}.dcard.on small{color:var(--toxic)}.dcard:disabled{opacity:.45}
 .skgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
 .sk{display:flex;flex-direction:column;border-radius:12px;border:1px solid color-mix(in srgb,var(--rc) 55%,transparent);background:linear-gradient(180deg,color-mix(in srgb,var(--rc) 16%,#0d1612) 0%,#0d1612 60%);overflow:hidden;position:relative}
 .sk.r3{box-shadow:0 0 0 1px #f2b33d55,0 0 18px #f2b33d22}.sk.r3::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,#fff3 50%,transparent 60%);background-size:250% 100%;animation:shine 3.5s infinite;pointer-events:none}
@@ -435,8 +451,10 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.21.0',VERSION_DATE='18 พ.ย. 2569';
+const VERSION='2.22.0',VERSION_DATE='18 พ.ย. 2569';
 const CHANGES=[
+  'ตกแต่งฐานได้เอง! คลังแสง → ตกแต่งฐาน แตะวงกลมรอบแนวกั้น แล้วเลือกของ 22 อย่าง (ถังน้ำมัน ลังไม้ ยางรถ กองไฟ ธง ป้าย ไฟจราจร ฯลฯ) หมุนได้ เอาออกได้ ซื้อครั้งเดียววางได้ทุกช่อง',
+  'ปุ่ม "มุมเล่นจริง" ดูได้ทันทีว่าตอนเล่นจะเห็นแบบไหน',
   'ถอดแนวกั้นแบบสะสม 22 แบบออก คืนเหรียญให้ทุกคนที่ซื้อไปแล้วอัตโนมัติ',
   'แนวกั้นใหม่ 1 แบบ สไตล์เดียวกับแบบดั้งเดิม: ด่านกระสอบทราย (คลังแสง → แนวกั้น)',
   'หน้าตั้งค่าใหม่แบบแท็บ: กราฟิก / เสียง / การเล่น / อื่น ๆ',
@@ -573,7 +591,7 @@ P.up=Object.assign({wall:0,hint:0,oil:0,mag:0,knife:0},P.up);P.seenZ=P.seenZ||[]
 // older saves had on/off sound switches: a switched-off channel starts at volume 0
 if(!P.opts.vol)P.opts.vol={master:80,sfx:P.opts.sfx===false?0:100,amb:P.opts.amb===false?0:70,voice:P.opts.voice===false?0:100};if(P.mode!=='spell')P.mode='choice';
 const CHOICE=()=>P.mode==='choice';
-P.best=P.best||{};P.allies=Object.assign({man:0,dog:0},P.allies);P.melee=P.melee||'knife';P.ownedMelee=P.ownedMelee||['knife'];P.skins=P.skins||['traffic'];P.skin=P.skin||'traffic';P.xp=P.xp||0;
+P.best=P.best||{};P.allies=Object.assign({man:0,dog:0},P.allies);P.melee=P.melee||'knife';P.ownedMelee=P.ownedMelee||['knife'];P.skins=P.skins||['traffic'];P.skin=P.skin||'traffic';P.deco=P.deco||{};P.decoRot=P.decoRot||{};P.decoOwn=P.decoOwn||[];P.xp=P.xp||0;
 /* ranks grow with experience from answering */
 const RANKS=[[0,'มือใหม่'],[150,'ผู้รอดชีวิต'],[500,'นักล่า'],[1200,'ทหารพราน'],[2600,'ผู้พิทักษ์'],[5000,'ฮีโร่'],[9000,'ตำนาน']];
 const rankOf=xp=>{let i=0;while(i<RANKS.length-1&&xp>=RANKS[i+1][0])i++;return i;};
@@ -1009,6 +1027,90 @@ function skinThumbs(){
   for(const id of Object.keys(SKINS)){const g=buildSkin(id,sc,0);r.render(sc,cam);THUMB['skin_'+id]=r.domElement.toDataURL();sc.remove(g);}
   r.dispose();
 }
+/* ---------------- base decorating: tap a spot around the barricade, pick what goes there ---------------- */
+// spots are relative to the barricade line (z=0); front spots sit between the barricade and the player, clear of the survivor and the dog
+const DECO_SLOTS=[
+  {id:'f1',n:'ซ้ายสุด',x:-3.1,z:.25,k:'mid'},{id:'f2',n:'กลางซ้าย',x:-.95,z:.3,k:'mid'},
+  {id:'f4',n:'กลางขวา',x:1.3,z:.3,k:'mid'},{id:'f5',n:'ขวาสุด',x:3.25,z:.25,k:'mid'},
+  {id:'b1',n:'หลังซ้าย',x:-2.1,z:-.8,k:'tall'},{id:'b2',n:'หลังขวา',x:2.1,z:-.8,k:'tall'},
+];
+const KSIZE={low:0,mid:1,tall:2};
+// k = how big the item is; a spot takes items up to its own size
+const DECO={
+  cone:{n:'กรวยจราจร',k:'low',c:40,b(){place('TrafficCone_1',0,0,0,0,.9);}},
+  cones:{n:'กรวยคู่',k:'low',c:60,b(){place('TrafficCone_1',-.22,0,0,.3,.85);place('TrafficCone_1',.25,0,.08,-.4,.75);}},
+  blocks:{n:'กองอิฐบล็อก',k:'low',c:50,b(){place('CinderBlock',-.2,0,0,.2);place('CinderBlock',.22,0,.05,-.1);place('CinderBlock',0,.23,.02,.4);}},
+  planks:{n:'แผ่นไม้',k:'low',c:40,b(){place('WoodPlanks',0,0,0,.4);}},
+  bags:{n:'ถุงขยะ',k:'low',c:40,b(){place('TrashBag_1',-.15,0,0,0);place('TrashBag_1',.2,0,.1,1.3,.85);}},
+  hydrant:{n:'หัวดับเพลิง',k:'low',c:70,b(){place('FireHydrant',0,0,0,.3);}},
+  barrel:{n:'ถังน้ำมัน',k:'mid',c:80,b(){place('Barrel',0,0,0,.5,.9);}},
+  barrels:{n:'ถังน้ำมันคู่',k:'mid',c:120,b(){place('Barrel',-.3,0,0,.5,.85);place('Barrel',.3,0,.1,1.6,.8);}},
+  gas:{n:'ถังแก๊ส',k:'mid',c:90,b(){place('GasTank',0,0,0,.4,.8);}},
+  crate:{n:'ลังไม้',k:'mid',c:80,b(){place('Crate',0,0,0,.3,.75);}},
+  crates:{n:'ลังไม้ซ้อน',k:'mid',c:130,b(){place('Crate',0,0,0,.2,.7);place('Crate',.05,.55,.02,.75,.55);}},
+  boxes:{n:'กล่องกระดาษ',k:'mid',c:60,b(){place('CardboardBoxes_1',0,0,0,.4,.8);}},
+  tires:{n:'ยางรถซ้อน',k:'mid',c:90,b(){place('Wheels_Stack',0,0,0,.6,.8);}},
+  tires2:{n:'ยางรถวางพิง',k:'mid',c:90,b(){place('Debris_Tires',0,0,0,.8,.8);}},
+  sandbag:{n:'กระสอบทราย',k:'mid',c:100,b(){place('SackTrench_Small',0,0,0,0,.55);}},
+  campfire:{n:'กองไฟ',k:'mid',c:150,b(){for(let i=0;i<6;i++){const a=i/6*Math.PI*2;place('CinderBlock',Math.cos(a)*.32,0,Math.sin(a)*.32,a,.45);}place('WoodPlanks',0,.05,0,.7,.6);fire(0,.1,0,.55);}},
+  sign:{n:'ป้ายเตือน',k:'tall',c:100,b(){place('Sign',0,0,0,-.2,.9);}},
+  townsign:{n:'ป้ายเมือง',k:'tall',c:140,b(){place('TownSign',0,0,0,0,.6);}},
+  light:{n:'ไฟจราจร',k:'tall',c:160,b(){place('TrafficLight_1',0,0,0,0,.55);}},
+  flag:{n:'ธงฐาน',k:'tall',c:120,b(){cy(0,0,0,.035,2.2,0x777777,6);const f=bx(.32,1.75,0,.62,.4,.02,0x3a6a2a);f.rotation.y=.15;bx(.32,1.83,.012,.16,.16,.01,0xf2c040).rotation.y=.15;}},
+  fence:{n:'รั้วเหล็ก',k:'tall',c:110,b(){place('Fence_Long',0,0,0,0,.8);}},
+  sofa:{n:'โซฟาเก่า',k:'tall',c:130,b(){place('Sofa',0,0,0,Math.PI,.7);}},
+};
+let decoGrp=null,decoFires=[];
+function buildDeco(){
+  if(decoGrp)scene.remove(decoGrp);for(const f of decoFires){const i=FIRES.indexOf(f);if(i>=0)FIRES.splice(i,1);}const nf=FIRES.length;decoGrp=new THREE.Group();decoGrp.position.set(0,0,BARR_Z);scene.add(decoGrp);decoGrp.updateMatrixWorld(true);
+  const prev=PLACE_TO,n0=OBST.length;
+  for(const s of DECO_SLOTS){const id=P.deco[s.id];if(!DECO[id])continue;const g=new THREE.Group();g.position.set(s.x,0,s.z);g.rotation.y=(P.decoRot[s.id]||0)*Math.PI/4;decoGrp.add(g);g.updateMatrixWorld(true);
+    PLACE_TO=g;try{DECO[id].b();}catch(e){console.error(e);}}
+  PLACE_TO=prev;OBST.length=Math.min(OBST.length,n0);decoFires=FIRES.slice(nf);
+}
+function decoThumbs(){
+  if(THUMB.deco_cone)return;
+  const r=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});r.setSize(128,128);r.outputColorSpace=THREE.SRGBColorSpace;r.toneMapping=THREE.ACESFilmicToneMapping;
+  const sc=new THREE.Scene();sc.add(new THREE.HemisphereLight(0xffffff,0x445544,2.4));const dl=new THREE.DirectionalLight(0xffffff,2.2);dl.position.set(2,4,5);sc.add(dl);
+  const cam=new THREE.PerspectiveCamera(30,1,.05,40),prev=PLACE_TO,n0=OBST.length;
+  for(const [id,d] of Object.entries(DECO)){const g=new THREE.Group();sc.add(g);PLACE_TO=g;const nf=FIRES.length;try{d.b();}catch(e){}FIRES.length=nf;
+    g.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(g),c=b.getCenter(new THREE.Vector3()),s=b.getSize(new THREE.Vector3()).length()||1;
+    cam.position.set(c.x+s*.45,c.y+s*.4,c.z+s*1.05);cam.lookAt(c);r.render(sc,cam);THUMB['deco_'+id]=r.domElement.toDataURL();sc.remove(g);}
+  PLACE_TO=prev;OBST.length=Math.min(OBST.length,n0);r.dispose();
+}
+/* the decorating screen: the real base in the 3D view, a marker on every spot, items in a tray at the bottom */
+const DECO_CAM=new THREE.Vector3(0,3.1,.9),DECO_LOOK=new THREE.Vector3(0,.2,-3.6);
+let decoSel=null,decoPlayView=false;
+function decorate(sel=decoSel){
+  state='deco';decoSel=sel;clearZombies();decoThumbs();CAM.copy(decoPlayView?BASE_CAM:DECO_CAM);
+  const S=DECO_SLOTS.find(s=>s.id===sel),cur=S&&P.deco[S.id];
+  const items=S?Object.entries(DECO).filter(([,d])=>KSIZE[d.k]<=KSIZE[S.k]).sort((a,b)=>KSIZE[b[1].k]-KSIZE[a[1].k]||a[1].c-b[1].c):[];
+  const card=(id,d)=>{const own=P.decoOwn.includes(id),on=cur===id;
+    return `<button class="dcard${on?' on':''}${own?'':' locked'}" type="button" data-di="${id}" ${!own&&P.coins<d.c?'disabled':''}><img src="${THUMB['deco_'+id]||''}" alt=""><b>${d.n}</b><small>${on?'วางอยู่':own?'มีแล้ว':SV.coin+d.c}</small></button>`;};
+  const base=Object.entries(SKINS).map(([id,s])=>{const have=P.skins.includes(id),eq=P.skin===id;
+    return `<button type="button" data-base="${id}" aria-pressed="${eq}" ${!have&&P.coins<s.cost?'disabled':''}>${s.n}${have?'':` · ${SV.coin}${fmt(s.cost)}`}</button>`;}).join('');
+  show(`<div class="deco">
+    <div class="dtop"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>ตกแต่งฐาน</h2><button class="sbtn" type="button" id="dView">${decoPlayView?'มุมตกแต่ง':'มุมเล่นจริง'}</button><span class="sp"></span>${coinTag()}</div>
+    <div class="dbase"><span>แนวกั้นหลัก</span><div class="sseg">${base}</div></div>
+    ${decoPlayView?'':DECO_SLOTS.map(s=>`<button class="dslot${s.id===sel?' sel':''}${P.deco[s.id]?' full':''}" type="button" data-slot="${s.id}" aria-label="${s.n}">${P.deco[s.id]?'':'+'}</button>`).join('')}
+    <div class="dtray${S?' open':''}">${S?`<div class="dhead"><b>${S.n}</b><small>${S.k==='tall'?'วางของสูงได้':S.k==='low'?'ช่องกลางวางได้แค่ของเตี้ย ไม่บังวิว':'วางของขนาดกลางได้'}</small><span class="sp"></span>
+      ${cur?`<button class="sbtn" type="button" id="dRot">หมุน ↻</button><button class="sbtn" type="button" id="dDel">เอาออก</button>`:''}<button class="sbtn" type="button" id="dClose">ปิด</button></div>
+      <div class="dkl">${items.map(([id,d])=>card(id,d)).join('')}</div>`:`<div class="dhint">${decoPlayView?'นี่คือภาพที่จะเห็นตอนเล่นจริง':'แตะวงกลมรอบแนวกั้นเพื่อเลือกว่าจะวางอะไร'}</div>`}</div>
+  </div>`,'deco');
+  $('#back').onclick=()=>{SFX.ui();decoSel=null;decoPlayView=false;CAM.copy(BASE_CAM);shop('guns');};
+  $('#dView').onclick=()=>{SFX.ui();decoPlayView=!decoPlayView;decorate(decoPlayView?null:sel);};
+  scr.querySelectorAll('[data-slot]').forEach(b=>b.onclick=()=>{SFX.ui();decorate(b.dataset.slot===sel?null:b.dataset.slot);});
+  scr.querySelectorAll('[data-base]').forEach(b=>b.onclick=()=>{const id=b.dataset.base,s=SKINS[id];if(!P.skins.includes(id)){if(P.coins<s.cost)return;P.coins-=s.cost;P.skins.push(id);SFX.coin();}else SFX.ui();P.skin=id;save();equipSkin();barricadeLook();decorate(sel);});
+  scr.querySelectorAll('[data-di]').forEach(b=>b.onclick=()=>{const id=b.dataset.di,d=DECO[id];if(!P.decoOwn.includes(id)){if(P.coins<d.c)return;P.coins-=d.c;P.decoOwn.push(id);SFX.coin();}else SFX.ui();
+    P.deco[sel]=id;save();buildDeco();decorate(sel);});
+  if($('#dRot'))$('#dRot').onclick=()=>{P.decoRot[sel]=((P.decoRot[sel]||0)+1)%8;save();buildDeco();SFX.ui();};
+  if($('#dDel'))$('#dDel').onclick=()=>{delete P.deco[sel];save();buildDeco();SFX.ui();decorate(sel);};
+  if($('#dClose'))$('#dClose').onclick=()=>{SFX.ui();decorate(null);};
+}
+// keep each marker on its spot in the 3D view
+function decoMarkers(){const W=innerWidth,H=innerHeight;
+  scr.querySelectorAll('[data-slot]').forEach(el=>{const s=DECO_SLOTS.find(q=>q.id===el.dataset.slot);proj.set(s.x,s.k==='tall'?1.3:.55,BARR_Z+s.z).project(camera);
+    el.style.transform=`translate(${((proj.x*.5+.5)*W).toFixed(1)}px,${((-proj.y*.5+.5)*H).toFixed(1)}px) translate(-50%,-50%)`;});}
 function buildWorld(){
   const road=new THREE.Group();scene.add(road);PLACE_TO=road;
   for(let z=4,i=0;z>-160;z-=8,i++)place(i%4===2?'Street_Straight_Crack1':'Street_Straight',0,0,z,0);
@@ -1017,7 +1119,7 @@ function buildWorld(){
     if(z-16<=-120){PLACE_TO=scene;mergeStatic(road);}
     const gl=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:0xffc070,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));gl.scale.setScalar(1.6);gl.position.set(s*1.95,6.25,z);scene.add(gl);LAMPS.push(gl);}
   // barricade: the skin the player picked
-  refundOldSkins();equipSkin();
+  refundOldSkins();equipSkin();buildDeco();
   OBST=OBST.filter(o=>o.z0<STOP_Z-1); // the barricade itself is not something to walk around
   buildAllies();
 }
@@ -1323,6 +1425,7 @@ function setScene(k){
   zoneGrp=new THREE.Group();scene.add(zoneGrp);PLACE_TO=zoneGrp;
   SWEEP.length=0;const sc=SCN[k]||SCN.city;skyline(sc.sky);(DRESS[sc.dress]||DRESS.a1)();PLACE_TO=scene;builtZone=k;mergeStatic(zoneGrp);
   ground.material.color.setHex(sc.ground||0x1b1e1a);
+  if(decoGrp)buildDeco(); // scene change clears the fire list; rebuild so deco fires keep flickering
 }
 
 /* ---------------- survivor and dog behind the barricade ---------------- */
@@ -2424,10 +2527,8 @@ function resume(){if(state!=='paused')return;state='play';scr.hidden=true;last=p
 function shop(tab){
   state='menu';
   let body='';
-  if(tab==='skin'){skinThumbs();body='<div class="skgrid">'+Object.entries(SKINS).map(([id,s])=>{const have=P.skins.includes(id),eq=P.skin===id;
-      const btn=eq?'<span class="buy eq">ใช้อยู่</span>':have?`<button class="buy own" type="button" data-skin="${id}">ใช้</button>`:`<button class="buy" type="button" data-sbuy="${id}" ${P.coins<s.cost?'disabled':''}>${SV.coin}${fmt(s.cost)}</button>`;
-      return `<div class="sk"><div class="skimg"><img src="${THUMB['skin_'+id]||''}" alt=""></div><div class="sktx"><b>${s.n}</b><small>${s.d}</small></div>${btn}</div>`;}).join('')+'</div>';}
-  else if(tab==='guns')body=Object.entries(GUNS).map(([id,g])=>{const own=P.owned.includes(id),eq=P.gun===id;
+  if(tab==='skin'){decorate(null);return;}
+  if(tab==='guns')body=Object.entries(GUNS).map(([id,g])=>{const own=P.owned.includes(id),eq=P.gun===id;
     return `<div class="it"><span class="ic">${THUMB[id]?`<img src="${THUMB[id]}" alt="">`:SV.gun}</span><span class="tx"><b>${g.n}</b><small>${g.d} · ${g.mag} นัด</small></span>${eq?'<span class="buy eq">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-eq="${id}">ใช้</button>`:`<button class="buy" type="button" data-gun="${id}" ${P.coins<g.cost?'disabled':''}>${SV.coin}${fmt(g.cost)}</button>`}</div>`;}).join('');
   else if(tab==='ally')body=Object.entries(ALLY).map(([id,a])=>{const lv=P.allies[id],max=lv>=3;
     const desc=lv?a.d(lv-1)+(max?'':`<br><span style="color:var(--toxic)">ขั้นถัดไป: ${a.nx(lv)}</span>`):a.d(0);
@@ -2439,7 +2540,7 @@ function shop(tab){
     return `<div class="it"><span class="ic">${SV[u.ic]}</span><span class="tx"><b>${u.n}</b><small>${u.d}</small><span class="lv">${u.cost.map((_,i)=>`<i class="${i<lv?'on':''}"></i>`).join('')}</span></span>${max?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" data-up="${id}" ${P.coins<u.cost[lv]?'disabled':''}>${SV.coin}${fmt(u.cost[lv])}</button>`}</div>`;}).join('')
     +`<div class="it"><span class="ic">${SV.gren}</span><span class="tx"><b>ระเบิดมือ</b><small>ฆ่าซอมบี้รอบเป้าหมายทั้งหมด (มี ${P.gren}/${GREN_MAX})</small></span>${P.gren>=GREN_MAX?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" id="bGren" ${P.coins<GREN_COST?'disabled':''}>${SV.coin}${GREN_COST}</button>`}</div>`;
   show(`<div class="card" style="max-height:100%">
-    <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>คลังแสง</h2><div class="tabs"><button class="tab" type="button" data-t="guns" aria-pressed="${tab==='guns'}">อาวุธ</button><button class="tab" type="button" data-t="skin" aria-pressed="${tab==='skin'}">แนวกั้น</button><button class="tab" type="button" data-t="melee" aria-pressed="${tab==='melee'}">ประชิด</button><button class="tab" type="button" data-t="ally" aria-pressed="${tab==='ally'}">ผู้ช่วย</button><button class="tab" type="button" data-t="up" aria-pressed="${tab==='up'}">อัปเกรดและของใช้</button></div><span class="sp"></span>${coinTag()}</div>
+    <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>คลังแสง</h2><div class="tabs"><button class="tab" type="button" data-t="guns" aria-pressed="${tab==='guns'}">อาวุธ</button><button class="tab" type="button" data-t="skin" aria-pressed="false">ตกแต่งฐาน</button><button class="tab" type="button" data-t="melee" aria-pressed="${tab==='melee'}">ประชิด</button><button class="tab" type="button" data-t="ally" aria-pressed="${tab==='ally'}">ผู้ช่วย</button><button class="tab" type="button" data-t="up" aria-pressed="${tab==='up'}">อัปเกรดและของใช้</button></div><span class="sp"></span>${coinTag()}</div>
     <div class="scroll">${tab==='skin'?body:`<div class="grid">${body}</div>`}</div></div>`);
   $('#back').onclick=home;
   scr.querySelectorAll('[data-skin]').forEach(b=>b.onclick=()=>{P.skin=b.dataset.skin;save();equipSkin();barricadeLook();SFX.ui();shop('skin');});
@@ -2520,7 +2621,7 @@ function frame(now){
   camera.position.set(CAM.x+sway+(Math.random()-.5)*shake*.25,CAM.y+Math.sin(clock*1.3)*.015+(Math.random()-.5)*shake*.25,CAM.z);
   const look=target&&!target.dead&&playing?chest(target):new THREE.Vector3(0,1.1,-20);
   const aim=new THREE.Vector3(0,1.05,-20).lerp(look,.15);
-  camera.lookAt(aim);}
+  camera.lookAt(state==='deco'&&!decoPlayView?DECO_LOOK:aim);}
   if(gunObj){const dip=Math.max(G&&G.reloadT>0?Math.sin(Math.min(1,G.reloadT/GUNS[P.gun].reload)*Math.PI):0,mAnim?Math.sin(Math.min(1,mAnim.t/mAnim.W.dur)*Math.PI):0);gunObj.position.set(.34,-.21-dip*.3+Math.sin(clock*2)*.004,-.62+recoil*.07);gunObj.rotation.x=recoil*.22-dip*.6;gunObj.rotation.z=dip*.5;}
   stepKnife(dt);
   muzzleLight.intensity=Math.max(0,muzzleLight.intensity-dt*120);
@@ -2529,6 +2630,7 @@ function frame(now){
   flash.target.position.lerp(ft,Math.min(1,dt*6));flash.position.set(camera.position.x+.3,camera.position.y-.15,camera.position.z);
   updateLights();
   renderer.render(scene,camera);
+  if(state==='deco')decoMarkers();
   // word tags follow heads
   if(playing||state==='end'||state==='paused'){
     const W=innerWidth,H=innerHeight,items=[];
