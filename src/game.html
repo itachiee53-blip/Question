@@ -427,7 +427,7 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 <div class="fx vig"></div>
 <div class="fx grain" id="grain"></div>
 <div class="fpsc" id="fps" hidden></div>
-<div class="rotate" id="rotate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/><path d="M20 9a8 8 0 0 1-3 7M20 9l1.5 2.2M20 9l-2.4 1"/></svg><b>หมุนมือถือเป็นแนวนอน</b><small>เกมนี้เล่นแนวนอนเท่านั้น</small></div>
+<div class="rotate" id="rotate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/><path d="M20 9a8 8 0 0 1-3 7M20 9l1.5 2.2M20 9l-2.4 1"/></svg><b>หมุนจอเป็นแนวนอน</b><small>เล่นแนวนอนเท่านั้น</small></div>
 <div class="fx hurt" id="hurt"></div>
 <div class="fx danger" id="danger" hidden></div>
 <div class="fx bolt" id="bolt"></div>
@@ -438,7 +438,7 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 <div class="hud" id="hud" hidden>
   <button class="iconbtn" id="pauseBtn" type="button" aria-label="หยุดเกม"><svg viewBox="0 0 20 20" fill="currentColor"><rect x="4" y="3" width="4" height="14" rx="1"/><rect x="12" y="3" width="4" height="14" rx="1"/></svg></button>
   <div class="hinfo"><b id="hNight">NIGHT 1</b><small id="hWave">คลื่น 1/3</small></div>
-  <div class="wall"><div class="lbl"><span>เครื่องกีดขวาง</span><span id="wallN">100</span></div><div class="bar"><i id="wallBar"></i></div><div class="adrrow" id="adrRow"><span class="adrl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>อะดรีนาลีน</span><div class="adrbar"><i id="adrBar"></i></div><small id="adrN">0/8</small></div></div>
+  <div class="wall"><div class="lbl"><span>แนวกั้น</span><span id="wallN">100</span></div><div class="bar"><i id="wallBar"></i></div><div class="adrrow" id="adrRow"><span class="adrl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>อะดรีนาลีน</span><div class="adrbar"><i id="adrBar"></i></div><small id="adrN">0/8</small></div></div>
   <div class="hright"><div class="score" id="score">0</div><div class="combo" id="combo" hidden></div></div>
 </div>
 <div class="bossbar" id="bossBar" hidden><b id="bossName"></b><span id="bossPips"></span></div>
@@ -448,7 +448,7 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 <div class="dock" id="dock" hidden>
   <div class="items">
     <button class="item" type="button" id="hintBtn" aria-label="คำใบ้"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 7v8M7 11h8M16.5 16.5 21 21"/></svg><b id="hintN">3</b></button>
-    <button class="item ammo" type="button" id="ammoBtn" aria-label="อาวุธและกระสุน แตะเพื่อรีโหลด"><img id="gunIc" alt=""><span id="ammoN">12</span><i id="ammoBar"></i></button>
+    <button class="item ammo" type="button" id="ammoBtn" aria-label="รีโหลด"><img id="gunIc" alt=""><span id="ammoN">12</span><i id="ammoBar"></i></button>
     <button class="item knife ready" type="button" id="knifeBtn" aria-label="ปาดมีด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20l9-9 2 2-9 9H4z"/><path d="M13 11l6-7c1 2 1 5-2 8l-2 1"/></svg></button>
     <button class="item" type="button" id="grenBtn" aria-label="ระเบิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="14" r="7"/><path d="M10 7V4h4v3M14 4l4-1"/></svg><b id="grenN">1</b></button>
   </div>
@@ -467,32 +467,33 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.23.2',VERSION_DATE='18 พ.ย. 2569';
+const VERSION='2.23.3',VERSION_DATE='18 พ.ย. 2569';
 const CHANGES=[
-  'รั้วเหล็กเป็นชุดเต็มแล้ว: ครึ่งแผงสองข้างต่อหัวชนหัว มีขาโค้งทั้งสองปลายเหมือนรั้วกั้นฝูงชนจริง',
-  'เต็มจอบนมือถือใช้ได้จริงแล้ว (แตะหน้าจอครั้งเดียว) · เพิ่มลงหน้าจอหลักได้ เปิดเป็นแอปเต็มจอแนวนอน',
-  'เกมเล่นแนวนอนเท่านั้น: ถือแนวตั้งจะขึ้นให้หมุนจอ และแตะครั้งแรกจะเข้าเต็มจอล็อกแนวนอน (Android)',
-  'ตกแต่งฐาน: แตะของแล้วดูตัวอย่างบนฐานก่อน จ่ายเหรียญเมื่อกด "ซื้อ" เท่านั้น · คืนเหรียญของตกแต่งที่ซื้อไปแล้วให้ (ของยังเป็นของคุณ)',
-  'เปลี่ยนกำแพงหลักได้ 9 แบบ: รั้วเหล็ก, พาเลทไม้, แผงจราจร, ยางรถ, ถังน้ำมัน, ลังไม้, กระสอบทราย, ป้อมเฉพาะกิจ (ดูตัวอย่างก่อนซื้อได้)',
-  'จุดวางของจัดใหม่ไม่ทับกัน · รั้วกลางของด่านกระสอบทรายเต็มสองข้าง',
-  'ผู้ช่วยเก่งขึ้น: ผู้รอดชีวิตยิงซอมบี้ที่ใกล้สุดตาย (ขั้น 3 ยิงบอสได้) · สุนัขกัดซอมบี้ที่ตีแนวกั้นตาย (ขั้น 2 ขึ้นไปขู่ตัวรอบ ๆ ให้หยุด)',
-  'ตกแต่งฐานได้เอง! คลังแสง → ตกแต่งฐาน แตะวงกลมรอบแนวกั้น แล้วเลือกของ 22 อย่าง (ถังน้ำมัน ลังไม้ ยางรถ กองไฟ ธง ป้าย ไฟจราจร ฯลฯ) หมุนได้ เอาออกได้ ซื้อครั้งเดียววางได้ทุกช่อง',
-  'ปุ่ม "มุมเล่นจริง" ดูได้ทันทีว่าตอนเล่นจะเห็นแบบไหน',
-  'ถอดแนวกั้นแบบสะสม 22 แบบออก คืนเหรียญให้ทุกคนที่ซื้อไปแล้วอัตโนมัติ',
-  'แนวกั้นใหม่ 1 แบบ สไตล์เดียวกับแบบดั้งเดิม: ด่านกระสอบทราย (คลังแสง → แนวกั้น)',
-  'หน้าตั้งค่าใหม่แบบแท็บ: กราฟิก / เสียง / การเล่น / อื่น ๆ',
-  'เลือกเฟรมเรตสูงสุด 30 / 60 / 120 FPS',
-  'ปรับระดับเสียงแยกได้: เสียงหลัก, เอฟเฟกต์, บรรยากาศ, เสียงอ่านคำศัพท์',
-  'ชื่อเกมหน้าแรกขยับเข้ามา ไม่โดนกล้องหน้ามือถือบัง',
-  'แถบอะดรีนาลีน: ตอบถูก 8 ครั้ง ซอมบี้จะเดินช้าลง 6 วิ',
-  'หน้าแรกเรียบขึ้น: ปุ่มเล่นต่อใหญ่ปุ่มเดียว ที่เหลือเป็นไอคอนสั้น ๆ ตั้งค่าย้ายไปไว้ที่ปุ่มเฟือง (มุมขวาบน)',
-  'ตั้งค่ากราฟิก: อัตโนมัติ / ประหยัด / สมดุล / สวยสุด และเปิดดู FPS ได้',
+  'ข้อความทั้งเกมสั้นลง อ่านง่ายขึ้น',
+  'รั้วเหล็กแบบเต็มชุด',
+  'เต็มจอบนมือถือ · เพิ่มลงหน้าจอหลักได้',
+  'เล่นแนวนอนเท่านั้น',
+  'ดูตัวอย่างของตกแต่งก่อนซื้อ · คืนเหรียญของที่ซื้อไปแล้ว',
+  'กำแพง 9 แบบ ดูก่อนซื้อได้',
+  'จัดจุดวางของใหม่ ไม่ทับกัน',
+  'ผู้ช่วยเก่งขึ้น: ผู้รอดชีวิตยิงบอสได้ · สุนัขเฝ้ายามขู่ซอมบี้ได้',
+  'ตกแต่งฐานได้ 22 อย่าง',
+  'ปุ่มดูมุมเล่นจริง',
+  'ถอดแนวกั้นสะสม คืนเหรียญอัตโนมัติ',
+  'แนวกั้นใหม่: ด่านกระสอบทราย',
+  'ตั้งค่าแบบแท็บ',
+  'เลือก FPS 30 / 60 / 120',
+  'ปรับเสียงแยกได้',
+  'ชื่อเกมไม่โดนกล้องบัง',
+  'อะดรีนาลีน: ถูก 8 ครั้ง ซอมบี้ช้าลง',
+  'หน้าแรกเรียบขึ้น',
+  'เลือกคุณภาพกราฟิกได้',
   'ไอคอนคลังแสงใหม่',
-  'ลื่นขึ้นบนมือถือ/แท็บเล็ตสเปคกลาง: ฉากรวมเป็นชิ้นเดียว (draw call ลดจาก 800 เหลือไม่ถึง 100), จำกัดไฟที่คำนวณจริงไว้ไม่กี่ดวง ไม่กระตุกตอนระเบิด และปรับความละเอียดภาพตามความแรงของเครื่องอัตโนมัติ',
-  'คืนพิเศษ: ทุกคืนที่ 3, 8, 13, 18 … ของแต่ละพื้นที่ เล่นต่างจากเดิม มี 4 แบบ: คุ้มกันรถบัส, ช่วยผู้รอดชีวิต (ห้ามยิงโดน), กระสุนจำกัด, ยิงจากหลังคา',
-  'เล่นไปแล้วก็ไม่เสียอะไร ดาวเดิมยังอยู่ครบ คืนพิเศษที่เคยผ่านแบบเก่าจะมีป้าย "ใหม่" บนแผนที่ เข้าไปเล่นแบบใหม่ได้ ผ่านครั้งแรกรับ +50 เหรียญ',
-  'ฉากใหม่ 17 แห่ง แต่ละพื้นที่วนสถานที่ 8–9 แบบ พร้อมวิทยุบอกเรื่องราวเมื่อไปถึงที่ใหม่',
-  'ภารกิจเสริมประจำคืน ทำสำเร็จรับ +25 เหรียญ',
+  'ลื่นขึ้นบนมือถือ',
+  'คืนพิเศษ 4 แบบ',
+  'คืนพิเศษที่เคยผ่านมีป้าย "ใหม่"',
+  'ฉากใหม่ 17 แห่ง',
+  'ภารกิจเสริม +25 เหรียญ',
 ];
 
 /* ---------------- helpers ---------------- */
@@ -555,21 +556,21 @@ const GUNS={
   pistol:{n:'ปืนพก',m:'Pistol',len:.95,cost:0,d:'ปืนเริ่มต้น',push:.25,kick:.05,mag:12,shots:2,reload:1.0,rs:'reload_pistol',speed:140},
   shotgun:{n:'ลูกซอง',m:'Shotgun',cost:400,d:'ผลักถอยไกล',push:.9,kick:.12,mag:6,shots:1,reload:1.5,rs:'reload_shotgun',speed:110},
   smg:{n:'ปืนกล',m:'SMG',cost:800,d:'ตัดตัวเลือกผิด 1 ข้อ',push:.3,kick:.04,auto1:true,mag:30,shots:4,reload:1.3,rs:'reload_rifle',speed:150},
-  revolver:{n:'ลูกโม่แม็กนั่ม',m:'Revolver',cost:600,d:'เฮดช็อตทุกนัด',push:1.4,kick:.16,mag:6,shots:1,reload:1.6,rs:'reload_pistol',speed:170,head:true,toon:true,len:1},
-  ak:{n:'AK-47',m:'AK',cost:1000,d:'ยิงโดนตัวข้างๆ ด้วย',push:.5,kick:.07,mag:30,shots:3,reload:1.2,rs:'reload_rifle',speed:180,splash:true,toon:true,len:1.45},
-  rifle:{n:'ไรเฟิล',m:'Rifle',len:1.6,cost:1200,d:'ทะลุไปโดนตัวถัดไป',push:.45,kick:.09,pierce:2,mag:8,shots:1,reload:1.4,rs:'reload_rifle',speed:260},
+  revolver:{n:'แม็กนั่ม',m:'Revolver',cost:600,d:'เฮดช็อตทุกนัด',push:1.4,kick:.16,mag:6,shots:1,reload:1.6,rs:'reload_pistol',speed:170,head:true,toon:true,len:1},
+  ak:{n:'AK-47',m:'AK',cost:1000,d:'โดนตัวข้างๆ',push:.5,kick:.07,mag:30,shots:3,reload:1.2,rs:'reload_rifle',speed:180,splash:true,toon:true,len:1.45},
+  rifle:{n:'ไรเฟิล',m:'Rifle',len:1.6,cost:1200,d:'ยิงทะลุ 2 ตัว',push:.45,kick:.09,pierce:2,mag:8,shots:1,reload:1.4,rs:'reload_rifle',speed:260},
   sniper:{n:'สไนเปอร์',m:'Sniper',cost:1600,d:'ทะลุทั้งแถว',push:1.2,kick:.18,mag:5,shots:1,reload:2,rs:'reload_rifle',speed:420,lane:true,toon:true,len:2.05},
-  launcher:{n:'ปืนยิงลูกระเบิด',m:'GrenadeLauncher',cost:2200,d:'ระเบิดรอบเป้า',push:.8,kick:.2,mag:4,shots:1,reload:2.2,rs:'reload_shotgun',speed:38,blast:true,toon:true,len:1.2},
+  launcher:{n:'ยิงระเบิด',m:'GrenadeLauncher',cost:2200,d:'ระเบิดรอบเป้า',push:.8,kick:.2,mag:4,shots:1,reload:2.2,rs:'reload_shotgun',speed:38,blast:true,toon:true,len:1.2},
   freeze:{n:'ปืนแช่แข็ง',m:'ShortCannon',cost:1800,d:'แช่แข็ง 3 วิ',push:.2,kick:.1,mag:6,shots:1,reload:1.6,rs:'reload_rifle',speed:80,freeze:true,toon:true,len:1.25,size:2.4,color:0x9fdcff},
   tesla:{n:'ไรเฟิลสายฟ้า',m:'Sniper_2',cost:2000,d:'สายฟ้าโดน 3 ตัว',push:.6,kick:.12,mag:8,shots:1,reload:1.5,rs:'reload_rifle',speed:320,chain:3,toon:true,len:1.75,size:1.8,color:0x8fe8ff},
   bazooka:{n:'บาซูก้า',m:'RocketLauncher',cost:2600,d:'ระเบิดวงกว้าง',push:1,kick:.25,mag:2,shots:1,reload:2.8,rs:'reload_shotgun',speed:30,blast:true,radius:3.6,toon:true,len:1.3,size:3.5,color:0xff9a4a},
 };
 const UPG={
-  mag:{n:'แม็กกาซีนเสริม',d:'กระสุนต่อแม็ก +25%',ic:'gun',cost:[140,300,600]},
-  knife:{n:'ลับมีด',d:'เบา ใช้บ่อยได้',ic:'knife',cost:[120,260,520]},
-  wall:{n:'เสริมเครื่องกีดขวาง',d:'ความทนทาน +25',ic:'wall',cost:[150,320,650]},
-  hint:{n:'กล้องส่องเป้า',d:'คำใบ้ต่อคืน +1',ic:'scope',cost:[120,260,520]},
-  oil:{n:'น้ำมันปืน',d:'ปืนติดสั้นลง 20%',ic:'oil',cost:[100,220,450]},
+  mag:{n:'แม็กเสริม',d:'กระสุน +25%',ic:'gun',cost:[140,300,600]},
+  knife:{n:'ลับมีด',d:'ใช้ถี่ขึ้น',ic:'knife',cost:[120,260,520]},
+  wall:{n:'เสริมแนวกั้น',d:'ทนทาน +25',ic:'wall',cost:[150,320,650]},
+  hint:{n:'กล้องส่อง',d:'คำใบ้ +1/คืน',ic:'scope',cost:[120,260,520]},
+  oil:{n:'น้ำมันปืน',d:'ปืนติดน้อยลง 20%',ic:'oil',cost:[100,220,450]},
 };
 const GREN_COST=60,GREN_MAX=5;
 const ZT={
@@ -620,7 +621,7 @@ const RANKS=[[0,'มือใหม่'],[150,'ผู้รอดชีวิต
 const rankOf=xp=>{let i=0;while(i<RANKS.length-1&&xp>=RANKS[i+1][0])i++;return i;};
 function addXP(n){const before=rankOf(P.xp);P.xp+=n;const after=rankOf(P.xp);if(after>before)setTimeout(()=>toast('เลื่อนยศเป็น '+RANKS[after][1]+'!'),400);}
 /* daily missions */
-const MISS={kills:{n:'ฆ่าซอมบี้',g:[30,60]},words:{n:'ตอบถูก',g:[25,45],u:'คำ'},combo:{n:'ทำคอมโบ',g:[10,16],max:true},nights:{n:'ผ่านคืน',g:[2,3]},barrel:{n:'ระเบิดถังน้ำมัน',g:[2,4],u:'ครั้ง'},perfect:{n:'ผ่านคืนโดยไม่ตอบผิด',g:[1,1]},surv:{n:'รอดในโหมดเอาชีวิตรอด',g:[4,7],u:'คลื่น',max:true},adr:{n:'เปิดอะดรีนาลีน',g:[2,4],u:'ครั้ง'},head:{n:'เฮดช็อต',g:[10,20],u:'ครั้ง'},knife:{n:'ปาดมีดใส่ซอมบี้',g:[3,6],u:'ครั้ง'}};
+const MISS={kills:{n:'ฆ่าซอมบี้',g:[30,60]},words:{n:'ตอบถูก',g:[25,45],u:'คำ'},combo:{n:'ทำคอมโบ',g:[10,16],max:true},nights:{n:'ผ่านคืน',g:[2,3]},barrel:{n:'ระเบิดถังน้ำมัน',g:[2,4],u:'ครั้ง'},perfect:{n:'ผ่านคืนไม่ผิดเลย',g:[1,1]},surv:{n:'รอดโหมดเอาชีวิตรอด',g:[4,7],u:'คลื่น',max:true},adr:{n:'เปิดอะดรีนาลีน',g:[2,4],u:'ครั้ง'},head:{n:'เฮดช็อต',g:[10,20],u:'ครั้ง'},knife:{n:'ปาดมีด',g:[3,6],u:'ครั้ง'}};
 const dayKey=d=>{const x=d||new Date();return x.getFullYear()+'-'+(x.getMonth()+1)+'-'+x.getDate();};
 function dailyInit(){
   const today=dayKey();if(P.daily&&P.daily.day===today)return;
@@ -629,7 +630,7 @@ function dailyInit(){
   const ids=shuffle(Object.keys(MISS)).slice(0,3);
   P.daily={day:today,streak,list:ids.map(id=>{const [a,b]=MISS[id].g;return {id,p:0,g:a+Math.round(Math.random()*(b-a)),c:false};})};
   const bonus=10*Math.min(streak,7);P.coins+=bonus;save();
-  setTimeout(()=>toast(`เข้าเล่นติดกัน ${streak} วัน · รับ ${bonus} เหรียญ`),800);
+  setTimeout(()=>toast(`เล่นติดกัน ${streak} วัน +${bonus} เหรียญ`),800);
 }
 function quest(id,v=1){
   if(!P.daily)return;for(const q of P.daily.list){if(q.id!==id||q.c)continue;const was=q.p>=q.g;q.p=MISS[id].max?Math.max(q.p,v):q.p+v;if(!was&&q.p>=q.g)toast('ภารกิจสำเร็จ: '+MISS[id].n);}
@@ -817,10 +818,10 @@ function mergeStatic(root){
 /* resolution follows the device: if frames take too long the picture renders at fewer pixels, then
    creeps back up when there is headroom. Strong phones stay sharp, weaker ones stay smooth. */
 const GFX={
-  auto:{n:'อัตโนมัติ',d:'ปรับความละเอียดตามความแรงของเครื่องเอง (แนะนำ)'},
-  low:{n:'ประหยัด',d:'ลื่นที่สุด ภาพหยาบลง ไฟน้อยลง ไม่มีฟิล์มเกรน',dpr:.75,pl:3,sl:1},
-  mid:{n:'สมดุล',d:'ความละเอียดปกติ ไฟครบเกือบทั้งหมด',dpr:1,pl:5,sl:2},
-  high:{n:'สวยสุด',d:'คมชัดเต็มจอ ไฟครบ เหมาะกับเครื่องแรง',dpr:2,pl:8,sl:2},
+  auto:{n:'อัตโนมัติ',d:'ปรับตามเครื่อง (แนะนำ)'},
+  low:{n:'ประหยัด',d:'ลื่นสุด ภาพหยาบ',dpr:.75,pl:3,sl:1},
+  mid:{n:'สมดุล',d:'ภาพปกติ',dpr:1,pl:5,sl:2},
+  high:{n:'สวยสุด',d:'คมสุด สำหรับเครื่องแรง',dpr:2,pl:8,sl:2},
 };
 const gfxMode=()=>GFX[P.opts.gfx]?P.opts.gfx:'auto';
 const DPR_MAX=Math.min(devicePixelRatio||1,1.75),DPR_MIN=Math.min(DPR_MAX,.7);
@@ -1036,18 +1037,18 @@ const SKINS={
     const B=[['TrafficBarrier_1',-2.6,0],['Pallet',-1.2,.2],['TrafficBarrier_2',.1,0],['Pallet_Broken',1.4,-.1],['TrafficBarrier_1',2.8,.05]];
     B.forEach(([n,x,r])=>{const o=place(n,x,0,0,r+(n.startsWith('Pallet')?Math.PI/2:0));if(o&&n.startsWith('Pallet')){o.rotation.z=Math.PI/2-.25;o.position.y=.6;}});
     place('Wheels_Stack',-3.9,0,.3,.4);place('CinderBlock',.9,0,.35,.3);place('CinderBlock',1.3,0,.3,-.2);place('CinderBlock',1.1,.23,.32,.1);}},
-  fence:{n:'รั้วเหล็กกั้นฝูงชน',cost:200,d:'รั้วกั้นฝูงชนสามชุดเรียงเต็มถนน',b(){fenceRun(-3.6,3.6,0,3);}},
-  pallets:{n:'กำแพงพาเลทไม้',cost:250,d:'พาเลทตั้งเรียงค้ำด้วยอิฐบล็อก',b(){for(let x=-3.2,i=0;x<=3.3;x+=1.07,i++){const o=place(i%3===1?'Pallet_Broken':'Pallet',x,0,0,Math.PI/2+rnd(-.08,.08));if(o){o.rotation.z=Math.PI/2-.12;o.position.y=.6;}}
+  fence:{n:'รั้วเหล็ก',cost:200,d:'รั้วเหล็ก 3 ชุด',b(){fenceRun(-3.6,3.6,0,3);}},
+  pallets:{n:'พาเลทไม้',cost:250,d:'พาเลทค้ำอิฐ',b(){for(let x=-3.2,i=0;x<=3.3;x+=1.07,i++){const o=place(i%3===1?'Pallet_Broken':'Pallet',x,0,0,Math.PI/2+rnd(-.08,.08));if(o){o.rotation.z=Math.PI/2-.12;o.position.y=.6;}}
     for(const x of [-2.15,1.05])place('CinderBlock',x,0,.25,.2);}},
-  barriers:{n:'แผงกั้นจราจรล้วน',cost:250,d:'แผงลายแดงขาวเรียงสองแบบสลับกัน',b(){for(let x=-3.2,i=0;x<=3.3;x+=1.3,i++)place(i%2?'TrafficBarrier_2':'TrafficBarrier_1',x,0,i%2?-.1:0,rnd(-.04,.04));}},
-  tires:{n:'แนวยางรถยนต์',cost:300,d:'ยางรถกองเป็นแนวกำแพง',b(){for(let x=-3.3,i=0;x<=3.4;x+=.9,i++)place(i%2?'Debris_Tires':'Wheels_Stack',x,0,i%2?-.05:0,rnd(0,6),i%2?.85:.95);}},
-  barrels:{n:'แนวถังน้ำมัน',cost:350,d:'ถังน้ำมันสองแถวสลับกัน',b(){for(let x=-3.4,i=0;x<=3.5;x+=.62,i++)place('Barrel',x,0,i%2?-.25:.05,rnd(0,6),.95);}},
-  crates:{n:'กำแพงลังไม้',cost:400,d:'ลังไม้ซ้อนสองชั้น',b(){for(let x=-3.2,i=0;x<=3.3;x+=.95,i++){place('Crate',x,0,0,rnd(-.1,.1),.85);if(i%2===0)place('Crate',x+rnd(-.05,.05),.68,-.02,rnd(-.2,.2),.7);}}},
-  checkpoint:{n:'ด่านกระสอบทราย',cost:600,d:'กระสอบทรายสองชั้น รั้วเหล็กเต็มช่องกลาง',b(){
+  barriers:{n:'แผงจราจร',cost:250,d:'แผงแดงขาว',b(){for(let x=-3.2,i=0;x<=3.3;x+=1.3,i++)place(i%2?'TrafficBarrier_2':'TrafficBarrier_1',x,0,i%2?-.1:0,rnd(-.04,.04));}},
+  tires:{n:'ยางรถ',cost:300,d:'กองยางรถ',b(){for(let x=-3.3,i=0;x<=3.4;x+=.9,i++)place(i%2?'Debris_Tires':'Wheels_Stack',x,0,i%2?-.05:0,rnd(0,6),i%2?.85:.95);}},
+  barrels:{n:'ถังน้ำมัน',cost:350,d:'ถังน้ำมัน 2 แถว',b(){for(let x=-3.4,i=0;x<=3.5;x+=.62,i++)place('Barrel',x,0,i%2?-.25:.05,rnd(0,6),.95);}},
+  crates:{n:'ลังไม้',cost:400,d:'ลังซ้อน 2 ชั้น',b(){for(let x=-3.2,i=0;x<=3.3;x+=.95,i++){place('Crate',x,0,0,rnd(-.1,.1),.85);if(i%2===0)place('Crate',x+rnd(-.05,.05),.68,-.02,rnd(-.2,.2),.7);}}},
+  checkpoint:{n:'ด่านกระสอบทราย',cost:600,d:'กระสอบทราย + รั้วเหล็ก',b(){
     for(const s of [-1,1]){place('SackTrench',s*2.3,0,-.05,s<0?.05:Math.PI-.05,.55);place('SackTrench_Small',s*2.1,.42,-.08,s<0?-.08:Math.PI+.1,.55);}
     fenceRun(-1.05,1.05,-.1,1);
     place('Crate',-1.4,.78,-.05,.35,.5);place('Sign',1.35,.7,-.1,-.25,.55);}},
-  mixed:{n:'ป้อมเฉพาะกิจ',cost:700,d:'กระสอบทราย แผงจราจร พาเลท และถังน้ำมันรวมกัน',b(){
+  mixed:{n:'ป้อมผสม',cost:700,d:'ของหลายอย่างรวมกัน',b(){
     place('SackTrench_Small',-2.6,0,0,0,.6);place('SackTrench_Small',-2.6,.42,-.03,.1,.55);place('TrafficBarrier_2',-1,0,0,0);
     const o=place('Pallet',.35,0,0,Math.PI/2);if(o){o.rotation.z=Math.PI/2-.2;o.position.y=.6;}place('Barrel',1.45,0,-.05,.4,.95);place('Barrel',2.05,0,-.1,1.3,.9);
     place('TrafficBarrier_1',3.1,0,0,0);place('Wheels_Stack',-3.85,0,0,.4,.8);}},
@@ -1055,7 +1056,7 @@ const SKINS={
 // v2.19-2.20 skins were removed; anyone who bought one gets the coins back
 const OLD_SKIN_COST={traffic: 0, sandbag: 150, picket: 180, bamboo: 200, tires: 220, container: 450, pumpkin: 480, flowers: 500, spikes: 600, castle: 700, teddy: 1000, candy: 1100, ice: 1200, neon: 1400, pets: 1300, monsters: 1500, cake: 2200, rainbow: 2500, lava: 2800, gold: 3000};
 function refundOldSkins(){let back=0;const keep=[];for(const id of P.skins||[]){if(SKINS[id])keep.push(id);else back+=OLD_SKIN_COST[id==='cats'?'pets':id]||0;}
-  P.skins=keep.length?keep:['traffic'];if(!SKINS[P.skin])P.skin='traffic';if(back){P.coins+=back;save();setTimeout(()=>toast(`แนวกั้นแบบเก่าถูกถอดออก คืนเหรียญให้ ${fmt(back)} เหรียญ`,5000),1500);}}
+  P.skins=keep.length?keep:['traffic'];if(!SKINS[P.skin])P.skin='traffic';if(back){P.coins+=back;save();setTimeout(()=>toast(`คืนเหรียญแนวกั้นเก่า +${fmt(back)}`,4000),1500);}}
 let skinGrp=null;
 function buildSkin(id,parent=scene,z=BARR_Z){const g=new THREE.Group();g.position.set(0,0,z);parent.add(g);g.updateMatrixWorld(true);const prev=PLACE_TO;PLACE_TO=g;
   const n0=OBST.length;try{(SKINS[id]||SKINS.traffic).b();}catch(e){console.error(e);}PLACE_TO=prev;OBST.length=Math.min(OBST.length,n0);return g;}
@@ -1102,7 +1103,7 @@ const DECO={
 // v2.22 bought on tap with no preview; give those coins back once (the items stay owned)
 function refundDecoOnce(){if(P.decoRefunded)return;P.decoRefunded=1;let back=0;for(const id of P.decoOwn)back+=(DECO[id]||{}).c||0;
   for(const k of Object.keys(P.deco))if(!DECO_SLOTS.some(s=>s.id===k))delete P.deco[k];
-  if(back){P.coins+=back;setTimeout(()=>toast(`คืนเหรียญของตกแต่ง ${fmt(back)} เหรียญ (ของยังเป็นของคุณ) · ต่อไปกดดูตัวอย่างก่อนซื้อได้`,5500),2500);}save();}
+  if(back){P.coins+=back;setTimeout(()=>toast(`คืนเหรียญของตกแต่ง +${fmt(back)}`,4000),2500);}save();}
 let decoGrp=null,decoFires=[],decoTry=null; // decoTry: {slot,id} shown on the base but not bought yet
 function buildDeco(){
   if(decoGrp)scene.remove(decoGrp);for(const f of decoFires){const i=FIRES.indexOf(f);if(i>=0)FIRES.splice(i,1);}const nf=FIRES.length;
@@ -1135,17 +1136,17 @@ function decorate(sel=decoSel){
   const tryItem=wall?(wallTry&&{n:SKINS[wallTry].n,c:SKINS[wallTry].cost}):(decoTry&&DECO[decoTry.id]);
   let list='';
   if(wall)list=Object.entries(SKINS).map(([id,s])=>{const own=P.skins.includes(id),on=shown===id;
-    return `<button class="dcard wide${on?' on':''}" type="button" data-wall="${id}"><img src="${THUMB['skin_'+id]||''}" alt=""><b>${s.n}</b><small>${on&&!own?'กำลังดูตัวอย่าง':P.skin===id?'ใช้อยู่':own?'มีแล้ว':SV.coin+fmt(s.cost)}</small></button>`;}).join('');
+    return `<button class="dcard wide${on?' on':''}" type="button" data-wall="${id}"><img src="${THUMB['skin_'+id]||''}" alt=""><b>${s.n}</b><small>${on&&!own?'ตัวอย่าง':P.skin===id?'ใช้อยู่':own?'มีแล้ว':SV.coin+fmt(s.cost)}</small></button>`;}).join('');
   else if(S)list=Object.entries(DECO).filter(([,d])=>KSIZE[d.k]<=KSIZE[S.k]).sort((a,b)=>KSIZE[b[1].k]-KSIZE[a[1].k]||a[1].c-b[1].c).map(([id,d])=>{const own=P.decoOwn.includes(id),on=shown===id;
-    return `<button class="dcard${on?' on':''}" type="button" data-di="${id}"><img src="${THUMB['deco_'+id]||''}" alt=""><b>${d.n}</b><small>${on&&!own?'กำลังดูตัวอย่าง':cur===id?'วางอยู่':own?'มีแล้ว':SV.coin+d.c}</small></button>`;}).join('');
-  const head=wall?`<b>กำแพงหลัก</b><small>แตะเพื่อดูตัวอย่างบนฐาน</small>`:S?`<b>${S.n}</b><small>${S.k==='tall'?'วางของสูงได้':'วางของขนาดกลางได้'} · แตะเพื่อดูตัวอย่าง</small>`:'';
+    return `<button class="dcard${on?' on':''}" type="button" data-di="${id}"><img src="${THUMB['deco_'+id]||''}" alt=""><b>${d.n}</b><small>${on&&!own?'ตัวอย่าง':cur===id?'วางอยู่':own?'มีแล้ว':SV.coin+d.c}</small></button>`;}).join('');
+  const head=wall?`<b>กำแพง</b><small>แตะเพื่อดูตัวอย่าง</small>`:S?`<b>${S.n}</b><small>${S.k==='tall'?'ของสูง':'ของกลาง'}</small>`:'';
   const buy=tryItem?`<div class="dbuy"><span>ตัวอย่าง: <b>${tryItem.n}</b></span><button class="buy" type="button" id="dBuy" ${P.coins<tryItem.c?'disabled':''}>ซื้อ ${SV.coin}${fmt(tryItem.c)}</button><button class="sbtn" type="button" id="dCancel">ไม่เอา</button>${P.coins<tryItem.c?'<small class="dlack">เหรียญไม่พอ</small>':''}</div>`:'';
   show(`<div class="deco">
-    <div class="dtop"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>ตกแต่งฐาน</h2><button class="sbtn" type="button" id="dView">${decoPlayView?'มุมตกแต่ง':'มุมเล่นจริง'}</button><button class="sbtn${wall?' on':''}" type="button" id="dWall">เปลี่ยนกำแพง</button><span class="sp"></span>${coinTag()}</div>
+    <div class="dtop"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>ตกแต่งฐาน</h2><button class="sbtn" type="button" id="dView">${decoPlayView?'มุมแต่ง':'มุมเล่น'}</button><button class="sbtn${wall?' on':''}" type="button" id="dWall">กำแพง</button><span class="sp"></span>${coinTag()}</div>
     ${decoPlayView?'':DECO_SLOTS.map(s=>`<button class="dslot${s.id===sel?' sel':''}${P.deco[s.id]?' full':''}" type="button" data-slot="${s.id}" aria-label="${s.n}">${P.deco[s.id]?'':'+'}</button>`).join('')}
     <div class="dtray${list?' open':''}">${list?`${buy}<div class="dhead">${head}<span class="sp"></span>
       ${S&&cur&&!tryItem?`<button class="sbtn" type="button" id="dRot">หมุน ↻</button><button class="sbtn" type="button" id="dDel">เอาออก</button>`:''}<button class="sbtn" type="button" id="dClose">ปิด</button></div>
-      <div class="dkl">${list}</div>`:`<div class="dhint">${decoPlayView?'นี่คือภาพที่จะเห็นตอนเล่นจริง':'แตะวงกลมเพื่อวางของ หรือกด "เปลี่ยนกำแพง" · ดูตัวอย่างฟรี จ่ายเมื่อกดซื้อเท่านั้น'}</div>`}</div>
+      <div class="dkl">${list}</div>`:`<div class="dhint">${decoPlayView?'มุมตอนเล่นจริง':'แตะ + เพื่อวางของ'}</div>`}</div>
   </div>`,'deco');
   $('#back').onclick=()=>{SFX.ui();decoCancelTry();decoSel=null;decoPlayView=false;CAM.copy(BASE_CAM);shop('guns');};
   $('#dView').onclick=()=>{SFX.ui();decoPlayView=!decoPlayView;decorate(decoPlayView?null:sel);};
@@ -1491,13 +1492,13 @@ const allies=[];
 /* helpers you buy: each kills zombies in its own way, so they are worth the coins */
 const ALLY={
   // survivor: a marksman. picks off the zombie closest to the barricade from range
-  man:{n:'ผู้รอดชีวิต (มือปืน)',cost:500,up:[350,700],cd:[10,7.5,5],
-    d:l=>`ยิงซอมบี้ตัวที่ใกล้ที่สุดตายทันที ทุก ${ALLY.man.cd[l]} วิ${l>=2?' · ยิงบอสได้ (ลดคำ 1 คำ)':''}`,
+  man:{n:'ผู้รอดชีวิต',cost:500,up:[350,700],cd:[10,7.5,5],
+    d:l=>`ยิงตัวใกล้สุด ทุก ${ALLY.man.cd[l]} วิ${l>=2?' · ยิงบอสได้':''}`,
     nx:l=>`ทุก ${ALLY.man.cd[l]} วิ${l>=2?' + ยิงบอสได้':''}`},
   // dog: a guard. kills whatever is hitting the barricade and scares the ones around it
-  dog:{n:'สุนัขเฝ้ายาม (นักกัด)',cost:400,up:[300,600],cd:[9,7,5],stun:[0,1.5,2.5],
-    d:l=>`กัดซอมบี้ที่กำลังตีแนวกั้นตาย ทุก ${ALLY.dog.cd[l]} วิ${ALLY.dog.stun[l]?` · ตัวรอบ ๆ ตกใจหยุด ${ALLY.dog.stun[l]} วิ`:''}`,
-    nx:l=>`ทุก ${ALLY.dog.cd[l]} วิ${ALLY.dog.stun[l]?` + ขู่ตัวรอบ ๆ ${ALLY.dog.stun[l]} วิ`:''}`},
+  dog:{n:'สุนัขเฝ้ายาม',cost:400,up:[300,600],cd:[9,7,5],stun:[0,1.5,2.5],
+    d:l=>`กัดตัวที่ตีแนวกั้น ทุก ${ALLY.dog.cd[l]} วิ${ALLY.dog.stun[l]?` · ขู่ ${ALLY.dog.stun[l]} วิ`:''}`,
+    nx:l=>`ทุก ${ALLY.dog.cd[l]} วิ${ALLY.dog.stun[l]?` + ขู่ ${ALLY.dog.stun[l]} วิ`:''}`},
 };
 let allyCrate=null;
 function allyVisibility(){const [man,dog]=allies;if(man)man.obj.visible=P.allies.man>0;if(dog)dog.obj.visible=P.allies.dog>0;if(allyCrate)allyCrate.visible=P.allies.dog>0;}
@@ -1689,16 +1690,16 @@ function takeWord(short=false){
 }
 
 /* ---------------- night flow ---------------- */
-const MODS={horde:{n:'ฝูงใหญ่',d:'ซอมบี้มากกว่าปกติแต่เดินช้าลง'},rush:{n:'วิ่งพล่าน',d:'ซอมบี้วิ่งเร็วเต็มถนน'},blackout:{n:'ไฟดับ',d:'ไฟถนนดับหมด เหลือแค่ไฟฉาย'},fog:{n:'หมอกหนา',d:'มองเห็นได้แค่ระยะใกล้'}};
+const MODS={horde:{n:'ฝูงใหญ่',d:'เยอะแต่ช้า'},rush:{n:'วิ่งพล่าน',d:'วิ่งเร็ว'},blackout:{n:'ไฟดับ',d:'เหลือแค่ไฟฉาย'},fog:{n:'หมอกหนา',d:'เห็นแค่ใกล้ๆ'}};
 const ZSKY={a1:['dusk','night','day','rain','night','mist'],a2:['mist','dusk','snow','day','night','rain'],b1:['night','rain','dusk','snow','night','day'],b2:['day','dusk','night','mist','rain'],c1:['blood','night','rain','dusk','blood']};
 // a side goal on most nights: optional, pays extra coins, and changes how you want to play that night
 const CHAL={
-  clean:{n:'แม่นยำ',d:'ตอบผิดไม่เกิน 2 ครั้ง',ok:g=>g.wrongs<=2},
-  wall:{n:'กำแพงเหล็ก',d:'กำแพงเหลืออย่างน้อย 80%',ok:g=>g.wall/g.wallMax>=.8},
-  head:{n:'มือแม่น',d:'เฮดช็อตอย่างน้อย 4 ครั้ง',ok:g=>g.heads>=4},
-  combo:{n:'คอมโบ',d:'ทำคอมโบให้ถึง x8',ok:g=>g.best>=8},
-  nohint:{n:'ไม่พึ่งคำใบ้',d:'ไม่ใช้คำใบ้เลย',ok:g=>g.hints>=g.hints0},
-  fast:{n:'เร็วทันใจ',d:'ผ่านคืนนี้ภายใน 4 นาที',ok:g=>g.t<=240},
+  clean:{n:'แม่นยำ',d:'ผิดไม่เกิน 2',ok:g=>g.wrongs<=2},
+  wall:{n:'กำแพงเหล็ก',d:'แนวกั้นเหลือ 80%+',ok:g=>g.wall/g.wallMax>=.8},
+  head:{n:'มือแม่น',d:'เฮดช็อต 4 ครั้ง',ok:g=>g.heads>=4},
+  combo:{n:'คอมโบ',d:'คอมโบ x8',ok:g=>g.best>=8},
+  nohint:{n:'ไม่พึ่งคำใบ้',d:'ห้ามใช้คำใบ้',ok:g=>g.hints>=g.hints0},
+  fast:{n:'เร็วทันใจ',d:'ผ่านใน 4 นาที',ok:g=>g.t<=240},
 };
 const CHAL_KEYS=Object.keys(CHAL),CHAL_COINS=25;
 function nightInfo(k,i,mode){
@@ -1789,12 +1790,12 @@ function nextWave(){
   const boss=G.queue.find(t=>ZT[t]&&ZT[t].boss);
   const surv=G.mode==='survival',introBoss=boss&&boss!=='twins';
   if(!introBoss)banner(surv?'WAVE '+(G.wave+1):G.wave===G.W.length-1?(boss?'BOSS: '+ZT[boss].boss:'FINAL WAVE'):'WAVE '+(G.wave+1),
-    G.wave===0?(GUNS[P.gun].n+' · ')+(G.mode==='review'?'ทบทวนคำที่เคยพลาด':surv?ZONES[G.k].name+' · อยู่ให้รอดนานที่สุด':SCN[curScene].n+' · '+SKIES[G.sky].n+(G.mod?' · '+MODS[G.mod].n:'')+(G.chal?' · ภารกิจ: '+CHAL[G.chal].d:'')+(G.op?' · '+OPS[G.op].n:'')):'');
+    G.wave===0?(GUNS[P.gun].n+' · ')+(G.mode==='review'?'ทบทวน':surv?ZONES[G.k].name:SCN[curScene].n+' · '+SKIES[G.sky].n+(G.mod?' · '+MODS[G.mod].n:'')+(G.chal?' · ภารกิจ: '+CHAL[G.chal].d:'')+(G.op?' · '+OPS[G.op].n:'')):'');
   $('#hWave').textContent=G.op==='escort'?'คุ้มกัน':surv?`คลื่น ${G.wave+1}`:`คลื่น ${G.wave+1}/${G.W.length}`;
   if(boss){setTimeout(()=>SFX.groan(.35,true),900);
-    if(boss!=='twins'){G.queue.splice(G.queue.indexOf(boss),1);spawn(boss);const bz=live().find(z=>z.type===boss);if(bz){bz.obj.position.z=-22;bossIntro(bz,()=>banner('BOSS WAVE','ตอบให้ครบทุกคำเพื่อล้มบอส'));}}}
+    if(boss!=='twins'){G.queue.splice(G.queue.indexOf(boss),1);spawn(boss);const bz=live().find(z=>z.type===boss);if(bz){bz.obj.position.z=-22;bossIntro(bz,()=>banner('BOSS WAVE','ตอบครบทุกคำ'));}}}
 }
-const ZTIP={helmet:'Helmet Soldier: ต้องตอบ 2 คำ หมวกหลุดหลังคำแรก',porter:'Porter: ฆ่าได้แล้วได้เหรียญเพิ่ม 20',sign:'Sign Holder: ยิงแล้วแทบไม่ถอยจนกว่าป้ายจะหลุด',burnt:'Burnt: เดินเร็วกว่าปกติ',toxic:'Toxic: ตายแล้วทิ้งแอ่งพิษ ซอมบี้ที่เดินผ่านจะช้าลง',frost:'Frostbite: ตัวแข็ง ยิงแล้วแทบไม่ถอย',ghost:'Phantom: หายตัวเป็นช่วงๆ แต่ยังยิงได้',lava:'Magma Giant: แช่แข็งไม่ได้ ทุกคำที่เสียจะทิ้งไฟไว้บนถนน',dog:'Zombie Hound: วิ่งเร็วมาก ตัวเตี้ย ยิงให้ไว',leaper:'Leaper: กระโดดพุ่งเข้ามาทีละไกล',barrel:'Barrel Trooper: ต้องตอบ 3 คำ ถังหลุดหลังคำแรก',swarm:'Mini Swarm: มาทีละ 3 ตัว วิ่งเร็วแต่คำสั้น',golden:'Gold Thief: ยิงให้ทันก่อนมันหนี ได้ 40 เหรียญ',bloater:'Bloater: ตายแล้วระเบิดใส่ตัวข้างๆ อย่าให้ถึงเครื่องกีดขวาง',screamer:'Screamer: ถ้าปล่อยไว้นาน มันจะเร่งตัวอื่นให้เร็วขึ้น'};
+const ZTIP={helmet:'Helmet Soldier: 2 คำ',porter:'Porter: +20 เหรียญ',sign:'Sign Holder: ไม่ถอยจนป้ายหลุด',burnt:'Burnt: เดินเร็วกว่าปกติ',toxic:'Toxic: ทิ้งแอ่งพิษ',frost:'Frostbite: ยิงแล้วไม่ถอย',ghost:'Phantom: หายตัวได้',lava:'Magma Giant: แช่แข็งไม่ได้',dog:'Zombie Hound: เร็วมาก',leaper:'Leaper: กระโดดไกล',barrel:'Barrel Trooper: 3 คำ',swarm:'Mini Swarm: มา 3 ตัว',golden:'Gold Thief: ยิงก่อนหนี +40',bloater:'Bloater: ตายแล้วระเบิด',screamer:'Screamer: เร่งตัวอื่น'};
 function spawnAt(type,x,zz){const T=ZT[type],ws=Array.from({length:T.words},()=>takeWord(type==='runner'||T.short));const z=makeZombie(type,ws,x,zz);if(z){z.speed*=G.speedMul;renderTag(z);}return z;}
 function spawn(type){
   if(type==='twins'){const a=spawnAt('twinR',-1.8,SPAWN_Z),b=spawnAt('twinB',1.8,SPAWN_Z-1);if(a&&b){a.twin=b;b.twin=a;}if(!target)setTarget(nearest());return;}
@@ -1807,10 +1808,10 @@ function spawn(type){
 }
 /* ---------------- special nights: every fifth night (3, 8, 13 ...) plays differently ---------------- */
 const OPS={
-  escort:{n:'คุ้มกันรถบัส',d:'ยันไว้จนรถบัสรับคนครบ แถบจะหยุดเมื่อมีซอมบี้ถึงแนวกั้น'},
-  rescue:{n:'ช่วยผู้รอดชีวิต',d:'ผู้รอดชีวิตจะวิ่งฝ่าซอมบี้มา ห้ามยิงโดน รอให้พ้นแนวยิงก่อนค่อยตอบ'},
-  ammo:{n:'กระสุนจำกัด',d:'กระสุนมีจำกัดทั้งคืน ตอบผิดเสีย 1 นัด เก็บลังกระสุนที่ซอมบี้ทิ้งไว้'},
-  roof:{n:'ยิงจากหลังคา',d:'ซอมบี้มาเป็นฝูงใหญ่ แต่คุณอยู่บนหลังคา ได้ระเบิดเพิ่ม 2 ลูก'},
+  escort:{n:'คุ้มกันรถบัส',d:'ยันจนรถบัสเต็ม'},
+  rescue:{n:'ช่วยผู้รอดชีวิต',d:'ห้ามยิงโดนคน'},
+  ammo:{n:'กระสุนจำกัด',d:'ผิดเสีย 1 นัด'},
+  roof:{n:'ยิงจากหลังคา',d:'ฝูงใหญ่ +2 ระเบิด'},
 };
 const OP_KEYS=['escort','rescue','ammo','roof'],OP_FIRST=50;
 const isOpNight=i=>(i+1)%5===3;
@@ -1831,7 +1832,7 @@ function setupOp(){
 }
 let opTxt='';
 function opHud(){if(!G||!G.op)return;let name=OPS[G.op].n,f=null,t='';
-  if(G.op==='escort'){f=Math.min(1,G.opT/G.opNeed);t=live().some(z=>z.at)?'หยุด! ซอมบี้ถึงแนวกั้น':Math.round(f*100)+'%';}
+  if(G.op==='escort'){f=Math.min(1,G.opT/G.opNeed);t=live().some(z=>z.at)?'หยุด!':Math.round(f*100)+'%';}
   if(G.op==='rescue'){f=G.saved/G.survTotal;t=`ช่วยแล้ว ${G.saved}/${G.survTotal}`+(G.lostS?` · เสีย ${G.lostS}`:'');}
   if(G.op==='ammo')t=`สำรอง ${G.pool} นัด`;
   if(G.op==='roof')t=`ระเบิด ${G.gren} ลูก`;
@@ -1851,7 +1852,7 @@ function spawnSurvivor(){const m=MODELS.Characters_Shaun;if(!m)return;
 }
 function survDown(s,why){if(s.dead)return;s.dead=true;G.lostS++;s.el.textContent=why;s.el.classList.add('lost');s.mixer.stopAllAction();
   if(s.clips.Death){const a=s.mixer.clipAction(s.clips.Death);a.setLoop(THREE.LoopOnce);a.clampWhenFinished=true;a.play();}
-  s.gone=1.6;toast(why==='โดนยิง'?'ยิงโดนผู้รอดชีวิต! รอให้เขาพ้นแนวยิงก่อน':'ผู้รอดชีวิตถูกซอมบี้จับได้');opHud();}
+  s.gone=1.6;toast(why==='โดนยิง'?'ยิงโดนคน!':'เสียผู้รอดชีวิต');opHud();}
 // a survivor standing between you and the target takes the bullet instead
 function survInLine(z){if(!SURV.length||!z)return null;const cx=camera.position.x,cz=camera.position.z,zx=z.obj.position.x,zz=z.obj.position.z;
   for(const s of SURV){if(s.dead)continue;const p=s.obj.position;if(p.z<=zz+.3)continue;const t=(p.z-cz)/(zz-cz);if(t<=0||t>=1)continue;if(Math.abs(p.x-(cx+(zx-cx)*t))<.6)return s;}return null;}
@@ -1873,7 +1874,7 @@ function stepOps(dt){
       const p=s.obj.position;s.tT-=dt;if(s.tT<=0){s.tT=rnd(.8,1.6);s.tx=clamp(p.x+rnd(-2.4,2.4),-3.2,3.2);}
       const dx=clamp(s.tx-p.x,-1.6*dt,1.6*dt);p.x+=dx;p.z+=3.1*dt*TS;s.obj.rotation.y=Math.atan2(dx/dt||0,3.1)*.6;
       if(live().some(z=>!z.T.boss&&Math.hypot(z.obj.position.x-p.x,z.obj.position.z-p.z)<.8)){survDown(s,'โดนจับ');continue;}
-      if(p.z>=STOP_Z-.6){G.saved++;G.bonusCoins+=5;floatAt0('ช่วยได้แล้ว '+G.saved+'/'+G.survTotal);SFX.coin();scene.remove(s.obj);s.el.remove();SURV.splice(SURV.indexOf(s),1);}
+      if(p.z>=STOP_Z-.6){G.saved++;G.bonusCoins+=5;floatAt0('ช่วยได้ '+G.saved+'/'+G.survTotal);SFX.coin();scene.remove(s.obj);s.el.remove();SURV.splice(SURV.indexOf(s),1);}
     }
   }
   opHud();
@@ -1963,7 +1964,7 @@ function mgMark(w,ok){if(ok)G.hit.add(w.en);else G.miss.add(w.en);}
 // 1) match wires: connect English to Thai
 function mgMatch(){
   const ws=mgPool(4);const th=shuffle(ws);let sel=null,ok=0,done=0;
-  show(`<div class="card res mg"><h2>ต่อสายวิทยุ</h2><div class="zinfo">จับคู่คำอังกฤษกับความหมาย ก่อนหมดเวลา</div><div class="mgbar"><i id="mgT"></i></div>
+  show(`<div class="card res mg"><h2>ต่อสายวิทยุ</h2><div class="zinfo">จับคู่คำ</div><div class="mgbar"><i id="mgT"></i></div>
     <div class="mgcols">${ws.map((w,i)=>`<button class="mgb en" type="button" data-l="${i}">${esc(w.en)}</button><button class="mgb" type="button" data-r="${ws.indexOf(th[i])}">${esc(th[i].th)}</button>`).join('')}</div></div>`,'solid');
   const stop=mgTimer(22,()=>finish());
   const finish=()=>{stop();ws.forEach(w=>{if(!G.hit.has(w.en))mgMark(w,false);});mgReward(ok,ws.length,'ต่อสายวิทยุ');};
@@ -1978,7 +1979,7 @@ function mgCode(){
   let k=0,ok=0,cur='',over=false;
   const stop=mgTimer(30,()=>{over=true;mgReward(ok,ws.length,'ปลดล็อกลังเสบียง');});
   const draw=()=>{if(over)return;const w=ws[k],en=w.en.toLowerCase();
-    show(`<div class="card res mg"><h2>ปลดล็อกลังเสบียง</h2><div class="zinfo">รหัสที่ ${k+1}/${ws.length} · สะกดคำที่แปลว่า</div><div class="mgbar"><i id="mgT"></i></div>
+    show(`<div class="card res mg"><h2>ปลดล็อกลังเสบียง</h2><div class="zinfo">${k+1}/${ws.length} · สะกดคำ</div><div class="mgbar"><i id="mgT"></i></div>
       <div class="mgbig">${esc(w.th)}</div><div class="mgslots">${[...en].map((c,i)=>`<i>${i<cur.length?cur[i].toUpperCase():''}</i>`).join('')}</div>
       <div class="mgkeys">${shuffle([...en]).map((c,i)=>`<button class="key" type="button" data-c="${c}" data-i="${i}">${c}</button>`).join('')}</div></div>`,'solid');
     scr.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const c=b.dataset.c;
@@ -1993,7 +1994,7 @@ function mgTrue(){
   const ws=mgPool(10);let ok=0,n=0,cur=null,truth=false,over=false;
   const stop=mgTimer(18,()=>{over=true;mgReward(ok,Math.max(n,1),'ตรวจสอบเสบียง');});
   const draw=()=>{if(over)return;const w=ws[n%ws.length];truth=Math.random()<.5;const others=ws.filter(o=>!clash(o,w));if(!others.length)truth=true;const shown=truth?w:pick(others);cur=w;
-    show(`<div class="card res mg"><h2>ตรวจสอบเสบียง</h2><div class="zinfo">ป้ายตรงกันไหม ตอบให้ได้มากที่สุด · ถูก ${ok}</div><div class="mgbar"><i id="mgT"></i></div>
+    show(`<div class="card res mg"><h2>ตรวจสอบเสบียง</h2><div class="zinfo">ตรงกันไหม? · ถูก ${ok}</div><div class="mgbar"><i id="mgT"></i></div>
       <div class="mgbig">${esc(w.en)}<small>= ${esc(shown.th)} ?</small></div>
       <div class="mgrow"><button class="btn main" type="button" id="mgY">ถูก</button><button class="btn red" type="button" id="mgN">ผิด</button></div></div>`,'solid');
     const ans=a=>{n++;if(a===truth){ok++;mgMark(cur,true);SFX.coin();}else{mgMark(cur,false);SFX.jam();}draw();};
@@ -2005,8 +2006,8 @@ function mgListen(){
   if(!('speechSynthesis' in window))return mgMatch();
   const ws=mgPool(8);let k=0,ok=0;const R=5;
   const draw=()=>{const w=ws[k],opts=shuffle([w,...shuffle(ws.filter(x=>x!==w)).slice(0,2)]);
-    show(`<div class="card res mg"><h2>ดักฟังวิทยุ</h2><div class="zinfo">ฟังคำที่ได้ยิน แล้วเลือกความหมาย · ${k+1}/${R}</div>
-      <button class="btn" type="button" id="mgSay">${SV.say.replace('<svg','<svg style="width:20px;height:20px"')}ฟังอีกครั้ง</button>
+    show(`<div class="card res mg"><h2>ดักฟังวิทยุ</h2><div class="zinfo">ฟังแล้วเลือก · ${k+1}/${R}</div>
+      <button class="btn" type="button" id="mgSay">${SV.say.replace('<svg','<svg style="width:20px;height:20px"')}ฟังอีก</button>
       <div class="mgcards">${opts.map((o,i)=>`<button class="mgb" type="button" data-o="${i}">${esc(o.th)}</button>`).join('')}</div></div>`,'solid');
     const sayIt=()=>{const o=P.opts.voice;P.opts.voice=true;speak(w.en);P.opts.voice=o;};setTimeout(sayIt,250);$('#mgSay').onclick=sayIt;
     scr.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{if(b.dataset.done)return;scr.querySelectorAll('[data-o]').forEach(x=>x.dataset.done=1);const right=opts[+b.dataset.o]===w;b.classList.add(right?'ok':'bad');if(right){ok++;SFX.coin();}else SFX.jam();mgMark(w,right);
@@ -2015,37 +2016,37 @@ function mgListen(){
 }
 const MINIS=[mgMatch,mgCode,mgTrue,mgListen];
 function miniGame(){state='mini';SFX.perk();const f=MINIS[(G.i+G.wave+(G.k.charCodeAt(1)))%MINIS.length];
-  show(`<div class="card res mg"><h2>ภารกิจพิเศษ</h2><div class="zinfo">ช่วงพักระหว่างคลื่น ทำให้ได้ 75% ขึ้นไปรับเสบียงฟรี</div><button class="btn main" type="button" id="mgStart">เริ่ม</button></div>`,'solid');
+  show(`<div class="card res mg"><h2>ภารกิจพิเศษ</h2><div class="zinfo">ได้ 75% รับเสบียงฟรี</div><button class="btn main" type="button" id="mgStart">เริ่ม</button></div>`,'solid');
   $('#mgStart').onclick=()=>{audio();f();};}
 
 /* ---------------- supply drop between waves ---------------- */
 const PERKS=[
-  {id:'fix',n:'ซ่อมเครื่องกีดขวาง',d:'ฟื้นความทนทาน 40',ic:'wall',ok:()=>G.wall<G.wallMax,f(){G.wall=Math.min(G.wallMax,G.wall+40);}},
-  {id:'hint',n:'กล้องส่องเป้า',d:'คำใบ้ +2',ic:'scope',f(){G.hints+=2;}},
+  {id:'fix',n:'ซ่อมแนวกั้น',d:'+40',ic:'wall',ok:()=>G.wall<G.wallMax,f(){G.wall=Math.min(G.wallMax,G.wall+40);}},
+  {id:'hint',n:'กล้องส่อง',d:'คำใบ้ +2',ic:'scope',f(){G.hints+=2;}},
   {id:'gren',n:'ลังระเบิด',d:'ระเบิดมือ +1',ic:'gren',f(){G.gren++;}},
-  {id:'slow',n:'ยาพิษซอมบี้',d:'ซอมบี้ช้าลง 20% จนจบคืน',ic:'oil',ok:()=>G.slowMul>.7,f(){G.slowMul*=.8;}},
+  {id:'slow',n:'ยาพิษซอมบี้',d:'ช้าลง 20%',ic:'oil',ok:()=>G.slowMul>.7,f(){G.slowMul*=.8;}},
   {id:'coin',n:'ตู้เซฟ',d:'เหรียญคืนนี้ +50%',ic:'coin',f(){G.coinMul+=.5;}},
-  {id:'barrel',n:'ถังน้ำมัน',d:'ถังระเบิดเพิ่ม 2 ถังคลื่นหน้า',ic:'gren',f(){G.extraBarrels+=2;}},
-  {id:'shield',n:'โล่ไฟฟ้า',d:'15 วินาทีแรกของคลื่นหน้า เครื่องกีดขวางไม่เสียหาย',ic:'wall',f(){G.shieldT=15;}},
-  {id:'mag',n:'แม็กขยาย',d:'กระสุนต่อแม็ก +50% จนจบคืน',ic:'ammo',f(){G.mag=Math.round(G.mag*1.5);G.ammo=G.mag;G.reloadT=0;}},
-  {id:'adr',n:'เข็มอะดรีนาลีน',d:'เติมเกจอะดรีนาลีนเต็ม',ic:'scope',f(){G.adr=ADR_NEED-1;}},
+  {id:'barrel',n:'ถังน้ำมัน',d:'+2 ถังคลื่นหน้า',ic:'gren',f(){G.extraBarrels+=2;}},
+  {id:'shield',n:'โล่ไฟฟ้า',d:'กัน 15 วิ คลื่นหน้า',ic:'wall',f(){G.shieldT=15;}},
+  {id:'mag',n:'แม็กขยาย',d:'กระสุน +50%',ic:'ammo',f(){G.mag=Math.round(G.mag*1.5);G.ammo=G.mag;G.reloadT=0;}},
+  {id:'adr',n:'อะดรีนาลีน',d:'เติมเต็ม',ic:'scope',f(){G.adr=ADR_NEED-1;}},
 ];
 function perkPick(){
   state='perk';SFX.perk();
   const opts=shuffle(PERKS.filter(p=>!p.ok||p.ok())).slice(0,3);
-  show(`<div class="card res" style="width:min(760px,100%)"><h2 style="font-size:44px">เสบียงมาถึง</h2><div class="zinfo">ผ่านคลื่นที่ ${G.wave+1} แล้ว เลือกของ 1 อย่าง</div>
+  show(`<div class="card res" style="width:min(760px,100%)"><h2 style="font-size:44px">เสบียงมาถึง</h2><div class="zinfo">เลือก 1 อย่าง</div>
     <div class="perks">${opts.map((p,i)=>`<button class="perk" type="button" data-p="${i}"><span class="ic">${p.ic==='coin'?SV.coin:SV[p.ic]}</span><b>${p.n}</b><small>${p.d}</small></button>`).join('')}</div></div>`,'solid');
   scr.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{opts[+b.dataset.p].f();SFX.coin();scr.hidden=true;state='play';last=performance.now();hud();nextWave();});
 }
 
 /* ---------------- adrenaline: a streak of right answers slows time ---------------- */
 const ADR_NEED=8;
-function adrenaline(){G.slow=6;G.adr=0;banner('ADRENALINE','ซอมบี้ช้าลง 6 วินาที');SFX.adr();quest('adr');$('#slowfx').hidden=false;}
+function adrenaline(){G.slow=6;G.adr=0;banner('ADRENALINE','ช้าลง 6 วิ');SFX.adr();quest('adr');$('#slowfx').hidden=false;}
 
 /* ---------------- ammo ---------------- */
 function startReload(){
   if(!G||G.reloadT>0||G.ammo>=G.mag)return;const g=GUNS[P.gun];
-  if(G.op==='ammo'&&G.pool<=0){if(G.ammo<=0&&G.t-(G.ammoTip??-9)>4){G.ammoTip=G.t;toast('กระสุนหมด! ปัดหน้าจอใช้อาวุธระยะประชิด หรือแตะลังกระสุน');}return;}
+  if(G.op==='ammo'&&G.pool<=0){if(G.ammo<=0&&G.t-(G.ammoTip??-9)>4){G.ammoTip=G.t;toast('กระสุนหมด! ใช้มีด หรือเก็บลัง');}return;}
   G.reloadT=g.reload;sample(g.rs,.9,{offset:g.rs==='reload_shotgun'?0:.35,dur:g.reload+.2})||SFX.jam();
   if(gunObj)gunObj.userData.dip=1;hud();
 }
@@ -2219,12 +2220,12 @@ function bumpTag(z){if(!z.tag)return;z.tag.classList.remove('hit');void z.tag.of
 
 /* ---------------- knife: swipe across a zombie at the barricade ---------------- */
 const MELEE={
-  knife:{n:'มีด',m:'Knife',cost:0,d:'เบา คูลดาวน์สั้น',cd:3.5,push:2.6,stun:1.2,cut:1,scale:.55},
+  knife:{n:'มีด',m:'Knife',cost:0,d:'ใช้ถี่',cd:3.5,push:2.6,stun:1.2,cut:1,scale:.55},
   bat:{n:'ไม้หนามเหล็ก',m:'WoodenBat_Barbed',cost:300,d:'ตีกระเด็นไกล',cd:4,push:4.2,stun:1.5,cut:1,scale:.36},
   axe:{n:'ขวาน',m:'Axe',cost:700,d:'ตัดตัวเลือกผิด 2 ข้อ',cd:4.5,push:2,stun:1.6,cut:2,scale:.36},
   spear:{n:'หอก',m:'Spear',cost:900,d:'แทงได้ไกล',cd:3.5,push:3,stun:1.2,cut:1,reach:7,scale:.3},
   guitar:{n:'กีตาร์หนาม',m:'Guitar',cost:1500,d:'ฟาดทุกตัว มึนนาน',cd:4.5,push:2.5,stun:3,cut:1,all:true,scale:.3},
-  saw:{n:'ไม้เลื่อย',m:'WoodenBat_Saw',cost:1200,d:'ฟาดทุกตัวใกล้ๆ',cd:4,push:3,stun:2.5,cut:1,all:true,scale:.34},
+  saw:{n:'ไม้เลื่อย',m:'WoodenBat_Saw',cost:1200,d:'ฟาดทุกตัว',cd:4,push:3,stun:2.5,cut:1,all:true,scale:.34},
 };
 Object.assign(MELEE.knife,{d:'ปาได้ไกล',anim:'throw',dur:.45,hit:.38,proj:true,spin:true,speed:26,reach:13,push:1.4});
 Object.assign(MELEE.bat,{anim:'swing',dur:.55,hit:.42,bonk:true});
@@ -2363,7 +2364,7 @@ function hud(){
   $('#ammoBar').style.width=(G.reloadT>0?(1-G.reloadT/GUNS[P.gun].reload)*100:G.ammo/G.mag*100)+'%';$('#ammoBtn').classList.toggle('rl',G.reloadT>0);
   $('#adrBar').style.width=(G.slow>0?G.slow/6*100:G.adr/ADR_NEED*100)+'%';
   $('#adrN').textContent=G.slow>0?'ช้า!':G.adr+'/'+ADR_NEED;$('#adrRow').classList.toggle('full',G.slow>0);
-  if(G.adr>=1&&!P.seenZ.includes('adrTip')){P.seenZ.push('adrTip');save();toast(`⬆ อะดรีนาลีน: ตอบถูก ${ADR_NEED} ครั้ง ซอมบี้จะเดินช้าลง 6 วิ`,4500).style.top='calc(84px + var(--safe-t))';}
+  if(G.adr>=1&&!P.seenZ.includes('adrTip')){P.seenZ.push('adrTip');save();toast(`⬆ ถูก ${ADR_NEED} ครั้ง = ช้าลง 6 วิ`,3500).style.top='calc(84px + var(--safe-t))';}
 }
 const DECOY='etaoinshrdlucmfwypvbgk';
 // four answers for the targeted zombie, made once per word so switching targets back and forth keeps them stable
@@ -2475,11 +2476,11 @@ function settings(tab=setTab){
   const slider=k=>`<div class="sld"><input type="range" min="0" max="100" step="5" value="${vol(k)}" data-v="${k}" aria-label="${k}"><output id="v_${k}">${vol(k)}</output></div>`;
   const pages={
     gfx:row('คุณภาพกราฟิก',GFX[g].d,seg('data-g',Object.entries(GFX).map(([id,o])=>[id,o.n]),g))
-      +row('เฟรมเรตสูงสุด',dispHz?`จอเครื่องนี้รีเฟรชได้ประมาณ ${dispHz>100?120:dispHz>75?90:60} Hz`:'',seg('data-cap',[[30,'30'],[60,'60'],[120,'120']],cap))
-      +row('แสดง FPS','มุมซ้ายล่างของจอ',sw('oF',P.opts.fps)),
-    snd:row('เสียงหลัก','',slider('master'))+row('เสียงเอฟเฟกต์','ปืน ซอมบี้ ระเบิด',slider('sfx'))+row('เสียงบรรยากาศ','ลม ฝน',slider('amb'))+row('เสียงอ่านคำศัพท์','อ่านคำภาษาอังกฤษเมื่อตอบถูก',slider('voice')),
-    play:row('วิธีตอบ','เลือกคำตอบ = ง่าย · สะกดคำ = ยาก',seg('data-m',[['choice','เลือกคำตอบ'],['spell','สะกดคำ']],P.mode)),
-    about:row('มีอะไรใหม่',`v${VERSION} · ${VERSION_DATE}`,`<button class="sbtn${fresh?' dot':''}" type="button" id="newsBtn">ดู</button>`)+row('เครดิต','โมเดล 3D: Quaternius และ Kenney (CC0)',''),
+      +row('เฟรมเรตสูงสุด',dispHz?`จอ ${dispHz>100?120:dispHz>75?90:60} Hz`:'',seg('data-cap',[[30,'30'],[60,'60'],[120,'120']],cap))
+      +row('แสดง FPS','',sw('oF',P.opts.fps)),
+    snd:row('เสียงหลัก','',slider('master'))+row('เอฟเฟกต์','',slider('sfx'))+row('บรรยากาศ','',slider('amb'))+row('อ่านคำ','',slider('voice')),
+    play:row('วิธีตอบ','',seg('data-m',[['choice','เลือก (ง่าย)'],['spell','สะกด (ยาก)']],P.mode)),
+    about:row('มีอะไรใหม่',`v${VERSION} · ${VERSION_DATE}`,`<button class="sbtn${fresh?' dot':''}" type="button" id="newsBtn">ดู</button>`)+row('เครดิต','Quaternius, Kenney (CC0)',''),
   };
   const tabs=[['gfx','กราฟิก'],['snd','เสียง'],['play','การเล่น'],['about','อื่น ๆ']];
   show(`<div class="card set" style="width:min(720px,100%);max-height:100%">
@@ -2509,7 +2510,7 @@ function zoneMap(k){
   show(`<div class="card" style="height:100%">
     <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>เลือกพื้นที่</h2><span class="sp"></span>${coinTag()}</div>
     ${zoneTabs(k,'data-z')}
-    <div class="zinfo">${Z.lvl} · ${Z.nights.length} คืน · ★ ${zoneStars(k)}/${Z.nights.length*3} · เลขสีแดงคือคืนบอส · เลขสีเหลืองคือคืนพิเศษ</div>
+    <div class="zinfo">${Z.lvl} · ${Z.nights.length} คืน · ★ ${zoneStars(k)}/${Z.nights.length*3} · <b style="color:var(--blood)">แดง</b>=บอส · <b style="color:var(--amber)">เหลือง</b>=พิเศษ</div>
     <div class="scroll" id="mapScroll">${html}</div></div>`);
   $('#back').onclick=home;
   scr.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{SFX.ui();zoneMap(b.dataset.z);});
@@ -2525,10 +2526,10 @@ function brief(k,i,mode='night'){
   const boss=!rev&&isBossNight(i);
   show(`<div class="card" style="max-height:100%">
     <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>${rev?'ทบทวน':'คืนที่ '+(i+1)}</h2><span class="zinfo">${rev?'คำที่เคยพลาด':esc(ZONES[k].name+' · '+ZONES[k].nights[i].unit)}${boss?' · <b style="color:var(--blood)">มีบอส</b>':''}</span><span class="sp"></span></div>
-    ${rev?'':(()=>{const ni=nightInfo(k,i,mode);return `<div class="chips"><span class="chip">${SCN[ni.scene].n}</span><span class="chip">${SKIES[ni.sky].n}</span>${ni.mod?`<span class="chip warn">${MODS[ni.mod].n}: ${MODS[ni.mod].d} · เหรียญ +30%</span>`:''}${ni.op?`<span class="chip op">คืนพิเศษ · ${OPS[ni.op].n}: ${OPS[ni.op].d}${P.opsDone.includes(k+':'+i)?'':` · ผ่านครั้งแรก +${OP_FIRST} เหรียญ`}</span>`:''}${ni.chal?`<span class="chip">ภารกิจเสริม: ${CHAL[ni.chal].d} · +${CHAL_COINS} เหรียญ</span>`:''}</div>`;})()}
-    <div class="zinfo">${CHOICE()?'ซอมบี้แต่ละตัวมีคำไทยติดอยู่ เลือกคำภาษาอังกฤษที่ตรงกันเพื่อยิง':'ซอมบี้แต่ละตัวมีคำไทยติดอยู่ กดตัวอักษรเรียงเป็นคำภาษาอังกฤษให้ถูกเพื่อยิง'} ทำความรู้จักคำของคืนนี้ก่อน · ปัดนิ้วผ่านซอมบี้ที่เข้ามาใกล้เพื่อปาดมีด · ตอบเร็วได้เฮดช็อต</div>
+    ${rev?'':(()=>{const ni=nightInfo(k,i,mode);return `<div class="chips"><span class="chip">${SCN[ni.scene].n}</span><span class="chip">${SKIES[ni.sky].n}</span>${ni.mod?`<span class="chip warn">${MODS[ni.mod].n} · +30%</span>`:''}${ni.op?`<span class="chip op">${OPS[ni.op].n}: ${OPS[ni.op].d}${P.opsDone.includes(k+':'+i)?'':` · +${OP_FIRST}`}</span>`:''}${ni.chal?`<span class="chip">${CHAL[ni.chal].d} · +${CHAL_COINS}ญ</span>`:''}</div>`;})()}
+    <div class="zinfo">${CHOICE()?'เลือกคำอังกฤษให้ตรงเพื่อยิง':'สะกดคำอังกฤษเพื่อยิง'}</div>
     <div class="scroll"><div class="wlist">${ws.map(w=>wordRow(w,LEARNED.has(w.en)?'ok':'')).join('')}</div></div>
-    <div class="row"><button class="btn main" type="button" id="go">${SV.play.replace('<svg','<svg style="width:18px;height:18px"')}เริ่มป้องกัน</button></div></div>`,'solid');
+    <div class="row"><button class="btn main" type="button" id="go">${SV.play.replace('<svg','<svg style="width:18px;height:18px"')}เริ่ม</button></div></div>`,'solid');
   $('#back').onclick=()=>rev?home():zoneMap(k);
   $('#go').onclick=()=>{audio();SFX.ui();if(matchMedia('(pointer:coarse)').matches){try{document.documentElement.requestFullscreen?.().then(()=>screen.orientation?.lock?.('landscape').catch(()=>{})).catch(()=>{});}catch(e){}}startNight(k,i,mode);};
   bindSay();
@@ -2544,9 +2545,9 @@ function survBrief(k){
   const ws=survWords(k).fresh;
   show(`<div class="card" style="max-height:100%">
     <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>เอาชีวิตรอด</h2><span class="sp"></span>${zoneTabs(k,'data-z')}</div>
-    <div class="zinfo">ซอมบี้มาไม่หยุด แต่ละคลื่นยากขึ้น ได้เสบียงทุกคลื่น ใช้คำจากคืนที่ปลดล็อกแล้วในพื้นที่นี้ (${ws.length} คำ) · สถิติดีที่สุด <b style="color:var(--amber)">${P.best[k]||0}</b> คลื่น</div>
+    <div class="zinfo">${ws.length} คำ · สถิติ <b style="color:var(--amber)">${P.best[k]||0}</b> คลื่น</div>
     <div class="scroll"><div class="wlist">${ws.slice(0,40).map(w=>wordRow(w,LEARNED.has(w.en)?'ok':'')).join('')}</div></div>
-    <div class="row"><button class="btn main" type="button" id="go">${SV.play.replace('<svg','<svg style="width:18px;height:18px"')}เริ่มเอาชีวิตรอด</button></div></div>`,'solid');
+    <div class="row"><button class="btn main" type="button" id="go">${SV.play.replace('<svg','<svg style="width:18px;height:18px"')}เริ่ม</button></div></div>`,'solid');
   $('#back').onclick=home;
   scr.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{SFX.ui();P.zone=b.dataset.z;save();setZone(P.zone);survBrief(P.zone);});
   $('#go').onclick=()=>{audio();SFX.ui();startNight(k,0,'survival');};
@@ -2557,7 +2558,7 @@ function daily(){
   const ri=rankOf(P.xp);
   show(`<div class="card" style="width:min(640px,100%)">
     <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>ภารกิจวันนี้</h2><span class="sp"></span>${coinTag()}</div>
-    <div class="zinfo">เข้าเล่นติดกัน ${P.daily.streak} วัน · ยศ ${RANKS[ri][1]} · ภารกิจใหม่ทุกวัน</div>
+    <div class="zinfo">ติดกัน ${P.daily.streak} วัน · ${RANKS[ri][1]}</div>
     <div class="dlist">${P.daily.list.map((q,i)=>{const M=MISS[q.id],done=q.p>=q.g;return `<div class="dq ${q.c?'claimed':''}"><div class="tx"><b>${M.n} ${q.g}${M.u?' '+M.u:''}</b><span class="rbar"><i style="width:${Math.min(100,q.p/q.g*100).toFixed(0)}%"></i></span><small>${Math.min(q.p,q.g)}/${q.g}</small></div>${q.c?'<span class="buy own">รับแล้ว</span>':done?`<button class="buy" type="button" data-c="${i}">${SV.coin}50</button>`:`<span class="buy own" style="opacity:.5">${SV.coin}50</span>`}</div>`;}).join('')}</div></div>`);
   $('#back').onclick=home;
   scr.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const q=P.daily.list[+b.dataset.c];if(q.c)return;q.c=true;P.coins+=50;addXP(30);save();SFX.coin();daily();});
@@ -2569,14 +2570,14 @@ function results(win,stars,coins){
   const Z=ZONES[G.k],hasNext=G.mode!=='review'&&win&&G.i<Z.nights.length-1;
   show(`<div class="card res" style="max-height:100%">
     <h2 class="${win||G.mode==='survival'?'win':'lose'}">${G.mode==='survival'?'รอดได้ '+G.wave+' คลื่น':win?'รอดแล้ว':'แนวป้องกันแตก'}</h2>
-    ${G.mode==='survival'?`<div class="zinfo">${G.newBest?'<b style="color:var(--amber)">สถิติใหม่!</b> ':''}สถิติดีที่สุด ${P.best[G.k]||0} คลื่น</div>`:''}
+    ${G.mode==='survival'?`<div class="zinfo">${G.newBest?'<b style="color:var(--amber)">สถิติใหม่!</b> ':''}สถิติ ${P.best[G.k]||0} คลื่น</div>`:''}
     ${win&&G.mode!=='review'?`<div class="stars">${[0,1,2].map(i=>SV.star.replace('<svg',`<svg class="${i<stars?'on':'off'}" style="animation-delay:${.15+i*.15}s"`)).join('')}</div>`:''}
-    ${G.op?`<div class="zinfo">คืนพิเศษ · ${OPS[G.op].n}${G.op==='rescue'?` · ช่วยได้ ${G.saved}/${G.survTotal} คน`:''}${G.opFirst?` · <b style="color:var(--amber)">ผ่านครั้งแรก +${OP_FIRST} เหรียญ</b>`:''}</div>`:''}
-    ${G.chal&&win?`<div class="zinfo">ภารกิจเสริม · ${CHAL[G.chal].n}: ${CHAL[G.chal].d} · ${G.chalOK?`<b style="color:var(--toxic)">สำเร็จ +${CHAL_COINS} เหรียญ</b>`:'<b style="color:var(--blood)">ไม่สำเร็จ</b>'}</div>`:''}
-    <div class="stats"><div><b>${G.kills}</b>ซอมบี้</div><div><b>${fmt(G.score)}</b>คะแนน</div><div><b>x${G.best}</b>คอมโบสูงสุด</div><div><b style="color:var(--amber)">+${coins}</b>เหรียญ</div><div><b style="color:var(--toxic)">+${G.xp}</b>XP</div><div><b>${G.heads}</b>เฮดช็อต</div></div>
+    ${G.op?`<div class="zinfo">${OPS[G.op].n}${G.op==='rescue'?` · ช่วย ${G.saved}/${G.survTotal}`:''}${G.opFirst?` · <b style="color:var(--amber)">+${OP_FIRST}</b>`:''}</div>`:''}
+    ${G.chal&&win?`<div class="zinfo">${CHAL[G.chal].d} · ${G.chalOK?`<b style="color:var(--toxic)">+${CHAL_COINS}</b>`:'<b style="color:var(--blood)">ไม่สำเร็จ</b>'}</div>`:''}
+    <div class="stats"><div><b>${G.kills}</b>ซอมบี้</div><div><b>${fmt(G.score)}</b>คะแนน</div><div><b>x${G.best}</b>คอมโบ</div><div><b style="color:var(--amber)">+${coins}</b>เหรียญ</div><div><b style="color:var(--toxic)">+${G.xp}</b>XP</div><div><b>${G.heads}</b>เฮดช็อต</div></div>
     <div class="scroll" style="width:100%"><div class="wlist">${missed.map(w=>wordRow(w,'bad')).join('')}${got.map(w=>wordRow(w,'ok')).join('')}</div></div>
-    ${missed.length?`<div class="zinfo">คำสีแดงคือคำที่สะกดผิดหรือใช้คำใบ้ จะกลับมาให้ทบทวนอีก</div>`:''}
-    <div class="row">${hasNext?`<button class="btn main" type="button" id="rNext">คืนต่อไป</button>`:''}<button class="btn ${hasNext?'':'main'}" type="button" id="rAgain">${win?'เล่นอีกครั้ง':'ลองใหม่'}</button><button class="btn" type="button" id="rHome">เมนู</button></div></div>`,'solid');
+    ${missed.length?`<div class="zinfo">คำสีแดง = ต้องทบทวน</div>`:''}
+    <div class="row">${hasNext?`<button class="btn main" type="button" id="rNext">คืนต่อไป</button>`:''}<button class="btn ${hasNext?'':'main'}" type="button" id="rAgain">${win?'เล่นอีก':'ลองใหม่'}</button><button class="btn" type="button" id="rHome">เมนู</button></div></div>`,'solid');
   const g=G;
   if($('#rNext'))$('#rNext').onclick=()=>{SFX.ui();brief(g.k,g.i+1);};
   $('#rAgain').onclick=()=>{SFX.ui();if(g.mode==='night')brief(g.k,g.i);else startNight(g.k,g.i,g.mode);};
@@ -2585,7 +2586,7 @@ function results(win,stars,coins){
 }
 function pause(){
   if(state!=='play')return;state='paused';
-  show(`<div class="card res" style="width:min(420px,100%)"><h2>PAUSED</h2><div class="row"><button class="btn main" type="button" id="pRes">เล่นต่อ</button><button class="btn" type="button" id="pQuit">ออกจากคืนนี้</button></div></div>`,'solid');
+  show(`<div class="card res" style="width:min(420px,100%)"><h2>PAUSED</h2><div class="row"><button class="btn main" type="button" id="pRes">เล่นต่อ</button><button class="btn" type="button" id="pQuit">ออก</button></div></div>`,'solid');
   $('#pRes').onclick=resume;$('#pQuit').onclick=()=>{SFX.ui();home();};
 }
 function resume(){if(state!=='paused')return;state='play';scr.hidden=true;last=performance.now();}
@@ -2596,23 +2597,23 @@ function shop(tab){
   if(tab==='guns')body=Object.entries(GUNS).map(([id,g])=>{const own=P.owned.includes(id),eq=P.gun===id;
     return `<div class="it"><span class="ic">${THUMB[id]?`<img src="${THUMB[id]}" alt="">`:SV.gun}</span><span class="tx"><b>${g.n}</b><small>${g.d} · ${g.mag} นัด</small></span>${eq?'<span class="buy eq">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-eq="${id}">ใช้</button>`:`<button class="buy" type="button" data-gun="${id}" ${P.coins<g.cost?'disabled':''}>${SV.coin}${fmt(g.cost)}</button>`}</div>`;}).join('');
   else if(tab==='ally')body=Object.entries(ALLY).map(([id,a])=>{const lv=P.allies[id],max=lv>=3;
-    const desc=lv?a.d(lv-1)+(max?'':`<br><span style="color:var(--toxic)">ขั้นถัดไป: ${a.nx(lv)}</span>`):a.d(0);
+    const desc=lv?a.d(lv-1)+(max?'':`<br><span style="color:var(--toxic)">ถัดไป: ${a.nx(lv)}</span>`):a.d(0);
     const price=lv?a.up[lv-1]:a.cost;
     return `<div class="it"><span class="ic">${THUMB['ally_'+id]?`<img src="${THUMB['ally_'+id]}" alt="">`:SV.wall}</span><span class="tx"><b>${a.n}${lv?' · ขั้น '+lv:''}</b><small>${desc}</small><span class="lv">${[1,2,3].map(i=>`<i class="${i<=lv?'on':''}"></i>`).join('')}</span></span>${max?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" data-ally="${id}" ${P.coins<price?'disabled':''}>${lv?'':'ซื้อ '}${SV.coin}${fmt(price)}</button>`}</div>`;}).join('');
   else if(tab==='melee')body=Object.entries(MELEE).map(([id,w])=>{const own=P.ownedMelee.includes(id),eq=P.melee===id,th=THUMB['m_'+id];
-    return `<div class="it"><span class="ic">${th?`<img src="${th}" alt="">`:SV.knife}</span><span class="tx"><b>${w.n}</b><small>${w.d} · ทุก ${w.cd} วิ</small></span>${eq?'<span class="buy eq">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-meq="${id}">ใช้</button>`:`<button class="buy" type="button" data-mel="${id}" ${P.coins<w.cost?'disabled':''}>${SV.coin}${fmt(w.cost)}</button>`}</div>`;}).join('');
+    return `<div class="it"><span class="ic">${th?`<img src="${th}" alt="">`:SV.knife}</span><span class="tx"><b>${w.n}</b><small>${w.d} · ${w.cd} วิ</small></span>${eq?'<span class="buy eq">ใช้อยู่</span>':own?`<button class="buy own" type="button" data-meq="${id}">ใช้</button>`:`<button class="buy" type="button" data-mel="${id}" ${P.coins<w.cost?'disabled':''}>${SV.coin}${fmt(w.cost)}</button>`}</div>`;}).join('');
   else body=Object.entries(UPG).map(([id,u])=>{const lv=P.up[id],max=lv>=u.cost.length;
     return `<div class="it"><span class="ic">${SV[u.ic]}</span><span class="tx"><b>${u.n}</b><small>${u.d}</small><span class="lv">${u.cost.map((_,i)=>`<i class="${i<lv?'on':''}"></i>`).join('')}</span></span>${max?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" data-up="${id}" ${P.coins<u.cost[lv]?'disabled':''}>${SV.coin}${fmt(u.cost[lv])}</button>`}</div>`;}).join('')
-    +`<div class="it"><span class="ic">${SV.gren}</span><span class="tx"><b>ระเบิดมือ</b><small>ฆ่าซอมบี้รอบเป้าหมายทั้งหมด (มี ${P.gren}/${GREN_MAX})</small></span>${P.gren>=GREN_MAX?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" id="bGren" ${P.coins<GREN_COST?'disabled':''}>${SV.coin}${GREN_COST}</button>`}</div>`;
+    +`<div class="it"><span class="ic">${SV.gren}</span><span class="tx"><b>ระเบิดมือ</b><small>ระเบิดวงกว้าง · ${P.gren}/${GREN_MAX}</small></span>${P.gren>=GREN_MAX?'<span class="buy own">เต็มแล้ว</span>':`<button class="buy" type="button" id="bGren" ${P.coins<GREN_COST?'disabled':''}>${SV.coin}${GREN_COST}</button>`}</div>`;
   show(`<div class="card" style="max-height:100%">
-    <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>คลังแสง</h2><div class="tabs"><button class="tab" type="button" data-t="guns" aria-pressed="${tab==='guns'}">อาวุธ</button><button class="tab" type="button" data-t="skin" aria-pressed="false">ตกแต่งฐาน</button><button class="tab" type="button" data-t="melee" aria-pressed="${tab==='melee'}">ประชิด</button><button class="tab" type="button" data-t="ally" aria-pressed="${tab==='ally'}">ผู้ช่วย</button><button class="tab" type="button" data-t="up" aria-pressed="${tab==='up'}">อัปเกรดและของใช้</button></div><span class="sp"></span>${coinTag()}</div>
+    <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>คลังแสง</h2><div class="tabs"><button class="tab" type="button" data-t="guns" aria-pressed="${tab==='guns'}">อาวุธ</button><button class="tab" type="button" data-t="skin" aria-pressed="false">แต่งฐาน</button><button class="tab" type="button" data-t="melee" aria-pressed="${tab==='melee'}">ประชิด</button><button class="tab" type="button" data-t="ally" aria-pressed="${tab==='ally'}">ผู้ช่วย</button><button class="tab" type="button" data-t="up" aria-pressed="${tab==='up'}">อัปเกรด</button></div><span class="sp"></span>${coinTag()}</div>
     <div class="scroll">${tab==='skin'?body:`<div class="grid">${body}</div>`}</div></div>`);
   $('#back').onclick=home;
   scr.querySelectorAll('[data-skin]').forEach(b=>b.onclick=()=>{P.skin=b.dataset.skin;save();equipSkin();barricadeLook();SFX.ui();shop('skin');});
   scr.querySelectorAll('[data-sbuy]').forEach(b=>b.onclick=()=>{const id=b.dataset.sbuy,s=SKINS[id];if(P.coins<s.cost||P.skins.includes(id))return;P.coins-=s.cost;P.skins.push(id);P.skin=id;save();equipSkin();barricadeLook();SFX.coin();toast('ได้แนวกั้น '+s.n+' แล้ว!');shop('skin');});
   scr.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{SFX.ui();shop(b.dataset.t);});
   scr.querySelectorAll('[data-gun]').forEach(b=>b.onclick=()=>{const id=b.dataset.gun,g=GUNS[id];if(P.coins<g.cost)return;P.coins-=g.cost;P.owned.push(id);P.gun=id;save();SFX.coin();toast('ได้ '+g.n+' แล้ว');shop('guns');});
-  scr.querySelectorAll('[data-ally]').forEach(b=>b.onclick=()=>{const id=b.dataset.ally,a=ALLY[id],lv=P.allies[id],price=lv?a.up[lv-1]:a.cost;if(lv>=3||P.coins<price)return;P.coins-=price;P.allies[id]=lv+1;save();SFX.coin();toast(lv?a.n+' อัปเกรดเป็นขั้น '+(lv+1):'ได้ '+a.n+' แล้ว');allyVisibility();shop('ally');});
+  scr.querySelectorAll('[data-ally]').forEach(b=>b.onclick=()=>{const id=b.dataset.ally,a=ALLY[id],lv=P.allies[id],price=lv?a.up[lv-1]:a.cost;if(lv>=3||P.coins<price)return;P.coins-=price;P.allies[id]=lv+1;save();SFX.coin();toast(lv?a.n+' ขั้น '+(lv+1):'ได้ '+a.n+' แล้ว');allyVisibility();shop('ally');});
   scr.querySelectorAll('[data-mel]').forEach(b=>b.onclick=()=>{const id=b.dataset.mel,w=MELEE[id];if(P.coins<w.cost)return;P.coins-=w.cost;P.ownedMelee.push(id);P.melee=id;save();SFX.coin();toast('ได้ '+w.n+' แล้ว');shop('melee');});
   scr.querySelectorAll('[data-meq]').forEach(b=>b.onclick=()=>{P.melee=b.dataset.meq;save();SFX.ui();shop('melee');});
   scr.querySelectorAll('[data-eq]').forEach(b=>b.onclick=()=>{P.gun=b.dataset.eq;save();SFX.ui();shop('guns');});
@@ -2623,8 +2624,8 @@ function wordBook(k){
   state='menu';const Z=ZONES[k];
   show(`<div class="card" style="height:100%">
     <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>สมุดคำศัพท์</h2>${zoneTabs(k,'data-z')}</div>
-    <input class="search" id="q" type="search" placeholder="ค้นหาคำ อังกฤษหรือไทย" autocomplete="off">
-    <div class="zinfo">${Z.lvl} · ยิงได้แล้ว ${Z.words.filter(w=>LEARNED.has(w.en)).length}/${Z.words.length} · ต้องทบทวน ${Z.words.filter(w=>WEAK.has(w.en)).length}</div>
+    <input class="search" id="q" type="search" placeholder="ค้นหาคำ" autocomplete="off">
+    <div class="zinfo">${Z.lvl} · รู้แล้ว ${Z.words.filter(w=>LEARNED.has(w.en)).length}/${Z.words.length} · ต้องทบทวน ${Z.words.filter(w=>WEAK.has(w.en)).length}</div>
     <div class="scroll"><div class="wlist" id="wl">${Z.words.map(w=>wordRow(w,WEAK.has(w.en)?'bad':LEARNED.has(w.en)?'ok':'')).join('')}</div></div></div>`);
   $('#back').onclick=home;
   scr.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{SFX.ui();wordBook(b.dataset.z);});
