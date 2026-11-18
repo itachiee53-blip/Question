@@ -244,6 +244,11 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .dkl{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
 .dcard{flex:none;width:96px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border-radius:10px;border:1px solid var(--line);background:#0d1612ee}
 .dcard img{width:70px;height:70px;object-fit:contain}.dcard b{font-size:13px;font-weight:500;white-space:nowrap}.dcard small{font-size:12px;color:var(--amber);display:inline-flex;align-items:center;gap:3px}.dcard small svg{width:12px;height:12px}
+.dcard.wide{width:150px}.dcard.wide img{width:140px;height:70px}
+.dbuy{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;padding:8px 12px;border-radius:12px;background:#f2b33d22;border:1px solid #f2b33d88}
+.dbuy span{font-size:15px}.dbuy .buy{font-size:18px}.dlack{color:var(--blood);font-size:12px}
+.sbtn.on{border-color:var(--toxic);color:var(--toxic)}
+@media (max-height:520px){.dtray{padding-top:4px}.dcard{width:76px;padding:4px 3px}.dcard img{width:50px;height:50px}.dcard.wide{width:120px}.dcard.wide img{width:110px;height:50px}.dcard b{font-size:12px}.dbuy{padding:4px 10px;margin-bottom:4px;gap:8px}.dbuy .buy{font-size:16px;padding:4px 10px}.dhead{margin-bottom:4px}.dhead small{display:none}}
 .dcard.on{border-color:var(--toxic);background:#1b2a14ee}.dcard.on small{color:var(--toxic)}.dcard:disabled{opacity:.45}
 .skgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
 .sk{display:flex;flex-direction:column;border-radius:12px;border:1px solid color-mix(in srgb,var(--rc) 55%,transparent);background:linear-gradient(180deg,color-mix(in srgb,var(--rc) 16%,#0d1612) 0%,#0d1612 60%);overflow:hidden;position:relative}
@@ -451,8 +456,12 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.22.0',VERSION_DATE='18 พ.ย. 2569';
+const VERSION='2.23.0',VERSION_DATE='18 พ.ย. 2569';
 const CHANGES=[
+  'ตกแต่งฐาน: แตะของแล้วดูตัวอย่างบนฐานก่อน จ่ายเหรียญเมื่อกด "ซื้อ" เท่านั้น · คืนเหรียญของตกแต่งที่ซื้อไปแล้วให้ (ของยังเป็นของคุณ)',
+  'เปลี่ยนกำแพงหลักได้ 9 แบบ: รั้วเหล็ก, พาเลทไม้, แผงจราจร, ยางรถ, ถังน้ำมัน, ลังไม้, กระสอบทราย, ป้อมเฉพาะกิจ (ดูตัวอย่างก่อนซื้อได้)',
+  'จุดวางของจัดใหม่ไม่ทับกัน · รั้วกลางของด่านกระสอบทรายเต็มสองข้าง',
+  'ผู้ช่วยเก่งขึ้น: ผู้รอดชีวิตยิงซอมบี้ที่ใกล้สุดตาย (ขั้น 3 ยิงบอสได้) · สุนัขกัดซอมบี้ที่ตีแนวกั้นตาย (ขั้น 2 ขึ้นไปขู่ตัวรอบ ๆ ให้หยุด)',
   'ตกแต่งฐานได้เอง! คลังแสง → ตกแต่งฐาน แตะวงกลมรอบแนวกั้น แล้วเลือกของ 22 อย่าง (ถังน้ำมัน ลังไม้ ยางรถ กองไฟ ธง ป้าย ไฟจราจร ฯลฯ) หมุนได้ เอาออกได้ ซื้อครั้งเดียววางได้ทุกช่อง',
   'ปุ่ม "มุมเล่นจริง" ดูได้ทันทีว่าตอนเล่นจะเห็นแบบไหน',
   'ถอดแนวกั้นแบบสะสม 22 แบบออก คืนเหรียญให้ทุกคนที่ซื้อไปแล้วอัตโนมัติ',
@@ -1000,16 +1009,25 @@ function freeX(x,z){for(let k=0;k<12&&blocked(x,z);k++)x=clamp(x+(x<0?.6:-.6),-3
 const STOP_Z=-4.4,BARR_Z=-3.4,SPAWN_Z=-31;
 /* ---------------- barricade skins: built from the same zombie-kit models as the original ---------------- */
 const SKINS={
-  traffic:{n:'ด่านจราจร',cost:0,d:'แนวกั้นดั้งเดิม แผงจราจรกับพาเลทไม้',b(){
+  traffic:{n:'ด่านจราจร',cost:0,d:'แนวกั้นดั้งเดิม',b(){
     const B=[['TrafficBarrier_1',-2.6,0],['Pallet',-1.2,.2],['TrafficBarrier_2',.1,0],['Pallet_Broken',1.4,-.1],['TrafficBarrier_1',2.8,.05]];
     B.forEach(([n,x,r])=>{const o=place(n,x,0,0,r+(n.startsWith('Pallet')?Math.PI/2:0));if(o&&n.startsWith('Pallet')){o.rotation.z=Math.PI/2-.25;o.position.y=.6;}});
     place('Wheels_Stack',-3.9,0,.3,.4);place('CinderBlock',.9,0,.35,.3);place('CinderBlock',1.3,0,.3,-.2);place('CinderBlock',1.1,.23,.32,.1);}},
-  checkpoint:{n:'ด่านกระสอบทราย',cost:600,d:'กระสอบทรายสองชั้น รั้วเหล็กกั้นตรงกลาง ถังน้ำมัน ยางรถ และลังเสบียง',b(){
-    for(const s of [-1,1]){place('SackTrench',s*2.25,0,-.05,s<0?.05:Math.PI-.05,.55);place('SackTrench_Small',s*2.05,.42,-.08,s<0?-.08:Math.PI+.1,.55);}
-    place('Fence_Long',0,0,-.15,0,.95);
-    place('Barrel',-3.55,0,.45,.5,.95);place('Debris_Tires',3.45,0,.4,.8,.9);
-    place('Crate',-1.35,.78,-.05,.35,.5);place('Sign',1.25,.7,-.1,-.25,.55);
-    place('TrafficCone_1',-.75,0,.45,.2,.85);place('TrafficCone_1',.8,0,.5,-.4,.85);}}
+  fence:{n:'รั้วเหล็กกั้นฝูงชน',cost:200,d:'รั้วเหล็กเรียงเต็มถนน',b(){for(let x=-3.3;x<=3.4;x+=1.32)place('Fence_Long',x,0,0,rnd(-.03,.03),1);}},
+  pallets:{n:'กำแพงพาเลทไม้',cost:250,d:'พาเลทตั้งเรียงค้ำด้วยอิฐบล็อก',b(){for(let x=-3.2,i=0;x<=3.3;x+=1.07,i++){const o=place(i%3===1?'Pallet_Broken':'Pallet',x,0,0,Math.PI/2+rnd(-.08,.08));if(o){o.rotation.z=Math.PI/2-.12;o.position.y=.6;}}
+    for(const x of [-2.15,1.05])place('CinderBlock',x,0,.25,.2);}},
+  barriers:{n:'แผงกั้นจราจรล้วน',cost:250,d:'แผงลายแดงขาวเรียงสองแบบสลับกัน',b(){for(let x=-3.2,i=0;x<=3.3;x+=1.3,i++)place(i%2?'TrafficBarrier_2':'TrafficBarrier_1',x,0,i%2?-.1:0,rnd(-.04,.04));}},
+  tires:{n:'แนวยางรถยนต์',cost:300,d:'ยางรถกองเป็นแนวกำแพง',b(){for(let x=-3.3,i=0;x<=3.4;x+=.9,i++)place(i%2?'Debris_Tires':'Wheels_Stack',x,0,i%2?-.05:0,rnd(0,6),i%2?.85:.95);}},
+  barrels:{n:'แนวถังน้ำมัน',cost:350,d:'ถังน้ำมันสองแถวสลับกัน',b(){for(let x=-3.4,i=0;x<=3.5;x+=.62,i++)place('Barrel',x,0,i%2?-.25:.05,rnd(0,6),.95);}},
+  crates:{n:'กำแพงลังไม้',cost:400,d:'ลังไม้ซ้อนสองชั้น',b(){for(let x=-3.2,i=0;x<=3.3;x+=.95,i++){place('Crate',x,0,0,rnd(-.1,.1),.85);if(i%2===0)place('Crate',x+rnd(-.05,.05),.68,-.02,rnd(-.2,.2),.7);}}},
+  checkpoint:{n:'ด่านกระสอบทราย',cost:600,d:'กระสอบทรายสองชั้น รั้วเหล็กเต็มช่องกลาง',b(){
+    for(const s of [-1,1]){place('SackTrench',s*2.3,0,-.05,s<0?.05:Math.PI-.05,.55);place('SackTrench_Small',s*2.1,.42,-.08,s<0?-.08:Math.PI+.1,.55);}
+    place('Fence_Long',-.62,0,-.1,0,.95);place('Fence_Long',.62,0,-.1,0,.95);
+    place('Crate',-1.4,.78,-.05,.35,.5);place('Sign',1.35,.7,-.1,-.25,.55);}},
+  mixed:{n:'ป้อมเฉพาะกิจ',cost:700,d:'กระสอบทราย แผงจราจร พาเลท และถังน้ำมันรวมกัน',b(){
+    place('SackTrench_Small',-2.6,0,0,0,.6);place('SackTrench_Small',-2.6,.42,-.03,.1,.55);place('TrafficBarrier_2',-1,0,0,0);
+    const o=place('Pallet',.35,0,0,Math.PI/2);if(o){o.rotation.z=Math.PI/2-.2;o.position.y=.6;}place('Barrel',1.45,0,-.05,.4,.95);place('Barrel',2.05,0,-.1,1.3,.9);
+    place('TrafficBarrier_1',3.1,0,0,0);place('Wheels_Stack',-3.85,0,0,.4,.8);}},
 };
 // v2.19-2.20 skins were removed; anyone who bought one gets the coins back
 const OLD_SKIN_COST={traffic: 0, sandbag: 150, picket: 180, bamboo: 200, tires: 220, container: 450, pumpkin: 480, flowers: 500, spikes: 600, castle: 700, teddy: 1000, candy: 1100, ice: 1200, neon: 1400, pets: 1300, monsters: 1500, cake: 2200, rainbow: 2500, lava: 2800, gold: 3000};
@@ -1018,7 +1036,7 @@ function refundOldSkins(){let back=0;const keep=[];for(const id of P.skins||[]){
 let skinGrp=null;
 function buildSkin(id,parent=scene,z=BARR_Z){const g=new THREE.Group();g.position.set(0,0,z);parent.add(g);g.updateMatrixWorld(true);const prev=PLACE_TO;PLACE_TO=g;
   const n0=OBST.length;try{(SKINS[id]||SKINS.traffic).b();}catch(e){console.error(e);}PLACE_TO=prev;OBST.length=Math.min(OBST.length,n0);return g;}
-function equipSkin(){if(skinGrp)scene.remove(skinGrp);skinGrp=buildSkin(SKINS[P.skin]?P.skin:'traffic');mergeStatic(skinGrp);}
+function equipSkin(id=P.skin){if(skinGrp)scene.remove(skinGrp);skinGrp=buildSkin(SKINS[id]?id:'traffic');mergeStatic(skinGrp);}
 function skinThumbs(){
   if(THUMB['skin_traffic'])return;
   const r=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});r.setSize(320,160);r.outputColorSpace=THREE.SRGBColorSpace;r.toneMapping=THREE.ACESFilmicToneMapping;
@@ -1027,15 +1045,13 @@ function skinThumbs(){
   for(const id of Object.keys(SKINS)){const g=buildSkin(id,sc,0);r.render(sc,cam);THUMB['skin_'+id]=r.domElement.toDataURL();sc.remove(g);}
   r.dispose();
 }
-/* ---------------- base decorating: tap a spot around the barricade, pick what goes there ---------------- */
-// spots are relative to the barricade line (z=0); front spots sit between the barricade and the player, clear of the survivor and the dog
+/* ---------------- base decorating: tap a spot, try things on for free, buy only when you like it ---------------- */
+// spots sit in the gaps the survivor (x -1.95) and the dog's crate (x 2.4) leave free, spaced so nothing overlaps
 const DECO_SLOTS=[
-  {id:'f1',n:'ซ้ายสุด',x:-3.1,z:.25,k:'mid'},{id:'f2',n:'กลางซ้าย',x:-.95,z:.3,k:'mid'},
-  {id:'f4',n:'กลางขวา',x:1.3,z:.3,k:'mid'},{id:'f5',n:'ขวาสุด',x:3.25,z:.25,k:'mid'},
-  {id:'b1',n:'หลังซ้าย',x:-2.1,z:-.8,k:'tall'},{id:'b2',n:'หลังขวา',x:2.1,z:-.8,k:'tall'},
+  {id:'f1',n:'หน้าซ้าย',x:-3.1,z:.55,k:'mid'},{id:'f2',n:'หน้ากลาง',x:-.55,z:.6,k:'mid'},{id:'f5',n:'หน้าขวา',x:3.25,z:.55,k:'mid'},
+  {id:'b1',n:'หลังซ้าย',x:-2.1,z:-.85,k:'tall'},{id:'b2',n:'หลังขวา',x:2.1,z:-.85,k:'tall'},
 ];
 const KSIZE={low:0,mid:1,tall:2};
-// k = how big the item is; a spot takes items up to its own size
 const DECO={
   cone:{n:'กรวยจราจร',k:'low',c:40,b(){place('TrafficCone_1',0,0,0,0,.9);}},
   cones:{n:'กรวยคู่',k:'low',c:60,b(){place('TrafficCone_1',-.22,0,0,.3,.85);place('TrafficCone_1',.25,0,.08,-.4,.75);}},
@@ -1044,27 +1060,33 @@ const DECO={
   bags:{n:'ถุงขยะ',k:'low',c:40,b(){place('TrashBag_1',-.15,0,0,0);place('TrashBag_1',.2,0,.1,1.3,.85);}},
   hydrant:{n:'หัวดับเพลิง',k:'low',c:70,b(){place('FireHydrant',0,0,0,.3);}},
   barrel:{n:'ถังน้ำมัน',k:'mid',c:80,b(){place('Barrel',0,0,0,.5,.9);}},
-  barrels:{n:'ถังน้ำมันคู่',k:'mid',c:120,b(){place('Barrel',-.3,0,0,.5,.85);place('Barrel',.3,0,.1,1.6,.8);}},
+  barrels:{n:'ถังน้ำมันคู่',k:'mid',c:120,b(){place('Barrel',-.28,0,0,.5,.82);place('Barrel',.28,0,.08,1.6,.78);}},
   gas:{n:'ถังแก๊ส',k:'mid',c:90,b(){place('GasTank',0,0,0,.4,.8);}},
   crate:{n:'ลังไม้',k:'mid',c:80,b(){place('Crate',0,0,0,.3,.75);}},
   crates:{n:'ลังไม้ซ้อน',k:'mid',c:130,b(){place('Crate',0,0,0,.2,.7);place('Crate',.05,.55,.02,.75,.55);}},
   boxes:{n:'กล่องกระดาษ',k:'mid',c:60,b(){place('CardboardBoxes_1',0,0,0,.4,.8);}},
   tires:{n:'ยางรถซ้อน',k:'mid',c:90,b(){place('Wheels_Stack',0,0,0,.6,.8);}},
-  tires2:{n:'ยางรถวางพิง',k:'mid',c:90,b(){place('Debris_Tires',0,0,0,.8,.8);}},
-  sandbag:{n:'กระสอบทราย',k:'mid',c:100,b(){place('SackTrench_Small',0,0,0,0,.55);}},
-  campfire:{n:'กองไฟ',k:'mid',c:150,b(){for(let i=0;i<6;i++){const a=i/6*Math.PI*2;place('CinderBlock',Math.cos(a)*.32,0,Math.sin(a)*.32,a,.45);}place('WoodPlanks',0,.05,0,.7,.6);fire(0,.1,0,.55);}},
+  tires2:{n:'ยางรถวางพิง',k:'mid',c:90,b(){place('Debris_Tires',0,0,0,.8,.75);}},
+  sandbag:{n:'กระสอบทราย',k:'mid',c:100,b(){place('SackTrench_Small',0,0,0,0,.45);}},
+  campfire:{n:'กองไฟ',k:'mid',c:150,b(){for(let i=0;i<6;i++){const a=i/6*Math.PI*2;place('CinderBlock',Math.cos(a)*.3,0,Math.sin(a)*.3,a,.42);}place('WoodPlanks',0,.05,0,.7,.55);fire(0,.1,0,.5);}},
   sign:{n:'ป้ายเตือน',k:'tall',c:100,b(){place('Sign',0,0,0,-.2,.9);}},
   townsign:{n:'ป้ายเมือง',k:'tall',c:140,b(){place('TownSign',0,0,0,0,.6);}},
   light:{n:'ไฟจราจร',k:'tall',c:160,b(){place('TrafficLight_1',0,0,0,0,.55);}},
   flag:{n:'ธงฐาน',k:'tall',c:120,b(){cy(0,0,0,.035,2.2,0x777777,6);const f=bx(.32,1.75,0,.62,.4,.02,0x3a6a2a);f.rotation.y=.15;bx(.32,1.83,.012,.16,.16,.01,0xf2c040).rotation.y=.15;}},
   fence:{n:'รั้วเหล็ก',k:'tall',c:110,b(){place('Fence_Long',0,0,0,0,.8);}},
-  sofa:{n:'โซฟาเก่า',k:'tall',c:130,b(){place('Sofa',0,0,0,Math.PI,.7);}},
+  sofa:{n:'โซฟาเก่า',k:'tall',c:130,b(){place('Sofa',0,0,0,Math.PI,.6);}},
 };
-let decoGrp=null,decoFires=[];
+// v2.22 bought on tap with no preview; give those coins back once (the items stay owned)
+function refundDecoOnce(){if(P.decoRefunded)return;P.decoRefunded=1;let back=0;for(const id of P.decoOwn)back+=(DECO[id]||{}).c||0;
+  for(const k of Object.keys(P.deco))if(!DECO_SLOTS.some(s=>s.id===k))delete P.deco[k];
+  if(back){P.coins+=back;setTimeout(()=>toast(`คืนเหรียญของตกแต่ง ${fmt(back)} เหรียญ (ของยังเป็นของคุณ) · ต่อไปกดดูตัวอย่างก่อนซื้อได้`,5500),2500);}save();}
+let decoGrp=null,decoFires=[],decoTry=null; // decoTry: {slot,id} shown on the base but not bought yet
 function buildDeco(){
-  if(decoGrp)scene.remove(decoGrp);for(const f of decoFires){const i=FIRES.indexOf(f);if(i>=0)FIRES.splice(i,1);}const nf=FIRES.length;decoGrp=new THREE.Group();decoGrp.position.set(0,0,BARR_Z);scene.add(decoGrp);decoGrp.updateMatrixWorld(true);
+  if(decoGrp)scene.remove(decoGrp);for(const f of decoFires){const i=FIRES.indexOf(f);if(i>=0)FIRES.splice(i,1);}const nf=FIRES.length;
+  decoGrp=new THREE.Group();decoGrp.position.set(0,0,BARR_Z);scene.add(decoGrp);decoGrp.updateMatrixWorld(true);
   const prev=PLACE_TO,n0=OBST.length;
-  for(const s of DECO_SLOTS){const id=P.deco[s.id];if(!DECO[id])continue;const g=new THREE.Group();g.position.set(s.x,0,s.z);g.rotation.y=(P.decoRot[s.id]||0)*Math.PI/4;decoGrp.add(g);g.updateMatrixWorld(true);
+  for(const s of DECO_SLOTS){const id=decoTry&&decoTry.slot===s.id?decoTry.id:P.deco[s.id];if(!DECO[id])continue;
+    const g=new THREE.Group();g.position.set(s.x,0,s.z);g.rotation.y=(P.decoRot[s.id]||0)*Math.PI/4;decoGrp.add(g);g.updateMatrixWorld(true);
     PLACE_TO=g;try{DECO[id].b();}catch(e){console.error(e);}}
   PLACE_TO=prev;OBST.length=Math.min(OBST.length,n0);decoFires=FIRES.slice(nf);
 }
@@ -1078,31 +1100,44 @@ function decoThumbs(){
     cam.position.set(c.x+s*.45,c.y+s*.4,c.z+s*1.05);cam.lookAt(c);r.render(sc,cam);THUMB['deco_'+id]=r.domElement.toDataURL();sc.remove(g);}
   PLACE_TO=prev;OBST.length=Math.min(OBST.length,n0);r.dispose();
 }
-/* the decorating screen: the real base in the 3D view, a marker on every spot, items in a tray at the bottom */
+/* the decorating screen: the real base in 3D, a marker on every spot, a tray of choices at the bottom */
 const DECO_CAM=new THREE.Vector3(0,3.1,.9),DECO_LOOK=new THREE.Vector3(0,.2,-3.6);
-let decoSel=null,decoPlayView=false;
+let decoSel=null,decoPlayView=false,wallTry=null;
+function decoCancelTry(){const had=decoTry||wallTry;decoTry=null;if(wallTry){wallTry=null;equipSkin();barricadeLook();}if(had)buildDeco();}
 function decorate(sel=decoSel){
-  state='deco';decoSel=sel;clearZombies();decoThumbs();CAM.copy(decoPlayView?BASE_CAM:DECO_CAM);
-  const S=DECO_SLOTS.find(s=>s.id===sel),cur=S&&P.deco[S.id];
-  const items=S?Object.entries(DECO).filter(([,d])=>KSIZE[d.k]<=KSIZE[S.k]).sort((a,b)=>KSIZE[b[1].k]-KSIZE[a[1].k]||a[1].c-b[1].c):[];
-  const card=(id,d)=>{const own=P.decoOwn.includes(id),on=cur===id;
-    return `<button class="dcard${on?' on':''}${own?'':' locked'}" type="button" data-di="${id}" ${!own&&P.coins<d.c?'disabled':''}><img src="${THUMB['deco_'+id]||''}" alt=""><b>${d.n}</b><small>${on?'วางอยู่':own?'มีแล้ว':SV.coin+d.c}</small></button>`;};
-  const base=Object.entries(SKINS).map(([id,s])=>{const have=P.skins.includes(id),eq=P.skin===id;
-    return `<button type="button" data-base="${id}" aria-pressed="${eq}" ${!have&&P.coins<s.cost?'disabled':''}>${s.n}${have?'':` · ${SV.coin}${fmt(s.cost)}`}</button>`;}).join('');
+  if(sel!==decoSel)decoCancelTry();
+  state='deco';decoSel=sel;clearZombies();decoThumbs();skinThumbs();CAM.copy(decoPlayView?BASE_CAM:DECO_CAM);
+  const wall=sel==='wall',S=!wall&&DECO_SLOTS.find(s=>s.id===sel),cur=S&&P.deco[S.id];
+  const shown=wall?(wallTry||P.skin):S?(decoTry&&decoTry.slot===S.id?decoTry.id:cur):null;
+  const tryItem=wall?(wallTry&&{n:SKINS[wallTry].n,c:SKINS[wallTry].cost}):(decoTry&&DECO[decoTry.id]);
+  let list='';
+  if(wall)list=Object.entries(SKINS).map(([id,s])=>{const own=P.skins.includes(id),on=shown===id;
+    return `<button class="dcard wide${on?' on':''}" type="button" data-wall="${id}"><img src="${THUMB['skin_'+id]||''}" alt=""><b>${s.n}</b><small>${on&&!own?'กำลังดูตัวอย่าง':P.skin===id?'ใช้อยู่':own?'มีแล้ว':SV.coin+fmt(s.cost)}</small></button>`;}).join('');
+  else if(S)list=Object.entries(DECO).filter(([,d])=>KSIZE[d.k]<=KSIZE[S.k]).sort((a,b)=>KSIZE[b[1].k]-KSIZE[a[1].k]||a[1].c-b[1].c).map(([id,d])=>{const own=P.decoOwn.includes(id),on=shown===id;
+    return `<button class="dcard${on?' on':''}" type="button" data-di="${id}"><img src="${THUMB['deco_'+id]||''}" alt=""><b>${d.n}</b><small>${on&&!own?'กำลังดูตัวอย่าง':cur===id?'วางอยู่':own?'มีแล้ว':SV.coin+d.c}</small></button>`;}).join('');
+  const head=wall?`<b>กำแพงหลัก</b><small>แตะเพื่อดูตัวอย่างบนฐาน</small>`:S?`<b>${S.n}</b><small>${S.k==='tall'?'วางของสูงได้':'วางของขนาดกลางได้'} · แตะเพื่อดูตัวอย่าง</small>`:'';
+  const buy=tryItem?`<div class="dbuy"><span>ตัวอย่าง: <b>${tryItem.n}</b></span><button class="buy" type="button" id="dBuy" ${P.coins<tryItem.c?'disabled':''}>ซื้อ ${SV.coin}${fmt(tryItem.c)}</button><button class="sbtn" type="button" id="dCancel">ไม่เอา</button>${P.coins<tryItem.c?'<small class="dlack">เหรียญไม่พอ</small>':''}</div>`:'';
   show(`<div class="deco">
-    <div class="dtop"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>ตกแต่งฐาน</h2><button class="sbtn" type="button" id="dView">${decoPlayView?'มุมตกแต่ง':'มุมเล่นจริง'}</button><span class="sp"></span>${coinTag()}</div>
-    <div class="dbase"><span>แนวกั้นหลัก</span><div class="sseg">${base}</div></div>
+    <div class="dtop"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>ตกแต่งฐาน</h2><button class="sbtn" type="button" id="dView">${decoPlayView?'มุมตกแต่ง':'มุมเล่นจริง'}</button><button class="sbtn${wall?' on':''}" type="button" id="dWall">เปลี่ยนกำแพง</button><span class="sp"></span>${coinTag()}</div>
     ${decoPlayView?'':DECO_SLOTS.map(s=>`<button class="dslot${s.id===sel?' sel':''}${P.deco[s.id]?' full':''}" type="button" data-slot="${s.id}" aria-label="${s.n}">${P.deco[s.id]?'':'+'}</button>`).join('')}
-    <div class="dtray${S?' open':''}">${S?`<div class="dhead"><b>${S.n}</b><small>${S.k==='tall'?'วางของสูงได้':S.k==='low'?'ช่องกลางวางได้แค่ของเตี้ย ไม่บังวิว':'วางของขนาดกลางได้'}</small><span class="sp"></span>
-      ${cur?`<button class="sbtn" type="button" id="dRot">หมุน ↻</button><button class="sbtn" type="button" id="dDel">เอาออก</button>`:''}<button class="sbtn" type="button" id="dClose">ปิด</button></div>
-      <div class="dkl">${items.map(([id,d])=>card(id,d)).join('')}</div>`:`<div class="dhint">${decoPlayView?'นี่คือภาพที่จะเห็นตอนเล่นจริง':'แตะวงกลมรอบแนวกั้นเพื่อเลือกว่าจะวางอะไร'}</div>`}</div>
+    <div class="dtray${list?' open':''}">${list?`${buy}<div class="dhead">${head}<span class="sp"></span>
+      ${S&&cur&&!tryItem?`<button class="sbtn" type="button" id="dRot">หมุน ↻</button><button class="sbtn" type="button" id="dDel">เอาออก</button>`:''}<button class="sbtn" type="button" id="dClose">ปิด</button></div>
+      <div class="dkl">${list}</div>`:`<div class="dhint">${decoPlayView?'นี่คือภาพที่จะเห็นตอนเล่นจริง':'แตะวงกลมเพื่อวางของ หรือกด "เปลี่ยนกำแพง" · ดูตัวอย่างฟรี จ่ายเมื่อกดซื้อเท่านั้น'}</div>`}</div>
   </div>`,'deco');
-  $('#back').onclick=()=>{SFX.ui();decoSel=null;decoPlayView=false;CAM.copy(BASE_CAM);shop('guns');};
+  $('#back').onclick=()=>{SFX.ui();decoCancelTry();decoSel=null;decoPlayView=false;CAM.copy(BASE_CAM);shop('guns');};
   $('#dView').onclick=()=>{SFX.ui();decoPlayView=!decoPlayView;decorate(decoPlayView?null:sel);};
+  $('#dWall').onclick=()=>{SFX.ui();decorate(wall?null:'wall');};
   scr.querySelectorAll('[data-slot]').forEach(b=>b.onclick=()=>{SFX.ui();decorate(b.dataset.slot===sel?null:b.dataset.slot);});
-  scr.querySelectorAll('[data-base]').forEach(b=>b.onclick=()=>{const id=b.dataset.base,s=SKINS[id];if(!P.skins.includes(id)){if(P.coins<s.cost)return;P.coins-=s.cost;P.skins.push(id);SFX.coin();}else SFX.ui();P.skin=id;save();equipSkin();barricadeLook();decorate(sel);});
-  scr.querySelectorAll('[data-di]').forEach(b=>b.onclick=()=>{const id=b.dataset.di,d=DECO[id];if(!P.decoOwn.includes(id)){if(P.coins<d.c)return;P.coins-=d.c;P.decoOwn.push(id);SFX.coin();}else SFX.ui();
-    P.deco[sel]=id;save();buildDeco();decorate(sel);});
+  // owned things go on straight away; others are only tried on until "ซื้อ"
+  scr.querySelectorAll('[data-wall]').forEach(b=>b.onclick=()=>{const id=b.dataset.wall;SFX.ui();
+    if(P.skins.includes(id)){wallTry=null;P.skin=id;save();}else wallTry=id;equipSkin(wallTry||P.skin);barricadeLook();decorate('wall');});
+  scr.querySelectorAll('[data-di]').forEach(b=>b.onclick=()=>{const id=b.dataset.di;SFX.ui();
+    if(P.decoOwn.includes(id)){decoTry=null;P.deco[sel]=id;save();}else decoTry={slot:sel,id};buildDeco();decorate(sel);});
+  if($('#dBuy'))$('#dBuy').onclick=()=>{
+    if(wallTry){const s=SKINS[wallTry];if(P.coins<s.cost)return;P.coins-=s.cost;P.skins.push(wallTry);P.skin=wallTry;wallTry=null;}
+    else if(decoTry){const d=DECO[decoTry.id];if(P.coins<d.c)return;P.coins-=d.c;P.decoOwn.push(decoTry.id);P.deco[decoTry.slot]=decoTry.id;decoTry=null;}
+    save();SFX.coin();toast('ซื้อแล้ว!');equipSkin();barricadeLook();buildDeco();decorate(sel);};
+  if($('#dCancel'))$('#dCancel').onclick=()=>{SFX.ui();decoCancelTry();decorate(sel);};
   if($('#dRot'))$('#dRot').onclick=()=>{P.decoRot[sel]=((P.decoRot[sel]||0)+1)%8;save();buildDeco();SFX.ui();};
   if($('#dDel'))$('#dDel').onclick=()=>{delete P.deco[sel];save();buildDeco();SFX.ui();decorate(sel);};
   if($('#dClose'))$('#dClose').onclick=()=>{SFX.ui();decorate(null);};
@@ -1119,7 +1154,7 @@ function buildWorld(){
     if(z-16<=-120){PLACE_TO=scene;mergeStatic(road);}
     const gl=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:0xffc070,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));gl.scale.setScalar(1.6);gl.position.set(s*1.95,6.25,z);scene.add(gl);LAMPS.push(gl);}
   // barricade: the skin the player picked
-  refundOldSkins();equipSkin();buildDeco();
+  refundOldSkins();refundDecoOnce();equipSkin();buildDeco();
   OBST=OBST.filter(o=>o.z0<STOP_Z-1); // the barricade itself is not something to walk around
   buildAllies();
 }
@@ -1430,12 +1465,16 @@ function setScene(k){
 
 /* ---------------- survivor and dog behind the barricade ---------------- */
 const allies=[];
-/* helpers you buy: they only slow zombies down, never kill or answer for you */
+/* helpers you buy: each kills zombies in its own way, so they are worth the coins */
 const ALLY={
-  man:{n:'ผู้รอดชีวิต',cost:500,up:[300,600],cd:[12,10,8],push:[1.5,1.8,2.2],
-    d:l=>`ยิงผลักซอมบี้ · ทุก ${ALLY.man.cd[l]} วิ`,nx:l=>`ทุก ${ALLY.man.cd[l]} วิ`},
-  dog:{n:'สุนัขเฝ้ายาม',cost:400,up:[250,500],cd:[16,13,10],stun:[1.5,2,2.5],
-    d:l=>`กัดให้หยุด ${ALLY.dog.stun[l]} วิ · ทุก ${ALLY.dog.cd[l]} วิ`,nx:l=>`หยุด ${ALLY.dog.stun[l]} วิ · ทุก ${ALLY.dog.cd[l]} วิ`},
+  // survivor: a marksman. picks off the zombie closest to the barricade from range
+  man:{n:'ผู้รอดชีวิต (มือปืน)',cost:500,up:[350,700],cd:[10,7.5,5],
+    d:l=>`ยิงซอมบี้ตัวที่ใกล้ที่สุดตายทันที ทุก ${ALLY.man.cd[l]} วิ${l>=2?' · ยิงบอสได้ (ลดคำ 1 คำ)':''}`,
+    nx:l=>`ทุก ${ALLY.man.cd[l]} วิ${l>=2?' + ยิงบอสได้':''}`},
+  // dog: a guard. kills whatever is hitting the barricade and scares the ones around it
+  dog:{n:'สุนัขเฝ้ายาม (นักกัด)',cost:400,up:[300,600],cd:[9,7,5],stun:[0,1.5,2.5],
+    d:l=>`กัดซอมบี้ที่กำลังตีแนวกั้นตาย ทุก ${ALLY.dog.cd[l]} วิ${ALLY.dog.stun[l]?` · ตัวรอบ ๆ ตกใจหยุด ${ALLY.dog.stun[l]} วิ`:''}`,
+    nx:l=>`ทุก ${ALLY.dog.cd[l]} วิ${ALLY.dog.stun[l]?` + ขู่ตัวรอบ ๆ ${ALLY.dog.stun[l]} วิ`:''}`},
 };
 let allyCrate=null;
 function allyVisibility(){const [man,dog]=allies;if(man)man.obj.visible=P.allies.man>0;if(dog)dog.obj.visible=P.allies.dog>0;if(allyCrate)allyCrate.visible=P.allies.dog>0;}
@@ -1462,13 +1501,16 @@ function stepAllies(dt){
   for(const a of allies){a.mixer.update(dt);if(a.busy>0){a.busy-=dt;if(a.busy<=0)allyPlay(a,a.idle);}}
   if(state!=='play'||!G)return;
   const lm=P.allies.man,ld=P.allies.dog;
-  // survivor: a shot that pushes the closest zombie back
-  if(man&&lm>0){G.manT-=dt;if(G.manT<=0){const t=live().filter(z=>z.obj.position.z>-14).sort((a,b)=>b.obj.position.z-a.obj.position.z)[0];
+  // survivor: shoots the zombie nearest the barricade; one shot kills it (or takes a word off a boss at level 3)
+  if(man&&lm>0){G.manT-=dt;if(G.manT<=0){const t=live().filter(z=>z.obj.position.z>-16&&(!z.T.boss||lm>=3)).sort((a,b)=>b.obj.position.z-a.obj.position.z)[0];
     if(t){G.manT=ALLY.man.cd[lm-1];allyPlay(man,'Punch',true);sample('pistol',.45)||SFX.shot('pistol');const from=new THREE.Vector3(-1.9,1.45,-3.3);muzzleFlash(from);
-      bullet(from,chest(t).clone(),140,()=>{if(zombies.includes(t)&&!t.dead){knock(t,ALLY.man.push[lm-1],.5);t.stunT=0;}},1);}else G.manT=.5;}}
-  // dog: pounces on a zombie that is attacking the barricade and holds it for a moment
-  if(dog&&ld>0){G.dogT-=dt;if(G.dogT<=0){const t=live().find(z=>z.at&&!(z.stunT>0));
-    if(t){G.dogT=ALLY.dog.cd[ld-1];allyPlay(dog,'Attack',true);SFX.bark();setTimeout(()=>{if(zombies.includes(t)&&!t.dead){t.stunT=ALLY.dog.stun[ld-1];blood(t);play(t,'HitReact',false,.05);floatAt(t,'ถูกกัด!','#ffb070');}},250);}else G.dogT=.5;}}
+      bullet(from,chest(t).clone(),140,()=>{if(!zombies.includes(t)||t.dead)return;blood(t);
+        if(t.T.boss||t.wi<t.words.length-1){t.wi=Math.min(t.wi+1,t.words.length-1);t.p=0;t.opts=null;renderTag(t);knock(t,1,.4);if(t===target)renderPad();floatAt(t,'ผู้รอดชีวิตยิง!','#a6e05a');hud();}
+        else{floatAt(t,'ผู้รอดชีวิตยิง!','#a6e05a');kill(t,false);}},1);}else G.manT=.5;}}
+  // dog: kills a zombie that is hitting the barricade; from level 2 the ones around it freeze in fright
+  if(dog&&ld>0){G.dogT-=dt;if(G.dogT<=0){const t=live().filter(z=>!z.T.boss&&(z.at||z.obj.position.z>STOP_Z-2.5)).sort((a,b)=>b.obj.position.z-a.obj.position.z)[0];
+    if(t){G.dogT=ALLY.dog.cd[ld-1];allyPlay(dog,'Attack',true);SFX.bark();setTimeout(()=>{if(!zombies.includes(t)||t.dead)return;blood(t);floatAt(t,'ถูกกัด!','#ffb070');kill(t,false);
+      const s=ALLY.dog.stun[ld-1];if(s)for(const o of live())if(Math.hypot(o.obj.position.x-t.obj.position.x,o.obj.position.z-t.obj.position.z)<2.5){o.stunT=s;o.hitT=Math.max(o.hitT||0,s);play(o,'HitReact',false,.05);}},250);}else G.dogT=.5;}}
 }
 
 /* ---------------- tappable things on the road: exploding barrels, medkits ---------------- */
