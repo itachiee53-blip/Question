@@ -370,8 +370,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.13.0',VERSION_DATE='17 พ.ย. 2569';
-const CHANGES=['คัตซีนเปิดเรื่องและเปิดแต่ละพื้นที่ มีกล้องบินและวิทยุเล่าเรื่อง','คัตซีนเปิดตัวบอส','มินิเกมหลังคลื่นแรก 4 แบบ: ต่อสายวิทยุ ปลดล็อกลังเสบียง ตรวจสอบเสบียง ดักฟังวิทยุ','เสียงฝนเบาลงอีก'];
+const VERSION='2.13.1',VERSION_DATE='17 พ.ย. 2569';
+const CHANGES=['เปลี่ยนชื่อบอสและซอมบี้พิเศษเป็นภาษาอังกฤษ'];
 
 /* ---------------- helpers ---------------- */
 const $=s=>document.querySelector(s);
@@ -457,19 +457,19 @@ const ZT={
   golden:{m:'Zombie_Basic',h:1.6,speed:2.4,anim:'Run',dps:0,words:1,coin:0,tint:[0xffd24a,0x5a3a00],loot:40,label:'ทอง',cls:'gold'},
   bloater:{m:'Zombie_Chubby',h:2.0,speed:.62,anim:'Walk',dps:5,words:1,coin:6,tint:[0xa6ff70,0x1e5a00],boom:true,label:'ระเบิด',cls:'bloat'},
   screamer:{m:'Zombie_Ribcage',h:1.75,speed:1,anim:'Walk',dps:4,words:1,coin:6,tint:[0xff7a6a,0x500000],scream:true,label:'กรีดร้อง',cls:'scream'},
-  giant:{m:'Zombie_Arm',h:3.4,speed:.55,anim:'Walk',dps:18,words:4,coin:30,boss:'ยักษ์เหลือง'},
-  behemoth:{m:'Zombie_Chubby',h:3.5,speed:.42,anim:'Walk',dps:22,words:5,coin:40,boss:'ยักษ์ถึก',tint:[0xd0a8a0,0x2a0500],charge:true},
-  mother:{m:'Zombie_Ribcage',h:3.3,speed:.34,anim:'Walk',dps:15,words:5,coin:40,boss:'แม่รัง',tint:[0xc8a0ff,0x220833],spawner:true},
-  truck:{m:'Vehicle_Truck_Armored',native:true,h:2.9,speed:.62,anim:null,dps:30,words:6,coin:50,boss:'รถบรรทุกซอมบี้',vehicle:true},
+  giant:{m:'Zombie_Arm',h:3.4,speed:.55,anim:'Walk',dps:18,words:4,coin:30,boss:'THE GRABBER'},
+  behemoth:{m:'Zombie_Chubby',h:3.5,speed:.42,anim:'Walk',dps:22,words:5,coin:40,boss:'THE RAMMER',tint:[0xd0a8a0,0x2a0500],charge:true},
+  mother:{m:'Zombie_Ribcage',h:3.3,speed:.34,anim:'Walk',dps:15,words:5,coin:40,boss:'HIVE QUEEN',tint:[0xc8a0ff,0x220833],spawner:true},
+  truck:{m:'Vehicle_Truck_Armored',native:true,h:2.9,speed:.62,anim:null,dps:30,words:6,coin:50,boss:'DEATH TRUCK',vehicle:true},
   dog:{m:'Characters_GermanShepherd',h:.85,speed:2.7,anim:'Run',atk:'Attack',dps:4,words:1,coin:4,tint:[0x7a8f62,0x2a0000],tagH:.9,short:true,label:'หมาซอมบี้',cls:'beast'},
   leaper:{m:'Zombie_Basic',h:1.75,speed:.9,anim:'Walk',dps:5,words:1,coin:5,tint:[0xa98ad8,0x1a0030],leap:true,label:'กระโดด',cls:'beast'},
   barrel:{m:'Zombie_Chubby',h:2,speed:.55,anim:'Walk',dps:8,words:3,coin:9,gear:'barrel',label:'เกราะถัง',cls:'armor'},
   mini:{m:'Zombie_Ribcage',h:1.05,speed:2.1,anim:'Run',dps:2,words:1,coin:2,short:true},
-  alphadog:{m:'Characters_GermanShepherd',h:2.3,speed:1.1,anim:'Run',atk:'Attack',dps:20,words:5,coin:45,boss:'จ่าฝูงหมาซอมบี้',tint:[0x5f7048,0x500000],leap:true,jumpAnim:'Run_Jump',tagH:2.3},
-  twinR:{m:'Zombie_Ribcage',h:2.8,speed:.55,anim:'Walk',dps:12,words:3,coin:30,boss:'แฝดนรก (แดง)',tint:[0xff6a5a,0x500000],twin:true},
-  twinB:{m:'Zombie_Ribcage',h:2.8,speed:.55,anim:'Walk',dps:12,words:3,coin:30,boss:'แฝดนรก (น้ำเงิน)',tint:[0x6aa0ff,0x001050],twin:true},
-  twins:{boss:'แฝดนรก',pseudo:true},
-  tank:{m:'Tank',native:true,scale:1.7,h:3.6,speed:.55,anim:null,dps:25,words:6,coin:55,boss:'รถถังซอมบี้',vehicle:true,artillery:true},
+  alphadog:{m:'Characters_GermanShepherd',h:2.3,speed:1.1,anim:'Run',atk:'Attack',dps:20,words:5,coin:45,boss:'ALPHA HOUND',tint:[0x5f7048,0x500000],leap:true,jumpAnim:'Run_Jump',tagH:2.3},
+  twinR:{m:'Zombie_Ribcage',h:2.8,speed:.55,anim:'Walk',dps:12,words:3,coin:30,boss:'BLOOD TWIN',tint:[0xff6a5a,0x500000],twin:true},
+  twinB:{m:'Zombie_Ribcage',h:2.8,speed:.55,anim:'Walk',dps:12,words:3,coin:30,boss:'FROST TWIN',tint:[0x6aa0ff,0x001050],twin:true},
+  twins:{boss:'BLOOD & FROST TWINS',pseudo:true},
+  tank:{m:'Tank',native:true,scale:1.7,h:3.6,speed:.55,anim:null,dps:25,words:6,coin:55,boss:'ROT TANK',vehicle:true,artillery:true},
   helmet:{m:'Zombie_Basic',h:1.75,speed:1,anim:'Walk',dps:5,words:2,coin:5,gear:'helmet',cls:'armor'},
   porter:{m:'Zombie_Basic',h:1.75,speed:.85,anim:'Walk',dps:5,words:2,coin:6,gear:'crate',cls:'armor',loot:20},
   sign:{m:'Zombie_Chubby',h:2,speed:.7,anim:'Walk',dps:7,words:2,coin:6,gear:'sign',cls:'armor'},
@@ -477,7 +477,7 @@ const ZT={
   toxic:{m:'Zombie_Basic',h:1.75,speed:.95,anim:'Walk',dps:5,words:1,coin:4,tint:[0xa8f080,0x0c3000],puddle:true,cls:'beast'},
   frost:{m:'Zombie_Ribcage',h:1.8,speed:.75,anim:'Walk',dps:5,words:1,coin:5,tint:[0xc0e4ff,0x061a33],heavy:true,cls:'armor'},
   ghost:{m:'Zombie_Chubby',h:1.95,speed:.8,anim:'Walk',dps:6,words:1,coin:6,tint:[0xe4f2ff,0x101826],ghost:true,cls:'scream'},
-  lava:{m:'Zombie_Arm',h:3.6,speed:.5,anim:'Walk',dps:20,words:5,coin:45,boss:'ยักษ์ลาวา',tint:[0x9a5040,0x5a1400],ember:true,lavaBoss:true},
+  lava:{m:'Zombie_Arm',h:3.6,speed:.5,anim:'Walk',dps:20,words:5,coin:45,boss:'MAGMA GIANT',tint:[0x9a5040,0x5a1400],ember:true,lavaBoss:true},
   conehead:{m:'Zombie_Basic',h:1.75,speed:1,anim:'Walk',dps:5,words:2,coin:5,gear:'cone',label:'หัวกรวย',cls:'armor'},
   shield:{m:'Zombie_Chubby',h:2,speed:.7,anim:'Walk',dps:8,words:2,coin:7,gear:'shield',label:'โล่',cls:'armor'},
 };
@@ -1176,7 +1176,7 @@ function nextWave(){
   if(boss){setTimeout(()=>SFX.groan(.35,true),900);
     if(boss!=='twins'){G.queue.splice(G.queue.indexOf(boss),1);spawn(boss);const bz=live().find(z=>z.type===boss);if(bz){bz.obj.position.z=-22;bossIntro(bz,()=>banner('BOSS WAVE','ตอบให้ครบทุกคำเพื่อล้มบอส'));}}}
 }
-const ZTIP={helmet:'หมวกเหล็ก: ต้องตอบ 2 คำ หมวกหลุดหลังคำแรก',porter:'แบกลัง: ฆ่าได้แล้วได้เหรียญเพิ่ม 20',sign:'ถือป้าย: ยิงแล้วแทบไม่ถอยจนกว่าป้ายจะหลุด',burnt:'ซอมบี้ไหม้: เดินเร็วกว่าปกติ',toxic:'ซอมบี้พิษ: ตายแล้วทิ้งแอ่งพิษ ซอมบี้ที่เดินผ่านจะช้าลง',frost:'ซอมบี้น้ำแข็ง: ตัวแข็ง ยิงแล้วแทบไม่ถอย',ghost:'ซอมบี้วิญญาณ: หายตัวเป็นช่วงๆ แต่ยังยิงได้',lava:'ยักษ์ลาวา: แช่แข็งไม่ได้ ทุกคำที่เสียจะทิ้งไฟไว้บนถนน',dog:'หมาซอมบี้: วิ่งเร็วมาก ตัวเตี้ย ยิงให้ไว',leaper:'ซอมบี้กระโดด: กระโดดพุ่งเข้ามาทีละไกล',barrel:'เกราะถัง: ต้องตอบ 3 คำ ถังหลุดหลังคำแรก',swarm:'ฝูงจิ๋ว: มาทีละ 3 ตัว วิ่งเร็วแต่คำสั้น',golden:'ซอมบี้ทอง: ยิงให้ทันก่อนมันหนี ได้ 40 เหรียญ',bloater:'ซอมบี้ระเบิด: ตายแล้วระเบิดใส่ตัวข้างๆ อย่าให้ถึงเครื่องกีดขวาง',screamer:'ซอมบี้กรีดร้อง: ถ้าปล่อยไว้นาน มันจะเร่งตัวอื่นให้เร็วขึ้น'};
+const ZTIP={helmet:'Helmet Soldier: ต้องตอบ 2 คำ หมวกหลุดหลังคำแรก',porter:'Porter: ฆ่าได้แล้วได้เหรียญเพิ่ม 20',sign:'Sign Holder: ยิงแล้วแทบไม่ถอยจนกว่าป้ายจะหลุด',burnt:'Burnt: เดินเร็วกว่าปกติ',toxic:'Toxic: ตายแล้วทิ้งแอ่งพิษ ซอมบี้ที่เดินผ่านจะช้าลง',frost:'Frostbite: ตัวแข็ง ยิงแล้วแทบไม่ถอย',ghost:'Phantom: หายตัวเป็นช่วงๆ แต่ยังยิงได้',lava:'Magma Giant: แช่แข็งไม่ได้ ทุกคำที่เสียจะทิ้งไฟไว้บนถนน',dog:'Zombie Hound: วิ่งเร็วมาก ตัวเตี้ย ยิงให้ไว',leaper:'Leaper: กระโดดพุ่งเข้ามาทีละไกล',barrel:'Barrel Trooper: ต้องตอบ 3 คำ ถังหลุดหลังคำแรก',swarm:'Mini Swarm: มาทีละ 3 ตัว วิ่งเร็วแต่คำสั้น',golden:'Gold Thief: ยิงให้ทันก่อนมันหนี ได้ 40 เหรียญ',bloater:'Bloater: ตายแล้วระเบิดใส่ตัวข้างๆ อย่าให้ถึงเครื่องกีดขวาง',screamer:'Screamer: ถ้าปล่อยไว้นาน มันจะเร่งตัวอื่นให้เร็วขึ้น'};
 function spawnAt(type,x,zz){const T=ZT[type],ws=Array.from({length:T.words},()=>takeWord(type==='runner'||T.short));const z=makeZombie(type,ws,x,zz);if(z){z.speed*=G.speedMul;renderTag(z);}return z;}
 function spawn(type){
   if(type==='twins'){const a=spawnAt('twinR',-1.8,SPAWN_Z),b=spawnAt('twinB',1.8,SPAWN_Z-1);if(a&&b){a.twin=b;b.twin=a;}if(!target)setTarget(nearest());return;}
@@ -1244,7 +1244,7 @@ const STORY={
 function introCam(){return {p0:V3(3.5,7,-30),l0:V3(0,1,-6),p1:CAM.clone(),l1:V3(0,1.05,-20),dur:5};}
 function bossIntro(z,then){
   const b=z.obj.position,h=z.T.h;
-  cutscene({cam:{p0:CAM.clone(),l0:V3(0,1.05,-20),p1:V3(b.x+2.2,h*.7,b.z+h*2+2),l1:V3(b.x,h*.6,b.z),dur:2.2,hold:true},name:z.T.boss,sub:ZTIP[z.type]||'บอส',then});
+  cutscene({cam:{p0:CAM.clone(),l0:V3(0,1.05,-20),p1:V3(b.x+2.2,h*.7,b.z+h*2+2),l1:V3(b.x,h*.6,b.z),dur:2.2,hold:true},name:z.T.boss,sub:ZTIP[z.type]?ZTIP[z.type].split(': ').slice(1).join(': '):'BOSS',then});
   SFX.roar();setTimeout(()=>{if(CUT)shake=.6;},900);
 }
 
@@ -1653,7 +1653,7 @@ function hud(){
   $('#hintN').textContent=G.hints;$('#hintBtn').disabled=G.hints<=0;
   $('#grenN').textContent=G.gren;$('#grenBtn').disabled=G.gren<=0;
   $('#wallBar').classList.toggle('sh',G.shieldT>0);
-  const bz=live().find(z=>z.T.boss),bb=$('#bossBar');bb.hidden=!bz;if(bz){$('#bossName').textContent='บอส: '+bz.T.boss;$('#bossPips').innerHTML=bz.words.map((_,i)=>`<i class="${i<bz.wi?'off':''}"></i>`).join('');}
+  const bz=live().find(z=>z.T.boss),bb=$('#bossBar');bb.hidden=!bz;if(bz){$('#bossName').textContent='BOSS · '+bz.T.boss;$('#bossPips').innerHTML=bz.words.map((_,i)=>`<i class="${i<bz.wi?'off':''}"></i>`).join('');}
   $('#ammoN').textContent=G.reloadT>0?'…':G.ammo;$('#ammoBtn').classList.toggle('low',G.ammo<=GUNS[P.gun].shots&&G.reloadT<=0);
   $('#ammoBar').style.width=(G.reloadT>0?(1-G.reloadT/GUNS[P.gun].reload)*100:G.ammo/G.mag*100)+'%';$('#ammoBtn').classList.toggle('rl',G.reloadT>0);
   $('#adrBar').style.width=(G.slow>0?G.slow/6*100:G.adr/ADR_NEED*100)+'%';
