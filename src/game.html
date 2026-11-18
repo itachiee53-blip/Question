@@ -371,7 +371,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.13.6',VERSION_DATE='17 พ.ย. 2569';
+const VERSION='2.14.0',VERSION_DATE='18 พ.ย. 2569';
 const CHANGES=['สมุดคำศัพท์แสดงคำแปลเต็ม ไม่ตัดเป็น ... แล้ว'];
 
 /* ---------------- helpers ---------------- */
@@ -694,7 +694,7 @@ function facade(style,seed){
   const key=style+seed;if(FACADES[key])return FACADES[key];
   const W=256,H=512,col=document.createElement('canvas'),emi=document.createElement('canvas');col.width=emi.width=W;col.height=emi.height=H;
   const g=col.getContext('2d'),e=emi.getContext('2d');e.fillStyle='#000';e.fillRect(0,0,W,H);
-  const P_={city:['#6d6a63','#7a5a4a','#5c6670','#8a8478','#4f5552'],ruin:['#3e3a36','#4a3f38','#353a3c'],house:['#c9b79a','#9fb3a8','#c7a49a','#a6b1c4','#d6cdb6'],ware:['#6f7a80','#8a7f6a','#5f6b5a','#7a6a62']}[style];
+  const P_={city:['#6d6a63','#7a5a4a','#5c6670','#8a8478','#4f5552'],ruin:['#3e3a36','#4a3f38','#353a3c'],house:['#c9b79a','#9fb3a8','#c7a49a','#a6b1c4','#d6cdb6'],ware:['#6f7a80','#8a7f6a','#5f6b5a','#7a6a62'],school:['#d8c9a0','#c9b28a','#e0d6bc'],hosp:['#e6e6e0','#d8dcdc'],barn:['#8a2a20','#9a3424']}[style];
   const base=P_[seed%P_.length];g.fillStyle=base;g.fillRect(0,0,W,H);
   // grime
   for(let i=0;i<60;i++){g.fillStyle=`rgba(0,0,0,${Math.random()*.08})`;g.fillRect(Math.random()*W,Math.random()*H,Math.random()*60,Math.random()*30);}
@@ -717,6 +717,15 @@ function facade(style,seed){
     for(let i=0;i<H;i+=12){g.fillStyle='rgba(0,0,0,.08)';g.fillRect(0,i,W,2);}
     for(const fy of [60,250])for(const fx of [30,150]){win(fx,fy,70,90,Math.random()<.35);g.fillStyle='#f3efe6';g.fillRect(fx-6,fy+90,82,8);}
     g.fillStyle='#5a3a2a';g.fillRect(100,H-150,56,150);g.fillStyle='#d8b56a';g.fillRect(144,H-80,6,6);
+  }else if(style==='school'||style==='hosp'){
+    const floors=style==='hosp'?6:3,fh=H/floors;
+    for(let f=0;f<floors;f++){g.fillStyle=style==='hosp'?'#3a8a8a':'#8a5a3a';g.fillRect(0,f*fh+fh-10,W,10);
+      for(let c=0;c<4;c++)win(10+c*62,f*fh+fh*.25,50,fh*.5,Math.random()<.25,style==='hosp'?'#d8f0ff':'#ffd690');}
+  }else if(style==='barn'){
+    for(let x=0;x<W;x+=16){g.fillStyle='rgba(0,0,0,.18)';g.fillRect(x,0,3,H);}
+    g.fillStyle='#e8e0d0';g.fillRect(60,H-260,136,260);g.fillStyle=base;g.fillRect(68,H-252,120,252);
+    g.strokeStyle='#e8e0d0';g.lineWidth=8;g.beginPath();g.moveTo(68,H-252);g.lineTo(188,H);g.moveTo(188,H-252);g.lineTo(68,H);g.stroke();
+    win(108,60,40,40,Math.random()<.4);
   }else{ // warehouse: corrugated metal and a roller door
     for(let x=0;x<W;x+=10){g.fillStyle='rgba(0,0,0,.14)';g.fillRect(x,0,4,H);}
     for(let x=10;x<W-10;x+=40)win(x,40,30,40,Math.random()<.3,'#cfe2ff');
@@ -741,6 +750,7 @@ function farSkyline(){
   for(let x=-60;x<60;x+=rnd(10,16)){const h=rnd(16,45);block(x,-200-rnd(0,20),rnd(10,16),h,rnd(8,12),'city',(Math.random()*9)|0);}
 }
 function skyline(style){
+  if(style==='none')return;
   if(style==='far'){farSkyline();return;}
   for(const s of [-1,1]){let z=6;
     while(z>-150){
@@ -878,14 +888,127 @@ const DRESS={
     place('Blood_1',.2,.02,-9,.2,.8);place('Blood_1',-1.5,.02,-24,1.5,.7);place('Blood_1',1.8,.02,-38,3,.7);
     fire(-4.7,1.15,-14,.8);fire(4.8,1.15,-36,.8);fire(3.3,.9,-13,1);fire(-2.7,1.6,-21,1.1);},
 };
+/* ---------------- more stage layouts, built from simple shapes plus the kit models ---------------- */
+const MATC={};
+const mat=(c,o)=>{const k=c+(o?JSON.stringify(o):'');return MATC[k]||(MATC[k]=new THREE.MeshStandardMaterial({color:c,roughness:.9,...o}));};
+// glowing parts (signs, lamps, screens) follow the sky like lit windows do
+const glow=c=>{const m=new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:Math.max(.3,atm.win),roughness:.6});BMATS.push(m);return m;};
+function bx(x,y,z,w,h,d,c,ry=0){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),typeof c==='number'?mat(c):c);m.position.set(x,y+h/2,z);m.rotation.y=ry;PLACE_TO.add(m);return m;}
+function cy(x,y,z,r,h,c,seg=12,r2=r){const m=new THREE.Mesh(new THREE.CylinderGeometry(r2,r,h,seg),typeof c==='number'?mat(c):c);m.position.set(x,y+h/2,z);PLACE_TO.add(m);return m;}
+// many copies of one shape in a single draw call
+function inst(geo,m,list){const im=new THREE.InstancedMesh(geo,m,list.length),o=new THREE.Object3D();
+  list.forEach((p,i)=>{o.position.set(p[0],p[1],p[2]);o.rotation.set(0,p[3]||0,0);o.scale.set(p[4]||1,p[5]||1,p[6]||1);o.updateMatrix();im.setMatrixAt(i,o.matrix);});PLACE_TO.add(im);return im;}
+function gable(x,z,w,d,y,c){const r=new THREE.Mesh(new THREE.CylinderGeometry(w*.62,w*.62,d+.6,3,1),mat(c));r.rotation.set(Math.PI/2,Math.PI/2,Math.PI/2);r.position.set(x,y+w*.3,z);r.scale.set(1,1,.55);PLACE_TO.add(r);}
+function trees(x0,x1,z0,z1,step,s=1){const T=['Tree_1','Tree_2','Tree_3','Tree_4'];for(let z=z0;z>z1;z-=rnd(step*.6,step*1.4))place(pick(T),s*rnd(x0,x1),0,z,rnd(0,6),rnd(.8,1.3));}
+function fenceRow(x,z0,z1,n='Fence_Long'){for(let z=z0;z>z1;z-=1.33)place(n,x,.15,z,Math.PI/2);}
+function bus(x,z,ry){const g=new THREE.Group(),y=mat(0xe0a81c),dk=mat(0x1d252b);
+  const add=(geo,m,px,py,pz)=>{const o=new THREE.Mesh(geo,m);o.position.set(px,py,pz);g.add(o);};
+  add(new THREE.BoxGeometry(2.4,2.4,9),y,0,1.6,0);add(new THREE.BoxGeometry(2.45,.7,8.2),dk,0,2.1,-.2);add(new THREE.BoxGeometry(2.2,.9,.06),dk,0,2.1,4.5);
+  for(const sx of [-1.15,1.15])for(const sz of [-3,3])add(new THREE.CylinderGeometry(.5,.5,.35,12).rotateZ(Math.PI/2),dk,sx,.5,sz);
+  g.position.set(x,0,z);g.rotation.y=ry;PLACE_TO.add(g);solid(g);}
+function stall(x,z,c){const s=Math.sign(x);bx(x,0,z,1.4,.85,2.4,0x6a4a30);
+  for(const dx of [-.6,.6])for(const dz of [-1.1,1.1])cy(x+dx,0,z+dz,.04,2.3,0x444444,5);
+  const roof=bx(x,2.2,z,1.9,.08,2.8,c);roof.rotation.z=s*.18;
+  for(let i=0;i<4;i++)bx(x+rnd(-.4,.4),.85,z+rnd(-.9,.9),rnd(.25,.45),rnd(.15,.35),rnd(.25,.45),pick([0xc94a2a,0xe0b020,0x6aa040,0x8a5a3a,0xd0d0c0]));}
+function rails(x){const st=mat(0x5a5048),sl=[];for(let z=6;z>-140;z-=.9)sl.push([x,.02,z]);
+  inst(new THREE.BoxGeometry(2.6,.14,.3),st,sl);for(const d of [-.72,.72])bx(x+d,.08,-67,.1,.14,146,mat(0x8a8a8a,{metalness:.6,roughness:.4}));}
+function boxcar(x,z,c){bx(x,.5,z,2.8,3,11,c);bx(x,3.5,z,2.9,.15,11.2,0x333333);for(const dz of [-3.8,3.8])bx(x,0,z+dz,2.2,.6,2,0x222222);
+  bx(x+Math.sign(-x)*1.42,1,z,.04,2.2,2.6,0x2a2a2a);}
+function skeleton(x,z,w,d,floors){const cc=mat(0x8d8a84);
+  for(let f=0;f<floors;f++){bx(x,f*3.2,z,w,.3,d,cc);if(f===floors-1)break;for(let ix=0;ix<3;ix++)for(let iz=0;iz<4;iz++)bx(x-w/2+.3+ix*(w-.6)/2,f*3.2+.3,z-d/2+.3+iz*(d-.6)/3,.4,2.9,.4,cc);}
+  const sc=mat(0x7a7f84,{metalness:.5});const sx=x-Math.sign(x)*(w/2+.6);for(let zz=z-d/2;zz<=z+d/2;zz+=2.5)cy(sx,0,zz,.05,(floors-1)*3.2+1,sc,5);
+  for(let f=1;f<floors;f++)bx(sx,f*3.2-.1,z,.5,.08,d,0x8a6a40);}
+function towerCrane(x,z){const y=mat(0xe0a020);bx(x,0,z,1.4,26,1.4,y);bx(x+(x>0?-9:9),25,z,26,1,1,y);bx(x+(x>0?7:-7),24,z,3,2,1.6,0x666666);bx(x,25.5,z,2.2,1.6,2.2,y);
+  const hook=x+(x>0?-14:14);cy(hook,10,z,.02,15,0x222222,4);bx(hook,8.6,z,1.6,1.4,1.6,0x777777);}
+function tent(x,z,c=0xe8e4d8,cross=false){bx(x,0,z,3,1.6,4,c);gable(x,z,3,4,1.6,c);if(cross){const r=glow(0xd02020);bx(x+Math.sign(-x)*1.52,1.7,z,.02,.9,.25,r);bx(x+Math.sign(-x)*1.52,1.7+.32,z,.02,.25,.9,r);}}
+function ambulance(x,z,ry){const g=new THREE.Group(),w=mat(0xeeeeee),r=mat(0xc02020),dk=mat(0x1d252b);
+  const add=(geo,m,px,py,pz)=>{const o=new THREE.Mesh(geo,m);o.position.set(px,py,pz);g.add(o);};
+  add(new THREE.BoxGeometry(2.2,2.3,5),w,0,1.55,0);add(new THREE.BoxGeometry(2.25,.3,5.05),r,0,1.3,0);add(new THREE.BoxGeometry(2,.8,.06),dk,0,2.05,2.52);
+  add(new THREE.BoxGeometry(1.6,.18,.3),glow(0x3a6aff),0,2.8,2);for(const sx of [-1.05,1.05])for(const sz of [-1.7,1.7])add(new THREE.CylinderGeometry(.42,.42,.3,12).rotateZ(Math.PI/2),dk,sx,.42,sz);
+  g.position.set(x,0,z);g.rotation.y=ry;PLACE_TO.add(g);solid(g);}
+function solid(o){o.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(o);if(b.min.x<4.2&&b.max.x>-4.2)OBST.push({x0:b.min.x,x1:b.max.x,z0:b.min.z,z1:b.max.z,zone:true,obj:o});}
+function carStack(x,z,n){for(let i=0;i<n;i++)place('Debris_BrokenCar',x+rnd(-.3,.3),i*1.25,z+rnd(-.4,.4),Math.PI/2+rnd(-.3,.3));}
+
+Object.assign(DRESS,{
+  gas(){const red=0xb8261e;
+    for(const px of [5.4,11.6])for(const pz of [-13,-25])cy(px,0,pz,.22,4.6,0xdddddd,8);
+    bx(8.5,4.6,-19,8,.7,15,0xeeeeee);bx(8.5,4.55,-19,8.1,.3,15.1,red);
+    for(const lz of [-14,-17,-21,-24])bx(8.5,4.5,lz,6,.06,.5,glow(0xf4f8ff));
+    for(const px of [7.3,9.8])for(const pz of [-16,-22]){bx(px,0,pz,.8,.25,2.4,0x777777);bx(px,.25,pz,.6,1.6,.5,red);bx(px,1.2,pz+.26,.4,.3,.02,glow(0x7adf7a));}
+    bx(17,0,-20,7,3.6,12,0xc8c0b0);bx(13.4,.4,-20,.1,2.2,9,glow(0xffe7a8));bx(17,3.6,-20,7.2,.6,12.2,red);
+    cy(5.8,0,-32,.15,6,0x888888,8);bx(5.8,5,-32,.3,2.4,1.8,0xeeeeee);bx(5.6,5.2,-32,.02,1.9,1.5,glow(0xffb040));
+    place('GasTank',-5.2,.15,-10);place('GasTank',-6,.15,-11.4,.4);place('ExplodingBarrel',-4.8,.15,-17);place('Wheels_Stack',-5.4,.15,-21,.3);place('Barrel',-5.1,.15,-29);place('TrashContainer',-5.4,.15,-40,Math.PI/2);
+    place('Vehicle_Sports',8.6,0,-19.2,.1);place('Vehicle_Pickup',-3,0,-26,.4);place('Debris_BrokenCar',3,0,-40,-.4);place('TrafficCone_1',1.6,0,-11);place('TrafficCone_1',-1.4,0,-15,.4);place('Blood_1',.4,.02,-14,1,.7);
+    trees(9,18,-34,-90,6,-1);trees(14,20,-36,-90,7,1);fire(3,1,-40,.9);},
+  market(){const C=[0xc0392b,0x2b7ac0,0xe0a020,0x3a9a4a,0x8a3ac0,0xd06a20];let i=0;
+    for(let z=-7;z>-62;z-=3.2,i++)for(const s of [-1,1]){stall(s*5.6,z,C[(i*2+(s>0))%C.length]);if(i%2)stall(s*9.6,z-1.6,C[(i+3)%C.length]);}
+    for(let z=-10;z>-60;z-=8){const l=glow(pick([0xffd070,0xff9a50,0x9adfff]));for(let x=-4.4;x<=4.4;x+=1.1)cy(x,3.6+Math.cos(x*.6)*.3,z,.09,.18,l,6);}
+    place('CardboardBoxes_1',-3.2,0,-12,.7);place('Crate',2.8,0,-16,.3);place('Crate',3.2,0,-17,.8);place('Debris_Papers_1',.5,.02,-10,1);place('Debris_Papers_1',-1.2,.02,-22,2);
+    place('Vehicle_Pickup',3,0,-30,-.25);place('TrashBag_1',-3.6,0,-34);place('TrashBag_1',-3.9,0,-34.6,1);place('Pallet_Broken',-2.6,0,-44,.4);place('Blood_1',-.5,.02,-18,1,.6);},
+  school(){block(-18,-30,10,10,44,'school',1);block(-15,-66,16,10,10,'school',2);
+    const field=new THREE.Mesh(new THREE.PlaneGeometry(22,60),mat(0x2f5a2a));field.rotation.x=-Math.PI/2;field.position.set(20,.02,-38);PLACE_TO.add(field);
+    for(const gz of [-14,-60]){for(const d of [-3,3])cy(20+d,0,gz,.1,2.4,0xf0f0f0,6);bx(20,2.3,gz,6.2,.15,.15,0xf0f0f0);}
+    for(let z=-8;z>-70;z-=2.2)place('MetalFence',8.6,.15,z,Math.PI/2);
+    cy(-7.4,0,-11,.08,8,0xcccccc,6);bx(-6.6,6.6,-11,1.6,1,.05,0x2a4aa0);bx(-6.6,6.9,-11,1.6,.35,.06,0xc03030);
+    bus(-6.2,-24,.05);bus(3,-42,.35);
+    place('CardboardBoxes_1',-3.6,0,-14,.4);place('Debris_Papers_1',.8,.02,-12,1);place('Debris_Papers_1',-1,.02,-19,2);place('TrafficCone_1',1.8,0,-17);place('Blood_1',.3,.02,-28,1,.6);place('Sofa',-5,.15,-34,Math.PI/2,.75);
+    trees(12,14,-6,-80,9,-1);},
+  forest(){trees(5.2,8,-4,-120,2.4,-1);trees(5.2,8,-5,-120,2.4,1);trees(9,24,-2,-120,1.6,-1);trees(9,24,-3,-120,1.6,1);
+    const log=mat(0x4a3424);for(const [x,z,r] of [[-6.4,-16,.3],[6.8,-27,-.4],[-7,-41,1.2]]){const m=new THREE.Mesh(new THREE.CylinderGeometry(.35,.4,5,8),log);m.rotation.set(0,r,Math.PI/2);m.position.set(x,.4,z);PLACE_TO.add(m);}
+    const t=new THREE.Mesh(new THREE.ConeGeometry(1.6,1.9,4),mat(0x3a6a4a));t.position.set(-5.8,.95,-22);t.rotation.y=Math.PI/4;PLACE_TO.add(t);
+    cy(-4.8,0,-25,.6,.2,0x333333,8);fire(-4.8,.1,-25,.6);
+    place('Debris_BrokenCar',3.3,0,-19,-.6);place('Vehicle_Pickup',-3.1,0,-36,.5);place('WoodPlanks',1.2,0,-12,.5);place('Debris_Tires',-2.2,0,-30,1);place('Blood_1',.2,.02,-15,1,.7);place('TownSign',4.8,.15,-46,-.2);},
+  farm(){const corn=[];for(const sd of [-1,1])for(let x=9;x<26;x+=1.1)for(let z=-6;z>-90;z-=.9){if(sd<0&&x<23&&z<-20&&z>-47)continue;corn.push([sd*(x+rnd(-.2,.2)),0,z+rnd(-.2,.2),rnd(0,6),1,rnd(.7,1.2),1]);}
+    inst(new THREE.ConeGeometry(.28,2.2,5).translate(0,1.1,0),mat(0x7a8a3a),corn);
+    block(-17,-30,9,6,14,'barn',1);gable(-17,-30,9,14,6,0x5a2a20);
+    cy(-11,0,-41,2,9,0xb8b8b0,16);const dome=new THREE.Mesh(new THREE.SphereGeometry(2,16,8,0,Math.PI*2,0,Math.PI/2),mat(0x9a9a92));dome.position.set(-11,9,-41);PLACE_TO.add(dome);
+    for(const [x,z] of [[6.4,-12],[7.4,-13.4],[6.6,-29],[-6.6,-18],[7,-44]]){const h=new THREE.Mesh(new THREE.CylinderGeometry(.75,.75,1.2,14),mat(0xc8a248));h.rotation.z=Math.PI/2;h.rotation.y=rnd(0,3);h.position.set(x,.75,z);PLACE_TO.add(h);}
+    fenceRow(-7.8,-6,-70);fenceRow(7.8,-6,-70);
+    cy(12,0,-58,.15,10,0x777777,6);for(let i=0;i<4;i++){const b=bx(12,9.8,-57.7,.4,3.4,.05,0xdddddd);b.position.y=10;b.rotation.z=i*Math.PI/2+.4;b.translateY(1.6);}
+    place('Vehicle_Pickup',-3.2,0,-22,.5);place('WaterTank_Platform',-5.8,.15,-50);place('Crate',3.8,0,-15,.4);place('Debris_BrokenCar',2.8,0,-34,-.3);place('Blood_1',-.5,.02,-12,1,.6);},
+  bridge(){water();const st=mat(0x4a6a7a,{metalness:.5,roughness:.5});
+    for(const s of [-1,1]){bx(s*8.3,.15,-67,.25,.9,146,0x8a8a84);
+      for(let z=-4;z>-130;z-=7){cy(s*8.8,0,z,.22,8.5,st,6);const d=bx(s*8.8,4,z-3.5,.2,.2,9,st);d.rotation.x=.82;}
+      bx(s*8.8,8.4,-67,.4,.4,126,st);}
+    for(let z=-4;z>-130;z-=14){bx(0,8.4,z,17.6,.4,.4,st);}
+    place('Vehicle_Truck',3,0,-15,-.08);place('Debris_BrokenCar',-3.1,0,-22,.6);place('Vehicle_Sports',-2.6,0,-33,2.9);place('Vehicle_Pickup',2.9,0,-44,.2);place('Debris_BrokenCar',-2.8,0,-55,-.4);
+    place('TrafficCone_1',-1.2,0,-11);place('TrafficBarrier_2',1,0,-27,.3);place('Blood_1',.2,.02,-19,1,.7);fire(-3.1,1,-22,.9);},
+  junkyard(){for(let z=-8;z>-80;z-=2.2)for(const s of [-1,1])place('MetalFence',s*8.4,.15,z,Math.PI/2);
+    for(let z=-12;z>-80;z-=5.5)for(const s of [-1,1]){carStack(s*rnd(11,13),z,1+(Math.random()*3|0));if(Math.random()<.6)carStack(s*rnd(15,19),z-2,1+(Math.random()*3|0));}
+    crane(16,-40);place('Wheels_Stack',-5.6,.15,-12);place('Wheels_Stack',5.8,.15,-26,1);place('Debris_Tires',-5.4,.15,-33);place('Debris_Tires',5.5,.15,-44,2);
+    place('Debris_BrokenCar',-3,0,-18,.9);place('Debris_BrokenCar',3.2,0,-29,-.7);place('Debris_Pile',-1.6,0,-40,1);place('Container_Small',-5.8,.15,-50,Math.PI/2);place('Barrel',5.2,.15,-15);fire(5.2,1.1,-15,.7);place('Blood_1',.6,.02,-24,1,.6);},
+  hospital(){block(17,-30,12,16,40,'hosp',1);block(-17,-38,12,12,30,'hosp',2);
+    const r=glow(0xe02020);bx(10.9,12,-22,.05,3,.9,r);bx(10.9,13.05,-22,.05,.9,3,r);
+    tent(-7,-12,0xe8e4d8,true);tent(-7.4,-18.5,0xe8e4d8,true);tent(-7,-52,0xd8d4c4,true);
+    ambulance(6.4,-14,.05);ambulance(-3,-30,.6);
+    place('SackTrench',2.5,0,-20,-.2);place('Barrier_Large',-2.6,0,-40,.3);place('Health',5.4,.15,-24);place('Crate',-5,.15,-26);place('Crate',-5,.95,-26,.4);place('Pallet',5.6,.15,-34,.3);
+    place('Debris_Papers_1',.5,.02,-10,1);place('Blood_1',-.8,.02,-14,1,.7);place('Blood_1',1.6,.02,-34,2,.6);searchlight(5.8,-36);},
+  trainyard(){rails(-11);rails(-15.5);rails(11);rails(15.5);const C=[0x7a3a2a,0x3a5a7a,0x5a6a3a,0x8a6a2a];
+    for(let z=-6,i=0;z>-120;z-=12.5,i++){boxcar(-11,z,C[i%4]);if(i%3!==1)boxcar(15.5,z-5,C[(i+2)%4]);if(i%2)boxcar(-15.5,z-3,C[(i+1)%4]);}
+    for(let z=-14;z>-90;z-=24)for(const s of [-1,1]){cy(s*8.6,0,z,.1,4,0x333333,6);bx(s*8.6,4,z,.4,.9,.4,0x222222);bx(s*8.6-s*.21,4.4,z,.02,.25,.25,glow(0xff3020));}
+    bx(6.4,3.6,-20,3.6,.25,16,0x6a6a66);for(const z of [-13,-27])cy(5.2,0,z,.12,3.6,0x555555,6);
+    place('Crate',5.4,.15,-17);place('CardboardBoxes_1',-5.4,.15,-12);place('Pallet',-5.6,.15,-24,.4);place('Container_Long',-3.2,.05,-36,.06);place('Debris_BrokenCar',3.1,0,-24,-.4);place('Barrel',2.6,0,-12);place('Blood_1',-.4,.02,-18,1,.7);},
+  construction(){skeleton(15,-26,12,22,5);skeleton(-15,-44,12,20,4);towerCrane(-12,-18);
+    for(let z=-6;z>-60;z-=2.2)place('MetalFence',-8.6,.15,z,Math.PI/2);
+    const sand=new THREE.Mesh(new THREE.ConeGeometry(2.4,1.8,12),mat(0xb09a6a));sand.position.set(7.4,.9,-12);PLACE_TO.add(sand);
+    place('WoodPlanks',5.6,.15,-18,.2);place('Pallet',-5.4,.15,-11,.3);place('CinderBlock',-5,.15,-13);place('CinderBlock',-5.3,.15,-13.4,.6);place('CinderBlock',-5.1,.38,-13.2,.2);place('Pipes',5.4,.15,-30,.1);
+    place('TrafficBarrier_1',-1.6,0,-15,.2);place('TrafficBarrier_2',2.2,0,-26,-.3);place('Vehicle_Truck',-3,0,-33,.2);place('Container_Small',5.8,.15,-44,Math.PI/2);place('TrafficCone_1',1,0,-20);place('Debris_Pile',2.4,0,-40,1);place('Blood_1',.4,.02,-22,1,.6);},
+});
 const ZFOG={a1:[0x0a1511,.03],a2:[0x0c1418,.028],b1:[0x0d1214,.03],b2:[0x12130e,.032],c1:[0x1a0d0a,.034]};
 const SCN={
   city:{n:'ลานจอดรถ',sky:'city',dress:'a1'},suburb:{n:'ชานเมือง',sky:'house',dress:'a2'},downtown:{n:'ตัวเมือง',sky:'city',dress:'b1'},
   industrial:{n:'นิคมอุตสาหกรรม',sky:'ware',dress:'b2'},ruins:{n:'ใจกลางการระบาด',sky:'ruin',dress:'c1'},
   park:{n:'สวนสาธารณะ',sky:'far',dress:'park',ground:0x24361f},highway:{n:'ทางด่วนร้าง',sky:'far',dress:'highway'},
   harbor:{n:'ท่าเรือ',sky:'far',dress:'harbor'},military:{n:'ฐานทหาร',sky:'far',dress:'military',ground:0x34301f},hellway:{n:'ทางด่วนไฟลุก',sky:'far',dress:'hellway'},
+  gas:{n:'ปั๊มน้ำมันร้าง',sky:'none',dress:'gas'},market:{n:'ตลาดนัด',sky:'house',dress:'market'},school:{n:'โรงเรียน',sky:'none',dress:'school'},
+  forest:{n:'ถนนตัดป่า',sky:'none',dress:'forest',ground:0x1c2a18},farm:{n:'ไร่ข้าวโพด',sky:'none',dress:'farm',ground:0x3a3322},
+  bridge:{n:'สะพานข้ามแม่น้ำ',sky:'far',dress:'bridge'},junkyard:{n:'สุสานรถ',sky:'far',dress:'junkyard',ground:0x2a261e},
+  hospital:{n:'โรงพยาบาลสนาม',sky:'far',dress:'hospital'},trainyard:{n:'ลานรถไฟ',sky:'far',dress:'trainyard',ground:0x2a2620},
+  construction:{n:'ไซต์ก่อสร้าง',sky:'far',dress:'construction',ground:0x3a3428},
 };
-const ZSCN={a1:['city','park'],a2:['suburb','highway'],b1:['downtown','harbor'],b2:['industrial','military'],c1:['ruins','hellway']};
+// every zone rotates through six places so back-to-back nights rarely look the same
+const ZSCN={a1:['city','park','gas','market','school','forest'],a2:['suburb','highway','farm','bridge','junkyard','school'],b1:['downtown','harbor','hospital','market','gas','trainyard'],
+  b2:['industrial','military','construction','trainyard','junkyard','bridge'],c1:['ruins','hellway','hospital','construction','forest','military']};
 let curScene='city';
 function setZone(k){setScene((ZSCN[k]||ZSCN.a1)[0]);}
 function setScene(k){
@@ -1100,7 +1223,8 @@ function nightInfo(k,i,mode){
   if(isBossNight(i))return {sky:'blood',mod:null,scene:(ZSCN[k]||ZSCN.a1)[0]};
   const L=ZSKY[k]||ZSKY.a1,sky=L[(i*7+3)%L.length];
   const mod=i>=2&&i%4===2?['horde','rush','blackout','fog'][(i>>2)%4]:null;
-  const scene=(ZSCN[k]||ZSCN.a1)[i%3===1&&!isBossNight(i)?1:0];
+  const L2=ZSCN[k]||ZSCN.a1,j=i-Math.floor((i+1)/5)-1,alt=L2.slice(1);
+  const scene=j<0?L2[0]:alt[(j+Math.floor(j/alt.length))%alt.length];
   return {sky:i===0&&k==='a1'?'dusk':sky,mod,scene};
 }
 function waves(k,i,mode,mod){
