@@ -145,6 +145,33 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .adrbar{height:4px;border-radius:2px;background:#ffffff1a;overflow:hidden;margin-top:3px}.adrbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5ab0ff,#a6e05a);transition:width .2s}
 @media (max-width:560px){.perks{grid-template-columns:1fr}}
 @media (orientation:landscape) and (max-height:520px){.perk{padding:10px 8px}.perk .ic{width:40px;height:40px}.rank{margin-top:6px}}
+.cut{position:fixed;inset:0;z-index:30}
+.cut .lb{position:absolute;left:0;right:0;height:13vh;background:#000;transition:transform .5s}.cut .lb.t{top:0}.cut .lb.b{bottom:0}
+.cut.in .lb.t{transform:translateY(-100%)}.cut.in .lb.b{transform:translateY(100%)}
+.csub{position:absolute;left:50%;bottom:calc(13vh + 14px);transform:translateX(-50%);width:min(760px,92vw);padding:12px 18px;border-radius:12px;background:#000b;border:1px solid var(--line);font-size:18px;line-height:1.5;min-height:72px}
+.csub b{display:block;font-size:14px;color:var(--toxic);font-weight:600}.csub b:empty{display:none}
+.csub small{position:absolute;right:12px;bottom:6px;font-size:11px;color:#fff6}
+.cname{position:absolute;left:0;right:0;top:30%;text-align:center;font-family:var(--f-disp);font-size:clamp(48px,10vw,96px);letter-spacing:4px;color:#ff6a4a;text-shadow:0 6px 30px #000;opacity:0;transform:scale(1.2);transition:opacity .4s,transform .6s}
+.cname.on{opacity:1;transform:scale(1)}.cname small{display:block;font-family:var(--f-th);font-size:16px;letter-spacing:0;color:#fffb}
+.cskip{position:absolute;right:calc(14px + var(--safe-r));top:calc(13vh + 10px);padding:6px 14px;border-radius:999px;background:#000a;border:1px solid var(--line);font-size:14px;color:#fffc}
+.mg{width:min(760px,100%);align-items:center;text-align:center}
+.mg h2{margin:0;font-family:var(--f-disp);font-size:40px;letter-spacing:2px;font-weight:400}
+.mgbar{width:100%;height:6px;border-radius:3px;background:#ffffff1a;overflow:hidden}.mgbar i{display:block;height:100%;background:var(--amber);transition:width .1s linear}
+.mgcols{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;width:100%}
+.mg{max-height:100%;overflow:auto}
+@media (orientation:landscape) and (max-height:520px){.mg h2{font-size:30px}.mgb{min-height:38px;padding:6px 10px}.mgcols{gap:6px 16px}.mgbig{font-size:34px}.mgrow .btn{padding:10px}}
+.mgb{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#ffffff0d;font-size:18px;min-height:46px}
+.mgb.en{font-family:var(--f-disp);font-size:24px;letter-spacing:1px}
+.mgb.sel{border-color:var(--amber);background:#f2b33d22}.mgb.ok{border-color:var(--toxic);background:#a6e05a22;opacity:.5;pointer-events:none}.mgb.bad{animation:shake .3s;border-color:var(--blood)}
+.mgslots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;min-height:52px}
+.mgslots i{width:40px;height:48px;border-bottom:3px solid #fff5;font-family:var(--f-disp);font-size:32px;font-style:normal;display:grid;place-items:center}
+.mgkeys{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.mgkeys .key{--k:50px}
+.mgbig{font-family:var(--f-disp);font-size:clamp(34px,7vw,56px);letter-spacing:2px;line-height:1.1}
+.mgbig small{display:block;font-family:var(--f-th);font-size:22px;letter-spacing:0;color:var(--dim)}
+.mgrow{display:flex;gap:12px;justify-content:center;width:100%}.mgrow .btn{flex:1;max-width:220px;font-size:22px;padding:14px}
+.mgcards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+@media (max-width:560px){.mgcards{grid-template-columns:1fr}}
 .jamtag{position:fixed;left:50%;bottom:calc(84px + var(--safe-b));transform:translateX(-50%);z-index:9;font-family:var(--f-disp);font-size:30px;letter-spacing:2px;color:var(--blood);text-shadow:0 2px 10px #000;pointer-events:none}
 
 /* menus */
@@ -334,6 +361,8 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 
 <div class="scr load" id="loading"><h1>DEAD <span>WORDS</span></h1><div class="pb"><i id="loadBar"></i></div><small id="loadTxt">กำลังโหลด…</small></div>
 <div class="scr" id="screen" hidden></div>
+<div class="cut" id="cut" hidden><i class="lb t"></i><i class="lb b"></i><div class="cname" id="cName"></div>
+  <div class="csub" id="cSub"><b id="cWho"></b><span id="cTxt"></span><small>แตะเพื่อไปต่อ</small></div><button class="cskip" type="button" id="cSkip">ข้าม ›</button></div>
 
 <script type="module">
 import * as THREE from 'three';
@@ -341,8 +370,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.12.1',VERSION_DATE='17 พ.ย. 2569';
-const CHANGES=['เสียงฝนเบาลงครึ่งหนึ่ง'];
+const VERSION='2.13.0',VERSION_DATE='17 พ.ย. 2569';
+const CHANGES=['คัตซีนเปิดเรื่องและเปิดแต่ละพื้นที่ มีกล้องบินและวิทยุเล่าเรื่อง','คัตซีนเปิดตัวบอส','มินิเกมหลังคลื่นแรก 4 แบบ: ต่อสายวิทยุ ปลดล็อกลังเสบียง ตรวจสอบเสบียง ดักฟังวิทยุ','เสียงฝนเบาลงอีก'];
 
 /* ---------------- helpers ---------------- */
 const $=s=>document.querySelector(s);
@@ -538,6 +567,7 @@ const SFX={
   head(){nz(.12,.5,'lowpass',1800,{f2:300});tn(1400,.08,'square',.06,{at:.02});tn(2100,.12,'triangle',.07,{at:.06});},
   scream(){if(!ac||!P.opts.sfx)return;for(let i=0;i<3;i++){tn(rnd(700,900),.9,'sawtooth',.06,{f2:rnd(1200,1500),at:i*.04});}nz(.9,.2,'bandpass',2200,{q:3,f2:1200});},
   click(){tn(2600,.02,'square',.08);},
+  radio(){nz(.12,.12,'bandpass',1800,{q:4});tn(1200,.05,'square',.03,{at:.03});},
   zap(){nz(.3,.35,'highpass',2800,{q:2});tn(220,.25,'sawtooth',.08,{f2:1400});tn(90,.2,'square',.05,{at:.05});},
   freeze(){tn(2400,.5,'sine',.07,{f2:3200});tn(1600,.4,'triangle',.05,{f2:2400,at:.06});nz(.4,.15,'highpass',5000);},
   cannon(){tn(70,.5,'sine',.6,{f2:30});nz(.5,.6,'lowpass',1200,{f2:100});},
@@ -572,7 +602,7 @@ function sample(n,vol=1,{rate=1,offset=0,dur}={}){
 let rainNode=null;
 function rainSound(on){
   if(!ac)return;
-  if(on&&!rainNode&&P.opts.amb){const s=ac.createBufferSource();s.buffer=noiseBuf;s.loop=true;const f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=1200;const g=ac.createGain();g.gain.value=0;s.connect(f).connect(g).connect(master);s.start();g.gain.linearRampToValueAtTime(.045,ac.currentTime+1.5);rainNode={s,g};}
+  if(on&&!rainNode&&P.opts.amb){const s=ac.createBufferSource();s.buffer=noiseBuf;s.loop=true;const f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=1200;const g=ac.createGain();g.gain.value=0;s.connect(f).connect(g).connect(master);s.start();g.gain.linearRampToValueAtTime(.028,ac.currentTime+1.5);rainNode={s,g};}
   else if((!on||!P.opts.amb)&&rainNode){const r=rainNode;rainNode=null;r.g.gain.linearRampToValueAtTime(0,ac.currentTime+.6);setTimeout(()=>{try{r.s.stop();}catch(e){}},800);}
 }
 function speak(t){if(!P.opts.voice||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.95;speechSynthesis.speak(u);}catch(e){}}
@@ -1126,7 +1156,12 @@ function startNight(k,i,mode='night'){
   $('#hud').hidden=false;$('#dock').hidden=false;$('#screen').hidden=true;
   $('#hNight').textContent=mode==='review'?'REVIEW':mode==='survival'?'SURVIVAL':'NIGHT '+(i+1);
   G.mag=Math.round(GUNS[P.gun].mag*(1+.25*P.up.mag));G.ammo=G.mag;
-  equipKnife();equipGun();nextWave();hud();renderPad();
+  equipKnife();equipGun();hud();renderPad();
+  P.seenStory=P.seenStory||[];
+  const key=!P.seenStory.includes('intro')?'intro':(mode==='night'&&i===0&&!P.seenStory.includes(k))?k:null;
+  if(key){P.seenStory.push(key);if(key==='intro'&&!P.seenStory.includes(k))P.seenStory.push(k);save();
+    const lines=key==='intro'?[...STORY.intro,...STORY[k]]:STORY[k];cutscene({lines,cam:introCam(),then:nextWave});}
+  else nextWave();
 }
 function nextWave(){
   G.wave++;
@@ -1134,11 +1169,12 @@ function nextWave(){
   if(G.wave>=G.W.length){endNight(true);return;}
   G.queue=[...G.W[G.wave].list];G.spawnT=G.wave===0?1.2:3;waveProps();
   const boss=G.queue.find(t=>ZT[t]&&ZT[t].boss);
-  const surv=G.mode==='survival';
-  banner(surv?'WAVE '+(G.wave+1):G.wave===G.W.length-1?(boss?'BOSS: '+ZT[boss].boss:'FINAL WAVE'):'WAVE '+(G.wave+1),
+  const surv=G.mode==='survival',introBoss=boss&&boss!=='twins';
+  if(!introBoss)banner(surv?'WAVE '+(G.wave+1):G.wave===G.W.length-1?(boss?'BOSS: '+ZT[boss].boss:'FINAL WAVE'):'WAVE '+(G.wave+1),
     G.wave===0?(GUNS[P.gun].n+' · ')+(G.mode==='review'?'ทบทวนคำที่เคยพลาด':surv?ZONES[G.k].name+' · อยู่ให้รอดนานที่สุด':SCN[curScene].n+' · '+SKIES[G.sky].n+(G.mod?' · '+MODS[G.mod].n:'')):'');
   $('#hWave').textContent=surv?`คลื่น ${G.wave+1}`:`คลื่น ${G.wave+1}/${G.W.length}`;
-  if(boss)setTimeout(()=>SFX.groan(.35,true),900);
+  if(boss){setTimeout(()=>SFX.groan(.35,true),900);
+    if(boss!=='twins'){G.queue.splice(G.queue.indexOf(boss),1);spawn(boss);const bz=live().find(z=>z.type===boss);if(bz){bz.obj.position.z=-22;bossIntro(bz,()=>banner('BOSS WAVE','ตอบให้ครบทุกคำเพื่อล้มบอส'));}}}
 }
 const ZTIP={helmet:'หมวกเหล็ก: ต้องตอบ 2 คำ หมวกหลุดหลังคำแรก',porter:'แบกลัง: ฆ่าได้แล้วได้เหรียญเพิ่ม 20',sign:'ถือป้าย: ยิงแล้วแทบไม่ถอยจนกว่าป้ายจะหลุด',burnt:'ซอมบี้ไหม้: เดินเร็วกว่าปกติ',toxic:'ซอมบี้พิษ: ตายแล้วทิ้งแอ่งพิษ ซอมบี้ที่เดินผ่านจะช้าลง',frost:'ซอมบี้น้ำแข็ง: ตัวแข็ง ยิงแล้วแทบไม่ถอย',ghost:'ซอมบี้วิญญาณ: หายตัวเป็นช่วงๆ แต่ยังยิงได้',lava:'ยักษ์ลาวา: แช่แข็งไม่ได้ ทุกคำที่เสียจะทิ้งไฟไว้บนถนน',dog:'หมาซอมบี้: วิ่งเร็วมาก ตัวเตี้ย ยิงให้ไว',leaper:'ซอมบี้กระโดด: กระโดดพุ่งเข้ามาทีละไกล',barrel:'เกราะถัง: ต้องตอบ 3 คำ ถังหลุดหลังคำแรก',swarm:'ฝูงจิ๋ว: มาทีละ 3 ตัว วิ่งเร็วแต่คำสั้น',golden:'ซอมบี้ทอง: ยิงให้ทันก่อนมันหนี ได้ 40 เหรียญ',bloater:'ซอมบี้ระเบิด: ตายแล้วระเบิดใส่ตัวข้างๆ อย่าให้ถึงเครื่องกีดขวาง',screamer:'ซอมบี้กรีดร้อง: ถ้าปล่อยไว้นาน มันจะเร่งตัวอื่นให้เร็วขึ้น'};
 function spawnAt(type,x,zz){const T=ZT[type],ws=Array.from({length:T.words},()=>takeWord(type==='runner'||T.short));const z=makeZombie(type,ws,x,zz);if(z){z.speed*=G.speedMul;renderTag(z);}return z;}
@@ -1168,6 +1204,118 @@ function endNight(win){
   win?SFX.win():SFX.lose();if(win)allyReact('win');
   setTimeout(()=>results(win,stars,coins),win?900:1400);
 }
+
+/* ---------------- cutscenes: letterbox, camera move, radio lines ---------------- */
+let CUT=null;
+function cutscene({lines=[],cam=null,name=null,sub='',then}){
+  const prev=state;state='cut';$('#hud').hidden=true;$('#dock').hidden=true;tagsEl.style.visibility='hidden';if(gunObj)gunObj.visible=false;
+  const el=$('#cut');el.hidden=false;el.classList.add('in');void el.offsetWidth;el.classList.remove('in');
+  CUT={cam,t:0,i:-1,lines,then,prev,typing:null};
+  const cn=$('#cName');cn.classList.remove('on');cn.innerHTML=name?esc(name)+(sub?`<small>${esc(sub)}</small>`:''):'';if(name)setTimeout(()=>cn.classList.add('on'),400);
+  $('#cSub').style.display=lines.length?'':'none';
+  nextLine();
+  if(!lines.length)CUT.auto=setTimeout(endCut,(cam?cam.dur:2.5)*1000+600);
+}
+function nextLine(){
+  if(!CUT)return;clearInterval(CUT.typing);
+  const L=CUT.lines;if(CUT.i>=0&&CUT.shown<L[CUT.i].txt.length){CUT.shown=L[CUT.i].txt.length;$('#cTxt').textContent=L[CUT.i].txt;return;}
+  CUT.i++;if(CUT.i>=L.length){if(L.length)endCut();return;}
+  const ln=L[CUT.i];$('#cWho').textContent=ln.who||'';$('#cTxt').textContent='';CUT.shown=0;SFX.radio();
+  CUT.typing=setInterval(()=>{if(!CUT)return;CUT.shown++;$('#cTxt').textContent=ln.txt.slice(0,CUT.shown);if(CUT.shown>=ln.txt.length)clearInterval(CUT.typing);},28);
+}
+function endCut(){
+  if(!CUT)return;const c=CUT;CUT=null;clearInterval(c.typing);clearTimeout(c.auto);
+  const el=$('#cut');el.classList.add('in');setTimeout(()=>{el.hidden=true;},450);$('#cName').classList.remove('on');
+  tagsEl.style.visibility='';if(gunObj)gunObj.visible=true;
+  if(G&&!G.ended){state='play';$('#hud').hidden=false;$('#dock').hidden=false;last=performance.now();}
+  c.then&&c.then();
+}
+$('#cut').addEventListener('pointerdown',e=>{if(e.target.id==='cSkip')return;nextLine();});
+$('#cSkip').addEventListener('click',()=>{if(CUT){CUT.lines=[];endCut();}});
+const V3=(x,y,z)=>new THREE.Vector3(x,y,z);
+const STORY={
+  intro:[{who:'วิทยุ: ฐานใหญ่',txt:'ได้ยินไหม ทุกคนที่ยังรอดอยู่ เชื้อไวรัสระบาดไปทั่วเมืองแล้ว'},{who:'วิทยุ: ฐานใหญ่',txt:'พวกมันตอบสนองต่อภาษา ต้องเรียกชื่อสิ่งที่มันจำได้เป็นภาษาอังกฤษ กระสุนถึงจะได้ผล'},{who:'คุณ',txt:'งั้นก็ต้องจำศัพท์ให้แม่น… มาเลย'}],
+  a1:[{who:'วิทยุ: ฐานใหญ่',txt:'ลานจอดรถคือจุดอพยพแรก ยันพวกมันไว้ให้ได้จนรถบัสมาถึง'}],
+  a2:[{who:'วิทยุ: ฐานใหญ่',txt:'ชานเมืองยังมีผู้รอดชีวิตซ่อนอยู่ในบ้าน ตั้งแนวกั้นแล้วคุ้มกันพวกเขา'}],
+  b1:[{who:'วิทยุ: ฐานใหญ่',txt:'ตัวเมืองคือรังใหญ่ของพวกมัน ระวังตัวพิเศษให้ดี'}],
+  b2:[{who:'วิทยุ: ฐานใหญ่',txt:'โรงงานในนิคมเป็นต้นตอของเชื้อ ต้องหาตัวอย่างวัคซีนให้เจอ'}],
+  c1:[{who:'วิทยุ: ฐานใหญ่',txt:'นี่คือใจกลางการระบาด ถ้าผ่านตรงนี้ได้ เมืองจะปลอดภัย'},{who:'คุณ',txt:'ไม่มีทางถอยแล้ว'}],
+};
+function introCam(){return {p0:V3(3.5,7,-30),l0:V3(0,1,-6),p1:CAM.clone(),l1:V3(0,1.05,-20),dur:5};}
+function bossIntro(z,then){
+  const b=z.obj.position,h=z.T.h;
+  cutscene({cam:{p0:CAM.clone(),l0:V3(0,1.05,-20),p1:V3(b.x+2.2,h*.7,b.z+h*2+2),l1:V3(b.x,h*.6,b.z),dur:2.2,hold:true},name:z.T.boss,sub:ZTIP[z.type]||'บอส',then});
+  SFX.roar();setTimeout(()=>{if(CUT)shake=.6;},900);
+}
+
+/* ---------------- mini games between waves ---------------- */
+function mgPool(n){const ws=shuffle([...G.fresh,...G.old.slice(0,10)]);const out=[],seen=new Set();for(const w of ws){if(seen.has(w.th)||seen.has(w.en))continue;seen.add(w.th);seen.add(w.en);out.push(w);if(out.length>=n)break;}return out;}
+function mgTimer(sec,onEnd){const t0=performance.now();const iv=setInterval(()=>{const k=1-(performance.now()-t0)/1000/sec;const bar=$('#mgT');if(bar)bar.style.width=Math.max(0,k*100)+'%';if(k<=0){clearInterval(iv);onEnd();}},100);return ()=>clearInterval(iv);}
+function mgReward(ok,total,title){
+  const good=ok/total>=.75;let rew='';
+  G.bonusCoins+=ok*4;
+  if(good){const pk=pick(PERKS.filter(p=>!p.ok||p.ok()));pk.f();rew=`<br>ได้รางวัล: <b style="color:var(--toxic)">${pk.n}</b>`;SFX.win();}else SFX.perk();
+  show(`<div class="card res mg"><h2>${title}</h2><div class="mgbig">${ok}/${total}<small>ถูก · +${ok*4} เหรียญ${rew}</small></div><button class="btn main" type="button" id="mgGo">สู้ต่อ</button></div>`,'solid');
+  $('#mgGo').onclick=()=>{scr.hidden=true;state='play';last=performance.now();hud();nextWave();};
+}
+function mgMark(w,ok){if(ok)G.hit.add(w.en);else G.miss.add(w.en);}
+// 1) match wires: connect English to Thai
+function mgMatch(){
+  const ws=mgPool(4);const th=shuffle(ws);let sel=null,ok=0,done=0;
+  show(`<div class="card res mg"><h2>ต่อสายวิทยุ</h2><div class="zinfo">จับคู่คำอังกฤษกับความหมาย ก่อนหมดเวลา</div><div class="mgbar"><i id="mgT"></i></div>
+    <div class="mgcols">${ws.map((w,i)=>`<button class="mgb en" type="button" data-l="${i}">${esc(w.en)}</button><button class="mgb" type="button" data-r="${ws.indexOf(th[i])}">${esc(th[i].th)}</button>`).join('')}</div></div>`,'solid');
+  const stop=mgTimer(22,()=>finish());
+  const finish=()=>{stop();ws.forEach(w=>{if(!G.hit.has(w.en))mgMark(w,false);});mgReward(ok,ws.length,'ต่อสายวิทยุ');};
+  scr.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{scr.querySelectorAll('[data-l]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');sel=+b.dataset.l;SFX.ui();speak(ws[sel].en);});
+  scr.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{if(sel==null)return;const r=+b.dataset.r,L=scr.querySelector(`[data-l="${sel}"]`);
+    if(r===sel){L.classList.add('ok');b.classList.add('ok');ok++;done++;mgMark(ws[r],true);SFX.coin();}else{b.classList.remove('bad');void b.offsetWidth;b.classList.add('bad');mgMark(ws[sel],false);SFX.jam();done+=0;}
+    L.classList.remove('sel');sel=null;if(ok===ws.length)finish();});
+}
+// 2) code lock: spell the word from scrambled letters
+function mgCode(){
+  const ws=mgPool(6).filter(w=>/^[a-z]{3,8}$/i.test(w.en)).slice(0,3);if(ws.length<2)return mgTrue();
+  let k=0,ok=0,cur='',over=false;
+  const stop=mgTimer(30,()=>{over=true;mgReward(ok,ws.length,'ปลดล็อกลังเสบียง');});
+  const draw=()=>{if(over)return;const w=ws[k],en=w.en.toLowerCase();
+    show(`<div class="card res mg"><h2>ปลดล็อกลังเสบียง</h2><div class="zinfo">รหัสที่ ${k+1}/${ws.length} · สะกดคำที่แปลว่า</div><div class="mgbar"><i id="mgT"></i></div>
+      <div class="mgbig">${esc(w.th)}</div><div class="mgslots">${[...en].map((c,i)=>`<i>${i<cur.length?cur[i].toUpperCase():''}</i>`).join('')}</div>
+      <div class="mgkeys">${shuffle([...en]).map((c,i)=>`<button class="key" type="button" data-c="${c}" data-i="${i}">${c}</button>`).join('')}</div></div>`,'solid');
+    scr.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const c=b.dataset.c;
+      if(en[cur.length]===c){cur+=c;b.classList.add('used');SFX.key();scr.querySelectorAll('.mgslots i')[cur.length-1].textContent=c.toUpperCase();
+        if(cur===en){ok++;mgMark(w,true);SFX.coin();speak(w.en);next();}}
+      else{SFX.jam();mgMark(w,false);const s2=scr.querySelector('.mgslots');s2.classList.remove('bad');s2.style.animation='none';void s2.offsetWidth;s2.style.animation='shake .3s';}});};
+  const next=()=>{k++;cur='';if(k>=ws.length){over=true;stop();setTimeout(()=>mgReward(ok,ws.length,'ปลดล็อกลังเสบียง'),400);}else setTimeout(draw,350);};
+  draw();
+}
+// 3) true or false rush
+function mgTrue(){
+  const ws=mgPool(10);let ok=0,n=0,cur=null,truth=false,over=false;
+  const stop=mgTimer(18,()=>{over=true;mgReward(ok,Math.max(n,1),'ตรวจสอบเสบียง');});
+  const draw=()=>{if(over)return;const w=ws[n%ws.length];truth=Math.random()<.5;const shown=truth?w:ws[(n+1+Math.floor(Math.random()*(ws.length-1)))%ws.length];cur=w;
+    show(`<div class="card res mg"><h2>ตรวจสอบเสบียง</h2><div class="zinfo">ป้ายตรงกันไหม ตอบให้ได้มากที่สุด · ถูก ${ok}</div><div class="mgbar"><i id="mgT"></i></div>
+      <div class="mgbig">${esc(w.en)}<small>= ${esc(shown.th)} ?</small></div>
+      <div class="mgrow"><button class="btn main" type="button" id="mgY">ถูก</button><button class="btn red" type="button" id="mgN">ผิด</button></div></div>`,'solid');
+    const ans=a=>{n++;if(a===truth){ok++;mgMark(cur,true);SFX.coin();}else{mgMark(cur,false);SFX.jam();}draw();};
+    $('#mgY').onclick=()=>ans(true);$('#mgN').onclick=()=>ans(false);};
+  draw();
+}
+// 4) listen and pick: hear the English word, choose its meaning
+function mgListen(){
+  if(!('speechSynthesis' in window))return mgMatch();
+  const ws=mgPool(8);let k=0,ok=0;const R=5;
+  const draw=()=>{const w=ws[k],opts=shuffle([w,...shuffle(ws.filter(x=>x!==w)).slice(0,2)]);
+    show(`<div class="card res mg"><h2>ดักฟังวิทยุ</h2><div class="zinfo">ฟังคำที่ได้ยิน แล้วเลือกความหมาย · ${k+1}/${R}</div>
+      <button class="btn" type="button" id="mgSay">${SV.say.replace('<svg','<svg style="width:20px;height:20px"')}ฟังอีกครั้ง</button>
+      <div class="mgcards">${opts.map((o,i)=>`<button class="mgb" type="button" data-o="${i}">${esc(o.th)}</button>`).join('')}</div></div>`,'solid');
+    const sayIt=()=>{const o=P.opts.voice;P.opts.voice=true;speak(w.en);P.opts.voice=o;};setTimeout(sayIt,250);$('#mgSay').onclick=sayIt;
+    scr.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{if(b.dataset.done)return;scr.querySelectorAll('[data-o]').forEach(x=>x.dataset.done=1);const right=opts[+b.dataset.o]===w;b.classList.add(right?'ok':'bad');if(right){ok++;SFX.coin();}else SFX.jam();mgMark(w,right);
+      setTimeout(()=>{k++;if(k>=R)mgReward(ok,R,'ดักฟังวิทยุ');else draw();},right?350:700);});};
+  draw();
+}
+const MINIS=[mgMatch,mgCode,mgTrue,mgListen];
+function miniGame(){state='mini';SFX.perk();const f=MINIS[(G.i+G.wave+(G.k.charCodeAt(1)))%MINIS.length];
+  show(`<div class="card res mg"><h2>ภารกิจพิเศษ</h2><div class="zinfo">ช่วงพักระหว่างคลื่น ทำให้ได้ 75% ขึ้นไปรับเสบียงฟรี</div><button class="btn main" type="button" id="mgStart">เริ่ม</button></div>`,'solid');
+  $('#mgStart').onclick=()=>{audio();f();};}
 
 /* ---------------- supply drop between waves ---------------- */
 const PERKS=[
@@ -1574,7 +1722,7 @@ function show(html,cls=''){scr.className='scr '+cls;scr.innerHTML=html;scr.hidde
 function toast(m,ms=2200){const n=document.querySelectorAll('.toast').length;const d=document.createElement('div');d.className='toast';d.textContent=m;d.style.marginTop=n*44+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),ms+n*400);}
 const coinTag=()=>`<span class="coins">${SV.coin}${fmt(P.coins)}</span>`;
 function hideGame(){$('#bossBar').hidden=true;$('#hud').hidden=true;$('#dock').hidden=true;$('#danger').hidden=true;$('#jamTag').hidden=true;}
-function home(){
+function home(){if(CUT){CUT.then=null;endCut();}
   state='menu';G=null;target=null;hideGame();clearZombies();clearProps();setZone(P.zone);barricadeLook();allyVisibility();allyReact('reset');menuScene();if(gunObj)gunObj.visible=false;
   const k=P.zone,ni=nextNight(k),weak=WEAK.size;
   const learned=LEARNED.size;
@@ -1790,10 +1938,12 @@ function frame(now){
   // camera: idle sway, recoil, shake
   recoil=Math.max(0,recoil-dt*9);shake=Math.max(0,shake-dt*2.2);
   const sway=Math.sin(clock*.7)*.03;
+  if(CUT&&CUT.cam){const c=CUT.cam;CUT.t+=dt;let k=Math.min(1,CUT.t/c.dur);k=k*k*(3-2*k);camera.position.lerpVectors(c.p0,c.p1,k);camera.position.x+=(Math.random()-.5)*shake*.2;camera.lookAt(c.l0.clone().lerp(c.l1,k));}
+  else{
   camera.position.set(CAM.x+sway+(Math.random()-.5)*shake*.25,CAM.y+Math.sin(clock*1.3)*.015+(Math.random()-.5)*shake*.25,CAM.z);
   const look=target&&!target.dead&&playing?chest(target):new THREE.Vector3(0,1.1,-20);
   const aim=new THREE.Vector3(0,1.05,-20).lerp(look,.15);
-  camera.lookAt(aim);
+  camera.lookAt(aim);}
   if(gunObj){const dip=Math.max(G&&G.reloadT>0?Math.sin(Math.min(1,G.reloadT/GUNS[P.gun].reload)*Math.PI):0,mAnim?Math.sin(Math.min(1,mAnim.t/mAnim.W.dur)*Math.PI):0);gunObj.position.set(.34,-.21-dip*.3+Math.sin(clock*2)*.004,-.62+recoil*.07);gunObj.rotation.x=recoil*.22-dip*.6;gunObj.rotation.z=dip*.5;}
   stepKnife(dt);
   muzzleLight.intensity=Math.max(0,muzzleLight.intensity-dt*120);
@@ -1832,7 +1982,7 @@ function step(dt){
   if(!$('#jamTag').hidden&&G.t>=jamUntil){$('#jamTag').hidden=true;$('#pad').classList.remove('jam');renderPad();}
   // spawning
   if(G.queue.length){G.spawnT-=dt;if(G.spawnT<=0&&live().length<8){spawn(G.queue.shift());G.spawnT=G.W[G.wave].gap*rnd(.75,1.2);}}
-  else if(!live().length&&!G.ended){G.waveGap=(G.waveGap||2.2)-dt;if(G.waveGap<=0){G.waveGap=0;const last=G.mode!=='survival'&&G.wave>=G.W.length-1;if(!last&&G.mode!=='review')perkPick();else nextWave();}}
+  else if(!live().length&&!G.ended){G.waveGap=(G.waveGap||2.2)-dt;if(G.waveGap<=0){G.waveGap=0;const last=G.mode!=='survival'&&G.wave>=G.W.length-1;if(!last&&G.mode==='night'&&G.wave===0)miniGame();else if(!last&&G.mode!=='review')perkPick();else nextWave();}}
   if(G.reloadT>0){G.reloadT-=dt;if(G.reloadT<=0){G.reloadT=0;G.ammo=G.mag;hud();}}
   if(G.knifeT>0)G.knifeT-=dt;
   if(G.slow>0){G.slow-=dt;if(G.slow<=0)$('#slowfx').hidden=true;}
@@ -1883,7 +2033,7 @@ requestAnimationFrame(frame);
 loadModels().then(()=>{
   buildWorld();try{makeThumbs();}catch(e){}equipGun();equipKnife();if(gunObj)gunObj.visible=false;
   $('#loading').hidden=true;home();
-  window.__dw={get G(){return G;},zombies,press,live,get target(){return target;},P,get OBST(){return OBST;},blocked,setZone,setScene,setAtmosphere,perkPick,startNight,equipKnife,MELEE};
+  window.__dw={get G(){return G;},zombies,press,live,get target(){return target;},P,get OBST(){return OBST;},blocked,setZone,setScene,setAtmosphere,perkPick,startNight,equipKnife,MELEE,MINIS,miniGame,get CUT(){return CUT;}};
 });
 </script>
 </body>
