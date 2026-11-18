@@ -7,6 +7,19 @@ import collections, json, pathlib
 
 here = pathlib.Path(__file__).parent
 LEVELS = ['a1', 'a2', 'b1', 'b2', 'c1']
+FIX = {'early': 'แต่เช้า ก่อนเวลา'}
+
+
+def meanings(th):
+    """Thai alternatives are separated by spaces in the word files ('เช้า ก่อนเวลา');
+    show them as 'เช้า, ก่อนเวลา'. Clarifiers in parentheses, 'ๆ' and Latin tokens stay attached."""
+    out = []
+    for tok in th.split():
+        if out and (tok.startswith('(') or tok == 'ๆ' or tok.isascii() or out[-1].count('(') > out[-1].count(')')):
+            out[-1] += ' ' + tok
+        else:
+            out.append(tok)
+    return ', '.join(out)
 
 
 def load_words():
@@ -31,7 +44,7 @@ def load_words():
                     if not en or not th or '(' in en or en.lower() in seen:
                         continue
                     seen.add(en.lower())
-                    units[-1][1].append([en, th])
+                    units[-1][1].append([en, meanings(FIX.get(en.lower(), th))])
         merged = collections.OrderedDict()
         for n, ws in units:
             merged.setdefault(n, []).extend(ws)
