@@ -5,21 +5,21 @@ key point|ประเด็นสำคัญ;overview|ภาพรวม;wrap 
 advertising|การโฆษณา;promotion|การส่งเสริมการขาย การเลื่อนตำแหน่ง;slogan|สโลแกน;logo|โลโก้;market research|การวิจัยตลาด;survey|การสำรวจ;demographic|กลุ่มประชากร;loyalty card|บัตรสะสมแต้ม;wholesale|ขายส่ง;retail|ขายปลีก
 retailer|ผู้ค้าปลีก;supplier|ผู้จัดหาสินค้า;distributor|ผู้จัดจำหน่าย;warehouse|คลังสินค้า;inventory|สินค้าคงคลัง;shipment|การขนส่งสินค้า;invoice|ใบแจ้งหนี้;quotation|ใบเสนอราคา;warranty|การรับประกันสินค้า;complaint|ข้อร้องเรียน
 # วิทยาศาสตร์และการทดลอง B2
-microscope|กล้องจุลทรรศน์;telescope|กล้องโทรทรรศน์;specimen|ตัวอย่าง (ทดลอง);observation|การสังเกต;conclusion|ข้อสรุป;variable factor|ปัจจัยตัวแปร;control group|กลุ่มควบคุม;accuracy|ความแม่นยำ;reliability|ความน่าเชื่อถือ;validity|ความเที่ยงตรง
-radiation|รังสี;friction|แรงเสียดทาน;velocity|ความเร็ว (มีทิศทาง);momentum force|แรงโมเมนตัม;circuit|วงจร;voltage|แรงดันไฟฟ้า;magnet|แม่เหล็ก;acid|กรด;mixture|ของผสม;dissolve in water|ละลายในน้ำ
+microscope|กล้องจุลทรรศน์;telescope|กล้องโทรทรรศน์;specimen|ตัวอย่าง;observation|การสังเกต;conclusion|ข้อสรุป;variable factor|ปัจจัยตัวแปร;control group|กลุ่มควบคุม;accuracy|ความแม่นยำ;reliability|ความน่าเชื่อถือ;validity|ความเที่ยงตรง
+radiation|รังสี;friction|แรงเสียดทาน;velocity|ความเร็ว;momentum force|แรงโมเมนตัม;circuit|วงจร;voltage|แรงดันไฟฟ้า;magnet|แม่เหล็ก;acid|กรด;mixture|ของผสม;dissolve in water|ละลายในน้ำ
 # อินเทอร์เน็ตและสังคมออนไลน์
 cyberbullying|การกลั่นแกล้งทางไซเบอร์;scam|การหลอกลวง;phishing|ฟิชชิ่ง;spam|สแปม;fake news|ข่าวปลอม;screen time|เวลาหน้าจอ;digital detox|การพักจากหน้าจอ;online presence|ตัวตนออนไลน์;netiquette|มารยาทออนไลน์;troll|ผู้ป่วนในโลกออนไลน์
-hashtag|แฮชแท็ก;livestream|ถ่ายทอดสด;subscriber|ผู้ติดตาม (สมาชิก);content creator|ผู้สร้างคอนเทนต์;algorithm feed|ฟีดตามอัลกอริทึม;data breach|ข้อมูลรั่วไหล;two-factor|การยืนยันสองขั้นตอน;backup|การสำรองข้อมูล;bug|ข้อบกพร่องของโปรแกรม;glitch|ข้อผิดพลาดชั่วคราว
+hashtag|แฮชแท็ก;livestream|ถ่ายทอดสด;subscriber|ผู้ติดตาม, สมาชิก;content creator|ผู้สร้างคอนเทนต์;algorithm feed|ฟีดตามอัลกอริทึม;data breach|ข้อมูลรั่วไหล;two-factor|การยืนยันสองขั้นตอน;backup|การสำรองข้อมูล;bug|ข้อบกพร่องของโปรแกรม;glitch|ข้อผิดพลาดชั่วคราว
 # สิ่งแวดล้อมและเมืองสีเขียว
 eco-friendly|เป็นมิตรต่อสิ่งแวดล้อม;biodegradable|ย่อยสลายได้;single-use|ใช้ครั้งเดียว;carbon neutral|ความเป็นกลางทางคาร์บอน;green space|พื้นที่สีเขียว;electric car|รถยนต์ไฟฟ้า;car sharing|การใช้รถร่วมกัน;water shortage|การขาดแคลนน้ำ;rising sea level|ระดับน้ำทะเลสูงขึ้น;heat island|เกาะความร้อน
 conserve energy|ประหยัดพลังงาน;footprint|รอยเท้า;irrigation|การชลประทาน;reforestation|การปลูกป่าทดแทน;sustainability|ความยั่งยืน;toxic|เป็นพิษ;waste management|การจัดการขยะ;wildlife reserve|เขตรักษาพันธุ์สัตว์ป่า;natural resources|ทรัพยากรธรรมชาติ;environmentalist|นักสิ่งแวดล้อม
 # คำกริยา B2 ชุดเสริม
 renew|ต่ออายุ;reproduce|สืบพันธุ์ ทำซ้ำ;resemble|คล้ายกับ;resign from|ลาออกจาก;resist|ต่อต้าน;retrieve|เรียกคืน;reverse|ย้อนกลับ;revive|ฟื้นคืน;scatter|โปรยกระจาย;seize|ยึด คว้า
-shatter|แตกละเอียด;simulate|จำลอง;speculate|คาดเดา;steer|บังคับทิศทาง;stumble|สะดุด;subscribe|สมัครรับ;suspend|ระงับ แขวน;sway|แกว่ง โน้มน้าว;tackle|จัดการกับ (ปัญหา);terminate|ยุติ
+shatter|แตกละเอียด;simulate|จำลอง;speculate|คาดเดา;steer|บังคับทิศทาง;stumble|สะดุด;subscribe|สมัครรับ;suspend|ระงับ แขวน;sway|แกว่ง โน้มน้าว;tackle|จัดการกับปัญหา;terminate|ยุติ
 thrive|เจริญรุ่งเรือง;tolerate|อดทนต่อ;trace|ติดตามร่องรอย;transform into|เปลี่ยนเป็น;trigger|กระตุ้นให้เกิด;undergo|ประสบ ผ่าน;undertake|รับทำ;unify|รวมเป็นหนึ่ง;uphold|รักษา ยึดถือ;utilize|ใช้ประโยชน์
 vanish|หายไปอย่างไร้ร่องรอย;verify facts|ตรวจสอบข้อเท็จจริง;vow|ปฏิญาณ;weaken|ทำให้อ่อนแอลง;withdraw from|ถอนตัวจาก;withstand|ทนทาน;witness an event|เห็นเหตุการณ์;worsen|แย่ลง;yield|ให้ผล ยอมแพ้;zoom in|ซูมเข้า
 # คำคุณศัพท์ B2 ชุดเสริม
 inclusive|ครอบคลุมทุกคน;incompatible|เข้ากันไม่ได้;inconsistent|ไม่สม่ำเสมอ;indifferent|ไม่แยแส;inefficient|ไร้ประสิทธิภาพ;inferior|ด้อยกว่า;influential|มีอิทธิพล;informative|ให้ความรู้;ingenious|ฉลาดหลักแหลม;innovative|มีนวัตกรรม
-insufficient|ไม่เพียงพอ;integral|สำคัญเป็นส่วนหนึ่ง;irrelevant|ไม่เกี่ยวข้อง;irresponsible|ไร้ความรับผิดชอบ;lenient|ผ่อนปรน;lucrative|ทำกำไรดี;marginal|เล็กน้อย ชายขอบ;mediocre|ธรรมดา ไม่ดีไม่เลว;meaningful|มีความหมาย;minimal|น้อยที่สุด
+insufficient|ไม่เพียงพอ;integral|เป็นส่วนสำคัญ;irrelevant|ไม่เกี่ยวข้อง;irresponsible|ไร้ความรับผิดชอบ;lenient|ผ่อนปรน;lucrative|ทำกำไรดี;marginal|เล็กน้อย ชายขอบ;mediocre|ธรรมดา ไม่ดีไม่เลว;meaningful|มีความหมาย;minimal|น้อยที่สุด
 moderate|ปานกลาง;monotonous|ซ้ำซากจำเจ;notorious|ฉาวโฉ่;obscure|คลุมเครือ ไม่เป็นที่รู้จัก;optimal|เหมาะสมที่สุด;outdated|ล้าสมัย;outstanding|โดดเด่น ค้างชำระ;overwhelming|ท่วมท้น;persistent|ไม่ลดละ;persuasive|โน้มน้าวใจ
-prestigious|มีชื่อเสียงเกียรติยศ;prevalent|แพร่หลาย;radical|สุดโต่ง ถอนรากถอนโคน;redundant|ซ้ำซ้อน;remarkable|โดดเด่นน่าทึ่ง;renowned|มีชื่อเสียง;respective|ตามลำดับของแต่ละคน;restless|กระสับกระส่าย;rewarding|คุ้มค่า ให้ผลดี;spontaneous|ฉับพลันโดยธรรมชาติ
+prestigious|มีชื่อเสียงเกียรติยศ;prevalent|แพร่หลาย;radical|สุดโต่ง ถอนรากถอนโคน;redundant|ซ้ำซ้อน;remarkable|โดดเด่นน่าทึ่ง;renowned|มีชื่อเสียง;respective|ตามลำดับของแต่ละคน;restless|กระสับกระส่าย;rewarding|คุ้มค่า ให้ผลดี;spontaneous|เป็นไปเอง, ไม่ได้วางแผน

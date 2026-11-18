@@ -3,16 +3,16 @@ colleague support|การสนับสนุนจากเพื่อน�
 compliance|การปฏิบัติตามกฎ;liability|หนี้สิน ความรับผิด;negligence|ความประมาทเลินเล่อ;dismissal|การไล่ออก;redundancy|การเลิกจ้าง;vacancy|ตำแหน่งว่าง;applicant|ผู้สมัครงาน;résumé|ประวัติย่อ;reference letter|จดหมายรับรอง;probation|ช่วงทดลองงาน
 # ความคิดและเหตุผล
 logic|ตรรกะ;reasoning|การให้เหตุผล;premise|สมมติฐานตั้งต้น;fallacy|ตรรกะวิบัติ;paradox|ความย้อนแย้ง;contradiction|ความขัดแย้งกันเอง;inference|การอนุมาน;deduction|การนิรนัย การหักลบ;speculation|การคาดเดา;skeptical|ช่างสงสัย
-plausible|น่าเชื่อถือพอสมควร;valid|มีเหตุผล ใช้ได้;invalid|ใช้ไม่ได้;rationale|เหตุผลเบื้องหลัง;criterion-based|อิงเกณฑ์;objectivity|ความเป็นกลาง;subjective|ตามความรู้สึก;interpretation|การตีความ;assumption made|ข้อสันนิษฐานที่ตั้งไว้;verify|ตรวจสอบความจริง
+plausible|น่าเชื่อถือพอสมควร;valid|ใช้ได้, ถูกต้องตามหลัก;invalid|ใช้ไม่ได้;rationale|เหตุผลเบื้องหลัง;criterion-based|อิงเกณฑ์;objectivity|ความเป็นกลาง;subjective|ตามความรู้สึก;interpretation|การตีความ;assumption made|ข้อสันนิษฐานที่ตั้งไว้;verify|ตรวจสอบความจริง
 # สิ่งแวดล้อมและพลังงาน B2
 fossil fuel|เชื้อเพลิงฟอสซิล;coal|ถ่านหิน;nuclear|นิวเคลียร์;wind turbine|กังหันลม;solar panel|แผงโซลาร์;hydropower|พลังน้ำ;carbon footprint|รอยเท้าคาร์บอน;landfill|หลุมฝังกลบขยะ;compost|ปุ๋ยหมัก;pesticide|ยาฆ่าแมลง
 erosion|การกัดเซาะ;drought-resistant|ทนแล้ง;endangered|ใกล้สูญพันธุ์;poaching|การลักลอบล่าสัตว์;marine|ทางทะเล;coral reef|แนวปะการัง;rainforest|ป่าฝน;wetland|พื้นที่ชุ่มน้ำ;ozone layer|ชั้นโอโซน;smog|หมอกควันพิษ
 # กีฬาและสุขภาพ B2
-endurance|ความอดทน;stamina|ความอึด;flexibility|ความยืดหยุ่น;injury time|ทดเวลาบาดเจ็บ;sprain|ข้อเท้าแพลง;warm up|อบอุ่นร่างกาย;cool down|คลายกล้ามเนื้อ;spectator|ผู้ชมกีฬา;amateur|มือสมัครเล่น;professional|มืออาชีพ
+endurance|ความอดทน;stamina|ความอึด;flexibility|ความยืดหยุ่น;injury time|ทดเวลาบาดเจ็บ;sprain|แพลง, เคล็ด;warm up|อบอุ่นร่างกาย;cool down|คลายกล้ามเนื้อ;spectator|ผู้ชมกีฬา;amateur|มือสมัครเล่น;professional|มืออาชีพ
 sponsor|ผู้สนับสนุน;trophy|ถ้วยรางวัล;league|ลีก;qualify|ผ่านเข้ารอบ;semi-final|รอบรองชนะเลิศ;final match|นัดชิงชนะเลิศ;penalty|ลูกโทษ บทลงโทษ;doping|การใช้สารกระตุ้น;fair play|น้ำใจนักกีฬา;comeback|การกลับมา
 # ศิลปะและการออกแบบ B2
 aesthetic|สุนทรียะ;composition|การจัดองค์ประกอบ บทประพันธ์;contemporary art|ศิลปะร่วมสมัย;masterpiece|ผลงานชิ้นเอก;portrait|ภาพบุคคล;sketch|ภาพร่าง;craftsmanship|ฝีมือช่าง;architecture|สถาปัตยกรรม;mural|ภาพจิตรกรรมฝาผนัง;installation|งานศิลปะจัดวาง
-genre|ประเภท (งานศิลป์);narrative|การเล่าเรื่อง;protagonist|ตัวเอก;villain|ตัวร้าย;climax|จุดไคลแมกซ์;metaphor|อุปมา;symbolism|การใช้สัญลักษณ์;satire|การเสียดสี;critic|นักวิจารณ์;review|บทวิจารณ์ ทบทวน
+genre|ประเภท, แนว;narrative|การเล่าเรื่อง;protagonist|ตัวเอก;villain|ตัวร้าย;climax|จุดไคลแมกซ์;metaphor|อุปมา;symbolism|การใช้สัญลักษณ์;satire|การเสียดสี;critic|นักวิจารณ์;review|บทวิจารณ์ ทบทวน
 # ความสัมพันธ์ระหว่างประเทศ
 diplomacy|การทูต;ambassador|เอกอัครราชทูต;embassy|สถานทูต;treaty|สนธิสัญญา;sanction|มาตรการคว่ำบาตร;sovereignty|อธิปไตย;territory|ดินแดน;conflict zone|พื้นที่ขัดแย้ง;ceasefire|การหยุดยิง;humanitarian|ด้านมนุษยธรรม
 summit|การประชุมสุดยอด ยอดเขา;delegation|คณะผู้แทน;alliance treaty|สนธิสัญญาพันธมิตร;invasion|การรุกราน;occupation|การยึดครอง อาชีพ;rebellion|การกบฏ;revolution|การปฏิวัติ;independence|เอกราช;colony|อาณานิคม;empire|จักรวรรดิ
@@ -24,5 +24,5 @@ relatively|ค่อนข้าง;roughly|โดยประมาณ;seemingl
 hesitate|ลังเล;illuminate|ส่องสว่าง;imitate|เลียนแบบ;immerse|จุ่ม ดื่มด่ำ;incorporate|รวมเข้าไว้;induce|ชักนำ;inhabit|อาศัยอยู่;inherit|รับมรดก;inhibit|ยับยั้ง;initiate|ริเริ่ม
 inject|ฉีด;innovate|คิดค้นสิ่งใหม่;inquire|สอบถาม;inspect|ตรวจตรา;integrate|บูรณาการ;intervene|แทรกแซง;intimidate|ข่มขู่;invade|รุกราน;isolate|แยกออก;manipulate|ควบคุมบงการ
 mediate|ไกล่เกลี่ย;migrate|อพยพย้ายถิ่น;mobilize|ระดม;neglect|ละเลย;nominate|เสนอชื่อ;oblige|บังคับ ให้ความช่วยเหลือ;offend|ทำให้ขุ่นเคือง;oppose|คัดค้าน;outweigh|มีน้ำหนักมากกว่า;overcome|เอาชนะ
-overlook|มองข้าม;persist|ยืนหยัด;portray|พรรณนา;possess|ครอบครอง;postpone|เลื่อนออกไป;precede|มาก่อน;prohibit|ห้าม (อย่างเป็นทางการ);prolong|ยืดเวลา;provoke|ยั่วยุ;qualify for|มีคุณสมบัติสำหรับ
+overlook|มองข้าม;persist|ยืนหยัด;portray|พรรณนา;possess|ครอบครอง;postpone|เลื่อนออกไป;precede|มาก่อน;prohibit|ห้าม;prolong|ยืดเวลา;provoke|ยั่วยุ;qualify for|มีคุณสมบัติสำหรับ
 reckon|คิดว่า;reconcile|คืนดี;recruit staff|รับพนักงาน;refine|ขัดเกลา;reform|ปฏิรูป;rehearse|ซ้อม;reinstate|คืนตำแหน่ง;relieve|บรรเทา;relocate|ย้ายที่ตั้ง;render|ทำให้เป็น

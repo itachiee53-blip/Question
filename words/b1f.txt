@@ -12,4 +12,4 @@ own|เป็นเจ้าของ;participate in|เข้าร่วมใ
 react|ตอบสนอง;recommend a film|แนะนำหนัง;record a video|อัดวิดีโอ;recover from|ฟื้นตัวจาก;reduce stress|ลดความเครียด;reflect|สะท้อน ไตร่ตรอง;register|ลงทะเบียน;relate to|เกี่ยวข้องกับ เข้าใจ;release|ปล่อย;rely on|พึ่งพา
 # คำนาม B1 ชุดปิดท้าย
 aim|เป้าหมาย เล็ง;angle|มุม;atmosphere at home|บรรยากาศในบ้าน;audience size|จำนวนผู้ชม;background|พื้นหลัง ภูมิหลัง;balance sheet|งบดุล;category|หมวดหมู่;centre|ศูนย์กลาง;challenge accepted|รับคำท้า;climate zone|เขตภูมิอากาศ
-contest|การประกวด;crew member|ลูกเรือคนหนึ่ง;detail|รายละเอียด;feature|ลักษณะเด่น;figure|ตัวเลข รูปร่าง;force|แรง บังคับ;image|ภาพ;level|ระดับ;mixture of|ส่วนผสมของ;pattern|ลวดลาย รูปแบบ
+contest|การประกวด;crew member|สมาชิกลูกเรือ;detail|รายละเอียด;feature|ลักษณะเด่น;figure|ตัวเลข รูปร่าง;force|แรง บังคับ;image|ภาพ;level|ระดับ;mixture of|ส่วนผสมของ;pattern|ลวดลาย รูปแบบ

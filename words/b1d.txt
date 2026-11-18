@@ -10,7 +10,7 @@ take-off|การขึ้นบิน;pilot announcement|ประกาศจ
 starter|อาหารเรียกน้ำย่อย;main course|อาหารจานหลัก;bill please|เก็บเงินด้วย;tip|ทิป เคล็ดลับ;chef's special|เมนูพิเศษของเชฟ;buffet|บุฟเฟต์;vegan|วีแกน;gluten-free|ปลอดกลูเตน;home-made|ทำเอง;well done|สุกมาก ทำได้ดี
 rare steak|สเต๊กสุกน้อย;spicy food|อาหารเผ็ด;street food|อาหารริมทาง;food stall|แผงขายอาหาร;fast food|อาหารจานด่วน;leftovers|อาหารเหลือ;doggy bag|ถุงห่ออาหารเหลือ;table manners|มารยาทบนโต๊ะอาหาร;reservation name|ชื่อที่จองไว้;waitress|พนักงานเสิร์ฟหญิง
 # อาชีพ B1 เพิ่มเติม
-firefighter|นักดับเพลิง;paramedic|เจ้าหน้าที่กู้ชีพ;detective|นักสืบ;judge job|อาชีพผู้พิพากษา;politician|นักการเมือง;economist|นักเศรษฐศาสตร์;psychologist|นักจิตวิทยา;veterinarian|สัตวแพทย์ (เต็ม);consultant|ที่ปรึกษา;freelancer|ฟรีแลนซ์
+firefighter|นักดับเพลิง;paramedic|เจ้าหน้าที่กู้ชีพ;detective|นักสืบ;judge job|อาชีพผู้พิพากษา;politician|นักการเมือง;economist|นักเศรษฐศาสตร์;psychologist|นักจิตวิทยา;veterinarian|สัตวแพทย์;consultant|ที่ปรึกษา;freelancer|ฟรีแลนซ์
 # สิ่งของในชีวิตประจำวัน B1
 keyring|พวงกุญแจ;lighter|ไฟแช็ก;tissue|ทิชชู;mask|หน้ากาก;comb (tool)|หวี;razor|มีดโกน;shampoo|แชมพู;lotion|โลชั่น;perfume|น้ำหอม;deodorant|ยาระงับกลิ่นกาย
 calendar app|แอปปฏิทิน;power bank|แบตสำรอง;earphones|หูฟังแบบเสียบ;notebook computer|คอมพิวเตอร์โน้ตบุ๊ก;sticky note|กระดาษโน้ต;envelope|ซองจดหมาย;postcard|โปสการ์ด;label|ฉลาก ป้าย;container|ภาชนะ;jar|โหล
@@ -19,7 +19,7 @@ assemble furniture|ประกอบเฟอร์นิเจอร์;bend m
 press|กด;rub|ถู;scratch|ข่วน ขีด;seal a box|ปิดผนึกกล่อง;shine|ส่องแสง เป็นเงา;sink below|จมลง;soak|แช่;split|แยก แบ่ง;stack|ซ้อน;wrap|ห่อ
 # ความรู้ทั่วไป
 history book|หนังสือประวัติศาสตร์;ancient times|สมัยโบราณ;kingdom|ราชอาณาจักร;emperor|จักรพรรดิ;battle|การสู้รบ;castle|ปราสาท;knight|อัศวิน;pyramid|พีระมิด;statue|รูปปั้น;ruins|ซากปรักหักพัง
-explorer|นักสำรวจ;voyage|การเดินทางทางทะเล;discovery|การค้นพบ;treasure|สมบัติ;legend|ตำนาน;myth|ปรัมปรา เรื่องเล่า;hero story|เรื่องวีรบุรุษ;fairy tale|เทพนิยาย;ghost|ผี;dragon|มังกร
+explorer|นักสำรวจ;voyage|การเดินทางทางทะเล;discovery|การค้นพบ;treasure|สมบัติ;legend|ตำนาน;myth|ตำนาน, เรื่องปรัมปรา;hero story|เรื่องวีรบุรุษ;fairy tale|เทพนิยาย;ghost|ผี;dragon|มังกร
 # คำคุณศัพท์ B1 ชุดสุดท้าย
 jealous of|อิจฉา;loyal|ซื่อสัตย์ จงรักภักดี;mature|เป็นผู้ใหญ่;moody|อารมณ์แปรปรวน;mysterious|ลึกลับ;narrow-minded|ใจแคบ;open-minded|ใจกว้าง เปิดรับ;organised|เป็นระเบียบ;outgoing|ชอบเข้าสังคม;patient|อดทน
 practical|ใช้ได้จริง;reasonable|สมเหตุสมผล;reliable|เชื่อถือได้;responsible|รับผิดชอบ;sensible choice|ทางเลือกที่มีเหตุผล;sociable|ชอบสังคม;strict|เข้มงวด;talented|มีพรสวรรค์;thoughtful|รอบคอบ ใส่ใจ;tolerant|อดทนอดกลั้น

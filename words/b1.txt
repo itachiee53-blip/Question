@@ -1,16 +1,16 @@
 # การศึกษาและการเรียนรู้
-achieve|ทำสำเร็จ;attend|เข้าร่วม;behave|ประพฤติ;concentrate|ตั้งสมาธิ;memorize|ท่องจำ;revise|ทบทวน;research|วิจัย ค้นคว้า;method|วิธีการ;theory|ทฤษฎี;fact|ข้อเท็จจริง
+achieve|ทำสำเร็จ;attend|เข้าร่วม;behave|ประพฤติ;concentrate|มีสมาธิ, จดจ่อ;memorize|ท่องจำ;revise|ทบทวน;research|วิจัย ค้นคว้า;method|วิธีการ;theory|ทฤษฎี;fact|ข้อเท็จจริง
 opinion|ความคิดเห็น;argument|ข้อโต้แย้ง;evidence|หลักฐาน;reason|เหตุผล;purpose|จุดประสงค์;effort|ความพยายาม;progress|ความก้าวหน้า;ability|ความสามารถ;talent|พรสวรรค์;intelligent|ฉลาด หลักแหลม
 qualification|คุณวุฒิ;certificate|ประกาศนียบัตร;graduate|สำเร็จการศึกษา;scholarship|ทุนการศึกษา;lecture|การบรรยาย;professor|ศาสตราจารย์;semester|ภาคเรียน;assignment|งานที่มอบหมาย;deadline|กำหนดส่ง;essay|เรียงความ
 # งานและอาชีพ
-apply|สมัคร;application|ใบสมัคร;employ|จ้างงาน;hire|ว่าจ้าง;fire (job)|ไล่ออก;retire|เกษียณ;promote|เลื่อนตำแหน่ง;colleague|เพื่อนร่วมงาน;client|ลูกค้า (ธุรกิจ);staff|พนักงาน
+apply|สมัคร;application|ใบสมัคร;employ|จ้างงาน;hire|ว่าจ้าง;fire (job)|ไล่ออก;retire|เกษียณ;promote|เลื่อนตำแหน่ง;colleague|เพื่อนร่วมงาน;client|ลูกค้า;staff|พนักงาน
 earn|หาเงินได้;income|รายได้;tax|ภาษี;contract|สัญญา;experience at work|ประสบการณ์ทำงาน;responsibility|ความรับผิดชอบ;task|ภารกิจ;duty|หน้าที่;organize|จัดการ;manage|บริหาร
 profession|วิชาชีพ;industry|อุตสาหกรรม;trade|การค้า;market price|ราคาตลาด;product|ผลิตภัณฑ์;produce|ผลิต;supply|จัดหา อุปทาน;demand|ความต้องการ อุปสงค์;profit|กำไร;loss|การขาดทุน
 # การสื่อสารและสื่อ
-communicate|สื่อสาร;conversation|บทสนทนา;discussion|การอภิปราย;announce|ประกาศ;inform|แจ้ง;mention|กล่าวถึง;suggest|แนะนำ;recommend|แนะนำ (ให้ใช้);advise|ให้คำปรึกษา;warn|เตือน
+communicate|สื่อสาร;conversation|บทสนทนา;discussion|การอภิปราย;announce|ประกาศ;inform|แจ้ง;mention|กล่าวถึง;suggest|แนะนำ;recommend|แนะนำ;advise|ให้คำปรึกษา;warn|เตือน
 media|สื่อ;broadcast|ออกอากาศ;channel|ช่อง;advertisement|โฆษณา;article|บทความ;headline|พาดหัวข่าว;reporter|ผู้สื่อข่าว;interview question|คำถามสัมภาษณ์;social media|โซเชียลมีเดีย;post|โพสต์ ไปรษณีย์
 # ความสัมพันธ์
-relationship|ความสัมพันธ์;partner|คู่หู;couple|คู่รัก;marry|แต่งงาน;divorce|หย่า;trust|ไว้ใจ;respect|เคารพ;support|สนับสนุน;argue|ทะเลาะ;forgive|ให้อภัย
+relationship|ความสัมพันธ์;partner|คู่หู, คู่ชีวิต;couple|คู่รัก;marry|แต่งงาน;divorce|หย่า;trust|ไว้ใจ;respect|เคารพ;support|สนับสนุน;argue|ทะเลาะ;forgive|ให้อภัย
 apologize|ขอโทษ;blame|โทษ;encourage|ให้กำลังใจ;admire|ชื่นชม;appreciate|ซาบซึ้ง;depend|พึ่งพา;relative|ญาติ;generation|รุ่น;childhood|วัยเด็ก;teenager|วัยรุ่น
 adult|ผู้ใหญ่;elderly|ผู้สูงอายุ;stranger|คนแปลกหน้า;member|สมาชิก;community|ชุมชน;society|สังคม;culture|วัฒนธรรม;tradition|ประเพณี;custom|ธรรมเนียม;belief|ความเชื่อ
 # สุขภาพและร่างกาย
@@ -24,19 +24,19 @@ technology|เทคโนโลยี;invent|ประดิษฐ์;invention
 data|ข้อมูล;network|เครือข่าย;digital|ดิจิทัล;electric|ไฟฟ้า;electricity|กระแสไฟฟ้า;power|พลัง อำนาจ;signal|สัญญาณ;system|ระบบ;robotics|วิทยาการหุ่นยนต์;space|อวกาศ ที่ว่าง
 planet|ดาวเคราะห์;universe|จักรวาล;gravity|แรงโน้มถ่วง;atom|อะตอม;oxygen|ออกซิเจน;liquid|ของเหลว;solid|ของแข็ง;gas|แก๊ส;measure|วัด;calculate|คำนวณ
 # อารมณ์และความรู้สึก
-emotion|อารมณ์;anxiety|ความวิตกกังวล;fear|ความกลัว;joy|ความยินดี;anger|ความโกรธ;sadness|ความเศร้า;pleasure|ความพอใจ;regret|เสียใจภายหลัง;sympathy|ความเห็นใจ;mood|อารมณ์ (ขณะนั้น)
+emotion|อารมณ์;anxiety|ความวิตกกังวล;fear|ความกลัว;joy|ความยินดี;anger|ความโกรธ;sadness|ความเศร้า;pleasure|ความพอใจ;regret|เสียใจภายหลัง;sympathy|ความเห็นใจ;mood|อารมณ์
 annoyed|รำคาญ;frightened|ตกใจกลัว;delighted|ยินดีมาก;amazed|ประหลาดใจมาก;anxious|วิตกกังวล;confident|มั่นใจ;curious|อยากรู้อยากเห็น;furious|โกรธจัด;hopeful|มีความหวัง;miserable|ทุกข์ใจ
 # การเดินทางและสถานที่
 destination|จุดหมายปลายทาง;route|เส้นทาง;traffic|การจราจร;traffic jam|รถติด;crossroads|สี่แยก;pavement|ทางเท้า;highway|ทางหลวง;tunnel|อุโมงค์;harbor|ท่าเรือ;passenger|ผู้โดยสาร
 accommodation|ที่พัก;hostel|โฮสเทล;resort|รีสอร์ต;check in|เช็กอิน;check out|เช็กเอาต์;departure|การออกเดินทาง;arrival|การมาถึง;customs|ศุลกากร;currency|สกุลเงิน;tourism|การท่องเที่ยว
 # อาชญากรรมและกฎหมาย
-crime|อาชญากรรม;criminal|อาชญากร;thief|ขโมย;steal|ขโมย (กริยา);rob|ปล้น;arrest|จับกุม;prison|เรือนจำ;court|ศาล;judge|ผู้พิพากษา ตัดสิน;law|กฎหมาย
+crime|อาชญากรรม;criminal|อาชญากร;thief|หัวขโมย;steal|ขโมย;rob|ปล้น;arrest|จับกุม;prison|เรือนจำ;court|สนามกีฬา, ศาล;judge|ผู้พิพากษา ตัดสิน;law|กฎหมาย
 illegal|ผิดกฎหมาย;legal|ถูกกฎหมาย;punish|ลงโทษ;witness|พยาน;victim|เหยื่อ;guilty|มีความผิด;innocent|บริสุทธิ์;fine (penalty)|ค่าปรับ;investigate|สืบสวน;suspect|ผู้ต้องสงสัย
 # เงินและเศรษฐกิจ
 economy|เศรษฐกิจ;budget|งบประมาณ;loan|เงินกู้;debt|หนี้;invest|ลงทุน;saving|เงินออม;bill|ใบแจ้งหนี้;fee|ค่าธรรมเนียม;wealth|ความมั่งคั่ง;poverty|ความยากจน
 # คำกริยาระดับ B1
-accept|ยอมรับ;refuse|ปฏิเสธ;admit|ยอมรับ (ผิด);deny|ปฏิเสธ (ข้อกล่าวหา);avoid|หลีกเลี่ยง;prevent|ป้องกัน;include|รวมถึง;involve|เกี่ยวข้อง;increase|เพิ่มขึ้น;decrease|ลดลง
-develop|พัฒนา;create|สร้างสรรค์;design|ออกแบบ;establish|ก่อตั้ง;provide|จัดหาให้;require|ต้องการ (จำเป็น);consider|พิจารณา;expect|คาดหวัง;imagine|จินตนาการ;realize|ตระหนัก
+accept|ยอมรับ;refuse|ปฏิเสธ;admit|ยอมรับ, ยอมรับผิด;deny|ปฏิเสธ;avoid|หลีกเลี่ยง;prevent|ป้องกัน;include|รวมถึง;involve|เกี่ยวข้อง;increase|เพิ่มขึ้น;decrease|ลดลง
+develop|พัฒนา;create|สร้างสรรค์;design|ออกแบบ;establish|ก่อตั้ง;provide|จัดหาให้;require|ต้องการ, จำเป็นต้องมี;consider|พิจารณา;expect|คาดหวัง;imagine|จินตนาการ;realize|ตระหนัก
 recognize|จำได้ ยอมรับ;notice|สังเกต;observe|สังเกตการณ์;predict|ทำนาย;solve|แก้ปัญหา;succeed|ประสบความสำเร็จ;manage to|ทำได้สำเร็จ;deal with|จัดการกับ;cope|รับมือ;survive|รอดชีวิต
 attack|โจมตี;defend|ป้องกันตัว;escape|หลบหนี;rescue|ช่วยชีวิต;destroy|ทำลาย;damage|ทำความเสียหาย;explode|ระเบิด;shake|เขย่า สั่น;burn|เผา ไหม้;freeze|แช่แข็ง
 # คำคุณศัพท์ระดับ B1
@@ -44,12 +44,12 @@ available|ว่าง มีให้ใช้;necessary|จำเป็น;use
 common|ทั่วไป;rare|หายาก;ordinary|ธรรมดา;unusual|ผิดปกติ;obvious|ชัดเจน;clear|ชัดเจน ใส;complicated|ซับซ้อน;accurate|แม่นยำ;exact|ถูกต้องแน่นอน;extreme|สุดขั้ว
 negative|ด้านลบ;positive|ด้านบวก;certain|แน่นอน;likely|น่าจะเป็น;unlikely|ไม่น่าเป็นไปได้;permanent|ถาวร;temporary|ชั่วคราว;ancient|โบราณ;local|ท้องถิ่น;international|นานาชาติ
 # คำนามนามธรรม
-advantage|ข้อได้เปรียบ;disadvantage|ข้อเสียเปรียบ;benefit|ประโยชน์;risk|ความเสี่ยง;chance|โอกาส;opportunity|โอกาส (ที่ดี);situation|สถานการณ์;condition|เงื่อนไข สภาพ;problem|ปัญหา;solution|ทางแก้
+advantage|ข้อได้เปรียบ;disadvantage|ข้อเสียเปรียบ;benefit|ประโยชน์;risk|ความเสี่ยง;chance|โอกาส;opportunity|โอกาส;situation|สถานการณ์;condition|เงื่อนไข สภาพ;problem|ปัญหา;solution|ทางแก้
 choice|ทางเลือก;decision|การตัดสินใจ;difference|ความแตกต่าง;effect|ผลกระทบ;cause|สาเหตุ;influence|อิทธิพล;quality|คุณภาพ;quantity|ปริมาณ;value|คุณค่า;goal setting|การตั้งเป้าหมาย
 freedom|อิสรภาพ;peace|สันติภาพ;war|สงคราม;truth|ความจริง;honesty|ความซื่อสัตย์;success|ความสำเร็จ;failure|ความล้มเหลว;skill level|ระดับทักษะ;attitude|ทัศนคติ;behavior|พฤติกรรม
 # บ้านและชีวิตประจำวัน
 furniture|เฟอร์นิเจอร์;appliance|เครื่องใช้ไฟฟ้า;washing machine|เครื่องซักผ้า;microwave|ไมโครเวฟ;heater|เครื่องทำความร้อน;air conditioner|เครื่องปรับอากาศ;basement|ห้องใต้ดิน;balcony|ระเบียง;ceiling|เพดาน;garage|โรงรถ
 routine|กิจวัตร;schedule|ตารางเวลา;errand|ธุระ;chore|งานบ้านเล็ก ๆ;commute|เดินทางไปทำงาน;lifestyle|วิถีชีวิต;leisure|เวลาว่าง;activity|กิจกรรม;weekend plan|แผนวันหยุด;spare time|เวลาว่าง
 # อาหารและการกิน (B1)
-cuisine|อาหาร (ของชาติ);flavor|รสชาติ;spice|เครื่องเทศ;raw|ดิบ;cooked|สุก;frozen|แช่แข็ง (คุณศัพท์);organic|ออร์แกนิก;portion|ส่วน (อาหาร);dairy|ผลิตภัณฑ์นม;seafood|อาหารทะเล
+cuisine|อาหารประจำชาติ, อาหาร;flavor|รสชาติ;spice|เครื่องเทศ;raw|ดิบ;cooked|สุก;frozen|แช่แข็ง;organic|ออร์แกนิก;portion|ส่วน, ปริมาณอาหาร;dairy|ผลิตภัณฑ์นม;seafood|อาหารทะเล
 grain|ธัญพืช;protein|โปรตีน;calorie|แคลอรี;starving|หิวโหย;appetite|ความอยากอาหาร;tasty|อร่อย;bland|จืด;crispy|กรอบ;juicy|ฉ่ำ;greasy|มันเยิ้ม

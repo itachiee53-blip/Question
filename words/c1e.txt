@@ -10,12 +10,12 @@ decarbonize|ลดการปล่อยคาร์บอน;geoengineering|�
 # เทคโนโลยีขั้นสูง C1
 machine learning|การเรียนรู้ของเครื่อง;neural network|โครงข่ายประสาทเทียม;blockchain|บล็อกเชน;quantum computing|การคำนวณควอนตัม;biometrics|ไบโอเมตริกซ์;nanotechnology|นาโนเทคโนโลยี;augmented reality|ความจริงเสริม;open source|โอเพนซอร์ส;deepfake|ดีปเฟก;latency|ความหน่วง
 # จิตใจและปรัชญาชีวิต
-contentment|ความพอใจในสิ่งที่มี;equanimity|อุเบกขา ความสงบใจ;fulfillment|ความรู้สึกสมบูรณ์;humility|ความถ่อมตน;integrity of character|ความซื่อตรงของบุคลิก;perseverance|ความเพียร;self-discipline|การมีวินัยในตนเอง;serenity|ความสงบสุข;transcendence|การก้าวข้าม;virtue|คุณธรรม
+contentment|ความพอใจในสิ่งที่มี;equanimity|ความสงบใจ, ความใจเย็น;fulfillment|ความรู้สึกสมบูรณ์;humility|ความถ่อมตน;integrity of character|ความซื่อตรงของบุคลิก;perseverance|ความเพียร;self-discipline|การมีวินัยในตนเอง;serenity|ความสงบสุข;transcendence|การก้าวข้าม;virtue|คุณธรรม
 # คำกริยา C1 ชุดสุดท้าย
-patronize|ทำตัวเหนือกว่า อุดหนุน;permeate|แทรกซึม;perpetrate|ก่อ (อาชญากรรม);pilfer|ลักเล็กขโมยน้อย;placate an angry crowd|ทำให้ฝูงชนสงบ;preclude|ทำให้เป็นไปไม่ได้;proffer|ยื่นเสนอ;promulgate|ประกาศใช้;rebuke|ตำหนิ;recant|ถอนคำพูด
+patronize|ทำตัวเหนือกว่า อุดหนุน;permeate|แทรกซึม;perpetrate|ก่ออาชญากรรม;pilfer|ลักเล็กขโมยน้อย;placate an angry crowd|ทำให้ฝูงชนสงบ;preclude|ทำให้เป็นไปไม่ได้;proffer|ยื่นเสนอ;promulgate|ประกาศใช้;rebuke|ตำหนิ;recant|ถอนคำพูด
 reconcile differences|ปรับความเข้าใจ;relegate|ลดชั้น;remonstrate|คัดค้านประท้วง;reproach|ตำหนิด้วยความผิดหวัง;revere|เคารพบูชา;satiate|ทำให้อิ่มเต็มที่;scrutinize closely|ตรวจละเอียด;skew|ทำให้บิดเบือน;solicit|ขอร้อง ชักชวน;stifle|ปิดกั้น
 stipulate|กำหนดเงื่อนไข;subjugate|ทำให้ตกอยู่ใต้อำนาจ;substantiate a claim|ยืนยันข้อกล่าวอ้าง;supplant|เข้าแทนที่;tantalize|ยั่วให้อยาก;thwart|ขัดขวาง;transcend|ก้าวข้าม;truncate|ตัดให้สั้น;usurp|ช่วงชิงอำนาจ;vacillate|ลังเลไปมา
-venerate|เคารพนับถือ;vilify|ใส่ร้ายป้ายสี;vindicate|พิสูจน์ความบริสุทธิ์;waive|สละสิทธิ์ ยกเว้น;wane|ลดลง เสื่อมลง;wield|ใช้ (อำนาจ อาวุธ);wither|เหี่ยวเฉา;wrangle|ทะเลาะเถียง;yearn|โหยหา;zealously|อย่างกระตือรือร้น
+venerate|เคารพนับถือ;vilify|ใส่ร้ายป้ายสี;vindicate|พิสูจน์ความบริสุทธิ์;waive|สละสิทธิ์ ยกเว้น;wane|ลดลง เสื่อมลง;wield|ใช้, ถือครอง;wither|เหี่ยวเฉา;wrangle|ทะเลาะเถียง;yearn|โหยหา;zealously|อย่างกระตือรือร้น
 # คำนาม C1 ชุดสุดท้าย
 sanctity|ความศักดิ์สิทธิ์;scourge|ภัยร้าย;semblance of order|ความเป็นระเบียบภายนอก;sinecure|ตำแหน่งสบายได้เงินมาก;solidarity|ความเป็นน้ำหนึ่งใจเดียว;stalemate|ภาวะชะงักงัน;subterfuge|อุบาย;syndicate|องค์กรร่วม;tenure|การดำรงตำแหน่ง;travesty|การล้อเลียน การบิดเบือน
 treatise|บทความวิชาการ;tribulation|ความทุกข์ยาก;vagary|ความแปรปรวน;veneer|ภาพลักษณ์ผิวนอก;verisimilitude|ความน่าเชื่อว่าจริง;vestige|ร่องรอย;vicissitude|ความผันผวนของชีวิต;vigilance|ความระแวดระวัง;vocation|อาชีพที่ใจรัก;wherewithal|ทุนทรัพย์ที่จำเป็น

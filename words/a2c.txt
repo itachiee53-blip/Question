@@ -1,5 +1,5 @@
 # อาชีพและสถานที่ทำงาน A2
-baker|คนทำขนมปัง;cook|พ่อครัว แม่ครัว ทำอาหาร;gardener|คนสวน;hairstylist|ช่างทำผม (สไตลิสต์);fisherman|ชาวประมง;postman|บุรุษไปรษณีย์;guard|ยาม;librarian|บรรณารักษ์;tailor|ช่างตัดเสื้อ;sailor|กะลาสี
+baker|คนทำขนมปัง;cook|พ่อครัว แม่ครัว ทำอาหาร;gardener|คนสวน;hairstylist|ช่างทำผม;fisherman|ชาวประมง;postman|บุรุษไปรษณีย์;guard|ยาม;librarian|บรรณารักษ์;tailor|ช่างตัดเสื้อ;sailor|กะลาสี
 astronaut|นักบินอวกาศ;inventor|นักประดิษฐ์;musician|นักดนตรี;painter|จิตรกร ช่างทาสี;writer|นักเขียน;model|นางแบบ แบบจำลอง;reporter job|งานนักข่าว;taxi driver|คนขับแท็กซี่;bus driver|คนขับรถบัส;shop assistant|พนักงานขาย
 # สัตว์และธรรมชาติ A2
 parrot talk|นกแก้วพูด;goldfish|ปลาทอง;hamster|แฮมสเตอร์;lizard|จิ้งจก;gecko|ตุ๊กแก;buffalo|ควาย;donkey|ลา;camel ride|การขี่อูฐ;rhino|แรด;hippo|ฮิปโป
@@ -10,12 +10,12 @@ eyebrow|คิ้ว;eyelash|ขนตา;forehead|หน้าผาก;wrist|�
 necklace|สร้อยคอ;earring|ต่างหู;bracelet|สร้อยข้อมือ;ring finger|นิ้วนาง;scarf|ผ้าพันคอ;gloves|ถุงมือ;boots|รองเท้าบูท;sandals|รองเท้าแตะ;trainers|รองเท้าผ้าใบ;pyjamas|ชุดนอน
 sweater|เสื้อไหมพรม;hoodie|เสื้อฮู้ด;jeans|กางเกงยีนส์;tie (clothes)|เนกไท;button|กระดุม;zip|ซิป;sleeve|แขนเสื้อ;collar|ปกเสื้อ;fashion|แฟชั่น;style|สไตล์
 # ประเทศและภาษา
-Thailand|ประเทศไทย;Japan|ญี่ปุ่น;China|จีน;Korea|เกาหลี;India|อินเดีย;England|อังกฤษ (ประเทศ);France|ฝรั่งเศส;Germany|เยอรมนี;America|อเมริกา;Australia|ออสเตรเลีย
+Thailand|ประเทศไทย;Japan|ญี่ปุ่น;China|จีน;Korea|เกาหลี;India|อินเดีย;England|ประเทศอังกฤษ;France|ฝรั่งเศส;Germany|เยอรมนี;America|อเมริกา;Australia|ออสเตรเลีย
 Japanese|ภาษาญี่ปุ่น;Chinese|ภาษาจีน;Korean|ภาษาเกาหลี;French|ภาษาฝรั่งเศส;German|ภาษาเยอรมัน;Spanish|ภาษาสเปน;nationality|สัญชาติ;Asia|เอเชีย;Europe|ยุโรป;Africa|แอฟริกา
 # ความรู้สึกต่อสิ่งต่าง ๆ
-prefer tea|ชอบชามากกว่า;can't stand|ทนไม่ได้;don't mind|ไม่ว่าอะไร;fond of|ชอบ;tired of|เบื่อ;afraid of|กลัว;angry with|โกรธใคร;worried about|กังวลเรื่อง;excited about|ตื่นเต้นกับ;surprised by|แปลกใจกับ
+prefer tea|ชอบชามากกว่า;can't stand|ทนไม่ได้;don't mind|ไม่ว่าอะไร;fond of|ชอบ;tired of|เบื่อ;afraid of|กลัว;angry with|โกรธ;worried about|กังวลเรื่อง;excited about|ตื่นเต้นกับ;surprised by|แปลกใจกับ
 # เวลาและตารางนัดหมาย
-o'clock|นาฬิกา (ตรง);quarter past|สิบห้านาที (หลังชั่วโมง);half past|ครึ่ง (หลังชั่วโมง);in time|ทันเวลา;on time|ตรงเวลา;all day|ทั้งวัน;at the moment|ขณะนี้;these days|ทุกวันนี้;from now on|นับจากนี้;for ages|มานานมาก
+o'clock|นาฬิกาตรง;quarter past|เลยมาสิบห้านาที;half past|เลยมาครึ่งชั่วโมง;in time|ทันเวลา;on time|ตรงเวลา;all day|ทั้งวัน;at the moment|ขณะนี้;these days|ทุกวันนี้;from now on|นับจากนี้;for ages|มานานมาก
 # การทำงานบ้านและครัว A2
 washing up|การล้างจาน;dishwasher|เครื่องล้างจาน;rubbish bag|ถุงขยะ;apron|ผ้ากันเปื้อน;cutting board|เขียง;ladle|ทัพพี;chopsticks|ตะเกียบ;teapot|กาน้ำชา;tray|ถาด;napkin|ผ้าเช็ดปาก
 # การเรียน A2

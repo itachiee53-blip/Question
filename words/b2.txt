@@ -4,7 +4,7 @@ attain|บรรลุ;attribute|ถือว่าเป็นผลจาก;c
 conduct|ดำเนินการ;consist|ประกอบด้วย;constitute|ประกอบเป็น;construct|ก่อสร้าง;consult|ปรึกษา;contradict|ขัดแย้ง;contribute|มีส่วนร่วม;convert|แปลง;coordinate|ประสานงาน;cooperate|ร่วมมือ
 define|นิยาม;demonstrate|สาธิต;derive|ได้มาจาก;detect|ตรวจจับ;determine|กำหนด ตัดสินใจ;distinguish|แยกแยะ;distribute|แจกจ่าย;dominate|ครอบงำ;eliminate|กำจัด;emerge|ปรากฏขึ้น
 emphasize|เน้นย้ำ;enable|ทำให้สามารถ;enhance|เสริม;ensure|รับประกัน ทำให้แน่ใจ;estimate|ประมาณ;evaluate|ประเมินผล;evolve|วิวัฒนาการ;exceed|เกิน;exclude|ไม่รวม;exhibit|จัดแสดง
-expose|เปิดเผย;facilitate|อำนวยความสะดวก;generate|ก่อให้เกิด;highlight|เน้น;identify|ระบุ;illustrate|แสดงให้เห็น;implement|นำไปใช้;imply|บอกเป็นนัย;impose|กำหนดบังคับ;indicate|บ่งชี้
+expose|เปิดเผย;facilitate|อำนวยความสะดวก;generate|ก่อให้เกิด;highlight|เน้น;identify|ระบุ;illustrate|แสดงให้เห็น;implement|นำไปใช้;imply|บอกเป็นนัย;impose|บังคับใช้, กำหนด;indicate|บ่งชี้
 interpret|ตีความ;justify|ให้เหตุผลสนับสนุน;maintain|รักษาไว้;maximize|ทำให้มากที่สุด;minimize|ทำให้น้อยที่สุด;modify|ดัดแปลง;monitor|ติดตามตรวจสอบ;obtain|ได้รับ;occupy|ครอบครอง;occur|เกิดขึ้น
 participate|มีส่วนร่วม;perceive|รับรู้;pursue|ไล่ตาม มุ่งหา;regulate|ควบคุม;reinforce|เสริมกำลัง;reject|ปฏิเสธ;rely|พึ่งพา;remain|ยังคงอยู่;resolve|แก้ไข;restore|ฟื้นฟู
 restrict|จำกัด;retain|เก็บรักษา;reveal|เปิดเผย;secure|ทำให้ปลอดภัย ได้มา;seek|แสวงหา;specify|ระบุเฉพาะ;stimulate|กระตุ้น;submit|ยื่น ส่ง;sustain|ค้ำจุน;transmit|ส่งผ่าน
@@ -15,7 +15,7 @@ impact|ผลกระทบ;implication|นัยยะ;incentive|สิ่ง�
 mechanism|กลไก;motive|แรงจูงใจ;objective|วัตถุประสงค์;outcome|ผลลัพธ์;perspective|มุมมอง;phenomenon|ปรากฏการณ์;principle|หลักการ;priority|สิ่งสำคัญอันดับแรก;procedure|ขั้นตอน;proportion|สัดส่วน
 prospect|แนวโน้ม;reputation|ชื่อเสียง;requirement|ข้อกำหนด;resource|ทรัพยากร;restriction|ข้อจำกัด;scope|ขอบเขต;sequence|ลำดับ;significance|ความสำคัญ;strategy|กลยุทธ์;structure|โครงสร้าง
 # ธุรกิจและเศรษฐศาสตร์
-enterprise|กิจการ;entrepreneur|ผู้ประกอบการ;investment|การลงทุน;investor|นักลงทุน;shareholder|ผู้ถือหุ้น;stock market|ตลาดหุ้น;revenue|รายได้ (บริษัท);expense|ค่าใช้จ่าย;inflation|ภาวะเงินเฟ้อ;recession|ภาวะเศรษฐกิจถดถอย
+enterprise|กิจการ;entrepreneur|ผู้ประกอบการ;investment|การลงทุน;investor|นักลงทุน;shareholder|ผู้ถือหุ้น;stock market|ตลาดหุ้น;revenue|รายได้;expense|ค่าใช้จ่าย;inflation|ภาวะเงินเฟ้อ;recession|ภาวะเศรษฐกิจถดถอย
 merger|การควบรวมกิจการ;negotiation|การเจรจาต่อรอง;competitor|คู่แข่ง;consumer|ผู้บริโภค;brand|แบรนด์;campaign|แคมเปญ;launch|เปิดตัว;target market|ตลาดเป้าหมาย;export|ส่งออก;import|นำเข้า
 asset|ทรัพย์สิน;capital investment|เงินลงทุน;finance|การเงิน;insurance|ประกันภัย;interest rate|อัตราดอกเบี้ย;mortgage|การจำนอง;bankrupt|ล้มละลาย;wage|ค่าจ้าง;pension|เงินบำนาญ;subsidy|เงินอุดหนุน
 # จิตวิทยาและพฤติกรรม
