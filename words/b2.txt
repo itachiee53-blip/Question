@@ -1,9 +1,9 @@
 # คำกริยาเชิงวิชาการ
-abandon|ละทิ้ง;acquire|ได้มา;adapt|ปรับตัว;adjust|ปรับ;affect|ส่งผลกระทบ;allocate|จัดสรร;analyze|วิเคราะห์;anticipate|คาดการณ์;assess|ประเมิน;assume responsibility|รับผิดชอบ
+abandon|ละทิ้ง;acquire|ได้มา, เรียนรู้;adapt|ปรับตัว;adjust|ปรับ;affect|ส่งผลกระทบ;allocate|จัดสรร;analyze|วิเคราะห์;anticipate|คาดการณ์;assess|ประเมิน;assume responsibility|รับผิดชอบ
 attain|บรรลุ;attribute|ถือว่าเป็นผลจาก;clarify|ทำให้กระจ่าง;classify|จำแนก;collapse|พังทลาย;commit|กระทำ มุ่งมั่น;compensate|ชดเชย;compile|รวบรวม;comply|ปฏิบัติตาม;conclude|สรุป
 conduct|ดำเนินการ;consist|ประกอบด้วย;constitute|ประกอบเป็น;construct|ก่อสร้าง;consult|ปรึกษา;contradict|ขัดแย้ง;contribute|มีส่วนร่วม;convert|แปลง;coordinate|ประสานงาน;cooperate|ร่วมมือ
 define|นิยาม;demonstrate|สาธิต;derive|ได้มาจาก;detect|ตรวจจับ;determine|กำหนด ตัดสินใจ;distinguish|แยกแยะ;distribute|แจกจ่าย;dominate|ครอบงำ;eliminate|กำจัด;emerge|ปรากฏขึ้น
-emphasize|เน้นย้ำ;enable|ทำให้สามารถ;enhance|เสริม;ensure|รับประกัน ทำให้แน่ใจ;estimate|ประมาณ;evaluate|ประเมินผล;evolve|วิวัฒนาการ;exceed|เกิน;exclude|ไม่รวม;exhibit|จัดแสดง
+emphasize|เน้นย้ำ;enable|ทำให้สามารถ;enhance|เพิ่ม, ปรับปรุงให้ดีขึ้น;ensure|รับประกัน ทำให้แน่ใจ;estimate|ประมาณ;evaluate|ประเมินผล;evolve|วิวัฒนาการ;exceed|เกิน;exclude|ไม่รวม;exhibit|จัดแสดง
 expose|เปิดเผย;facilitate|อำนวยความสะดวก;generate|ก่อให้เกิด;highlight|เน้น;identify|ระบุ;illustrate|แสดงให้เห็น;implement|นำไปใช้;imply|บอกเป็นนัย;impose|บังคับใช้, กำหนด;indicate|บ่งชี้
 interpret|ตีความ;justify|ให้เหตุผลสนับสนุน;maintain|รักษาไว้;maximize|ทำให้มากที่สุด;minimize|ทำให้น้อยที่สุด;modify|ดัดแปลง;monitor|ติดตามตรวจสอบ;obtain|ได้รับ;occupy|ครอบครอง;occur|เกิดขึ้น
 participate|มีส่วนร่วม;perceive|รับรู้;pursue|ไล่ตาม มุ่งหา;regulate|ควบคุม;reinforce|เสริมกำลัง;reject|ปฏิเสธ;rely|พึ่งพา;remain|ยังคงอยู่;resolve|แก้ไข;restore|ฟื้นฟู
@@ -33,5 +33,5 @@ conservation|การอนุรักษ์;sustainable|ยั่งยืน
 abstract|เป็นนามธรรม;adequate|เพียงพอ;aggressive|ก้าวร้าว;ambiguous|กำกวม;apparent|ชัดแจ้ง;appropriate|เหมาะสม;arbitrary|ตามอำเภอใจ;comprehensive|ครอบคลุม;considerable|มากพอสมควร;consistent|สม่ำเสมอ
 contemporary|ร่วมสมัย;controversial|เป็นที่ถกเถียง;conventional|ตามแบบแผน;crucial|สำคัญมาก;cumulative|สะสม;distinct|แตกต่างชัดเจน;dynamic|มีพลวัต;essential|จำเป็นอย่างยิ่ง;explicit|ชัดแจ้ง;feasible|เป็นไปได้
 fundamental|พื้นฐาน;genuine|แท้จริง;hostile|เป็นศัตรู;inevitable|หลีกเลี่ยงไม่ได้;initial|เริ่มแรก;intense|รุนแรง เข้มข้น;legitimate|ชอบธรรม;liberal|เสรีนิยม;mutual|ซึ่งกันและกัน;neutral|เป็นกลาง
-notable|โดดเด่น;numerous|จำนวนมาก;objective (adj)|ไม่ลำเอียง;potential|ที่มีศักยภาพ;precise|แม่นยำ;predominant|เด่น ส่วนใหญ่;preliminary|เบื้องต้น;profound|ลึกซึ้ง;rational|มีเหตุผล;relevant|เกี่ยวข้อง
+notable|โดดเด่น;numerous|จำนวนมาก;objective (adj)|ไม่ลำเอียง;potential|ศักยภาพ, ที่อาจเป็นไปได้;precise|แม่นยำ;predominant|เด่น ส่วนใหญ่;preliminary|เบื้องต้น;profound|ลึกซึ้ง;rational|มีเหตุผล;relevant|เกี่ยวข้อง
 reluctant|ไม่เต็มใจ;rigid|แข็งทื่อ;severe|รุนแรง;sophisticated|ซับซ้อน ทันสมัย;subsequent|ที่ตามมา;substantial|มาก สำคัญ;subtle|แนบเนียน;sufficient|เพียงพอ;superior|เหนือกว่า;vulnerable|อ่อนแอ เปราะบาง

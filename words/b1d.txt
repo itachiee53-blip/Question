@@ -13,7 +13,7 @@ rare steak|สเต๊กสุกน้อย;spicy food|อาหารเผ
 firefighter|นักดับเพลิง;paramedic|เจ้าหน้าที่กู้ชีพ;detective|นักสืบ;judge job|อาชีพผู้พิพากษา;politician|นักการเมือง;economist|นักเศรษฐศาสตร์;psychologist|นักจิตวิทยา;veterinarian|สัตวแพทย์;consultant|ที่ปรึกษา;freelancer|ฟรีแลนซ์
 # สิ่งของในชีวิตประจำวัน B1
 keyring|พวงกุญแจ;lighter|ไฟแช็ก;tissue|ทิชชู;mask|หน้ากาก;comb (tool)|หวี;razor|มีดโกน;shampoo|แชมพู;lotion|โลชั่น;perfume|น้ำหอม;deodorant|ยาระงับกลิ่นกาย
-calendar app|แอปปฏิทิน;power bank|แบตสำรอง;earphones|หูฟังแบบเสียบ;notebook computer|คอมพิวเตอร์โน้ตบุ๊ก;sticky note|กระดาษโน้ต;envelope|ซองจดหมาย;postcard|โปสการ์ด;label|ฉลาก ป้าย;container|ภาชนะ;jar|โหล
+calendar app|แอปปฏิทิน;power bank|แบตสำรอง;earphones|หูฟังแบบเสียบ;notebook computer|คอมพิวเตอร์โน้ตบุ๊ก;sticky note|กระดาษโน้ต;envelope|ซองจดหมาย;postcard|โปสการ์ด;label|ฉลาก ป้าย;container|ภาชนะ;jar|โหล, ขวดโหล
 # การกระทำต่อสิ่งของ
 assemble furniture|ประกอบเฟอร์นิเจอร์;bend metal|ดัดโลหะ;crush|บด ขยี้;dig a hole|ขุดหลุม;drag|ลาก;float|ลอย;hammer a nail|ตอกตะปู;heat up|อุ่นให้ร้อน;knot|ปม;polish|ขัดเงา
 press|กด;rub|ถู;scratch|ข่วน ขีด;seal a box|ปิดผนึกกล่อง;shine|ส่องแสง เป็นเงา;sink below|จมลง;soak|แช่;split|แยก แบ่ง;stack|ซ้อน;wrap|ห่อ

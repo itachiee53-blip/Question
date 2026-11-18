@@ -6,7 +6,7 @@ advertising|การโฆษณา;promotion|การส่งเสริม
 retailer|ผู้ค้าปลีก;supplier|ผู้จัดหาสินค้า;distributor|ผู้จัดจำหน่าย;warehouse|คลังสินค้า;inventory|สินค้าคงคลัง;shipment|การขนส่งสินค้า;invoice|ใบแจ้งหนี้;quotation|ใบเสนอราคา;warranty|การรับประกันสินค้า;complaint|ข้อร้องเรียน
 # วิทยาศาสตร์และการทดลอง B2
 microscope|กล้องจุลทรรศน์;telescope|กล้องโทรทรรศน์;specimen|ตัวอย่าง;observation|การสังเกต;conclusion|ข้อสรุป;variable factor|ปัจจัยตัวแปร;control group|กลุ่มควบคุม;accuracy|ความแม่นยำ;reliability|ความน่าเชื่อถือ;validity|ความเที่ยงตรง
-radiation|รังสี;friction|แรงเสียดทาน;velocity|ความเร็ว;momentum force|แรงโมเมนตัม;circuit|วงจร;voltage|แรงดันไฟฟ้า;magnet|แม่เหล็ก;acid|กรด;mixture|ของผสม;dissolve in water|ละลายในน้ำ
+radiation|รังสี;friction|แรงเสียดทาน;velocity|ความเร็ว;momentum force|แรงส่ง;circuit|วงจร;voltage|แรงดันไฟฟ้า;magnet|แม่เหล็ก;acid|กรด;mixture|ของผสม;dissolve in water|ละลายในน้ำ
 # อินเทอร์เน็ตและสังคมออนไลน์
 cyberbullying|การกลั่นแกล้งทางไซเบอร์;scam|การหลอกลวง;phishing|ฟิชชิ่ง;spam|สแปม;fake news|ข่าวปลอม;screen time|เวลาหน้าจอ;digital detox|การพักจากหน้าจอ;online presence|ตัวตนออนไลน์;netiquette|มารยาทออนไลน์;troll|ผู้ป่วนในโลกออนไลน์
 hashtag|แฮชแท็ก;livestream|ถ่ายทอดสด;subscriber|ผู้ติดตาม, สมาชิก;content creator|ผู้สร้างคอนเทนต์;algorithm feed|ฟีดตามอัลกอริทึม;data breach|ข้อมูลรั่วไหล;two-factor|การยืนยันสองขั้นตอน;backup|การสำรองข้อมูล;bug|ข้อบกพร่องของโปรแกรม;glitch|ข้อผิดพลาดชั่วคราว
@@ -22,4 +22,4 @@ vanish|หายไปอย่างไร้ร่องรอย;verify facts
 inclusive|ครอบคลุมทุกคน;incompatible|เข้ากันไม่ได้;inconsistent|ไม่สม่ำเสมอ;indifferent|ไม่แยแส;inefficient|ไร้ประสิทธิภาพ;inferior|ด้อยกว่า;influential|มีอิทธิพล;informative|ให้ความรู้;ingenious|ฉลาดหลักแหลม;innovative|มีนวัตกรรม
 insufficient|ไม่เพียงพอ;integral|เป็นส่วนสำคัญ;irrelevant|ไม่เกี่ยวข้อง;irresponsible|ไร้ความรับผิดชอบ;lenient|ผ่อนปรน;lucrative|ทำกำไรดี;marginal|เล็กน้อย ชายขอบ;mediocre|ธรรมดา ไม่ดีไม่เลว;meaningful|มีความหมาย;minimal|น้อยที่สุด
 moderate|ปานกลาง;monotonous|ซ้ำซากจำเจ;notorious|ฉาวโฉ่;obscure|คลุมเครือ ไม่เป็นที่รู้จัก;optimal|เหมาะสมที่สุด;outdated|ล้าสมัย;outstanding|โดดเด่น ค้างชำระ;overwhelming|ท่วมท้น;persistent|ไม่ลดละ;persuasive|โน้มน้าวใจ
-prestigious|มีชื่อเสียงเกียรติยศ;prevalent|แพร่หลาย;radical|สุดโต่ง ถอนรากถอนโคน;redundant|ซ้ำซ้อน;remarkable|โดดเด่นน่าทึ่ง;renowned|มีชื่อเสียง;respective|ตามลำดับของแต่ละคน;restless|กระสับกระส่าย;rewarding|คุ้มค่า ให้ผลดี;spontaneous|เป็นไปเอง, ไม่ได้วางแผน
+prestigious|มีชื่อเสียงเกียรติยศ;prevalent|แพร่หลาย;radical|สุดโต่ง ถอนรากถอนโคน;redundant|ซ้ำซ้อน;remarkable|โดดเด่นน่าทึ่ง;renowned|มีชื่อเสียง;respective|ของแต่ละคน;restless|กระสับกระส่าย;rewarding|คุ้มค่า ให้ผลดี;spontaneous|เป็นไปเอง, ไม่ได้วางแผน

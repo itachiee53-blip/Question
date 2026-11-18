@@ -1,16 +1,16 @@
 # รูปทรงและขนาด
-circle|วงกลม;square|สี่เหลี่ยมจัตุรัส;triangle|สามเหลี่ยม;line|เส้น;dot|จุด;shape|รูปร่าง;size|ขนาด;round|กลม;flat|แบน;heavy|หนัก
+circle|วงกลม;square|สี่เหลี่ยมจัตุรัส;triangle|สามเหลี่ยม;line|เส้น;dot|จุด;shape|รูปทรง, รูปร่าง;size|ขนาด;round|กลม;flat|แบน;heavy|หนัก
 soft|นุ่ม;wide|กว้าง;narrow|แคบ;deep|ลึก;high|สูง;low|ต่ำ;huge|ใหญ่มาก;tiny|เล็กมาก;same|เหมือนกัน;different|แตกต่าง
 # ความรู้สึก
-feel|รู้สึก;fine|สบายดี;sick|ป่วย;scared|กลัว;excited|ตื่นเต้น;bored|เบื่อ;surprised|ประหลาดใจ;worried|กังวล;sleepy|ง่วงนอน;proud|ภูมิใจ
+feel|รู้สึก;fine|สบายดี, ดี, ค่าปรับ;sick|ป่วย;scared|กลัว;excited|ตื่นเต้น;bored|เบื่อ;surprised|ประหลาดใจ;worried|กังวล;sleepy|ง่วงนอน;proud|ภูมิใจ
 lonely|เหงา;shy|ขี้อาย;kind|ใจดี;funny|ตลก;friendly|เป็นมิตร;nice|ดี น่ารัก;cute|น่ารัก;brave|กล้าหาญ;smile|ยิ้ม;laugh|หัวเราะ
 cry|ร้องไห้;hug|กอด;kiss|จูบ;miss|คิดถึง พลาด;hope|หวัง;wish|ปรารถนา;dream|ฝัน;worry|กังวล;care|ใส่ใจ;hate|เกลียด
 # กิจวัตรประจำวัน
 get up|ลุกขึ้น;brush|แปรง;shower|อาบน้ำฝักบัว;bath|อ่างอาบน้ำ, อาบน้ำ;get dressed|แต่งตัว;comb|หวี;go to bed|เข้านอน;rest|พักผ่อน;relax|ผ่อนคลาย;clean up|ทำความสะอาด
-tidy|เป็นระเบียบ;cut|ตัด;carry|ถือ แบก;push|ผลัก;pull|ดึง;throw|โยน;catch|รับ จับ;kick|เตะ;hit|ตี;climb|ปีน
+tidy|เรียบร้อย, จัดให้เป็นระเบียบ;cut|ตัด;carry|ถือ แบก;push|ผลัก;pull|ดึง;throw|โยน;catch|รับ จับ;kick|เตะ;hit|ตี;climb|ปีน
 # ในห้องเรียน
 chalk|ชอล์ก;crayon|สีเทียน;glue|กาว;paper|กระดาษ;map|แผนที่;dictionary|พจนานุกรม;bell|กระดิ่ง;break|พัก, ทำแตก;math|คณิตศาสตร์;science|วิทยาศาสตร์
-English|ภาษาอังกฤษ;Thai|ภาษาไทย;art|ศิลปะ;history|ประวัติศาสตร์;subject|วิชา;exam|การสอบ;mark|คะแนน;grade|เกรด ระดับชั้น;sentence|ประโยค;story|เรื่อง, นิทาน
+English|ภาษาอังกฤษ;Thai|ภาษาไทย;art|ศิลปะ;history|ประวัติศาสตร์;subject|วิชา;exam|การสอบ;mark|คะแนน, เครื่องหมาย;grade|เกรด ระดับชั้น;sentence|ประโยค;story|เรื่อง, นิทาน
 # อาหารเพิ่มเติม
 ice cream|ไอศกรีม;chocolate|ช็อกโกแลต;candy|ลูกอม;honey|น้ำผึ้ง;oil|น้ำมัน;pepper|พริกไทย;chili|พริก;garlic|กระเทียม;shrimp|กุ้ง;crab|ปู
 fried rice|ข้าวผัด;curry|แกง;steak|สเต๊ก;hamburger|แฮมเบอร์เกอร์;french fries|เฟรนช์ฟรายส์;sauce|ซอส;jam|แยม;yogurt|โยเกิร์ต;flour|แป้ง;dessert|ของหวาน
@@ -27,14 +27,14 @@ roof|หลังคา;stairs|บันได;gate|ประตูรั้ว;
 towel|ผ้าเช็ดตัว;soap|สบู่;toothbrush|แปรงสีฟัน;toothpaste|ยาสีฟัน;fan|พัดลม;light bulb|หลอดไฟ;plug|ปลั๊กไฟ;stove|เตา;pan|กระทะ;pot|หม้อ
 # ร่างกายและสุขภาพ
 health|สุขภาพ;medicine|ยา;fever|ไข้;flu|ไข้หวัด;cough|ไอ;headache|ปวดหัว;pain|ความเจ็บปวด;hurt|เจ็บ;blood|เลือด;bone|กระดูก
-skin|ผิวหนัง;lip|ริมฝีปาก;tongue|ลิ้น;chin|คาง;cheek|แก้ม;toe|นิ้วเท้า;nail|เล็บ ตะปู;thumb|นิ้วโป้ง;elbow|ข้อศอก;voice|เสียงพูด
+skin|ผิวหนัง;lip|ริมฝีปาก;tongue|ลิ้น;chin|คาง;cheek|แก้ม;toe|นิ้วเท้า;nail|เล็บ ตะปู;thumb|นิ้วโป้ง;elbow|ข้อศอก;voice|เสียง
 # เมืองและร้านค้า
 supermarket|ซูเปอร์มาร์เก็ต;mall|ห้างสรรพสินค้า;bakery|ร้านเบเกอรี่;pharmacy|ร้านขายยา;bookshop|ร้านหนังสือ;police station|สถานีตำรวจ;school bus|รถโรงเรียน;bus stop|ป้ายรถเมล์;corner shop|ร้านค้าหัวมุม;playground|สนามเด็กเล่น
 building|อาคาร;tower|หอคอย;church|โบสถ์;palace|พระราชวัง;stadium|สนามกีฬา;pool|สระว่ายน้ำ;factory|โรงงาน;farmhouse|บ้านไร่;address|ที่อยู่;sign|ป้าย
-money|เงิน;coin|เหรียญ;price|ราคา;baht|บาท;dollar|ดอลลาร์;card|บัตร, การ์ด;change|เงินทอน เปลี่ยน;sale|ลดราคา;gift|ของขวัญ;list|รายการ
+money|เงิน;coin|เหรียญ;price|ราคา;baht|บาท;dollar|ดอลลาร์;card|บัตร, การ์ด;change|เงินทอน เปลี่ยน;sale|การขาย, ลดราคา;gift|ของขวัญ;list|รายการ
 # คำบอกความถี่และเวลา
-always|เสมอ;usually|โดยปกติ;often|บ่อย;sometimes|บางครั้ง;never|ไม่เคย;again|อีกครั้ง;soon|เร็ว ๆ นี้, ในไม่ช้า;later|ทีหลัง;before|ก่อน;after|หลัง
-every|ทุก;each|แต่ละ;all|ทั้งหมด;some|บาง;many|หลาย, มาก;much|มาก;few|น้อย;more|มากกว่า;most|มากที่สุด;only|เท่านั้น
+always|เสมอ;usually|ปกติ, มักจะ;often|บ่อย;sometimes|บางครั้ง;never|ไม่เคย;again|อีกครั้ง;soon|เร็ว ๆ นี้, ในไม่ช้า;later|ทีหลัง;before|ก่อน;after|หลัง
+every|ทุก;each|แต่ละ;all|ทั้งหมด;some|บาง;many|หลาย, มาก;much|มาก;few|ไม่กี่, น้อย;more|มากกว่า;most|มากที่สุด;only|เท่านั้น
 # คำเชื่อมและคำเล็ก ๆ
 and|และ;or|หรือ;but|แต่;because|เพราะ;so|ดังนั้น;if|ถ้า;with|กับ;without|โดยไม่มี;about|เกี่ยวกับ;for|สำหรับ
 from|จาก;to|ถึง ไปยัง;of|ของ;by|โดย;very|มาก;too|เกินไป ด้วย;also|ด้วย เช่นกัน;maybe|บางที;really|จริง ๆ;just|เพิ่ง แค่

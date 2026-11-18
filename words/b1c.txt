@@ -1,6 +1,6 @@
 # ที่ทำงานและออฟฟิศ
 department|แผนก;headquarters|สำนักงานใหญ่;branch office|สำนักงานสาขา;workplace|ที่ทำงาน;shift|กะทำงาน;overtime|ล่วงเวลา;leave of absence|ลางาน;resign|ลาออก;recruit|รับสมัครคน;trainee|ผู้ฝึกงาน
-internship|การฝึกงาน;goal|เป้าหมาย;target|เป้า;deadline pressure|แรงกดดันเรื่องเวลา;presentation|การนำเสนอ;proposal|ข้อเสนอ;agenda|วาระการประชุม;feedback|ความคิดเห็นติชม;teamwork|การทำงานเป็นทีม;leadership|ภาวะผู้นำ
+internship|การฝึกงาน;goal|เป้าหมาย;target|เป้าหมาย;deadline pressure|แรงกดดันเรื่องเวลา;presentation|การนำเสนอ;proposal|ข้อเสนอ;agenda|วาระการประชุม;feedback|ความคิดเห็นติชม;teamwork|การทำงานเป็นทีม;leadership|ภาวะผู้นำ
 # การเงินส่วนตัว
 pocket money|เงินค่าขนม;allowance|เงินช่วยเหลือ;cash machine|ตู้เอทีเอ็ม;withdraw|ถอนเงิน;deposit|ฝากเงิน มัดจำ;transfer|โอน;balance|ยอดเงิน ความสมดุล;interest|ดอกเบี้ย ความสนใจ;owe|ติดหนี้;charge a fee|เรียกเก็บค่าธรรมเนียม
 waste money|ใช้เงินฟุ่มเฟือย;worth|มีค่า คุ้ม;value for money|คุ้มค่าเงิน;luxury|ความหรูหรา;necessity|สิ่งจำเป็น;bargain hunt|ตามหาของถูก;second-hand|มือสอง;auction|การประมูล;rental|การเช่า;subscription|การสมัครสมาชิก
@@ -27,6 +27,6 @@ connect with|เชื่อมโยงกับ;contact|ติดต่อ;con
 encourage someone|ให้กำลังใจใคร;entertain|ให้ความบันเทิง;examine|ตรวจสอบ;exist|มีอยู่;expand a business|ขยายธุรกิจ;experience something|ประสบบางสิ่ง;explore|สำรวจ;export goods|ส่งออกสินค้า;feed a family|เลี้ยงครอบครัว;gain|ได้รับ เพิ่มขึ้น
 hide a secret|ซ่อนความลับ;identify a problem|ระบุปัญหา;ignore advice|เพิกเฉยคำแนะนำ;impress|ทำให้ประทับใจ;inspire|สร้างแรงบันดาลใจ;install software|ติดตั้งซอฟต์แวร์;introduce a friend|แนะนำเพื่อน;judge a contest|ตัดสินการประกวด;laugh at|หัวเราะเยาะ;limit|จำกัด
 # คำคุณศัพท์ B1 เพิ่มเติม
-accidental|โดยบังเอิญ;ambitious|มีความทะเยอทะยาน;anxious about|กังวลเกี่ยวกับ;attractive|มีเสน่ห์;aware|ตระหนัก;capable|มีความสามารถ;challenging|ท้าทาย;colourful|มีสีสัน;competitive|ชอบแข่งขัน;convenient|สะดวก
+accidental|โดยบังเอิญ;ambitious|มีความทะเยอทะยาน;anxious about|กังวลเกี่ยวกับ;attractive|มีเสน่ห์;aware|รู้ตัว, ตระหนัก;capable|มีความสามารถ;challenging|ท้าทาย;colourful|มีสีสัน;competitive|ชอบแข่งขัน;convenient|สะดวก
 creative|สร้างสรรค์;cruel|โหดร้าย;determined|มุ่งมั่น;eager|กระตือรือร้น;elegant|สง่างาม;enormous|มหึมา;enthusiastic|กระตือรือร้นมาก;essential item|ของจำเป็น;fascinating|น่าหลงใหล;fortunate|โชคดี
 gentle|อ่อนโยน;grateful for|ขอบคุณสำหรับ;guilty feeling|รู้สึกผิด;harmful|เป็นอันตราย;harmless|ไม่เป็นอันตราย;hilarious|ตลกมาก;ideal|อุดมคติ เหมาะสมที่สุด;impressive|น่าประทับใจ;incredible|เหลือเชื่อ;independent life|ชีวิตอิสระ
