@@ -24,6 +24,10 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 #c{position:fixed;inset:0;width:100%;height:100%;display:block}
 /* film look */
 .fx{position:fixed;inset:0;pointer-events:none;z-index:5}
+.rotate{display:none;position:fixed;inset:0;z-index:100;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#070b09;color:#e8efe4;text-align:center;padding:24px}
+.rotate svg{width:88px;height:88px;color:var(--toxic);animation:tilt 2.2s ease-in-out infinite}.rotate b{font-size:22px}.rotate small{font-size:14px;color:var(--dim)}
+@keyframes tilt{0%,30%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
+@media (orientation:portrait) and (pointer:coarse){.rotate{display:flex}}
 .fpsc{position:fixed;left:calc(8px + var(--safe-l,0px));bottom:calc(6px + var(--safe-b,0px));z-index:40;font:12px/1 monospace;color:#a6e05a;background:#000a;padding:3px 6px;border-radius:4px;pointer-events:none}
 .vig{background:radial-gradient(ellipse at 50% 55%,transparent 45%,#000a 100%)}
 .grain{opacity:.07;mix-blend-mode:overlay;background-size:180px 180px}
@@ -417,6 +421,7 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 <div class="fx vig"></div>
 <div class="fx grain" id="grain"></div>
 <div class="fpsc" id="fps" hidden></div>
+<div class="rotate" id="rotate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/><path d="M20 9a8 8 0 0 1-3 7M20 9l1.5 2.2M20 9l-2.4 1"/></svg><b>หมุนมือถือเป็นแนวนอน</b><small>เกมนี้เล่นแนวนอนเท่านั้น</small></div>
 <div class="fx hurt" id="hurt"></div>
 <div class="fx danger" id="danger" hidden></div>
 <div class="fx bolt" id="bolt"></div>
@@ -456,8 +461,10 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.23.0',VERSION_DATE='18 พ.ย. 2569';
+const VERSION='2.23.1',VERSION_DATE='18 พ.ย. 2569';
 const CHANGES=[
+  'รั้วเหล็กต่อกันพอดีปลายชนปลาย ไม่ซ้อนกันแปลก ๆ แล้ว',
+  'เกมเล่นแนวนอนเท่านั้น: ถือแนวตั้งจะขึ้นให้หมุนจอ และแตะครั้งแรกจะเข้าเต็มจอล็อกแนวนอน (Android)',
   'ตกแต่งฐาน: แตะของแล้วดูตัวอย่างบนฐานก่อน จ่ายเหรียญเมื่อกด "ซื้อ" เท่านั้น · คืนเหรียญของตกแต่งที่ซื้อไปแล้วให้ (ของยังเป็นของคุณ)',
   'เปลี่ยนกำแพงหลักได้ 9 แบบ: รั้วเหล็ก, พาเลทไม้, แผงจราจร, ยางรถ, ถังน้ำมัน, ลังไม้, กระสอบทราย, ป้อมเฉพาะกิจ (ดูตัวอย่างก่อนซื้อได้)',
   'จุดวางของจัดใหม่ไม่ทับกัน · รั้วกลางของด่านกระสอบทรายเต็มสองข้าง',
@@ -643,6 +650,9 @@ function audio(){
   }catch(e){ac=null;}
 }
 addEventListener('pointerdown',audio,{capture:true,passive:true});
+let triedLock=false;
+addEventListener('pointerdown',()=>{if(triedLock||!matchMedia('(pointer:coarse)').matches)return;triedLock=true;
+  try{const r=document.documentElement.requestFullscreen?.({navigationUI:'hide'});if(r)r.then(()=>screen.orientation?.lock?.('landscape').catch(()=>{})).catch(()=>{});}catch(e){}},{capture:true,passive:true});
 addEventListener('keydown',audio,{capture:true});
 function nz(dur,vol,type,f,{q=1,at=0,f2=0,dest=sfxBus}={}){
   if(!ac||!P.opts.sfx)return;const t=ac.currentTime+at,s=ac.createBufferSource(),fl=ac.createBiquadFilter(),g=ac.createGain();
@@ -1008,12 +1018,14 @@ function walk(z,dist){
 function freeX(x,z){for(let k=0;k<12&&blocked(x,z);k++)x=clamp(x+(x<0?.6:-.6),-3.4,3.4);return x;}
 const STOP_Z=-4.4,BARR_Z=-3.4,SPAWN_Z=-31;
 /* ---------------- barricade skins: built from the same zombie-kit models as the original ---------------- */
+// Fence_Long is 1.332 m long with its origin at the right-hand end: lay n panels end to end from x0 to x1
+function fenceRun(x0,x1,z,n,hs=.85){const s=(x1-x0)/n/1.332;for(let i=1;i<=n;i++){const o=place('Fence_Long',x0+(x1-x0)*i/n,0,z,0,hs);if(o)o.scale.x=s;}} // stretch along the run only, keep the height
 const SKINS={
   traffic:{n:'ด่านจราจร',cost:0,d:'แนวกั้นดั้งเดิม',b(){
     const B=[['TrafficBarrier_1',-2.6,0],['Pallet',-1.2,.2],['TrafficBarrier_2',.1,0],['Pallet_Broken',1.4,-.1],['TrafficBarrier_1',2.8,.05]];
     B.forEach(([n,x,r])=>{const o=place(n,x,0,0,r+(n.startsWith('Pallet')?Math.PI/2:0));if(o&&n.startsWith('Pallet')){o.rotation.z=Math.PI/2-.25;o.position.y=.6;}});
     place('Wheels_Stack',-3.9,0,.3,.4);place('CinderBlock',.9,0,.35,.3);place('CinderBlock',1.3,0,.3,-.2);place('CinderBlock',1.1,.23,.32,.1);}},
-  fence:{n:'รั้วเหล็กกั้นฝูงชน',cost:200,d:'รั้วเหล็กเรียงเต็มถนน',b(){for(let x=-3.3;x<=3.4;x+=1.32)place('Fence_Long',x,0,0,rnd(-.03,.03),1);}},
+  fence:{n:'รั้วเหล็กกั้นฝูงชน',cost:200,d:'รั้วเหล็กต่อกันเต็มถนน',b(){fenceRun(-3.6,3.6,0,5);}},
   pallets:{n:'กำแพงพาเลทไม้',cost:250,d:'พาเลทตั้งเรียงค้ำด้วยอิฐบล็อก',b(){for(let x=-3.2,i=0;x<=3.3;x+=1.07,i++){const o=place(i%3===1?'Pallet_Broken':'Pallet',x,0,0,Math.PI/2+rnd(-.08,.08));if(o){o.rotation.z=Math.PI/2-.12;o.position.y=.6;}}
     for(const x of [-2.15,1.05])place('CinderBlock',x,0,.25,.2);}},
   barriers:{n:'แผงกั้นจราจรล้วน',cost:250,d:'แผงลายแดงขาวเรียงสองแบบสลับกัน',b(){for(let x=-3.2,i=0;x<=3.3;x+=1.3,i++)place(i%2?'TrafficBarrier_2':'TrafficBarrier_1',x,0,i%2?-.1:0,rnd(-.04,.04));}},
@@ -1022,7 +1034,7 @@ const SKINS={
   crates:{n:'กำแพงลังไม้',cost:400,d:'ลังไม้ซ้อนสองชั้น',b(){for(let x=-3.2,i=0;x<=3.3;x+=.95,i++){place('Crate',x,0,0,rnd(-.1,.1),.85);if(i%2===0)place('Crate',x+rnd(-.05,.05),.68,-.02,rnd(-.2,.2),.7);}}},
   checkpoint:{n:'ด่านกระสอบทราย',cost:600,d:'กระสอบทรายสองชั้น รั้วเหล็กเต็มช่องกลาง',b(){
     for(const s of [-1,1]){place('SackTrench',s*2.3,0,-.05,s<0?.05:Math.PI-.05,.55);place('SackTrench_Small',s*2.1,.42,-.08,s<0?-.08:Math.PI+.1,.55);}
-    place('Fence_Long',-.62,0,-.1,0,.95);place('Fence_Long',.62,0,-.1,0,.95);
+    fenceRun(-1.05,1.05,-.1,2);
     place('Crate',-1.4,.78,-.05,.35,.5);place('Sign',1.35,.7,-.1,-.25,.55);}},
   mixed:{n:'ป้อมเฉพาะกิจ',cost:700,d:'กระสอบทราย แผงจราจร พาเลท และถังน้ำมันรวมกัน',b(){
     place('SackTrench_Small',-2.6,0,0,0,.6);place('SackTrench_Small',-2.6,.42,-.03,.1,.55);place('TrafficBarrier_2',-1,0,0,0);
@@ -1073,7 +1085,7 @@ const DECO={
   townsign:{n:'ป้ายเมือง',k:'tall',c:140,b(){place('TownSign',0,0,0,0,.6);}},
   light:{n:'ไฟจราจร',k:'tall',c:160,b(){place('TrafficLight_1',0,0,0,0,.55);}},
   flag:{n:'ธงฐาน',k:'tall',c:120,b(){cy(0,0,0,.035,2.2,0x777777,6);const f=bx(.32,1.75,0,.62,.4,.02,0x3a6a2a);f.rotation.y=.15;bx(.32,1.83,.012,.16,.16,.01,0xf2c040).rotation.y=.15;}},
-  fence:{n:'รั้วเหล็ก',k:'tall',c:110,b(){place('Fence_Long',0,0,0,0,.8);}},
+  fence:{n:'รั้วเหล็ก',k:'tall',c:110,b(){fenceRun(-.55,.55,0,1);}},
   sofa:{n:'โซฟาเก่า',k:'tall',c:130,b(){place('Sofa',0,0,0,Math.PI,.6);}},
 };
 // v2.22 bought on tap with no preview; give those coins back once (the items stay owned)
