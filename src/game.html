@@ -432,10 +432,14 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+import {MeshoptDecoder} from 'three/addons/libs/meshopt_decoder.module.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.19.0',VERSION_DATE='18 พ.ย. 2569';
+const VERSION='2.20.0',VERSION_DATE='18 พ.ย. 2569';
 const CHANGES=[
+  'แนวกั้นสวยขึ้น ใช้โมเดล 3D ฟรี (CC0) จาก Quaternius และ Kenney: เค้กมีเทียน คัพเค้ก โดนัท ไอศกรีม หีบสมบัติ เหรียญ คริสตัล ดอกไม้ หิน เสาปราสาท ดาบ',
+  'แนวกั้นใหม่ 2 แบบ: แก๊งมอนสเตอร์น่ารัก และฟักทองฮาโลวีน · กำแพงน้องแมวเปลี่ยนเป็นแก๊งน้องหมาน้องแมว (ปั๊ก ชิบะ ฮัสกี้ แมว จิ้งจอก)',
+  'สัตว์และมอนสเตอร์บนแนวกั้นขยับได้ และเต้นฉลองเมื่อชนะคืนนั้น',
   'แนวกั้นสะสม 21 แบบ! คลังแสง → แท็บแนวกั้น มีตั้งแต่ตุ๊กตาหมี เค้ก สายรุ้ง น้องแมว ไปจนถึงป้อมเหล็ก ลาวา และทองคำ',
   'แบ่ง 4 ระดับความหายาก + 3 แบบพิเศษที่ได้จากการเล่นเท่านั้น (เรียนครบ 300 คำ, ผ่าน 20 คืน, ล้มบอส 5 ตัว)',
   'รางวัลนักสะสม: มีครบ 3 / 6 / 10 / 15 / 21 ชิ้น รับเหรียญเพิ่มสูงสุด 2,000',
@@ -573,7 +577,7 @@ P.up=Object.assign({wall:0,hint:0,oil:0,mag:0,knife:0},P.up);P.seenZ=P.seenZ||[]
 // older saves had on/off sound switches: a switched-off channel starts at volume 0
 if(!P.opts.vol)P.opts.vol={master:80,sfx:P.opts.sfx===false?0:100,amb:P.opts.amb===false?0:70,voice:P.opts.voice===false?0:100};if(P.mode!=='spell')P.mode='choice';
 const CHOICE=()=>P.mode==='choice';
-P.best=P.best||{};P.allies=Object.assign({man:0,dog:0},P.allies);P.melee=P.melee||'knife';P.ownedMelee=P.ownedMelee||['knife'];P.skins=P.skins||['traffic'];P.skin=P.skin||'traffic';P.skinGoals=P.skinGoals||[];P.xp=P.xp||0;
+P.best=P.best||{};P.allies=Object.assign({man:0,dog:0},P.allies);P.melee=P.melee||'knife';P.ownedMelee=P.ownedMelee||['knife'];P.skins=(P.skins||['traffic']).map(s=>s==='cats'?'pets':s);P.skin=P.skin==='cats'?'pets':P.skin||'traffic';P.skinGoals=P.skinGoals||[];P.xp=P.xp||0;
 /* ranks grow with experience from answering */
 const RANKS=[[0,'มือใหม่'],[150,'ผู้รอดชีวิต'],[500,'นักล่า'],[1200,'ทหารพราน'],[2600,'ผู้พิทักษ์'],[5000,'ฮีโร่'],[9000,'ตำนาน']];
 const rankOf=xp=>{let i=0;while(i<RANKS.length-1&&xp>=RANKS[i+1][0])i++;return i;};
@@ -988,82 +992,130 @@ function ball(x,y,z,r,c,sx=1,sy=1,sz=1){const m=new THREE.Mesh(new THREE.SphereG
 function cone(x,y,z,r,h,c,seg=10,rz=0){const m=new THREE.Mesh(new THREE.ConeGeometry(r,h,seg),typeof c==='number'?mat(c):c);m.position.set(x,y+h/2,z);m.rotation.z=rz;PLACE_TO.add(m);return m;}
 function ring(x,y,z,r,t,c,arc=Math.PI*2,rx=0,rz=0){const m=new THREE.Mesh(new THREE.TorusGeometry(r,t,8,28,arc),typeof c==='number'?mat(c):c);m.position.set(x,y,z);m.rotation.set(rx,0,rz);PLACE_TO.add(m);return m;}
 function sandbags(x0,x1,rows,c=[0xb39a6a,0xa68d5e,0xc2a878]){for(let r=0;r<rows;r++)for(let x=x0+(r%2)*.35;x<x1-.3;x+=.7){const b=bx(x+.35,r*.3,0,.68,.32,.5,c[(r+Math.round(x*3))%c.length]);b.rotation.y=rnd(-.06,.06);}}
+/* CC0 models for the skins (Quaternius / Kenney, see assets/models/skins/NOTICE.txt), loaded only when a skin needs them */
+const SKM={},SKIN_ANIM=[];let skinLoader=null;
+function loadSkinModels(list){
+  const need=[...new Set(list)].filter(n=>!(n in SKM));if(!need.length)return Promise.resolve();
+  if(!skinLoader){skinLoader=new GLTFLoader();skinLoader.setMeshoptDecoder(MeshoptDecoder);}
+  return Promise.all(need.map(n=>new Promise(res=>skinLoader.load(`assets/models/skins/${n}.glb`,g=>{
+    // unlit materials would glow the same at midnight; give them normal lighting
+    g.scene.traverse(o=>{if(o.isMesh){const ms=Array.isArray(o.material)?o.material:[o.material];o.material=ms.map(m=>m.isMeshBasicMaterial?new THREE.MeshStandardMaterial({color:m.color,map:m.map,roughness:.8,vertexColors:m.vertexColors}):m);if(o.material.length===1)o.material=o.material[0];}});
+    SKM[n]=g;res();},undefined,()=>{SKM[n]=null;res();}))));
+}
+// place a skin model so it stands h metres tall; animated ones get their own mixer
+function pm(n,x,y,z,h,ry=0,anim){const g=SKM[n];if(!g)return null;
+  const skinned=g.animations.length>0,o=skinned?SkeletonUtils.clone(g.scene):g.scene.clone();o.updateMatrixWorld(true);
+  const b=new THREE.Box3().setFromObject(o,skinned),s=h/((b.max.y-b.min.y)||1);o.scale.setScalar(s);
+  const w=new THREE.Group();w.add(o);o.position.set(-(b.min.x+b.max.x)/2*s,-b.min.y*s,-(b.min.z+b.max.z)/2*s);w.position.set(x,y,z);w.rotation.y=ry;PLACE_TO.add(w);
+  if(skinned){const mx=new THREE.AnimationMixer(o),clips=g.animations,find=re=>clips.find(c=>re.test(c.name));
+    const idle=(anim&&find(anim))||find(/(^|\|)(Skeleton_)?Idle$/)||find(/Idle/)||find(/Flying/)||clips[0];
+    const a=mx.clipAction(idle);a.time=Math.random()*idle.duration;a.play();mx.update(.01);
+    SKIN_ANIM.push({mx,clips,idle,root:w});}
+  return w;}
 const SKINS={
   traffic:{n:'ด่านจราจร',r:0,cost:0,d:'แนวกั้นเริ่มต้น',b(){
     const B=[['TrafficBarrier_1',-2.6,0],['Pallet',-1.2,.2],['TrafficBarrier_2',.1,0],['Pallet_Broken',1.4,-.1],['TrafficBarrier_1',2.8,.05]];
     B.forEach(([n,x,r])=>{const o=place(n,x,0,0,r+(n.startsWith('Pallet')?Math.PI/2:0));if(o&&n.startsWith('Pallet')){o.rotation.z=Math.PI/2-.25;o.position.y=.6;}});
     place('Wheels_Stack',-3.9,0,.3,.4);place('CinderBlock',.9,0,.35,.3);place('CinderBlock',1.3,0,.3,-.2);place('CinderBlock',1.1,.23,.32,.1);}},
-  sandbag:{n:'กระสอบทรายทหาร',r:0,cost:150,d:'แนวรับมาตรฐานทหาร',b(){sandbags(-3.6,3.6,3);cy(-3.2,0,.1,.05,1.6,0x5a4a30,6);bx(-2.85,1.3,.1,.7,.45,.02,0x3a5a2a);}},
-  picket:{n:'รั้วไม้สีขาว',r:0,cost:180,d:'รั้วบ้านในฝัน มีกระถางดอกไม้',b(){const w=mat(0xf4f1ea);
+  sandbag:{n:'กระสอบทรายทหาร',r:0,cost:150,d:'แนวรับมาตรฐานทหาร มีลังกระสุนและธง',m:['barrel'],b(){sandbags(-3.6,3.6,3);cy(-3.2,0,.1,.05,1.6,0x5a4a30,6);bx(-2.85,1.3,.1,.7,.45,.02,0x3a5a2a);
+    bx(2.9,.9,.05,.6,.3,.4,0x4a5a2a);bx(2.9,1.2,.05,.62,.04,.42,0x3a4a20);pm('barrel',-3.75,0,.45,.8);}},
+  picket:{n:'รั้วไม้สีขาว',r:0,cost:180,d:'รั้วบ้านในฝัน มีกระถางดอกไม้',m:['flower_red','bush'],b(){const w=mat(0xf4f1ea);
     for(let x=-3.5;x<=3.5;x+=.26){bx(x,0,0,.14,1,.05,w);cone(x,1,0,.1,.18,0xf4f1ea,4);}for(const y of [.3,.75])bx(0,y,-.05,7.2,.09,.05,w);
-    for(const x of [-2.4,.2,2.6]){cy(x,0,.35,.22,.35,0xb5653a,10,.27);for(let i=0;i<4;i++)ball(x+rnd(-.12,.12),.45+rnd(0,.1),.35+rnd(-.1,.1),.08,pick([0xff7aa8,0xffd34a,0xff5a5a,0xb58aff]));}}},
+    for(const x of [-2.4,.2,2.6]){cy(x,0,.35,.22,.35,0xb5653a,10,.27);pm('flower_red',x-.06,.33,.35,.45,rnd(0,6));pm('flower_red',x+.08,.33,.32,.38,rnd(0,6));}
+    for(const x of [-1.1,1.4])pm('bush',x,0,.32,.45,rnd(0,6));}},
   bamboo:{n:'รั้วไม้ไผ่',r:0,cost:200,d:'แข็งแรงแบบไทย ๆ',b(){for(let x=-3.55;x<=3.55;x+=.15)cy(x,0,rnd(-.03,.03),.07,rnd(1,1.3),pick([0x9aa84a,0x8a9a3a,0xa8b25a]),8);
     for(const y of [.35,.85])bx(0,y,.08,7.3,.07,.04,0x6a4a24);}},
-  tires:{n:'กองยางรถยนต์',r:0,cost:220,d:'ของเหลือจากอู่ เอามากองกันไว้',b(){for(let x=-3.2;x<=3.3;x+=.8){const n=2+((x*10|0)%2+2)%2;for(let i=0;i<n;i++)ring(x+rnd(-.05,.05),.12+i*.26,rnd(-.05,.05),.3,.13,0x1e1e1e,Math.PI*2,Math.PI/2);}
-    bx(-.6,.62,.25,3.4,.06,.3,0x7a5a3a).rotation.z=.08;}},
-  container:{n:'ตู้คอนเทนเนอร์จิ๋ว',r:1,cost:450,d:'ตู้ขนของตัดครึ่ง หนักแน่นสุด ๆ',b(){for(const [x,c] of [[-1.85,0xb8341e],[1.85,0x1e5ab8]]){bx(x,0,0,3.4,1.15,.9,c);for(let k=-1.6;k<=1.6;k+=.2)bx(x+k,.05,-.46,.06,1.05,.04,c===0xb8341e?0x9a2a18:0x18489a);bx(x,1.15,0,3.45,.06,.95,0x333333);}}},
-  flowers:{n:'สวนดอกไม้พาสเทล',r:1,cost:500,d:'ปลูกดอกไม้ไว้หน้าฐาน สวยและแน่น',b(){const C=[0xffa8c8,0xffe08a,0xc8a8ff,0xa8e0ff,0xffffff];
-    for(const x of [-2.4,0,2.4]){bx(x,0,0,2.2,.55,.7,0xd8b890);bx(x,.55,0,2.25,.05,.75,0xb89a70);for(let i=0;i<9;i++){const fx=x+rnd(-.95,.95),fz=rnd(-.25,.25),h=rnd(.25,.6);cy(fx,.55,fz,.015,h,0x4a8a3a,4);ball(fx,.55+h,fz,rnd(.07,.11),pick(C));}
-      ball(x-.8,.75,0,.22,0x5a9a4a);ball(x+.8,.75,0,.2,0x5a9a4a);}}},
+  tires:{n:'กองยางรถยนต์',r:0,cost:220,d:'ของเหลือจากอู่ เอามากองกันไว้',m:['barrel'],b(){for(let x=-3.2;x<=3.3;x+=.8){const n=2+((x*10|0)%2+2)%2;for(let i=0;i<n;i++)ring(x+rnd(-.05,.05),.12+i*.26,rnd(-.05,.05),.3,.13,0x1e1e1e,Math.PI*2,Math.PI/2);}
+    bx(-.6,.62,.25,3.4,.06,.3,0x7a5a3a).rotation.z=.08;pm('barrel',3.75,0,.35,.85);}},
+  container:{n:'ตู้คอนเทนเนอร์จิ๋ว',r:1,cost:450,d:'ตู้ขนของตัดครึ่ง หนักแน่นสุด ๆ',b(){for(const [x,c] of [[-1.85,0xb8341e],[1.85,0x1e5ab8]]){bx(x,0,0,3.4,1.15,.9,c);for(let k=-1.6;k<=1.6;k+=.2)bx(x+k,.05,-.46,.06,1.05,.04,c===0xb8341e?0x9a2a18:0x18489a);bx(x,1.15,0,3.45,.06,.95,0x333333);
+    bx(x,.3,.46,.5,.25,.02,0xf2c040);}}},
+  pumpkin:{n:'ฟักทองฮาโลวีน',r:1,cost:480,d:'ฟักทองยิ้มเผล่ เทียนไฟสีส้มกะพริบ',m:['pumpkin'],b(){sandbags(-3.6,3.6,1,[0x4a3a2a,0x3a2e22]);
+    for(let i=0,x=-3.2;x<=3.3;x+=.8,i++){pm('pumpkin',x,.3,0,i%2?.55:.7,rnd(-.4,.4));for(const s of [-1,1])bx(x+s*.12,.55,.33,.09,.09,.02,sglow(0xffa020,2.2));bx(x,.42,.34,.22,.05,.02,sglow(0xffa020,2.2));}
+    const l=vPoint(0xff8a20,7,5,1.6);l.position.set(0,1.1,.5);PLACE_TO.add(l);}},
+  flowers:{n:'สวนดอกไม้พาสเทล',r:1,cost:500,d:'ปลูกดอกไม้และพุ่มไม้ไว้หน้าฐาน',m:['flower_red','bush','bush_large','mushroom_red'],b(){
+    for(const x of [-2.4,0,2.4]){bx(x,0,0,2.2,.5,.7,0xd8b890);bx(x,.5,0,2.25,.05,.75,0xb89a70);bx(x,.52,0,2.1,.04,.6,0x5a3a24);
+      for(let i=0;i<6;i++)pm('flower_red',x-.9+i*.36+rnd(-.05,.05),.52,rnd(-.18,.18),rnd(.35,.55),rnd(0,6));pm('bush',x-.7,.52,.05,.4,rnd(0,6));pm('bush',x+.7,.52,.05,.38,rnd(0,6));}
+    for(const x of [-3.7,3.7])pm('bush_large',x,0,.1,.9,rnd(0,6));pm('mushroom_red',-1.2,0,.45,.35);pm('mushroom_red',1.25,0,.45,.3);}},
   spikes:{n:'เม่นเหล็กกันรถถัง',r:1,cost:600,d:'เหล็กไขว้ 3 ทาง พร้อมลวดหนาม',b(){const st=metal(0x5a5e62);
-    for(const x of [-2.7,-.9,.9,2.7]){for(const [rx,rz] of [[0,.95],[0,-.95],[Math.PI/2,0]]){const b=bx(x,.1,0,.12,1.5,.12,st);b.rotation.set(rx,rz?0:0,rz);b.position.y=.65;}}
-    for(let x=-3.4;x<=3.4;x+=.32)ring(x,.95,.05,.17,.012,0x9a9a9a,Math.PI*2,0,0).rotation.y=Math.PI/2;}},
-  castle:{n:'ป้อมปราการหิน',r:1,cost:700,d:'กำแพงปราสาทพร้อมธงอัศวิน',b(){const S=[0x8a8a84,0x7a7a74,0x9a9a92];
-    for(let y=0;y<3;y++)for(let x=-3.6+(y%2)*.3;x<3.5;x+=.6)bx(x+.3,y*.3,0,.58,.29,.6,S[(y+Math.round(x*2))%3]);
-    for(let x=-3.4;x<=3.4;x+=.8)bx(x,.9,0,.42,.3,.6,S[1]);for(const x of [-3.2,3.2]){cy(x,1.2,0,.03,.8,0x5a4a30,5);const f=bx(x+.22,1.7,0,.42,.26,.02,x<0?0xc0302a:0x2a4ac0);}}},
-  teddy:{n:'ตุ๊กตาหมียักษ์',r:2,cost:1000,d:'หมีนุ่มนิ่มตัวโต ซอมบี้ผ่านไม่ได้',b(){
+    for(const x of [-2.7,-.9,.9,2.7]){for(const [rx,rz] of [[0,.95],[0,-.95],[Math.PI/2,0]]){const b=bx(x,.1,0,.12,1.5,.12,st);b.rotation.set(rx,0,rz);b.position.y=.65;}}
+    for(let x=-3.4;x<=3.4;x+=.32)ring(x,.95,.05,.17,.012,0x9a9a9a,Math.PI*2,0,0).rotation.y=Math.PI/2;
+    for(const x of [-1.8,1.8]){bx(x,0,.3,.5,.35,.35,0x4a5a2a);bx(x,.12,.48,.3,.08,.01,0xf2c040);}}},
+  castle:{n:'ป้อมปราการหิน',r:1,cost:700,d:'กำแพงปราสาท เสาหิน คบเพลิง และธงอัศวิน',m:['column','column_broken'],b(){const S=[0x8a8a84,0x7a7a74,0x9a9a92];
+    for(let y=0;y<3;y++)for(let x=-3+(y%2)*.3;x<2.9;x+=.6)bx(x+.3,y*.3,0,.58,.29,.6,S[(y+Math.round(x*2))%3]);
+    for(let x=-2.8;x<=2.8;x+=.8)bx(x,.9,0,.42,.3,.6,S[1]);
+    pm('column',-3.45,0,0,1.5);pm('column_broken',3.45,0,0,1.25);
+    for(const x of [-2.5,2.5]){cy(x,.9,.32,.04,.35,0x5a3a24,6);ball(x,1.32,.32,.09,sglow(0xff8a20,2.5),1,1.5,1);}
+    for(const x of [-1.2,1.2]){cy(x,1.2,0,.03,.8,0x5a4a30,5);bx(x+.24,1.68,0,.46,.3,.02,x<0?0xc0302a:0x2a4ac0);bx(x+.24,1.75,.012,.12,.12,.01,0xf2c040);}
+    const l=vPoint(0xff8a30,5,4,1.6);l.position.set(0,1.4,.6);PLACE_TO.add(l);}},
+  teddy:{n:'ตุ๊กตาหมียักษ์',r:2,cost:1000,d:'หมีนุ่มนิ่มตัวโต ซอมบี้ผ่านไม่ได้',m:['cupcake'],b(){
     const bear=(x,c,bow)=>{ball(x,.45,0,.45,c,1,.95,.85);ball(x,1,0,.32,c);for(const s of [-1,1]){ball(x+s*.24,1.25,0,.1,c);ball(x+s*.24,1.25,.05,.05,0xf2d8c8);ball(x+s*.42,.35,.15,.14,c);ball(x+s*.2,.1,.3,.15,c);}
-      ball(x,.93,.27,.12,0xf2d8c8,1,.8,.8);ball(x,.97,.37,.035,0x1a1a1a);for(const s of [-1,1])ball(x+s*.11,1.07,.27,.035,0x1a1a1a);
+      ball(x,.93,.27,.12,0xf2d8c8,1,.8,.8);ball(x,.97,.37,.035,0x1a1a1a);for(const s of [-1,1])ball(x+s*.11,1.07,.27,.035,0x1a1a1a);ball(x,.45,.36,.18,0xf2d8c8,1,1,.4);
       for(const s of [-1,1])cone(x+s*.09,.62,.36,.08,.16,bow,8,s*Math.PI/2);ball(x,.7,.36,.04,bow);};
     bear(-2.5,0x9a6a44,0xff6aa0);bear(0,0xf0b8c8,0x5aa8ff);bear(2.5,0xf4eee4,0xc84ad8);
-    for(const x of [-1.25,1.25]){const p=bx(x,0,0,.9,.55,.6,x<0?0xc8e8ff:0xffe0f0);p.rotation.y=.2*x;ball(x,.62,0,.22,0xfff4c8,1.6,.5,1);}}},
-  candy:{n:'กำแพงลูกกวาด',r:2,cost:1100,d:'หวานจนซอมบี้เมาน้ำตาล',b(){bx(0,0,0,7.2,.4,.6,0xffc8e0);for(let x=-3.4;x<=3.4;x+=.5)ball(x,.42,0,.16,pick([0xff5a8a,0x7ad0ff,0xfff06a,0x9aff8a,0xc89aff]),1,.75,1);
-    for(const x of [-3,-1.5,1.5,3]){for(let i=0;i<8;i++)cy(x,.4+i*.1,0,.06,.1,i%2?0xffffff:0xe02a3a,10);ring(x+.14,1.2,0,.14,.06,0xe02a3a,Math.PI,0,0);}
-    for(const x of [-2.25,0,2.25]){cy(x,.4,0,.02,.6,0xffffff,5);const d=cy(x,.95,.05,.3,.08,0xff6ab8,20);d.rotation.x=Math.PI/2;ring(x,1.0,.1,.18,.03,0xffffff);ring(x,1.0,.1,.09,.03,0xfff06a);}}},
-  ice:{n:'ป้อมน้ำแข็ง',r:2,cost:1200,d:'เย็นเฉียบ เรืองแสงจาง ๆ ตอนกลางคืน',b(){const ic=new THREE.MeshStandardMaterial({color:0xbfe8ff,emissive:0x4aa8ff,emissiveIntensity:.25,roughness:.1,metalness:.1,transparent:true,opacity:.78});
-    for(let y=0;y<3;y++)for(let x=-3.6+(y%2)*.35;x<3.5;x+=.7)bx(x+.35,y*.36,0,.68,.35,.6,ic);bx(0,1.08,0,7.2,.08,.66,0xffffff);
-    for(let x=-3.3;x<=3.3;x+=.42){const c=new THREE.Mesh(new THREE.ConeGeometry(.05,.25,6),ic);c.rotation.x=Math.PI;c.position.set(x,.9,.33);PLACE_TO.add(c);}}},
-  neon:{n:'กำแพงเลเซอร์ไซไฟ',r:2,cost:1400,d:'แผงเหล็กอนาคตพร้อมเส้นแสงนีออน',b(){const dk=metal(0x1a1f2a);
-    for(let x=-3;x<=3;x+=1.5){bx(x,0,0,1.38,1.05,.4,dk);bx(x,.2,.21,1.2,.05,.02,sglow(0x2af0ff));bx(x,.8,.21,1.2,.05,.02,sglow(0xff3ad8));bx(x,.48,.21,.05,.5,.02,sglow(0x2af0ff));}
-    for(const x of [-3.75,-2.25,-.75,.75,2.25,3.75]){cy(x,0,0,.07,1.3,dk,8);ball(x,1.33,0,.08,sglow(0x2af0ff,2));}
-    for(const y of [1.12,1.22])bx(0,y,0,7.5,.015,.015,sglow(0xff2a4a,2));}},
-  cats:{n:'กำแพงน้องแมว',r:2,cost:1300,d:'แมวเหมียวนั่งเฝ้าฐาน น่ารักแต่ดุ',b(){bx(0,0,0,7.2,.45,.6,0xe8d8c0);for(let x=-3.4;x<=3.4;x+=.45)ball(x,.46,.15,.07,0xff9ab0,1,.6,1);
-    const cat=(x,c,e)=>{ball(x,.75,0,.34,c,1,.9,.9);for(const s of [-1,1]){cone(x+s*.2,.95,0,.11,.24,c,4,-s*.25);cone(x+s*.2,.97,.03,.06,.14,0xffb0c0,4,-s*.25);ball(x+s*.13,.8,.27,.06,e);ball(x+s*.13,.8,.31,.03,0x111111);
-      for(const k of [-1,1])bx(x+s*.3,.66+k*.04,.25,.26,.012,.012,0x333333).rotation.z=s*k*.15;}ball(x,.68,.3,.04,0xff7a9a);ball(x,.62,.25,.1,0xffffff,1.2,.7,.8);};
-    cat(-2.7,0xf0a050,0x6ad04a);cat(-.9,0x555a60,0xf0d040);cat(.9,0x1e1e22,0x7ac8ff);cat(2.7,0xf4f0e8,0x5aa0ff);}},
-  cake:{n:'เค้กวันเกิดยักษ์',r:3,cost:2200,d:'เค้กสามชั้นพร้อมเทียนที่ลุกโชน',b(){
-    const cake=(x,s,c1,c2)=>{cy(x,0,0,.6*s,.4*s,c1,24);cy(x,.4*s,0,.45*s,.35*s,c2,24);cy(x,.75*s,0,.3*s,.3*s,c1,24);
-      for(const [r,y] of [[.6,.4],[.45,.75],[.3,1.05]])for(let a=0;a<12;a++)ball(x+Math.cos(a/12*6.28)*r*s,y*s,Math.sin(a/12*6.28)*r*s,.06*s,0xffffff);
-      for(let a=0;a<5;a++){const cx=x+Math.cos(a/5*6.28)*.16*s,cz=Math.sin(a/5*6.28)*.16*s;cy(cx,1.05*s,cz,.025,.2,pick([0x5ab0ff,0xff5a8a,0xfff06a]),6);ball(cx,1.05*s+.25,cz,.04,sglow(0xffb030,3),1,1.6,1);}
-      for(let a=0;a<6;a++)ball(x+Math.cos(a)*.5*s,.42*s,Math.sin(a)*.5*s,.06*s,0xe0202a);};
-    cake(-2.4,1,0xffc8e0,0xfff4e8);cake(0,1.1,0x7a4a2a,0xffe8c8);cake(2.4,1,0xc8e8ff,0xfff4e8);
-    const l=vPoint(0xffb050,6,5,1.6);l.position.set(0,1.6,.4);PLACE_TO.add(l);}},
-  rainbow:{n:'ยูนิคอร์นสายรุ้ง',r:3,cost:2500,d:'สายรุ้งสองโค้งบนก้อนเมฆ มีดาวระยิบระยับ',b(){const R=[0xff4a4a,0xff9a3a,0xffe04a,0x5ad05a,0x4a9aff,0xa05aff];
+    for(const x of [-1.25,1.25]){const p=bx(x,0,0,.9,.55,.6,x<0?0xc8e8ff:0xffe0f0);p.rotation.y=.2*x;ball(x,.62,0,.22,0xfff4c8,1.6,.5,1);pm('cupcake',x,.72,.05,.3,rnd(0,6));}}},
+  candy:{n:'กำแพงขนมหวาน',r:2,cost:1100,d:'โดนัท ไอศกรีม คุกกี้ และลูกกวาด',m:['donut','ice_cream','cookie'],b(){bx(0,0,0,7.2,.4,.6,0xffc8e0);bx(0,.4,0,7.25,.05,.65,0xffffff);
+    for(let x=-3.4;x<=3.4;x+=.5)ball(x,.48,.22,.08,pick([0xff5a8a,0x7ad0ff,0xfff06a,0x9aff8a,0xc89aff]));
+    for(const x of [-3.1,3.1]){for(let i=0;i<8;i++)cy(x,.4+i*.1,0,.06,.1,i%2?0xffffff:0xe02a3a,10);ring(x+.14,1.2,0,.14,.06,0xe02a3a,Math.PI,0,0);}
+    [-2.2,-.75,.75,2.2].forEach((x,i)=>{if(i%2){pm('ice_cream',x,.45,0,.85,rnd(-.3,.3));}else{const d=pm('donut',x,.45,0,.28);if(d){d.rotation.x=-1.2;d.position.y=.75;}}});
+    for(const x of [-1.45,1.45])pm('cookie',x,.45,.05,.16,rnd(0,6));}},
+  ice:{n:'ป้อมคริสตัลน้ำแข็ง',r:2,cost:1200,d:'ก้อนน้ำแข็งกับคริสตัลที่เรืองแสงตอนกลางคืน',m:['crystal','crystal_rock'],b(){const ic=new THREE.MeshStandardMaterial({color:0xbfe8ff,emissive:0x4aa8ff,emissiveIntensity:.25,roughness:.1,metalness:.1,transparent:true,opacity:.78});
+    for(let y=0;y<2;y++)for(let x=-3.6+(y%2)*.35;x<3.5;x+=.7)bx(x+.35,y*.36,0,.68,.35,.6,ic);bx(0,.72,0,7.2,.07,.66,0xffffff);
+    for(const x of [-2.6,0,2.6]){const c=pm('crystal',x,.72,0,.65,rnd(0,6));if(c)c.traverse(o=>{if(o.isMesh)o.material=sglow(0x7ad8ff,.6);});}
+    for(const x of [-1.3,1.3])pm('crystal_rock',x,.72,.05,.4,rnd(0,6));
+    for(let x=-3.3;x<=3.3;x+=.42){const c=new THREE.Mesh(new THREE.ConeGeometry(.05,.25,6),ic);c.rotation.x=Math.PI;c.position.set(x,.58,.33);PLACE_TO.add(c);}}},
+  neon:{n:'ฐานไซไฟเลเซอร์',r:2,cost:1400,d:'แผงเหล็กนีออน ป้อมปืนอัตโนมัติ และเครื่องปั่นไฟ',m:['turret','generator'],b(){const dk=metal(0x1a1f2a);
+    for(let x=-2.25;x<=2.25;x+=1.5){bx(x,0,0,1.38,.95,.4,dk);bx(x,.2,.21,1.2,.05,.02,sglow(0x2af0ff));bx(x,.75,.21,1.2,.05,.02,sglow(0xff3ad8));bx(x,.45,.21,.05,.45,.02,sglow(0x2af0ff));}
+    pm('turret',-3.45,0,0,1.05,.3);pm('generator',3.45,0,0,.85,-.3);
+    for(const x of [-1.5,0,1.5])ball(x,1.02,0,.07,sglow(0x2af0ff,2));for(const y of [1.1,1.2])bx(0,y,0,6,.015,.015,sglow(0xff2a4a,2));}},
+  pets:{n:'แก๊งน้องหมาน้องแมว',r:2,cost:1300,d:'ปั๊ก ชิบะ ฮัสกี้ แมว และจิ้งจอกเฝ้าฐาน (ขยับได้!)',m:['pug','shiba','husky','cat','fox','bush'],b(){
+    bx(0,0,0,7.2,.35,.6,0xe8d8c0);bx(0,.35,0,7.25,.04,.65,0xc8a878);for(let x=-3.4;x<=3.4;x+=.45)ball(x,.25,.31,.06,0xff9ab0,1,.6,.5);
+    // models face different ways; each angle turns it toward the player
+    [['pug',-2.85,.8,1.9],['shiba',-1.45,1.05,.4],['cat',0,.85,0],['husky',1.5,1.1,-.3],['fox',2.75,.9,-2.0]].forEach(([n,x,h2,ry])=>pm(n,x,.39,0,h2,ry));
+    pm('bush',-3.75,0,.2,.5);pm('bush',3.75,0,.2,.5);}},
+  monsters:{n:'แก๊งมอนสเตอร์น่ารัก',r:2,cost:1500,d:'สไลม์ ผึ้ง กบ และปู คอยเฝ้าฐาน (ขยับได้!)',m:['slime_pink','slime_green','bee','frog','crab','mushroom_red'],b(){
+    bx(0,0,0,7.2,.3,.6,0x7a5aa8);bx(0,.3,0,7.25,.04,.65,0xa88ad8);for(let x=-3.3;x<=3.3;x+=.6)ball(x,.18,.31,.07,sglow(pick([0xff7ad8,0x7affd8,0xfff07a]),.8),1,1,.5);
+    [['slime_pink',-2.8,.8,1.0],['frog',-1.4,.55,.2],['crab',0,.65,0],['slime_green',1.4,.8,-1.0],['bee',2.8,.6,-.3]].forEach(([n,x,h2,ry])=>pm(n,x,n==='bee'?.75:.34,0,h2,ry));
+    pm('mushroom_red',-3.75,0,.1,.6);pm('mushroom_red',3.75,0,.1,.5);}},
+  cake:{n:'ปาร์ตี้เค้กวันเกิด',r:3,cost:2200,d:'เค้กเทียนลุกโชน คัพเค้ก โดนัท และธงปาร์ตี้',m:['cake','cupcake','donut','ice_cream'],b(){
+    bx(0,0,0,7.4,.45,.75,0xfff4f8);for(let x=-3.5;x<=3.5;x+=.35)ball(x,.42,.37,.09,0xffc8e0,1,.6,.6);bx(0,.45,0,7.45,.04,.8,0xff8ab8);
+    pm('cake',-2.3,.49,0,.55,.4);pm('cake',2.3,.49,0,.55,-.4);pm('cake',0,.49,0,.7,0);
+    for(const x of [-3.3,-1.15,1.15,3.3])pm('cupcake',x,.49,.05,.4,rnd(0,6));for(const x of [-3.3,3.3]){const d=pm('donut',x,.89,.05,.15);}
+    for(const x of [-.7,.7])pm('ice_cream',x,.49,.15,.45,rnd(-.3,.3));
+    for(const x of [-3.6,3.6])cy(x,0,-.2,.03,1.6,0xffffff,5);for(let x=-3.4;x<=3.4;x+=.4){const f=cone(x,1.32-Math.cos(x/3.6*1.5)*.15,-.2,.12,.22,pick([0xff5a8a,0x5ab0ff,0xfff06a,0x9aff8a,0xc89aff]),3);f.rotation.x=Math.PI;}
+    const l=vPoint(0xffb050,7,5,1.6);l.position.set(0,1.5,.4);PLACE_TO.add(l);}},
+  rainbow:{n:'ยูนิคอร์นสายรุ้ง',r:3,cost:2500,d:'สายรุ้งสองโค้งบนก้อนเมฆ มีดาวระยิบระยับ',m:['gem_pink'],b(){const R=[0xff4a4a,0xff9a3a,0xffe04a,0x5ad05a,0x4a9aff,0xa05aff];
     for(const cx of [-2.1,2.1])R.forEach((c,i)=>ring(cx,.2,0,.95-i*.09,.05,sglow(c,.5),Math.PI));
-    for(const x of [-3.2,-1,1,3.2])for(let i=0;i<4;i++)ball(x+rnd(-.35,.35),.25+rnd(0,.15),rnd(-.15,.15),rnd(.2,.3),0xffffff);
+    for(const x of [-3.2,-1,1,3.2])for(let i=0;i<5;i++)ball(x+rnd(-.35,.35),.25+rnd(0,.15),rnd(-.15,.15),rnd(.2,.3),0xffffff);
     for(let x=-.6;x<=.6;x+=.3)ball(x,.2,0,.24,0xf4f4ff);
     for(let i=0;i<8;i++){const s=new THREE.Mesh(new THREE.OctahedronGeometry(.07),sglow(0xfff08a,2.5));s.position.set(rnd(-3.4,3.4),rnd(.9,1.35),rnd(-.1,.2));PLACE_TO.add(s);}
+    for(const x of [-2.1,2.1]){const g=pm('gem_pink',x,.15,.1,.35,0);if(g)g.traverse(o=>{if(o.isMesh)o.material=sglow(0xff7ad8,.5);});}
     cone(0,.4,.05,.06,.5,sglow(0xffe0f8,1),8);}},
-  lava:{n:'หินลาวาเดือด',r:3,cost:2800,d:'หินภูเขาไฟที่ยังร้อนระอุ แสงส้มเรืองตลอดเวลา',b(){const rock=mat(0x2a1c18,{roughness:1});
-    for(let x=-3.3;x<=3.3;x+=.75){const r=new THREE.Mesh(new THREE.DodecahedronGeometry(rnd(.42,.55)),rock);r.position.set(x,.38,rnd(-.08,.08));r.rotation.set(rnd(0,3),rnd(0,3),rnd(0,3));r.scale.y=.85;PLACE_TO.add(r);
-      const c=new THREE.Mesh(new THREE.DodecahedronGeometry(.3),sglow(0xff5a10,2.2));c.position.set(x+rnd(-.1,.1),.35,.2);PLACE_TO.add(c);}
-    for(let i=0;i<10;i++)ball(rnd(-3.4,3.4),rnd(.75,1),rnd(-.1,.25),.05,sglow(0xffa030,3));
+  lava:{n:'หินลาวาเดือด',r:3,cost:2800,d:'หินภูเขาไฟที่ยังร้อนระอุ แสงส้มเรืองตลอดเวลา',m:['rock_large','rock_tall','rock_small','meteor'],b(){const rock=mat(0x2a1c18,{roughness:1});
+    const dark=o=>{if(o)o.traverse(m=>{if(m.isMesh)m.material=rock;});return o;};
+    for(let x=-3.2,i=0;x<=3.3;x+=.8,i++){dark(pm(i%3===1?'rock_tall':i%2?'rock_small':'rock_large',x,0,rnd(-.08,.08),i%3===1?1.15:.75,rnd(0,6)));
+      const c=new THREE.Mesh(new THREE.DodecahedronGeometry(.26),sglow(0xff5a10,2.2));c.position.set(x+rnd(-.1,.1),.3,.25);PLACE_TO.add(c);}
+    for(const x of [-1.6,1.6]){const m=pm('meteor',x,.8,.05,.35,rnd(0,6));if(m)m.traverse(o=>{if(o.isMesh)o.material=sglow(0xff6a20,1.6);});}
+    for(let i=0;i<10;i++)ball(rnd(-3.4,3.4),rnd(.75,1.1),rnd(-.1,.25),.05,sglow(0xffa030,3));
     const l=vPoint(0xff5a1a,10,6,1.6);l.position.set(0,1,.6);PLACE_TO.add(l);}},
-  gold:{n:'ขุมทรัพย์ทองคำ',r:3,cost:3000,d:'ทองคำแท่ง หีบสมบัติ และอัญมณี',b(){const g=metal(0xf2c040);
-    for(let x=-3.3;x<=3.3;x+=1.1)for(let r=0;r<3;r++)for(let k=0;k<3-r;k++)bx(x-.35+k*.35+r*.17,r*.17,0,.32,.16,.5,g);
-    for(const x of [-1.65,1.65]){bx(x,0,0,.9,.55,.6,0x6a3a1a);bx(x,.55,0,.92,.06,.62,g);bx(x,.0,.31,.08,.55,.02,g);const lid=bx(x,.6,-.25,.9,.06,.5,0x6a3a1a);lid.rotation.x=-.9;
-      for(let i=0;i<6;i++)cy(x+rnd(-.3,.3),.58+i*.02,rnd(-.15,.15),.08,.02,g,14);}
-    for(let i=0;i<7;i++){const s=new THREE.Mesh(new THREE.OctahedronGeometry(.09),sglow(pick([0xff2a5a,0x2affa0,0x3a8aff,0xd04aff]),1.2));s.position.set(rnd(-3.3,3.3),rnd(.55,.75),rnd(.1,.3));PLACE_TO.add(s);}}},
+  gold:{n:'ขุมทรัพย์ทองคำ',r:3,cost:3000,d:'หีบสมบัติ ทองคำแท่ง เหรียญกอง และอัญมณี',m:['chest','coin','gem_pink','crystal'],b(){const g=metal(0xf2c040);
+    for(const x of [-3.1,-.55,2])for(let r=0;r<3;r++)for(let k=0;k<3-r;k++)bx(x-.35+k*.35+r*.17,r*.17,0,.32,.16,.5,g);
+    for(const x of [-1.85,3.3])pm('chest',x,0,0,.75,x<0?.25:-.3);pm('chest',.75,0,.05,.6,-.15);
+    for(let i=0;i<14;i++){const c=pm('coin',rnd(-3.4,3.4),rnd(0,.25),rnd(.2,.38),.22,rnd(0,6));if(c)c.rotation.x=rnd(-1.4,-.2);}
+    for(const x of [-2.6,1.4]){const gm=pm('gem_pink',x,.5,.1,.3,rnd(0,6));if(gm)gm.traverse(o=>{if(o.isMesh)o.material=sglow(0xff3a8a,.8);});}
+    const cr=pm('crystal',3.7,0,.1,.55,0);if(cr)cr.traverse(o=>{if(o.isMesh)o.material=sglow(0x3ad8ff,.6);});
+    const l=vPoint(0xffd060,5,4,1.6);l.position.set(0,1.2,.6);PLACE_TO.add(l);}},
   books:{n:'กำแพงหนังสือ',r:4,unlock:'learn300',d:'รางวัลนักเรียนดี: เรียนรู้ครบ 300 คำ',b(){const C=[0xc0302a,0x2a6ac0,0x3a9a4a,0xe0a020,0x8a3ac0,0x1e8a8a];let y=0;
-    for(let x=-3.2;x<=3.2;x+=1.6){y=0;for(let i=0;i<4;i++){const h=rnd(.16,.24),w=rnd(1.2,1.5);const b=bx(x+rnd(-.08,.08),y,0,w,h,.75,C[(i+Math.round(x+4))%6]);b.rotation.y=rnd(-.15,.15);bx(b.position.x+.02,y+.02,.0,w-.08,h-.04,.77,0xf4efe0).rotation.y=b.rotation.y;y+=h;}}}},
-  shields:{n:'โล่วีรบุรุษ',r:4,unlock:'a1_20',d:'รางวัลผ่าน 20 คืนในลานจอดรถ',b(){const blue=mat(0x2a4aa0),g=metal(0xe0b040);
-    for(let x=-3;x<=3;x+=1.2){const s=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,.08,20),blue);s.rotation.x=Math.PI/2;s.position.set(x,.6,0);s.scale.set(1,1,1.25);PLACE_TO.add(s);ring(x,.6,.05,.5,.04,g);
+    for(let x=-3.2;x<=3.2;x+=1.6){y=0;for(let i=0;i<4;i++){const h=rnd(.16,.24),w=rnd(1.2,1.5);const b=bx(x+rnd(-.08,.08),y,0,w,h,.75,C[(i+Math.round(x+4))%6]);b.rotation.y=rnd(-.15,.15);bx(b.position.x+.02,y+.02,.0,w-.08,h-.04,.77,0xf4efe0).rotation.y=b.rotation.y;y+=h;}}
+    for(const x of [-2.4,.8]){cy(x,y,0,.05,.22,0xf4efe0,8);ball(x,y+.27,0,.05,sglow(0xffb030,3),1,1.5,1);}}},
+  shields:{n:'โล่วีรบุรุษ',r:4,unlock:'a1_20',d:'รางวัลผ่าน 20 คืนในลานจอดรถ',m:['greatsword','sword'],b(){const blue=mat(0x2a4aa0),g=metal(0xe0b040);
+    for(let x=-3,i=0;x<=3;x+=1.2,i++){const s=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,.08,20),i%2?mat(0xa02a2a):blue);s.rotation.x=Math.PI/2;s.position.set(x,.6,0);s.scale.set(1,1,1.25);PLACE_TO.add(s);ring(x,.6,.05,.5,.04,g);
       const st=new THREE.Mesh(new THREE.OctahedronGeometry(.16),g);st.position.set(x,.62,.08);st.scale.z=.3;PLACE_TO.add(st);}
-    for(const x of [-2.4,-1.2,0,1.2,2.4])for(const s of [-1,1]){const sw=bx(x,0,-.15,.06,1.2,.02,metal(0xd8dde2));sw.rotation.z=s*.5;sw.position.y=.55;}}},
-  skulls:{n:'กองกะโหลกบอส',r:4,unlock:'boss5',d:'รางวัลล้มบอสครบ 5 ตัว',b(){const bone=mat(0xe8e0c8);
+    for(const x of [-2.4,-1.2,0,1.2,2.4])for(const s of [-1,1]){const sw=pm(s<0?'greatsword':'sword',x,.05,-.18,1.25);if(sw){sw.rotation.z=s*.45;}}}},
+  skulls:{n:'กองกะโหลกบอส',r:4,unlock:'boss5',d:'รางวัลล้มบอสครบ 5 ตัว: โครงกระดูกยืนเฝ้า',m:['skeleton','ghost_skull'],b(){const bone=mat(0xe8e0c8);
     for(let x=-3.3;x<=3.3;x+=.36)for(let k=0;k<2;k++){const b=cy(x,.1+k*.2,rnd(-.2,.2),.05,.7,bone,6);b.rotation.set(Math.PI/2,0,rnd(-1,1));ball(b.position.x,b.position.y,b.position.z,.07,bone);}
-    for(let x=-3;x<=3;x+=1){ball(x,.75,0,.3,bone,1,.95,.95);for(const s of [-1,1])ball(x+s*.11,.78,.26,.08,0x111111);bx(x,.52,.15,.22,.12,.18,bone);ball(x,.65,.29,.035,0x111111);}
-    for(const x of [-3.5,3.5]){cy(x,0,0,.06,.6,0x3a2a2a,6);ball(x,.68,0,.06,sglow(0xff3a2a,3),1,1.6,1);}}},
+    for(let x=-2,i=0;x<=2;x+=2,i++){if(i===1){pm('ghost_skull',x,.55,0,.75);continue;}ball(x,.75,0,.3,bone,1,.95,.95);for(const s of [-1,1])ball(x+s*.11,.78,.26,.08,0x111111);bx(x,.52,.15,.22,.12,.18,bone);}
+    for(const x of [-2.95,2.95])pm('skeleton',x,0,.1,1.35,x<0?.35:-.35);
+    for(const x of [-1,1]){cy(x,0,.2,.06,.55,0x3a2a2a,6);ball(x,.62,.2,.06,sglow(0xff3a2a,3),1,1.6,1);}}},
 };
 const RAR=[{n:'ธรรมดา',c:'#9aa4a8'},{n:'หายาก',c:'#4aa8ff'},{n:'มหากาพย์',c:'#c06aff'},{n:'ตำนาน',c:'#f2b33d'},{n:'รางวัลพิเศษ',c:'#a6e05a'}];
 const UNLOCK={
@@ -1080,13 +1132,23 @@ function checkSkinUnlocks(){let got=[];for(const [id,s] of Object.entries(SKINS)
 let skinGrp=null;
 function buildSkin(id,parent=scene,z=BARR_Z){const g=new THREE.Group();g.position.set(0,0,z);parent.add(g);g.updateMatrixWorld(true);const prev=PLACE_TO;PLACE_TO=g;
   const n0=OBST.length;try{(SKINS[id]||SKINS.traffic).b();}catch(e){console.error(e);}PLACE_TO=prev;OBST.length=Math.min(OBST.length,n0);return g;}
-function equipSkin(){if(skinGrp)scene.remove(skinGrp);skinGrp=buildSkin(SKINS[P.skin]?P.skin:'traffic');mergeStatic(skinGrp);}
+let skinTok=0;
+function equipSkin(){const id=SKINS[P.skin]?P.skin:'traffic',tok=++skinTok;
+  return loadSkinModels(SKINS[id].m||[]).then(()=>{if(tok!==skinTok)return;if(skinGrp)scene.remove(skinGrp);
+    const n0=SKIN_ANIM.length;skinGrp=buildSkin(id);mergeStatic(skinGrp);
+    const keep=SKIN_ANIM.splice(n0);SKIN_ANIM.length=0;SKIN_ANIM.push(...keep);});}
+function stepSkin(dt){for(const a of SKIN_ANIM){a.mx.update(dt);if(a.danceT>0){a.danceT-=dt;if(a.danceT<=0){a.mx.stopAllAction();a.mx.clipAction(a.idle).reset().play();}}}}
+// pets and monsters celebrate a won night
+function skinCheer(){for(const a of SKIN_ANIM){const c=a.clips.find(c=>/Dance/.test(c.name))||a.clips.find(c=>/\|Yes$|Jump(_ToIdle|_Loop)?$|Gallop_Jump/.test(c.name));if(!c)continue;
+  a.mx.stopAllAction();const x=a.mx.clipAction(c);x.reset().play();a.danceT=Math.min(3.5,Math.max(1.5,c.duration*2));}}
 function skinThumbs(){
-  if(THUMB['skin_traffic'])return;
+  if(THUMB['skin_traffic'])return Promise.resolve();
+  return loadSkinModels(Object.values(SKINS).flatMap(s=>s.m||[])).then(skinThumbsNow);}
+function skinThumbsNow(){
   const r=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});r.setSize(320,160);r.outputColorSpace=THREE.SRGBColorSpace;r.toneMapping=THREE.ACESFilmicToneMapping;
   const sc=new THREE.Scene();sc.add(new THREE.HemisphereLight(0xffffff,0x445544,2.4));const dl=new THREE.DirectionalLight(0xffffff,2.2);dl.position.set(2,4,5);sc.add(dl);
-  const cam=new THREE.PerspectiveCamera(32,2,.05,40);cam.position.set(1.2,2,5.1);cam.lookAt(0,.5,0);
-  for(const id of Object.keys(SKINS)){const g=buildSkin(id,sc,0);r.render(sc,cam);THUMB['skin_'+id]=r.domElement.toDataURL();sc.remove(g);}
+  const cam=new THREE.PerspectiveCamera(32,2,.05,40);cam.position.set(.8,1.55,3.9);cam.lookAt(0,.55,0);
+  for(const id of Object.keys(SKINS)){const n0=SKIN_ANIM.length;const g=buildSkin(id,sc,0);for(const a of SKIN_ANIM.slice(n0))a.mx.update(.4);SKIN_ANIM.length=n0;r.render(sc,cam);THUMB['skin_'+id]=r.domElement.toDataURL();sc.remove(g);}
   r.dispose();
 }
 function buildWorld(){
@@ -1427,7 +1489,7 @@ function buildAllies(){
   allyVisibility();
 }
 function allyPlay(a,name,once=false){const c=a.clips[name];if(!c)return;const act=a.mixer.clipAction(c);if(a.act===act&&!once)return;act.reset();act.setLoop(once?THREE.LoopOnce:THREE.LoopRepeat,Infinity);act.clampWhenFinished=once;if(a.act)act.crossFadeFrom(a.act,.2,false);act.play();a.act=act;if(once)a.busy=c.duration;}
-function allyReact(kind){
+function allyReact(kind){if(kind==="win")skinCheer();
   const [man,dog]=allies;
   if(kind==='kill'&&man&&Math.random()<.35&&man.busy<=0)allyPlay(man,'Yes',true);
   if(kind==='win'){man&&allyPlay(man,'Wave');dog&&allyPlay(dog,'Run_Jump');}
@@ -2392,7 +2454,7 @@ function settings(tab=setTab){
       +row('แสดง FPS','มุมซ้ายล่างของจอ',sw('oF',P.opts.fps)),
     snd:row('เสียงหลัก','',slider('master'))+row('เสียงเอฟเฟกต์','ปืน ซอมบี้ ระเบิด',slider('sfx'))+row('เสียงบรรยากาศ','ลม ฝน',slider('amb'))+row('เสียงอ่านคำศัพท์','อ่านคำภาษาอังกฤษเมื่อตอบถูก',slider('voice')),
     play:row('วิธีตอบ','เลือกคำตอบ = ง่าย · สะกดคำ = ยาก',seg('data-m',[['choice','เลือกคำตอบ'],['spell','สะกดคำ']],P.mode)),
-    about:row('มีอะไรใหม่',`v${VERSION} · ${VERSION_DATE}`,`<button class="sbtn${fresh?' dot':''}" type="button" id="newsBtn">ดู</button>`)+row('เครดิต','โมเดล 3D: Quaternius (CC0)',''),
+    about:row('มีอะไรใหม่',`v${VERSION} · ${VERSION_DATE}`,`<button class="sbtn${fresh?' dot':''}" type="button" id="newsBtn">ดู</button>`)+row('เครดิต','โมเดล 3D: Quaternius และ Kenney (CC0)',''),
   };
   const tabs=[['gfx','กราฟิก'],['snd','เสียง'],['play','การเล่น'],['about','อื่น ๆ']];
   show(`<div class="card set" style="width:min(720px,100%);max-height:100%">
@@ -2505,7 +2567,8 @@ function resume(){if(state!=='paused')return;state='play';scr.hidden=true;last=p
 function shop(tab){
   state='menu';
   let body='';
-  if(tab==='skin'){skinThumbs();const own=ownSkins().length,all=Object.keys(SKINS).length;
+  if(tab==='skin'&&!THUMB['skin_traffic']){show(`<div class="card"><div class="zinfo" style="padding:30px">กำลังโหลดแนวกั้น…</div></div>`);skinThumbs().then(()=>{if(state==='menu')shop('skin');});return;}
+  if(tab==='skin'){const own=ownSkins().length,all=Object.keys(SKINS).length;
     const goals=SKIN_GOALS.map(([n,c],i)=>{const got=P.skinGoals.includes(i),can=own>=n&&!got;return `<div class="sgoal ${got?'got':can?'can':''}"><b>${n} ชิ้น</b><small>${got?'รับแล้ว':can?`<button type="button" data-goal="${i}">รับ +${c}</button>`:'+'+c}</small></div>`;}).join('');
     body=`<div class="skhead"><div class="skprog"><b>สะสมแล้ว ${own}/${all}</b><span class="rbar"><i style="width:${own/all*100}%"></i></span></div><div class="sgoals">${goals}</div></div><div class="skgrid">`+Object.entries(SKINS).sort((a,b)=>a[1].r-b[1].r||(a[1].cost||0)-(b[1].cost||0)).map(([id,s])=>{
       const have=P.skins.includes(id),eq=P.skin===id,R=RAR[s.r],u=s.unlock&&UNLOCK[s.unlock];
@@ -2584,6 +2647,7 @@ function frame(now){
   if(playing){G.t+=dt;step(dt);}
   // zombies animate in every state except pause
   if(state!=='paused'){
+    stepSkin(dt);
     for(const z of [...zombies]){
       z.mixer.update(dt*(z.menu?.6:z.dead?1:TS));
       stepGear(z);

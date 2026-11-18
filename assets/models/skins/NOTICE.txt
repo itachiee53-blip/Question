@@ -1,0 +1,4 @@
+Barricade skin models: CC0 1.0 (public domain), by Quaternius (https://quaternius.com)
+and Kenney (https://www.kenney.nl). Optimized copies (meshopt) taken from the npm package
+@netforge/asset-library-files 0.2.0, whose NOTICE lists each source pack and its CC0 licence.
+Crediting is not required by CC0; credited anyway.
