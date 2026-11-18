@@ -24,6 +24,7 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 #c{position:fixed;inset:0;width:100%;height:100%;display:block}
 /* film look */
 .fx{position:fixed;inset:0;pointer-events:none;z-index:5}
+.fpsc{position:fixed;left:calc(8px + var(--safe-l,0px));bottom:calc(6px + var(--safe-b,0px));z-index:40;font:12px/1 monospace;color:#a6e05a;background:#000a;padding:3px 6px;border-radius:4px;pointer-events:none}
 .vig{background:radial-gradient(ellipse at 50% 55%,transparent 45%,#000a 100%)}
 .grain{opacity:.07;mix-blend-mode:overlay;background-size:180px 180px}
 .hurt{background:radial-gradient(ellipse at 50% 50%,transparent 40%,#c0201099 100%);opacity:0;transition:opacity .25s}
@@ -208,7 +209,24 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .brand h1 span{color:var(--toxic)}
 .brand p{margin:10px 0 0;font-size:18px;color:var(--dim)}
 .brand .ver{margin-top:16px;font-size:13px;color:#fff6}
-.menu{display:flex;flex-direction:column;gap:10px}
+.menu{display:flex;flex-direction:column;gap:12px}
+.home{position:relative}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:14px 6px;min-height:92px;border-radius:12px;background:#0d1612d9;border:1px solid var(--line);font-size:16px;transition:background .15s,transform .1s}
+.tile:hover{background:#16221cee}.tile:active{transform:scale(.97)}
+.tile svg{width:28px;height:28px;color:var(--toxic)}
+.tile em{position:absolute;top:6px;right:6px;font-style:normal;font-size:11px;padding:1px 7px;border-radius:999px;background:#ffffff1a;color:var(--dim)}
+.tile.hot{border-color:#f2b33d88;box-shadow:0 0 0 2px #f2b33d33}.tile.hot em{background:var(--amber);color:#1a1405}
+.htop{position:fixed;top:calc(12px + var(--safe-t));right:calc(14px + var(--safe-r));display:flex;align-items:center;gap:10px;z-index:3}
+.gearbtn{position:relative;width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:#0d1612d9;border:1px solid var(--line)}
+.gearbtn svg{width:22px;height:22px;color:#e8efe4}.gearbtn.dot::after{content:"";position:absolute;right:-2px;top:-2px;width:10px;height:10px;border-radius:50%;background:var(--blood)}
+.set section{padding:12px 0;border-top:1px solid var(--line)}.set section:first-child{border-top:0}
+.set h3{margin:0 0 10px;font-size:15px;font-weight:600;color:var(--dim)}
+.set .seg{margin-top:0}
+.gfx{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.gfx button{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);text-align:left;background:#0006}
+.gfx button b{font-size:16px;font-weight:600}.gfx button small{font-size:12px;color:var(--dim);line-height:1.35}
+.gfx button[aria-pressed="true"]{border-color:var(--toxic);background:#a6e05a1f}.gfx button[aria-pressed="true"] b{color:var(--toxic)}
 .mbtn{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:12px;background:#0d1612d9;border:1px solid var(--line);text-align:left;font-size:20px;transition:background .15s,transform .1s}
 .mbtn:hover{background:#16221cee}
 .mbtn:active{transform:scale(.98)}
@@ -295,7 +313,7 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .load small{color:var(--dim)}
 .toast{position:fixed;left:50%;top:calc(14px + var(--safe-t));transform:translateX(-50%);z-index:40;padding:8px 18px;border-radius:999px;background:#000d;border:1px solid var(--line);font-size:15px;animation:in .2s}
 
-@media (max-width:760px){.home{grid-template-columns:1fr;gap:16px}.brand{text-align:center}.toggles{justify-content:center}}
+@media (max-width:760px){.home{grid-template-columns:1fr;gap:16px;padding-top:54px}.brand{text-align:center}.toggles{justify-content:center}}
 @media (orientation:portrait) and (max-width:760px){
   .scr{align-items:flex-start;overflow:auto;padding-top:calc(10px + var(--safe-t))}
   .home{gap:12px}
@@ -305,7 +323,7 @@ button[disabled]{cursor:not-allowed;opacity:.4}
   .seg{margin-top:10px}
   .toggles{margin-top:8px!important;gap:6px}.tog{font-size:12px;padding:4px 10px}
   .brand .ver{justify-content:center;margin-top:8px;font-size:11px}
-  .menu{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .menu{gap:8px}.tiles{gap:8px}.tile{min-height:76px;padding:10px 4px;font-size:14px}.tile svg{width:24px;height:24px}
   .mbtn{flex-direction:column;align-items:flex-start;gap:4px;padding:10px 12px;font-size:16px;min-height:74px}
   .mbtn svg{width:22px;height:22px}
   .mbtn small{margin-left:0;font-size:12px}
@@ -323,7 +341,7 @@ button[disabled]{cursor:not-allowed;opacity:.4}
   .top h2{font-size:26px}.back{width:34px;height:34px}
   .home{grid-template-columns:1fr 1fr;gap:18px}.brand{text-align:left}
   .brand h1{font-size:64px}.brand p{font-size:15px;margin-top:6px}.brand .ver{margin-top:8px}
-  .mbtn{padding:8px 12px;font-size:17px}.mbtn.main{font-size:20px}.menu{gap:7px}
+  .mbtn{padding:8px 12px;font-size:17px}.mbtn.main{font-size:20px}.menu{gap:7px}.tile{min-height:68px;padding:8px 4px;gap:5px;font-size:14px}.tile svg{width:22px;height:22px}.tiles{gap:7px}
   .news{font-size:12px;padding:6px 34px 6px 10px}
   .hinfo b{font-size:20px}.iconbtn{width:36px;height:36px}.score{font-size:24px}
   .tag .th{font-size:16px}.tag .en{font-size:17px}
@@ -340,6 +358,7 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 <canvas id="c"></canvas>
 <div class="fx vig"></div>
 <div class="fx grain" id="grain"></div>
+<div class="fpsc" id="fps" hidden></div>
 <div class="fx hurt" id="hurt"></div>
 <div class="fx danger" id="danger" hidden></div>
 <div class="fx bolt" id="bolt"></div>
@@ -379,8 +398,11 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.16.1',VERSION_DATE='18 พ.ย. 2569';
+const VERSION='2.17.0',VERSION_DATE='18 พ.ย. 2569';
 const CHANGES=[
+  'หน้าแรกเรียบขึ้น: ปุ่มเล่นต่อใหญ่ปุ่มเดียว ที่เหลือเป็นไอคอนสั้น ๆ ตั้งค่าย้ายไปไว้ที่ปุ่มเฟือง (มุมขวาบน)',
+  'ตั้งค่ากราฟิก: อัตโนมัติ / ประหยัด / สมดุล / สวยสุด และเปิดดู FPS ได้',
+  'ไอคอนคลังแสงใหม่',
   'ลื่นขึ้นบนมือถือ/แท็บเล็ตสเปคกลาง: ฉากรวมเป็นชิ้นเดียว (draw call ลดจาก 800 เหลือไม่ถึง 100), จำกัดไฟที่คำนวณจริงไว้ไม่กี่ดวง ไม่กระตุกตอนระเบิด และปรับความละเอียดภาพตามความแรงของเครื่องอัตโนมัติ',
   'คืนพิเศษ: ทุกคืนที่ 3, 8, 13, 18 … ของแต่ละพื้นที่ เล่นต่างจากเดิม มี 4 แบบ: คุ้มกันรถบัส, ช่วยผู้รอดชีวิต (ห้ามยิงโดน), กระสุนจำกัด, ยิงจากหลังคา',
   'เล่นไปแล้วก็ไม่เสียอะไร ดาวเดิมยังอยู่ครบ คืนพิเศษที่เคยผ่านแบบเก่าจะมีป้าย "ใหม่" บนแผนที่ เข้าไปเล่นแบบใหม่ได้ ผ่านครั้งแรกรับ +50 เหรียญ',
@@ -403,7 +425,8 @@ const SV={
   star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg>',
   play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg>',
   map:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>',
-  gun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M2 8h17l2 2v2H11l-2 3v4H5l1-6-4-1z"/><path d="M13 12v2h-2"/></svg>',
+  gun:'<svg viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M2.5 6h17.2c.7 0 1.3.6 1.3 1.3v.4h.6v1.6H21v.4c0 .7-.6 1.3-1.3 1.3h-8.2l-.5 1.7c-.3.9-1.1 1.5-2 1.5h-.9l-.9 4.7c-.1.6-.6 1-1.2 1H3.9c-.8 0-1.3-.7-1.2-1.4L4 11.3H2.5c-.5 0-.9-.4-.9-.9V6.9c0-.5.4-.9.9-.9zM8.3 11.3v1.3c0 .4.3.7.7.7h.1c.4 0 .7-.3.8-.6l.4-1.4zM3.6 7.4h1v2h-1zm2 0h1v2h-1zm2 0h1v2h-1z"/></svg>',
+  gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5l1.6 2.3 2.7-.7.7 2.7 2.6 1-.6 2.7 1.9 2-1.9 2 .6 2.7-2.6 1-.7 2.7-2.7-.7L12 21.5l-1.6-2.3-2.7.7-.7-2.7-2.6-1 .6-2.7-1.9-2 1.9-2-.6-2.7 2.6-1 .7-2.7 2.7.7z"/></svg>',
   book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-4a3 3 0 0 0-3 3"/><path d="M20 4v14h-6"/></svg>',
   rev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4"/></svg>',
   say:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 8a5 5 0 0 1 0 8" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
@@ -695,11 +718,25 @@ function mergeStatic(root){
 }
 /* resolution follows the device: if frames take too long the picture renders at fewer pixels, then
    creeps back up when there is headroom. Strong phones stay sharp, weaker ones stay smooth. */
+const GFX={
+  auto:{n:'อัตโนมัติ',d:'ปรับความละเอียดตามความแรงของเครื่องเอง (แนะนำ)'},
+  low:{n:'ประหยัด',d:'ลื่นที่สุด ภาพหยาบลง ไฟน้อยลง ไม่มีฟิล์มเกรน',dpr:.75,pl:3,sl:1},
+  mid:{n:'สมดุล',d:'ความละเอียดปกติ ไฟครบเกือบทั้งหมด',dpr:1,pl:5,sl:2},
+  high:{n:'สวยสุด',d:'คมชัดเต็มจอ ไฟครบ เหมาะกับเครื่องแรง',dpr:2,pl:8,sl:2},
+};
+const gfxMode=()=>GFX[P.opts.gfx]?P.opts.gfx:'auto';
 const DPR_MAX=Math.min(devicePixelRatio||1,1.75),DPR_MIN=Math.min(DPR_MAX,.7);
 let dprNow=DPR_MAX;try{const s=+localStorage.getItem('dw_dpr');if(s>=DPR_MIN&&s<=DPR_MAX)dprNow=s;}catch(e){}
-renderer.setPixelRatio(dprNow);
 let perfAcc=0,perfN=0,perfGood=0;
-function perfSample(raw){if(raw>.25||document.hidden)return;perfAcc+=raw;perfN++;if(perfAcc<1.5)return;
+function setPool(pool,n,spot){while(pool.length>n){const l=pool.pop();scene.remove(l);if(spot)scene.remove(l.target);}
+  while(pool.length<n){const l=spot?new THREE.SpotLight(0xffffff,0,1,.3,.5,1):new THREE.PointLight(0xffffff,0,1,2);scene.add(l);if(spot)scene.add(l.target);pool.push(l);}}
+function applyGfx(){const g=GFX[gfxMode()];
+  setPool(POOL_P,g.pl||6,false);setPool(POOL_S,g.sl||2,true);
+  const d=g.dpr?Math.min(devicePixelRatio||1,g.dpr):dprNow;renderer.setPixelRatio(d);resize();
+  $('#grain').hidden=gfxMode()==='low'||gfxMode()==='mid';$('#fps').hidden=!P.opts.fps;}
+let fpsAcc=0,fpsN=0;
+function fpsSample(raw){if(!P.opts.fps||raw>.5)return;fpsAcc+=raw;fpsN++;if(fpsAcc>=.5){$('#fps').textContent=Math.round(fpsN/fpsAcc)+' FPS';fpsAcc=fpsN=0;}}
+function perfSample(raw){fpsSample(raw);if(gfxMode()!=='auto'||raw>.25||document.hidden)return;perfAcc+=raw;perfN++;if(perfAcc<1.5)return;
   const ft=perfAcc/perfN;perfAcc=perfN=0;let next=dprNow;
   if(ft>1/45){next=Math.max(DPR_MIN,dprNow*.85);perfGood=0;}else if(ft<1/57){if(++perfGood>=3){next=Math.min(DPR_MAX,dprNow*1.1);perfGood=0;}}else perfGood=0;
   if(Math.abs(next-dprNow)>.01){dprNow=next;renderer.setPixelRatio(dprNow);resize();try{localStorage.setItem('dw_dpr',dprNow.toFixed(2));}catch(e){}}}
@@ -2151,28 +2188,25 @@ function home(){if(CUT){CUT.then=null;endCut();}CAM.copy(BASE_CAM);
   const ri=rankOf(P.xp),nextR=RANKS[ri+1],rp=nextR?(P.xp-RANKS[ri][0])/(nextR[0]-RANKS[ri][0]):1;
   const dDone=P.daily.list.filter(q=>q.p>=q.g).length,dClaim=P.daily.list.filter(q=>q.p>=q.g&&!q.c).length;
   setAtmosphere(ZSKY[k]?ZSKY[k][0]:'night');
+  const badge=t=>t?`<em>${t}</em>`:'';
   show(`<div class="home">
     <div class="brand">
       <h1>DEAD<br><span>WORDS</span></h1>
-      <p>ตอบคำให้ถูก ก่อนพวกมันจะถึงตัวคุณ</p>
-      <div class="rank"><b>${RANKS[ri][1]}</b><span class="rbar"><i style="width:${(rp*100).toFixed(0)}%"></i></span><small>${fmt(P.xp)} XP${nextR?' · อีก '+fmt(nextR[0]-P.xp)+' สู่ '+nextR[1]:''}</small></div>
-      <div class="seg" role="group" aria-label="วิธีตอบ"><button type="button" data-m="choice" aria-pressed="${CHOICE()}">เลือกคำตอบ<small>ง่าย</small></button><button type="button" data-m="spell" aria-pressed="${!CHOICE()}">สะกดคำ<small>ยาก</small></button></div>
-      <div class="toggles" style="margin-top:14px">
-        <button class="tog" type="button" id="oS" aria-pressed="${P.opts.sfx}">เสียงเอฟเฟกต์</button>
-        <button class="tog" type="button" id="oA" aria-pressed="${P.opts.amb}">เสียงบรรยากาศ</button>
-        <button class="tog" type="button" id="oV" aria-pressed="${P.opts.voice}">อ่านออกเสียง</button>
-      </div>
-      <div class="ver"><button class="newsbtn${fresh?' dot':''}" type="button" id="newsBtn">มีอะไรใหม่ใน v${VERSION}</button><span>${VERSION_DATE} · โมเดล 3D: Quaternius (CC0)</span></div>
+      <div class="rank"><b>${RANKS[ri][1]}</b><span class="rbar"><i style="width:${(rp*100).toFixed(0)}%"></i></span></div>
     </div>
     <div class="menu">
       <button class="mbtn main" type="button" id="mPlay">${SV.play}เล่นต่อ<small>${ZONES[k].lvl} · คืนที่ ${ni+1}</small></button>
-      <button class="mbtn" type="button" id="mSurv">${SV.wall}เอาชีวิตรอด<small>${ZONES[k].lvl} · สถิติ ${P.best[k]||0} คลื่น</small></button>
-      <button class="mbtn${dClaim?' hot':''}" type="button" id="mDaily">${SV.star.replace('<svg','<svg style="color:var(--amber)"')}ภารกิจวันนี้<small>${dDone}/3${dClaim?' · รับรางวัล!':''}</small></button>
-      <button class="mbtn" type="button" id="mMap">${SV.map}เลือกพื้นที่<small>${ORDER.reduce((a,z)=>a+zoneStars(z),0)} ดาว</small></button>
-      ${weak>=4?`<button class="mbtn" type="button" id="mRev">${SV.rev}ทบทวนคำที่พลาด<small>${weak} คำ</small></button>`:''}
-      <button class="mbtn" type="button" id="mShop">${SV.gun}คลังแสง<small>${SV.coin.replace('<svg','<svg style="width:14px;height:14px;vertical-align:-2px"')} ${fmt(P.coins)}</small></button>
-      <button class="mbtn" type="button" id="mBook">${SV.book}สมุดคำศัพท์<small>${learned}/${ALL.length}</small></button>
-    </div></div>`);
+      <div class="tiles">
+        <button class="tile" type="button" id="mMap">${SV.map}<span>เลือกพื้นที่</span></button>
+        <button class="tile${dClaim?' hot':''}" type="button" id="mDaily">${SV.star}<span>ภารกิจวันนี้</span>${badge(dClaim?'รับรางวัล':dDone+'/3')}</button>
+        <button class="tile" type="button" id="mShop">${SV.gun}<span>คลังแสง</span></button>
+        <button class="tile" type="button" id="mSurv">${SV.wall}<span>เอาชีวิตรอด</span></button>
+        ${weak>=4?`<button class="tile" type="button" id="mRev">${SV.rev}<span>ทบทวนคำ</span>${badge(weak)}</button>`:''}
+        <button class="tile" type="button" id="mBook">${SV.book}<span>สมุดคำศัพท์</span></button>
+      </div>
+    </div>
+    <div class="htop">${coinTag()}<button class="gearbtn${fresh?' dot':''}" type="button" id="mSet" aria-label="ตั้งค่า">${SV.gear}</button></div>
+  </div>`);
   $('#mPlay').onclick=()=>{SFX.ui();brief(k,ni);};
   $('#mMap').onclick=()=>{SFX.ui();zoneMap(k);};
   $('#mSurv').onclick=()=>{SFX.ui();survBrief(k);};
@@ -2180,10 +2214,30 @@ function home(){if(CUT){CUT.then=null;endCut();}CAM.copy(BASE_CAM);
   if($('#mRev'))$('#mRev').onclick=()=>{SFX.ui();brief(k,0,'review');};
   $('#mShop').onclick=()=>{SFX.ui();shop('guns');};
   $('#mBook').onclick=()=>{SFX.ui();wordBook(k);};
+  $('#mSet').onclick=()=>{SFX.ui();settings();};
+}
+function settings(){
+  state='menu';const fresh=P.seen!==VERSION,g=gfxMode();
+  const opt=(id,key,label)=>`<button class="tog" type="button" id="${id}" aria-pressed="${!!P.opts[key]}">${label}</button>`;
+  show(`<div class="card set" style="width:min(620px,100%);max-height:100%">
+    <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>ตั้งค่า</h2><span class="sp"></span></div>
+    <div class="scroll">
+      <section><h3>วิธีตอบ</h3>
+        <div class="seg" role="group" aria-label="วิธีตอบ"><button type="button" data-m="choice" aria-pressed="${CHOICE()}">เลือกคำตอบ<small>ง่าย</small></button><button type="button" data-m="spell" aria-pressed="${!CHOICE()}">สะกดคำ<small>ยาก</small></button></div></section>
+      <section><h3>เสียง</h3><div class="toggles">${opt('oS','sfx','เสียงเอฟเฟกต์')}${opt('oA','amb','เสียงบรรยากาศ')}${opt('oV','voice','อ่านออกเสียงคำศัพท์')}</div></section>
+      <section><h3>กราฟิก</h3>
+        <div class="gfx">${Object.entries(GFX).map(([id,o])=>`<button type="button" data-g="${id}" aria-pressed="${id===g}"><b>${o.n}</b><small>${o.d}</small></button>`).join('')}</div>
+        <div class="toggles" style="margin-top:10px">${opt('oF','fps','แสดง FPS')}</div></section>
+      <section><h3>เกี่ยวกับเกม</h3>
+        <button class="newsbtn${fresh?' dot':''}" type="button" id="newsBtn">มีอะไรใหม่ใน v${VERSION}</button>
+        <div class="zinfo" style="margin-top:8px">${VERSION_DATE} · โมเดล 3D: Quaternius (CC0)</div></section>
+    </div></div>`);
+  $('#back').onclick=()=>{SFX.ui();home();};
   $('#newsBtn').onclick=()=>{SFX.ui();news();};
-  const tg=(id,key)=>$(id).onclick=e=>{P.opts[key]=!P.opts[key];save();e.currentTarget.setAttribute('aria-pressed',P.opts[key]);if(key==='amb')ambience();SFX.ui();};
-  tg('#oS','sfx');tg('#oA','amb');tg('#oV','voice');
+  const tg=(id,key)=>$(id).onclick=e=>{P.opts[key]=!P.opts[key];save();e.currentTarget.setAttribute('aria-pressed',P.opts[key]);if(key==='amb')ambience();if(key==='fps')applyGfx();SFX.ui();};
+  tg('#oS','sfx');tg('#oA','amb');tg('#oV','voice');tg('#oF','fps');
   scr.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{P.mode=b.dataset.m;save();SFX.ui();scr.querySelectorAll('[data-m]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.m===P.mode));});
+  scr.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{P.opts.gfx=b.dataset.g;save();applyGfx();SFX.ui();scr.querySelectorAll('[data-g]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.g===P.opts.gfx));});
 }
 const zoneTabs=(sel,attr)=>`<div class="tabs">${ORDER.map(k=>`<button class="tab" type="button" ${attr}="${k}" style="--c:${ZONES[k].c}" aria-pressed="${k===sel}">${ZONES[k].name}<small>${ZONES[k].lvl}</small></button>`).join('')}</div>`;
 function zoneMap(k){
@@ -2225,7 +2279,7 @@ function news(){
   P.seen=VERSION;save();
   show(`<div class="card" style="width:min(560px,100%)"><div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>มีอะไรใหม่</h2><span class="sp"></span><span class="zinfo">v${VERSION} · ${VERSION_DATE}</span></div>
     <div class="scroll"><ul class="newslist">${CHANGES.map(c=>`<li>${c}</li>`).join('')}</ul></div></div>`);
-  $('#back').onclick=home;
+  $('#back').onclick=settings;
 }
 function survBrief(k){
   state='menu';
@@ -2332,6 +2386,7 @@ function resize(){
   if(state==='play')renderPad();
 }
 addEventListener('resize',resize);
+applyGfx();
 const ray=new THREE.Raycaster();
 canvas.addEventListener('pointerdown',e=>{if(state!=='play'||!props.length)return;
   ray.setFromCamera(new THREE.Vector2(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1),camera);
