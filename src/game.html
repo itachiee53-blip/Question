@@ -222,6 +222,25 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .htop{position:fixed;top:calc(12px + var(--safe-t));right:calc(14px + var(--safe-r));display:flex;align-items:center;gap:10px;z-index:3}
 .gearbtn{position:relative;width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:#0d1612d9;border:1px solid var(--line)}
 .gearbtn svg{width:22px;height:22px;color:#e8efe4}.gearbtn.dot::after{content:"";position:absolute;right:-2px;top:-2px;width:10px;height:10px;border-radius:50%;background:var(--blood)}
+.stabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:4px 0 0}
+.stabs button{position:relative;padding:10px 16px;font-size:15px;color:var(--dim);border-bottom:2px solid transparent;margin-bottom:-1px}
+.stabs button[aria-pressed="true"]{color:var(--toxic);border-bottom-color:var(--toxic);font-weight:600}
+.dotm{position:absolute;top:8px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--blood)}
+.spage{padding-top:4px}
+.srow{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 4px;border-bottom:1px solid #ffffff10}
+.srow .sl{display:flex;flex-direction:column;gap:3px;min-width:0}.srow .sl b{font-size:16px;font-weight:500}.srow .sl small{font-size:12px;color:var(--dim)}
+.srow .sc{flex:none}
+.sseg{display:inline-flex;border:1px solid var(--line);border-radius:10px;padding:3px;background:#0006;gap:2px}
+.sseg button{padding:7px 12px;border-radius:7px;font-size:14px;color:var(--dim);white-space:nowrap}
+.sseg button[aria-pressed="true"]{background:var(--toxic);color:#10170c;font-weight:600}
+.sw{width:50px;height:28px;border-radius:999px;background:#ffffff22;position:relative;transition:background .15s}
+.sw i{position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#e8efe4;transition:left .15s}
+.sw[aria-checked="true"]{background:var(--toxic)}.sw[aria-checked="true"] i{left:25px;background:#10170c}
+.sld{display:flex;align-items:center;gap:10px;width:min(260px,42vw)}
+.sld input{flex:1;accent-color:var(--toxic);height:28px}
+.sld output{min-width:30px;text-align:right;font-size:14px;color:var(--dim)}
+.sbtn{position:relative;padding:7px 16px;border-radius:9px;border:1px solid var(--line);font-size:14px}.sbtn.dot::after{content:"";position:absolute;right:-3px;top:-3px;width:9px;height:9px;border-radius:50%;background:var(--blood)}
+@media (max-width:560px){.srow{flex-direction:column;align-items:stretch;gap:10px}.sseg{display:flex}.sseg button{flex:1;padding:7px 6px}.sld{width:100%}}
 .set section{padding:12px 0;border-top:1px solid var(--line)}.set section:first-child{border-top:0}
 .set h3{margin:0 0 10px;font-size:15px;font-weight:600;color:var(--dim)}
 .set .seg{margin-top:0}
@@ -400,10 +419,13 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 
 const WORDS=/*WORDS*/{};
-const VERSION='2.17.1',VERSION_DATE='18 พ.ย. 2569';
+const VERSION='2.18.0',VERSION_DATE='18 พ.ย. 2569';
 const CHANGES=[
+  'หน้าตั้งค่าใหม่แบบแท็บ: กราฟิก / เสียง / การเล่น / อื่น ๆ',
+  'เลือกเฟรมเรตสูงสุด 30 / 60 / 120 FPS',
+  'ปรับระดับเสียงแยกได้: เสียงหลัก, เอฟเฟกต์, บรรยากาศ, เสียงอ่านคำศัพท์',
   'ชื่อเกมหน้าแรกขยับเข้ามา ไม่โดนกล้องหน้ามือถือบัง',
-  'แถบเล็กใต้แถบเครื่องกีดขวางมีชื่อแล้ว: อะดรีนาลีน ตอบถูกสะสมครบ 8 คำ เวลาจะช้าลง 6 วินาที',
+  'แถบอะดรีนาลีน: ตอบถูก 8 ครั้ง ซอมบี้จะเดินช้าลง 6 วิ',
   'หน้าแรกเรียบขึ้น: ปุ่มเล่นต่อใหญ่ปุ่มเดียว ที่เหลือเป็นไอคอนสั้น ๆ ตั้งค่าย้ายไปไว้ที่ปุ่มเฟือง (มุมขวาบน)',
   'ตั้งค่ากราฟิก: อัตโนมัติ / ประหยัด / สมดุล / สวยสุด และเปิดดู FPS ได้',
   'ไอคอนคลังแสงใหม่',
@@ -529,7 +551,9 @@ const SAVE_KEY='dw-save-v1';
 const DEF={coins:0,prog:{},gun:'pistol',owned:['pistol'],up:{wall:0,hint:0,oil:0},gren:1,learned:[],weak:[],opts:{sfx:true,amb:true,voice:true},zone:'a1',seen:null,mode:'choice',xp:0,best:{},daily:null,opsDone:[]};
 let P=Object.assign(structuredClone(DEF),store.get(SAVE_KEY,{}));
 for(const k of ORDER)P.prog[k]=P.prog[k]||[];
-P.up=Object.assign({wall:0,hint:0,oil:0,mag:0,knife:0},P.up);P.seenZ=P.seenZ||[];if(P.mode!=='spell')P.mode='choice';
+P.up=Object.assign({wall:0,hint:0,oil:0,mag:0,knife:0},P.up);P.seenZ=P.seenZ||[];
+// older saves had on/off sound switches: a switched-off channel starts at volume 0
+if(!P.opts.vol)P.opts.vol={master:80,sfx:P.opts.sfx===false?0:100,amb:P.opts.amb===false?0:70,voice:P.opts.voice===false?0:100};if(P.mode!=='spell')P.mode='choice';
 const CHOICE=()=>P.mode==='choice';
 P.best=P.best||{};P.allies=Object.assign({man:0,dog:0},P.allies);P.melee=P.melee||'knife';P.ownedMelee=P.ownedMelee||['knife'];P.xp=P.xp||0;
 /* ranks grow with experience from answering */
@@ -557,10 +581,16 @@ const nextNight=k=>Math.min(ZONES[k].nights.length-1,P.prog[k].filter(Boolean).l
 const zoneStars=k=>P.prog[k].reduce((a,b)=>a+(b||0),0);
 
 /* ---------------- audio (all synthesized) ---------------- */
-let ac=null,master=null,noiseBuf=null,ambNodes=null;
+let ac=null,master=null,sfxBus=null,ambBus=null,noiseBuf=null,ambNodes=null;
+// volumes 0-100 per channel; 0 also counts as switched off
+const VOL_DEF={master:80,sfx:100,amb:70,voice:100};
+const vol=k=>{const v=(P.opts.vol||{})[k];return v==null?VOL_DEF[k]:v;};
+function applyVolume(){P.opts.sfx=vol('sfx')>0;P.opts.amb=vol('amb')>0;P.opts.voice=vol('voice')>0;
+  if(!ac)return;const t=ac.currentTime;master.gain.setTargetAtTime(vol('master')/100,t,.05);sfxBus.gain.setTargetAtTime(vol('sfx')/100,t,.05);ambBus.gain.setTargetAtTime(vol('amb')/100,t,.05);ambience();}
 function audio(){
   try{
-    if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=.8;master.connect(ac.destination);
+    if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=vol('master')/100;master.connect(ac.destination);
+      sfxBus=ac.createGain();sfxBus.gain.value=vol('sfx')/100;sfxBus.connect(master);ambBus=ac.createGain();ambBus.gain.value=vol('amb')/100;ambBus.connect(master);
       noiseBuf=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}
     if(ac.state!=='running')ac.resume();
     decodeSounds();
@@ -569,13 +599,13 @@ function audio(){
 }
 addEventListener('pointerdown',audio,{capture:true,passive:true});
 addEventListener('keydown',audio,{capture:true});
-function nz(dur,vol,type,f,{q=1,at=0,f2=0,dest=master}={}){
+function nz(dur,vol,type,f,{q=1,at=0,f2=0,dest=sfxBus}={}){
   if(!ac||!P.opts.sfx)return;const t=ac.currentTime+at,s=ac.createBufferSource(),fl=ac.createBiquadFilter(),g=ac.createGain();
   s.buffer=noiseBuf;fl.type=type;fl.frequency.setValueAtTime(f,t);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,t+dur);fl.Q.value=q;
   g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+.005);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
   s.connect(fl).connect(g).connect(dest);s.start(t,Math.random()*1.2);s.stop(t+dur+.05);
 }
-function tn(f,dur,type,vol,{f2=0,at=0,dest=master}={}){
+function tn(f,dur,type,vol,{f2=0,at=0,dest=sfxBus}={}){
   if(!ac||!P.opts.sfx)return;const t=ac.currentTime+at,o=ac.createOscillator(),g=ac.createGain();
   o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);
   g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+.005);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
@@ -595,7 +625,7 @@ const SFX={
     l.frequency.value=rnd(5,8);lg.gain.value=base*.06;l.connect(lg).connect(o.frequency);
     f.type='bandpass';f.frequency.setValueAtTime(rnd(380,520),t);f.frequency.linearRampToValueAtTime(rnd(250,350),t+d);f.Q.value=4;
     g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+.15);g.gain.exponentialRampToValueAtTime(.0001,t+d);
-    o.connect(f).connect(g).connect(master);o.start(t);l.start(t);o.stop(t+d+.05);l.stop(t+d+.05);},
+    o.connect(f).connect(g).connect(sfxBus);o.start(t);l.start(t);o.stop(t+d+.05);l.stop(t+d+.05);},
   die(){SFX.groan(.22);nz(.3,.25,'lowpass',400,{at:.1});},
   win(){[392,494,587,784].forEach((f,i)=>tn(f,.5,'triangle',.12,{at:i*.12}));},
   lose(){[220,196,165,131].forEach((f,i)=>tn(f,.7,'sawtooth',.08,{at:i*.2}));},
@@ -624,7 +654,7 @@ function ambience(){
   if(!ac)return;
   const want=P.opts.amb;
   if(want&&!ambNodes){
-    const g=ac.createGain();g.gain.value=0;g.connect(master);
+    const g=ac.createGain();g.gain.value=0;g.connect(ambBus);
     const s=ac.createBufferSource();s.buffer=noiseBuf;s.loop=true;const f=ac.createBiquadFilter();f.type='lowpass';f.frequency.value=400;f.Q.value=.6;
     const lfo=ac.createOscillator(),lg=ac.createGain();lfo.frequency.value=.07;lg.gain.value=220;lfo.connect(lg).connect(f.frequency);
     const wg=ac.createGain();wg.gain.value=.11;s.connect(f).connect(wg).connect(g);
@@ -639,15 +669,15 @@ for(const n of SND_LIST)fetch(`assets/sounds/${n}.mp3`).then(r=>r.ok?r.arrayBuff
 function decodeSounds(){if(!ac)return;for(const n in SND_RAW){const b=SND_RAW[n];delete SND_RAW[n];ac.decodeAudioData(b).then(d=>SND[n]=d).catch(()=>{});}}
 function sample(n,vol=1,{rate=1,offset=0,dur}={}){
   if(!ac||!P.opts.sfx||!SND[n])return false;const s=ac.createBufferSource(),g=ac.createGain();s.buffer=SND[n];s.playbackRate.value=rate*rnd(.96,1.04);g.gain.value=vol;
-  s.connect(g).connect(master);s.start(0,offset,dur);return true;
+  s.connect(g).connect(sfxBus);s.start(0,offset,dur);return true;
 }
 let rainNode=null;
 function rainSound(on){
   if(!ac)return;
-  if(on&&!rainNode&&P.opts.amb){const s=ac.createBufferSource();s.buffer=noiseBuf;s.loop=true;const f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=1200;const g=ac.createGain();g.gain.value=0;s.connect(f).connect(g).connect(master);s.start();g.gain.linearRampToValueAtTime(.028,ac.currentTime+1.5);rainNode={s,g};}
+  if(on&&!rainNode&&P.opts.amb){const s=ac.createBufferSource();s.buffer=noiseBuf;s.loop=true;const f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=1200;const g=ac.createGain();g.gain.value=0;s.connect(f).connect(g).connect(ambBus);s.start();g.gain.linearRampToValueAtTime(.028,ac.currentTime+1.5);rainNode={s,g};}
   else if((!on||!P.opts.amb)&&rainNode){const r=rainNode;rainNode=null;r.g.gain.linearRampToValueAtTime(0,ac.currentTime+.6);setTimeout(()=>{try{r.s.stop();}catch(e){}},800);}
 }
-function speak(t){if(!P.opts.voice||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.95;speechSynthesis.speak(u);}catch(e){}}
+function speak(t){if(!P.opts.voice||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.95;u.volume=Math.max(.05,vol('master')/100*Math.max(vol('voice'),20)/100);speechSynthesis.speak(u);}catch(e){}}
 
 /* ---------------- three.js scene ---------------- */
 const canvas=$('#c');
@@ -742,7 +772,8 @@ let fpsAcc=0,fpsN=0;
 function fpsSample(raw){if(!P.opts.fps||raw>.5)return;fpsAcc+=raw;fpsN++;if(fpsAcc>=.5){$('#fps').textContent=Math.round(fpsN/fpsAcc)+' FPS';fpsAcc=fpsN=0;}}
 function perfSample(raw){fpsSample(raw);if(gfxMode()!=='auto'||raw>.25||document.hidden)return;perfAcc+=raw;perfN++;if(perfAcc<1.5)return;
   const ft=perfAcc/perfN;perfAcc=perfN=0;let next=dprNow;
-  if(ft>1/45){next=Math.max(DPR_MIN,dprNow*.85);perfGood=0;}else if(ft<1/57){if(++perfGood>=3){next=Math.min(DPR_MAX,dprNow*1.1);perfGood=0;}}else perfGood=0;
+  const aim=Math.min(P.opts.fpsCap||60,60);
+  if(ft>1/(aim*.75)){next=Math.max(DPR_MIN,dprNow*.85);perfGood=0;}else if(ft<1/(aim*.95)){if(++perfGood>=3){next=Math.min(DPR_MAX,dprNow*1.1);perfGood=0;}}else perfGood=0;
   if(Math.abs(next-dprNow)>.01){dprNow=next;renderer.setPixelRatio(dprNow);resize();try{localStorage.setItem('dw_dpr',dprNow.toFixed(2));}catch(e){}}}
 
 function canvasTex(w,h,draw){const c=document.createElement('canvas');c.width=w;c.height=h;draw(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;}
@@ -1796,7 +1827,7 @@ function perkPick(){
 
 /* ---------------- adrenaline: a streak of right answers slows time ---------------- */
 const ADR_NEED=8;
-function adrenaline(){G.slow=6;G.adr=0;banner('ADRENALINE','เวลาช้าลง 6 วินาที');SFX.adr();quest('adr');$('#slowfx').hidden=false;}
+function adrenaline(){G.slow=6;G.adr=0;banner('ADRENALINE','ซอมบี้ช้าลง 6 วินาที');SFX.adr();quest('adr');$('#slowfx').hidden=false;}
 
 /* ---------------- ammo ---------------- */
 function startReload(){
@@ -2119,7 +2150,7 @@ function hud(){
   $('#ammoBar').style.width=(G.reloadT>0?(1-G.reloadT/GUNS[P.gun].reload)*100:G.ammo/G.mag*100)+'%';$('#ammoBtn').classList.toggle('rl',G.reloadT>0);
   $('#adrBar').style.width=(G.slow>0?G.slow/6*100:G.adr/ADR_NEED*100)+'%';
   $('#adrN').textContent=G.slow>0?'ช้า!':G.adr+'/'+ADR_NEED;$('#adrRow').classList.toggle('full',G.slow>0);
-  if(G.adr>=1&&!P.seenZ.includes('adrTip')){P.seenZ.push('adrTip');save();toast(`⬆ แถบอะดรีนาลีน: ตอบถูกสะสมครบ ${ADR_NEED} คำ เวลาจะช้าลง 6 วินาที (ตอบผิดลด 2 ช่อง)`,5000).style.top='calc(84px + var(--safe-t))';}
+  if(G.adr>=1&&!P.seenZ.includes('adrTip')){P.seenZ.push('adrTip');save();toast(`⬆ อะดรีนาลีน: ตอบถูก ${ADR_NEED} ครั้ง ซอมบี้จะเดินช้าลง 6 วิ`,4500).style.top='calc(84px + var(--safe-t))';}
 }
 const DECOY='etaoinshrdlucmfwypvbgk';
 // four answers for the targeted zombie, made once per word so switching targets back and forth keeps them stable
@@ -2222,28 +2253,36 @@ function home(){if(CUT){CUT.then=null;endCut();}CAM.copy(BASE_CAM);
   $('#mBook').onclick=()=>{SFX.ui();wordBook(k);};
   $('#mSet').onclick=()=>{SFX.ui();settings();};
 }
-function settings(){
-  state='menu';const fresh=P.seen!==VERSION,g=gfxMode();
-  const opt=(id,key,label)=>`<button class="tog" type="button" id="${id}" aria-pressed="${!!P.opts[key]}">${label}</button>`;
-  show(`<div class="card set" style="width:min(620px,100%);max-height:100%">
+let setTab='gfx';
+function settings(tab=setTab){
+  state='menu';setTab=tab;const fresh=P.seen!==VERSION,g=gfxMode(),cap=P.opts.fpsCap||60;
+  const seg=(attr,items,cur)=>`<div class="sseg">${items.map(([v,l])=>`<button type="button" ${attr}="${v}" aria-pressed="${v==cur}">${l}</button>`).join('')}</div>`;
+  const row=(label,sub,ctl)=>`<div class="srow"><div class="sl"><b>${label}</b>${sub?`<small>${sub}</small>`:''}</div><div class="sc">${ctl}</div></div>`;
+  const sw=(id,on)=>`<button class="sw" type="button" id="${id}" role="switch" aria-checked="${!!on}"><i></i></button>`;
+  const slider=k=>`<div class="sld"><input type="range" min="0" max="100" step="5" value="${vol(k)}" data-v="${k}" aria-label="${k}"><output id="v_${k}">${vol(k)}</output></div>`;
+  const pages={
+    gfx:row('คุณภาพกราฟิก',GFX[g].d,seg('data-g',Object.entries(GFX).map(([id,o])=>[id,o.n]),g))
+      +row('เฟรมเรตสูงสุด',dispHz?`จอเครื่องนี้รีเฟรชได้ประมาณ ${dispHz>100?120:dispHz>75?90:60} Hz`:'',seg('data-cap',[[30,'30'],[60,'60'],[120,'120']],cap))
+      +row('แสดง FPS','มุมซ้ายล่างของจอ',sw('oF',P.opts.fps)),
+    snd:row('เสียงหลัก','',slider('master'))+row('เสียงเอฟเฟกต์','ปืน ซอมบี้ ระเบิด',slider('sfx'))+row('เสียงบรรยากาศ','ลม ฝน',slider('amb'))+row('เสียงอ่านคำศัพท์','อ่านคำภาษาอังกฤษเมื่อตอบถูก',slider('voice')),
+    play:row('วิธีตอบ','เลือกคำตอบ = ง่าย · สะกดคำ = ยาก',seg('data-m',[['choice','เลือกคำตอบ'],['spell','สะกดคำ']],P.mode)),
+    about:row('มีอะไรใหม่',`v${VERSION} · ${VERSION_DATE}`,`<button class="sbtn${fresh?' dot':''}" type="button" id="newsBtn">ดู</button>`)+row('เครดิต','โมเดล 3D: Quaternius (CC0)',''),
+  };
+  const tabs=[['gfx','กราฟิก'],['snd','เสียง'],['play','การเล่น'],['about','อื่น ๆ']];
+  show(`<div class="card set" style="width:min(720px,100%);max-height:100%">
     <div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>ตั้งค่า</h2><span class="sp"></span></div>
-    <div class="scroll">
-      <section><h3>วิธีตอบ</h3>
-        <div class="seg" role="group" aria-label="วิธีตอบ"><button type="button" data-m="choice" aria-pressed="${CHOICE()}">เลือกคำตอบ<small>ง่าย</small></button><button type="button" data-m="spell" aria-pressed="${!CHOICE()}">สะกดคำ<small>ยาก</small></button></div></section>
-      <section><h3>เสียง</h3><div class="toggles">${opt('oS','sfx','เสียงเอฟเฟกต์')}${opt('oA','amb','เสียงบรรยากาศ')}${opt('oV','voice','อ่านออกเสียงคำศัพท์')}</div></section>
-      <section><h3>กราฟิก</h3>
-        <div class="gfx">${Object.entries(GFX).map(([id,o])=>`<button type="button" data-g="${id}" aria-pressed="${id===g}"><b>${o.n}</b><small>${o.d}</small></button>`).join('')}</div>
-        <div class="toggles" style="margin-top:10px">${opt('oF','fps','แสดง FPS')}</div></section>
-      <section><h3>เกี่ยวกับเกม</h3>
-        <button class="newsbtn${fresh?' dot':''}" type="button" id="newsBtn">มีอะไรใหม่ใน v${VERSION}</button>
-        <div class="zinfo" style="margin-top:8px">${VERSION_DATE} · โมเดล 3D: Quaternius (CC0)</div></section>
-    </div></div>`);
+    <div class="stabs">${tabs.map(([id,l])=>`<button type="button" data-st="${id}" aria-pressed="${id===tab}">${l}${id==='about'&&fresh?'<i class="dotm"></i>':''}</button>`).join('')}</div>
+    <div class="scroll spage">${pages[tab]}</div></div>`);
   $('#back').onclick=()=>{SFX.ui();home();};
-  $('#newsBtn').onclick=()=>{SFX.ui();news();};
-  const tg=(id,key)=>$(id).onclick=e=>{P.opts[key]=!P.opts[key];save();e.currentTarget.setAttribute('aria-pressed',P.opts[key]);if(key==='amb')ambience();if(key==='fps')applyGfx();SFX.ui();};
-  tg('#oS','sfx');tg('#oA','amb');tg('#oV','voice');tg('#oF','fps');
-  scr.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{P.mode=b.dataset.m;save();SFX.ui();scr.querySelectorAll('[data-m]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.m===P.mode));});
-  scr.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{P.opts.gfx=b.dataset.g;save();applyGfx();SFX.ui();scr.querySelectorAll('[data-g]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.g===P.opts.gfx));});
+  scr.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{SFX.ui();settings(b.dataset.st);});
+  if($('#newsBtn'))$('#newsBtn').onclick=()=>{SFX.ui();news();};
+  if($('#oF'))$('#oF').onclick=e=>{P.opts.fps=!P.opts.fps;save();e.currentTarget.setAttribute('aria-checked',P.opts.fps);applyGfx();SFX.ui();};
+  const pick=(attr,set)=>scr.querySelectorAll(`[${attr}]`).forEach(b=>b.onclick=()=>{set(b.getAttribute(attr));save();SFX.ui();settings(tab);});
+  pick('data-g',v=>{P.opts.gfx=v;applyGfx();});
+  pick('data-cap',v=>{P.opts.fpsCap=+v;});
+  pick('data-m',v=>{P.mode=v;});
+  scr.querySelectorAll('[data-v]').forEach(r=>{r.oninput=()=>{P.opts.vol=Object.assign({},P.opts.vol,{[r.dataset.v]:+r.value});$('#v_'+r.dataset.v).textContent=r.value;applyVolume();};
+    r.onchange=()=>{save();if(r.dataset.v==='voice'){const o=P.opts.voice;P.opts.voice=true;speak('hello');P.opts.voice=o;}else SFX.ui();};});
 }
 const zoneTabs=(sel,attr)=>`<div class="tabs">${ORDER.map(k=>`<button class="tab" type="button" ${attr}="${k}" style="--c:${ZONES[k].c}" aria-pressed="${k===sel}">${ZONES[k].name}<small>${ZONES[k].lvl}</small></button>`).join('')}</div>`;
 function zoneMap(k){
@@ -2285,7 +2324,7 @@ function news(){
   P.seen=VERSION;save();
   show(`<div class="card" style="width:min(560px,100%)"><div class="top"><button class="back" type="button" id="back" aria-label="กลับ">←</button><h2>มีอะไรใหม่</h2><span class="sp"></span><span class="zinfo">v${VERSION} · ${VERSION_DATE}</span></div>
     <div class="scroll"><ul class="newslist">${CHANGES.map(c=>`<li>${c}</li>`).join('')}</ul></div></div>`);
-  $('#back').onclick=settings;
+  $('#back').onclick=()=>settings('about');
 }
 function survBrief(k){
   state='menu';
@@ -2399,8 +2438,12 @@ canvas.addEventListener('pointerdown',e=>{if(state!=='play'||!props.length)retur
   const hit=ray.intersectObjects(props.map(p=>p.obj),true)[0];if(!hit)return;
   const pr=props.find(p=>{let o=hit.object;while(o){if(o===p.obj)return true;o=o.parent;}return false;});if(pr)useProp(pr);});
 const proj=new THREE.Vector3();
+// frame-rate cap (30 / 60 / 120); also counts how fast the screen itself refreshes
+let lastDraw=0,hzN=0,hzT=0,dispHz=0;
 function frame(now){
   requestAnimationFrame(frame);
+  hzN++;if(now-hzT>=1000){if(hzT)dispHz=Math.round(hzN*1000/(now-hzT));hzN=0;hzT=now;}
+  const cap=P.opts.fpsCap||60;if(now-lastDraw<1000/cap*.92)return;lastDraw=now;
   const raw=(now-last)/1000,dt=Math.min(.05,raw);last=now;clock+=dt;perfSample(raw);
   const playing=state==='play';
   if(playing){G.t+=dt;step(dt);}
