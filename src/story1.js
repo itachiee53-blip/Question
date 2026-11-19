@@ -306,8 +306,8 @@ S.people.sunhee=person({name:'Sun-hee Park',look:{model:'Casual2_Female',skin:'l
     {q:'why',a:[L('Sun-hee Park','For Jae. He needs a safe place to sleep.','เพื่อแจค่ะ เขาต้องการที่ปลอดภัยไว้นอน')]}],
   why:'บัตรถูกต้อง ไม่มีรอยกัด',
   after:{yes:async(F,D)=>{F.parkIn=true;await sayW('jae','Mom, will Dad find us?','แม่ พ่อจะหาเราเจอไหม');await say1('sunhee','He will, baby. He always does.','เจอสิลูก พ่อหาเราเจอเสมอ');
-      if(D.jae)walk(D.jae,[[-.4,-1.2],[-2,-.6],[-2.2,4]]);await G.sleep(1600);},
-    no:async(F,D)=>{F.parkOut=true;await say1('sunhee','Please... he\'s just a child!','ได้โปรด... เขาเป็นแค่เด็กนะ!');if(D.jae)walk(D.jae,[[2.4,-2.6],[2.6,-14]]);await G.sleep(1800);}},
+      if(D.jae)walk(D.jae,[[-.4,-1.7],[-1.7,-1.6],[-2.0,-.4],[-2.2,4]]);await G.sleep(1600);},
+    no:async(F,D)=>{F.parkOut=true;await say1('sunhee','Please... he\'s just a child!','ได้โปรด... เขาเป็นแค่เด็กนะ!');if(D.jae)walk(D.jae,[[1.2,-3.4],[0.9,-9],[0.6,-16]]);await G.sleep(1800);}},
 });
 S.people.priya=()=>F().priyaDead?null:person({name:'Priya Nair',look:{model:'Casual2_Female',skin:'brown',h:1.64,tint:{Shirt:'#3a5a3a'}},voice:{f:true,pitch:1.15,rate:1.1,vi:3},
   id:{born:'15 Apr 1997',from:'Kesh',no:'VL-480-2231'},
@@ -399,7 +399,7 @@ S.people.leo=person({name:'Leo',look:{model:'Casual_Bald',skin:'pale',h:1.83},vo
 });
 S.people.elena=person({name:'Dr. Elena Ward',look:{model:'Doctor_Female_Young',skin:'pale',h:1.7},voice:{f:true,pitch:.95,rate:.95,vi:3},
   id:{born:'2 Feb 1986',from:'Haven',no:'VL-000-0451'},temp:36.6,
-  enter:async(F,D)=>{const v=place('Vehicle_Truck',1.6,0,-7.5,0,1);if(v)(D.props||(D.props=[])).push(v);},
+  enter:async(F,D)=>{const v=place('Vehicle_Truck',2.6,0,-8.5,0,1);if(v)(D.props||(D.props=[])).push(v);},
   hello:[L('Dr. Elena Ward','Dr. Elena Ward. Velmora Health Research.','ดร.เอเลน่า วอร์ด ฝ่ายวิจัยสุขภาพแห่งเวลโมร่า'),
     L('Dr. Elena Ward','I have orders from Command. My vehicle is not to be searched.','ฉันมีคำสั่งจากกองบัญชาการ ห้ามตรวจรถของฉัน')],
   qs:[{en:"What's in the van?",th:'ในรถมีอะไร',a:[L('Dr. Elena Ward','Medical supplies. That\'s all you need to know.','เวชภัณฑ์ คุณรู้แค่นั้นก็พอ')]},
@@ -420,7 +420,7 @@ S.people.elena=person({name:'Dr. Elena Ward',look:{model:'Doctor_Female_Young',s
         await sayW('carter','No. Let her through, {P}. That\'s an order.','ไม่ ปล่อยเธอไป {P} นี่คือคำสั่ง');F.vanTried=true;
       }},
     pass:async()=>{await G.sleep(800);}},
-  leave:D=>{for(const o of D.props||[])scene.remove(o);D.props=[];},
+  leave:D=>{for(const o of D.props||[]){scene.remove(o);unsolid(o);}D.props=[];},
 });
 S.people.nadia=person({name:'Nadia Hassan',look:{model:'Worker_Female',skin:'brown',h:1.66},voice:{f:true,pitch:1,vi:0},
   id:{born:'5 May 1993',from:'Mirr',no:'VL-422-9010'},temp:37.6,
@@ -574,7 +574,7 @@ S.people.ben=person({name:'Ben Torres',look:{model:'Casual2_Male',skin:'tan',h:1
   qs:[{q:'sick',a:[L('Ben Torres','Everything is... loud. And hot. So hot.','ทุกอย่างมัน... ดัง แล้วก็ร้อน ร้อนมาก')]},
     {q:'neck',when:D=>D.seen.has('body'),a:[L('Ben Torres','A man grabbed me this morning. At the camp. I pushed him off. I\'m fine...','ผู้ชายคนหนึ่งคว้าตัวผมเมื่อเช้า ที่ค่าย ผมผลักเขาออกไป ผมไม่เป็นไร...'),L('maria','It\'s nothing! It\'s nothing!','ไม่มีอะไร! ไม่มีอะไรหรอก!')]}],
   right:['no','quar'],inf:true,why:'ไข้ 39.1 ตาแดง มือสั่น รอยกัดที่คอ',
-  after:{no:async(F,D)=>{await sayW('maria','Then I stay with him. I\'m not leaving my son.','งั้นฉันจะอยู่กับเขา ฉันไม่ทิ้งลูก');F.benOut=true;if(D.maria)walk(D.maria,[[2.2,-2.6],[2.4,-14]]);await G.sleep(1200);},
+  after:{no:async(F,D)=>{await sayW('maria','Then I stay with him. I\'m not leaving my son.','งั้นฉันจะอยู่กับเขา ฉันไม่ทิ้งลูก');F.benOut=true;if(D.maria)walk(D.maria,[[1.0,-3.4],[0.8,-9],[0.5,-16]]);await G.sleep(1200);},
     quar:async(F,D)=>{F.benQ=true;await sayW('maria','A tent? I can see him? Okay... okay.','เต็นท์เหรอ ฉันไปหาเขาได้ใช่ไหม โอเค... โอเค');},
     yes:async(F,D)=>{
       // he turns right there, inside the checkpoint
