@@ -60,6 +60,7 @@ input{font:inherit}
 
 /* ---------- tools (left) ---------- */
 .tools{position:fixed;left:calc(10px + var(--safe-l));top:58px;bottom:calc(10px + var(--safe-b));z-index:20;display:flex;flex-direction:column;gap:6px;justify-content:center}
+.tools.two{display:grid;grid-template-columns:62px 62px;align-content:center}
 .tool{width:62px;padding:7px 2px 6px;border-radius:12px;background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;position:relative}
 .tool svg{width:24px;height:24px}
 .tool.on{border-color:var(--amber);background:#3a2e12e8}
@@ -97,7 +98,7 @@ input{font:inherit}
 .alt{background:#3a2e12e8;border-color:var(--amber)!important;color:#ffe9b8;font-size:15px!important}
 
 /* ---------- panels (documents etc.) ---------- */
-.panel{position:fixed;left:calc(84px + var(--safe-l));top:58px;z-index:30;max-height:calc(100% - 70px);overflow:auto;animation:slide .18s ease-out}
+.panel{position:fixed;left:calc(84px + var(--safe-l) + var(--toolw,0px));top:58px;z-index:30;max-height:calc(100% - 70px);overflow:auto;animation:slide .18s ease-out}
 @keyframes slide{from{transform:translateY(12px);opacity:0}}
 .x{position:absolute;top:6px;right:8px;width:28px;height:28px;border-radius:50%;background:#0006;color:#fff;font-size:16px;z-index:2}
 .card{width:340px;border-radius:12px;background:var(--paper);color:var(--ink);padding:12px 14px;font-family:var(--f-type);position:relative;box-shadow:0 10px 30px #000c}
@@ -579,7 +580,8 @@ portrait.c={};
 /*STORY*/
 
 /* ---------------- text helpers ---------------- */
-const sub=s=>String(s||'').replace(/\{P\}/g,P.name||'Rookie').replace(/\{S\}/g,P.sis||'Prae');
+// names are Latin letters; give them a space where they touch Thai text
+const sub=s=>String(s||'').replace(/\{P\}/g,P.name||'Rookie').replace(/\{S\}/g,P.sis||'Prae').replace(/([\u0E00-\u0E7F])([A-Za-z])/g,'$1 $2').replace(/([A-Za-z])([\u0E00-\u0E7F])/g,'$1 $2');
 function wordsHtml(en){return esc(sub(en)).replace(/[A-Za-z][A-Za-z'’-]*/g,m=>`<span class="w">${m}</span>`);}
 function bindWords(root){root.querySelectorAll('.w').forEach(el=>el.addEventListener('pointerdown',e=>{e.stopPropagation();showPop(el);}));}
 let popEl=null;
@@ -659,6 +661,8 @@ function renderTools(){
   const t=$('#tools');const list=toolsFor(P.day);const nw=STORY.days[P.day-1].newTools||[];
   t.innerHTML=list.map(k=>`<button class="tool ${nw.includes(k)&&!(D.used||new Set()).has(k)?'new':''}" data-t="${k}" type="button">${ICON[k]}<span>${TOOLN[k]}</span></button>`).join('');
   t.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{if(!D||!D.cur||D.busy)return;SFX.paper();openTool(b.dataset.t);});
+  t.classList.toggle('two',list.length*64>innerHeight-80);
+  requestAnimationFrame(()=>{const r=t.getBoundingClientRect();document.documentElement.style.setProperty('--toolw',Math.max(0,r.width-62)+'px');});
 }
 function closePanel(){$('#panel').innerHTML='';document.querySelectorAll('.tool.on').forEach(b=>b.classList.remove('on'));if(D&&D.zoomed){D.zoomed=false;camTo('booth',.6);}}
 function openTool(k){
