@@ -809,7 +809,7 @@ S.days.push({
 async function gateEvent(F,D){
   // two people from the line make a run for it; a runner comes up the bridge behind them
   await camTo('bridge',1.2);G.ambience('tense');G.SFX.alarm();G.heart(true);
-  const pri=makeActor(S.people.priya.look),iv=makeActor({model:'OldClassy_Male',skin:'pale',h:1.7});
+  const pri=makeActor(getDef('priya').look),iv=makeActor({model:'OldClassy_Male',skin:'pale',h:1.7});
   (D.extra||(D.extra=[])).push(pri,iv);pri.obj.position.set(.6,0,-12);iv.obj.position.set(-1,0,-13);
   const z=zombie(.2,-42,'Zombie_Basic');
   await say(L('diaz','Runner! Runner on the bridge!','ตัววิ่ง! มีตัววิ่งมาบนสะพาน!'));
