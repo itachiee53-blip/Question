@@ -1,6 +1,6 @@
 {
-  "name": "Dead Words",
-  "short_name": "Dead Words",
+  "name": "เกมฝึกอังกฤษ",
+  "short_name": "เกมอังกฤษ",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",

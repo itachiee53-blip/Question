@@ -2542,7 +2542,7 @@ function home(){if(CUT){CUT.then=null;endCut();}CAM.copy(BASE_CAM);
         <button class="tile" type="button" id="mBook">${SV.book}<span>สมุดคำศัพท์</span></button>
       </div>
     </div>
-    <div class="htop">${coinTag()}<button class="gearbtn${fresh?' dot':''}" type="button" id="mSet" aria-label="ตั้งค่า">${SV.gear}</button></div>
+    <div class="htop">${coinTag()}<button class="gearbtn" type="button" id="mGames" aria-label="เลือกเกม"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></button><button class="gearbtn${fresh?' dot':''}" type="button" id="mSet" aria-label="ตั้งค่า">${SV.gear}</button></div>
   </div>`);
   $('#mPlay').onclick=()=>{SFX.ui();brief(k,ni);};
   $('#mMap').onclick=()=>{SFX.ui();zoneMap(k);};
@@ -2551,7 +2551,7 @@ function home(){if(CUT){CUT.then=null;endCut();}CAM.copy(BASE_CAM);
   if($('#mRev'))$('#mRev').onclick=()=>{SFX.ui();brief(k,0,'review');};
   $('#mShop').onclick=()=>{SFX.ui();shop('guns');};
   $('#mBook').onclick=()=>{SFX.ui();wordBook(k);};
-  $('#mSet').onclick=()=>{SFX.ui();settings();};
+  $('#mGames').onclick=()=>{location.href='./';};$('#mSet').onclick=()=>{SFX.ui();settings();};
 }
 let setTab='gfx';
 function settings(tab=setTab){

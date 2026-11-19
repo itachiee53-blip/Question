@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>เลือกเกม</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400;600&display=swap">
+<style>
+:root{--bg:#08090a;--text:#ece8de;--dim:#ece8de99;--line:#ffffff1f;--f-th:"Kanit",system-ui,sans-serif;--f-disp:"Bebas Neue","Kanit",sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--f-th);-webkit-tap-highlight-color:transparent}
+body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  padding:calc(14px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) calc(16px + env(safe-area-inset-left,0px));
+  background:radial-gradient(ellipse at 50% 30%,#1a1e22,#08090a 70%)}
+h1{margin:0;font-size:20px;font-weight:400;color:var(--dim);letter-spacing:1px}
+.games{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:min(920px,100%)}
+@media (max-width:560px) and (orientation:portrait){.games{grid-template-columns:1fr}}
+a.g{position:relative;display:block;border-radius:16px;overflow:hidden;border:1px solid var(--line);text-decoration:none;color:inherit;aspect-ratio:16/10;background:#111 center/cover;
+  box-shadow:0 12px 32px #000a;transition:transform .15s,border-color .15s}
+a.g:hover,a.g:focus-visible{transform:translateY(-3px);border-color:#ffffff55;outline:none}
+a.g:active{transform:scale(.98)}
+a.g::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0000 30%,#000d 100%)}
+a.g.z{background-image:url(assets/cover-zombie.jpg)}
+a.g.c{background-image:url(assets/cover-checkpoint.jpg)}
+.info{position:absolute;left:16px;right:16px;bottom:14px}
+.info b{display:block;font-family:var(--f-disp);font-weight:400;font-size:clamp(30px,5vw,46px);letter-spacing:3px;line-height:1}
+.info span{display:block;font-size:15px;color:var(--dim);margin-top:2px}
+.tag{position:absolute;top:12px;left:12px;font-size:12px;padding:3px 10px;border-radius:999px;background:#f2b33d;color:#1a1408;font-weight:600}
+@media (max-height:420px){h1{font-size:16px}.games{width:min(760px,100%)}.info b{font-size:32px}.info span{font-size:13px}}
+</style>
+</head>
+<body>
+<h1>เลือกเกม</h1>
+<div class="games">
+  <a class="g z" href="zombie.html"><div class="info"><b>DEAD WORDS</b><span>ตอบคำ ยิงซอมบี้</span></div></a>
+  <a class="g c" href="checkpoint.html"><span class="tag">ใหม่</span><div class="info"><b>LAST CHECKPOINT</b><span>ตรวจคน เข้าเมือง</span></div></a>
+</div>
+</body>
+</html>

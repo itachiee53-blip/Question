@@ -1,7 +1,8 @@
-"""Build the site root index.html from src/game.html and words/*.txt.
+"""Build the site: index.html (game picker), zombie.html (src/zombie.html) and checkpoint.html
+(src/checkpoint.html + src/story1.js), with words/*.txt as the dictionary.
 
 Word files: '# topic' lines start a unit; other lines hold 'english|thai' pairs separated by ';'.
-3D models live in assets/models (CC0, Quaternius Zombie Apocalypse Kit) and are loaded at runtime.
+3D models live in assets/models and assets/people (CC0, Quaternius) and are loaded at runtime.
 """
 import collections, json, pathlib
 
@@ -64,10 +65,17 @@ def load_words():
 
 def main():
     words, report = load_words()
-    src = (here / 'src' / 'game.html').read_text(encoding='utf-8')
-    assert '/*WORDS*/{}' in src
-    page = src.replace('/*WORDS*/{}', json.dumps(words, ensure_ascii=False, separators=(',', ':')))
-    (here / 'index.html').write_text(page, encoding='utf-8')
+    wj = json.dumps(words, ensure_ascii=False, separators=(',', ':'))
+    # the zombie game and the checkpoint game each get their own page; index.html lets the player pick one
+    zombie = (here / 'src' / 'zombie.html').read_text(encoding='utf-8')
+    assert '/*WORDS*/{}' in zombie
+    (here / 'zombie.html').write_text(zombie.replace('/*WORDS*/{}', wj), encoding='utf-8')
+    cp = (here / 'src' / 'checkpoint.html').read_text(encoding='utf-8')
+    assert '/*WORDS*/{}' in cp and '/*STORY*/' in cp
+    story = (here / 'src' / 'story1.js').read_text(encoding='utf-8')
+    page = cp.replace('/*WORDS*/{}', wj).replace('/*STORY*/', story)
+    (here / 'checkpoint.html').write_text(page, encoding='utf-8')
+    (here / 'index.html').write_text((here / 'src' / 'index.html').read_text(encoding='utf-8'), encoding='utf-8')
     print('\n'.join(report))
     print('total', sum(len(ws) for u in words.values() for _, ws in u), 'words ·', len(page) // 1024, 'KB')
 
