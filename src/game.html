@@ -896,10 +896,10 @@ $('#menuBtn').onclick=()=>{SFX.ui();const s=$('#screen');s.innerHTML=`<div class
 /* ---------------- QTE: a button you must hit in time ---------------- */
 function qte({label,dur,marks,onTick,gateAt=88}){return new Promise(res=>{
   const el=document.createElement('div');el.className='qte';el.innerHTML=`<div class="track"><span class="gate" style="left:${gateAt}%"></span>${marks.map(m=>`<i style="background:${m.c}"></i>`).join('')}</div><button type="button">${esc(label)}</button>`;
-  document.body.appendChild(el);const dots=el.querySelectorAll('.track i');const t0=performance.now();let done=false;
+  document.body.appendChild(el);const dots=el.querySelectorAll('.track i');const t0=clock;let done=false;
   const fin=t=>{if(done)return;done=true;el.remove();res(t);};
-  el.querySelector('button').onpointerdown=e=>{e.preventDefault();fin((performance.now()-t0)/1000);};
-  const tick=()=>{if(done)return;const t=(performance.now()-t0)/1000;marks.forEach((m,i)=>{dots[i].style.left=clamp(m.at(t),0,100)+'%';});onTick&&onTick(t);if(t>=dur){fin(null);return;}requestAnimationFrame(tick);};tick();});}
+  el.querySelector('button').onpointerdown=e=>{e.preventDefault();fin(clock-t0);};
+  const tick=()=>{if(done)return;const t=clock-t0;marks.forEach((m,i)=>{dots[i].style.left=clamp(m.at(t),0,100)+'%';});onTick&&onTick(t);if(t>=dur){fin(null);return;}requestAnimationFrame(tick);};tick();});}
 
 /* ---------------- day timer ---------------- */
 function stepTimer(dt){if(!D||!D.timer||state!=='play')return;if(!D.busy||D.cur){D.timer-=dt;}
