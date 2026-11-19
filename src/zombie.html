@@ -764,8 +764,9 @@ const JUICE=(()=>{
   function pad(t,ch,dur,v){for(const f of ch)for(const d of [-.6,.6]){const o=ac.createOscillator(),fl=ac.createBiquadFilter(),g=ac.createGain();o.type='sawtooth';o.frequency.value=f*2+d;fl.type='lowpass';fl.frequency.value=300+inten*700;
       g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+dur*.3);g.gain.linearRampToValueAtTime(.0001,t+dur);o.connect(fl).connect(g).connect(ambBus);o.start(t);o.stop(t+dur+.05);}}
   function bass(t,f,v){const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+.4);o.connect(g).connect(ambBus);o.start(t);o.stop(t+.45);}
+  const SYNTH_MUSIC=false; // the generated music sounded robotic; real recordings will replace it
   function music(dt){
-    if(!on()||!musicOn)return;beatT-=dt;if(beatT>0)return;
+    if(!SYNTH_MUSIC||!on()||!musicOn)return;beatT-=dt;if(beatT>0)return;
     const bpm=78+inten*52+(bossOn?14:0),sp=60/bpm/2;beatT+=sp;const t=ac.currentTime+.05,bar=Math.floor(step/16)%4,ch=chordsA[bar],k=step%16;
     if(k===0)pad(t,ch,sp*16,.012+inten*.012);
     if(k%8===0||(inten>.45&&k%4===0))kick(t,.16+inten*.18);
@@ -818,7 +819,7 @@ const JUICE=(()=>{
         if(G.wall/G.wallMax<.3){heartT-=dt;if(heartT<=0){heartT=.75;if(ac&&P.opts.sfx){tn(55,.16,'sine',.5,{f2:35});tn(50,.16,'sine',.4,{f2:32,at:.2});}}}}
       else{musicOn=false;inten*=.95;}
       music(dt);
-      if(on()&&(state==='play'||state==='menu')){ambT-=dt;if(ambT<=0){ambT=rnd(7,18);try{pick(ONESHOT)();}catch(e){}}}
+      if(SYNTH_MUSIC&&on()&&(state==='play'||state==='menu')){ambT-=dt;if(ambT<=0){ambT=rnd(7,18);try{pick(ONESHOT)();}catch(e){}}}
     },
   };
 })();
