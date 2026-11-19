@@ -103,6 +103,7 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .banner small{font-size:18px;color:var(--dim)}
 .banner.show{animation:ban 2.2s forwards}
 @keyframes ban{0%{opacity:0;transform:translate(-50%,-40%) scale(1.1)}12%{opacity:1;transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
+.dogtag{position:fixed;z-index:8;pointer-events:none;font-size:22px;line-height:1;padding:3px 6px;border-radius:999px;background:#f2b33dcc;border:2px solid #fff;transform:translate(-50%,-100%);display:none}
 .float{position:fixed;z-index:9;pointer-events:none;font-family:var(--f-disp);font-size:26px;letter-spacing:1px;transform:translate(-50%,-50%);animation:fl 1s forwards;text-shadow:0 2px 8px #000}
 @keyframes fl{to{transform:translate(-50%,-160%);opacity:0}}
 
@@ -1511,7 +1512,7 @@ function buildAllies(){
     const mixer=new THREE.AnimationMixer(o),clips={};for(const c of m.animations)clips[c.name]=c;const a={obj:w,mixer,clips,act:null,idle,name:n,busy:0};allies.push(a);allyPlay(a,idle);return a;};
   mk('Characters_Shaun',-1.95,-3.0,1.72,Math.PI+.6,'Idle');
   // the dog keeps watch from a crate so it can see over the barricade
-  allyCrate=place('Crate',2.4,0,-3.05,.2);const d=mk('Characters_GermanShepherd',2.4,-3.05,.78,Math.PI-.6,'Idle_2');if(d)d.obj.position.y=.79;
+  allyCrate=place('Crate',2.4,0,-3.05,.2);const d=mk('Characters_GermanShepherd',2.4,-3.05,1.0,Math.PI-.6,'Idle_2');if(d)d.obj.position.y=.79;
   const fill=new THREE.PointLight(0xffd2a0,7,5,1.5);fill.position.set(0,2.3,-2);scene.add(fill);
   allyVisibility();
 }
@@ -1526,7 +1527,7 @@ function stepAllies(dt){
   const near=state==='play'&&live().some(z=>z.obj.position.z>-9);
   const [man,dog]=allies;
   for(const a of allies){a.mixer.update(dt);if(a.busy>0){a.busy-=dt;if(a.busy<=0)allyPlay(a,a.idle);}}
-  if(state!=='play'||!G)return;
+  if(state!=='play'||!G){if(dogTagEl)dogTag(null);return;}
   const lm=P.allies.man,ld=P.allies.dog;
   // survivor: shoots the zombie nearest the barricade; one shot kills it (or takes a word off a boss at level 3)
   if(man&&lm>0){G.manT-=dt;if(G.manT<=0){const t=live().filter(z=>z.obj.position.z>-16&&(!z.T.boss||lm>=3)).sort((a,b)=>b.obj.position.z-a.obj.position.z)[0];
@@ -1538,21 +1539,30 @@ function stepAllies(dt){
   if(dog&&ld>0){
     G.dogT-=dt;
     if(dog.job)stepDogJob(dog,dt,ld);
-    else if(G.dogT<=0){const t=live().filter(z=>!z.T.boss&&!z.dogged&&z.obj.position.z>-14).sort((a,b)=>b.obj.position.z-a.obj.position.z)[0];
-      if(t){G.dogT=ALLY.dog.cd[ld-1];t.dogged=1;SFX.bark();allyPlay(dog,'Run_Jump',true);dog.busy=9;dogGo(dog,'out',t.obj.position.x,t.obj.position.z,t);}else G.dogT=.5;}
+    else if(G.dogT<=0){const t=live().filter(z=>!z.T.boss&&!z.dogged&&z.obj.position.z>-18).sort((a,b)=>b.obj.position.z-a.obj.position.z)[0];
+      if(t){G.dogT=ALLY.dog.cd[ld-1];t.dogged=1;SFX.bark();allyPlay(dog,'Run_Jump',true);dog.busy=9;dogGo(dog,'out',t.obj.position.x,t.obj.position.z,t);floatAt({obj:dog.obj,T:{h:1.6}},'โฮ่ง!','#ffd27a');}else G.dogT=.5;}
+    dogTag(dog);
   }
 }
 // the dog jumps off its crate, over the barricade, and runs out on the road to bite; then runs back the same way
-const DOG_HOME={x:2.4,y:.79,z:-3.05,ry:Math.PI-.6},DOG_SPD=8,DOG_HOP=2.2;
+const DOG_HOME={x:2.4,y:.79,z:-3.05,ry:Math.PI-.6},DOG_SPD=9,DOG_HOP=2.2;
+// bite from the side so the dog is not hidden behind the zombie or the aim marker
+function dogSpot(x,z){const side=x>1?-1:1;return [x+side*.95,z+.2];}
 function dogGo(dog,ph,x,z,t){const o=dog.obj.position;let ex=x,ez=z;
-  if(ph==='out'){const dx=x-o.x,dz=z-o.z,d=Math.hypot(dx,dz)||1;ex=x-dx/d*.75;ez=z-dz/d*.75;}
+  if(ph==='out')[ex,ez]=dogSpot(x,z);
   const len=Math.hypot(ex-o.x,ez-o.z)||.01;
   dog.job={ph,t:t||dog.job?.t,sx:o.x,sz:o.z,ex,ez,len,s:0,ran:false};dog.obj.rotation.y=Math.atan2(ex-o.x,ez-o.z);}
+// a small badge follows the dog while it is out, so it is easy to spot on the dark road
+let dogTagEl=null;
+function dogTag(dog){if(!dogTagEl){dogTagEl=document.createElement('div');dogTagEl.className='dogtag';dogTagEl.textContent='🐕';document.body.appendChild(dogTagEl);}
+  if(!dog||!dog.job||state!=='play'){dogTagEl.style.display='none';return;}
+  const p=tmpV.set(dog.obj.position.x,dog.obj.position.y+1.15,dog.obj.position.z).project(camera);
+  dogTagEl.style.display='block';dogTagEl.style.left=(p.x*.5+.5)*innerWidth+'px';dogTagEl.style.top=(-p.y*.5+.5)*innerHeight+'px';}
 function stepDogJob(dog,dt,ld){
   const j=dog.job,o=dog.obj.position,t=j.t,alive=t&&zombies.includes(t)&&!t.dead;
   if(alive&&j.ph!=='back')t.hitT=Math.max(t.hitT||0,.3);   // the target stops and waits for the bite
   if(j.ph==='out'||j.ph==='back'){
-    if(j.ph==='out'&&alive){const tp=t.obj.position,dx=tp.x-o.x,dz=tp.z-o.z,d=Math.hypot(dx,dz)||1;j.ex=tp.x-dx/d*.75;j.ez=tp.z-dz/d*.75;}
+    if(j.ph==='out'&&alive)[j.ex,j.ez]=dogSpot(t.obj.position.x,t.obj.position.z);
     j.s=Math.min(j.len,j.s+DOG_SPD*dt);const u=j.s/j.len;
     o.x=j.sx+(j.ex-j.sx)*u;o.z=j.sz+(j.ez-j.sz)*u;
     // hop over the barricade near the crate end of the path
@@ -1570,7 +1580,7 @@ function stepDogJob(dog,dt,ld){
     if(j.w>0)return;
     dogGo(dog,'back',DOG_HOME.x,DOG_HOME.z);allyPlay(dog,'Run');dog.busy=0;dog.job.ran=true;}
 }
-function dogHome(){const dog=allies[1];if(!dog)return;dog.job=null;dog.obj.position.set(DOG_HOME.x,DOG_HOME.y,DOG_HOME.z);dog.obj.rotation.y=DOG_HOME.ry;}
+function dogHome(){const dog=allies[1];if(!dog)return;dog.job=null;dogTag(null);dog.obj.position.set(DOG_HOME.x,DOG_HOME.y,DOG_HOME.z);dog.obj.rotation.y=DOG_HOME.ry;}
 
 /* ---------------- tappable things on the road: exploding barrels, medkits ---------------- */
 const props=[];
