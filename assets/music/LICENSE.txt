@@ -1,7 +1,0 @@
-All tracks here are CC0 (public domain) from OpenGameArt.org:
-  menu   - "The World Fell Silent"            https://opengameart.org/content/the-world-fell-silent
-  night1 - "Bleeding Out"                     https://opengameart.org/content/bleeding-out
-  night2 - "Cold Silence"                     https://opengameart.org/content/cold-silence
-  boss   - "Last Fight (Dead Z Pandemic)"     https://opengameart.org/content/last-fight-dead-z-pandemic
-  end    - "The End (Dead Z Pandemic)"        https://opengameart.org/content/the-end-dead-z-pandemic
-Loudness-normalised; night2 and end are shortened.

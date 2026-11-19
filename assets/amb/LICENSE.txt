@@ -1,6 +1,0 @@
-All files here are CC0 (public domain) from OpenGameArt.org:
-  crows        - "Crows singing"            https://opengameart.org/content/crows-singing
-  siren        - "Sirens and alarm noise"   https://opengameart.org/content/sirens-and-alarm-noise
-  fire         - "Fire crackling"           https://opengameart.org/content/fire-crackling
-  radio        - "Zombie news in radio"     https://opengameart.org/content/zombie-news-in-radio
-Trimmed and loudness-normalised for the game.

@@ -486,7 +486,6 @@ import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 const WORDS=/*WORDS*/{};
 const VERSION='2.23.4',VERSION_DATE='19 พ.ย. 2569';
 const CHANGES=[
-  'เพลงประกอบใหม่',
   'คิลสตรีค สโลว์โมชัน เหรียญบิน',
   'ฉากสวยขึ้น: แอ่งน้ำ หมอก ดาว หิ่งห้อย',
   'สุนัขวิ่งออกไปกัดซอมบี้',
@@ -663,19 +662,19 @@ const nextNight=k=>Math.min(ZONES[k].nights.length-1,P.prog[k].filter(Boolean).l
 const zoneStars=k=>P.prog[k].reduce((a,b)=>a+(b||0),0);
 
 /* ---------------- audio (all synthesized) ---------------- */
-let musicBus=null;let ac=null,master=null,sfxBus=null,ambBus=null,noiseBuf=null,ambNodes=null;
+let ac=null,master=null,sfxBus=null,ambBus=null,noiseBuf=null,ambNodes=null;
 // volumes 0-100 per channel; 0 also counts as switched off
-const VOL_DEF={master:80,sfx:100,amb:70,voice:100,music:55};
+const VOL_DEF={master:80,sfx:100,amb:70,voice:100};
 const vol=k=>{const v=(P.opts.vol||{})[k];return v==null?VOL_DEF[k]:v;};
 function applyVolume(){P.opts.sfx=vol('sfx')>0;P.opts.amb=vol('amb')>0;P.opts.voice=vol('voice')>0;
-  if(!ac)return;const t=ac.currentTime;master.gain.setTargetAtTime(vol('master')/100,t,.05);sfxBus.gain.setTargetAtTime(vol('sfx')/100,t,.05);ambBus.gain.setTargetAtTime(vol('amb')/100,t,.05);if(musicBus)musicBus.gain.setTargetAtTime(vol('music')/100,t,.05);ambience();}
+  if(!ac)return;const t=ac.currentTime;master.gain.setTargetAtTime(vol('master')/100,t,.05);sfxBus.gain.setTargetAtTime(vol('sfx')/100,t,.05);ambBus.gain.setTargetAtTime(vol('amb')/100,t,.05);ambience();}
 function audio(){
   try{
     if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=vol('master')/100;master.connect(ac.destination);
-      sfxBus=ac.createGain();sfxBus.gain.value=vol('sfx')/100;sfxBus.connect(master);ambBus=ac.createGain();ambBus.gain.value=vol('amb')/100;ambBus.connect(master);musicBus=ac.createGain();musicBus.gain.value=vol('music')/100;musicBus.connect(master);
+      sfxBus=ac.createGain();sfxBus.gain.value=vol('sfx')/100;sfxBus.connect(master);ambBus=ac.createGain();ambBus.gain.value=vol('amb')/100;ambBus.connect(master);
       noiseBuf=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}
     if(ac.state!=='running')ac.resume();
-    decodeSounds();decodeAmb();
+    decodeSounds();
     ambience();
   }catch(e){ac=null;}
 }
@@ -713,7 +712,7 @@ const SFX={
     f.type='bandpass';f.frequency.setValueAtTime(rnd(380,520),t);f.frequency.linearRampToValueAtTime(rnd(250,350),t+d);f.Q.value=4;
     g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+.15);g.gain.exponentialRampToValueAtTime(.0001,t+d);
     const pn=ac.createStereoPanner?ac.createStereoPanner():null;if(pn){pn.pan.value=clamp(pan,-1,1);o.connect(f).connect(g).connect(pn).connect(sfxBus);}else o.connect(f).connect(g).connect(sfxBus);o.start(t);l.start(t);o.stop(t+d+.05);l.stop(t+d+.05);},
-  die(){if(!moan(.2,false,0))SFX.groan(.22);nz(.3,.25,'lowpass',400,{at:.1});},
+  die(){SFX.groan(.22);nz(.3,.25,'lowpass',400,{at:.1});},
   win(){[392,494,587,784].forEach((f,i)=>tn(f,.5,'triangle',.12,{at:i*.12}));},
   lose(){[220,196,165,131].forEach((f,i)=>tn(f,.7,'sawtooth',.08,{at:i*.2}));},
   coin(){tn(1320,.08,'square',.06);tn(1760,.18,'square',.06,{at:.07});},
@@ -750,56 +749,12 @@ function ambience(){
     ambNodes={g,stop(){g.gain.linearRampToValueAtTime(0,ac.currentTime+.5);setTimeout(()=>{try{s.stop();lfo.stop();o1.stop();o2.stop();}catch(e){}},700);}};
   }else if(!want&&ambNodes){ambNodes.stop();ambNodes=null;}
 }
-/* recorded ambience (CC0, OpenGameArt): beds, rain, distant one-shots and zombie moans */
-const AMB={},AMB_RAW={};const AMB_LIST=['crows','siren','fire','radio'];
-for(const n of AMB_LIST)fetch(`assets/amb/${n}.mp3`).then(r=>r.ok?r.arrayBuffer():null).then(b=>{if(b){AMB_RAW[n]=b;decodeAmb();}}).catch(()=>{});
-function decodeAmb(){if(!ac)return;for(const n in AMB_RAW){const b=AMB_RAW[n];delete AMB_RAW[n];ac.decodeAudioData(b).then(d=>{AMB[n]=d;}).catch(()=>{});}}
-function ambPlay(n,{vol=1,rate=1,pan=0,dest}={}){if(!ac||!AMB[n])return false;const s=ac.createBufferSource(),g=ac.createGain();s.buffer=AMB[n];s.playbackRate.value=rate;g.gain.value=vol;
-  let node=s.connect(g);if(ac.createStereoPanner&&pan){const pn=ac.createStereoPanner();pn.pan.value=clamp(pan,-1,1);node=node.connect(pn);}node.connect(dest||sfxBus);s.start();return true;}
-// zombie voice: a recorded moan, panned to where the zombie stands; big ones sound deeper
-function moan(){return false;} // recorded moans were removed; the generated groan is used
-/* music (CC0, OpenGameArt): one track per mood, crossfaded */
-const MUSIC={menu:'menu',night:['night1','night2'],boss:'boss',end:'end'};let musNow=null,musWant=null;const musEls={};
-function musicTrack(name){if(!ac||!musicBus)return;if(musWant===name)return;musWant=name;
-  const old=musNow;musNow=null;if(old){const o=old;o.g.gain.setTargetAtTime(0,ac.currentTime,.6);setTimeout(()=>{o.el.pause();},2500);}
-  if(!name)return;let e=musEls[name];
-  if(!e){const el=new Audio(`assets/music/${name}.mp3`);el.loop=true;el.preload='auto';el.crossOrigin='anonymous';const g=ac.createGain();g.gain.value=0;try{ac.createMediaElementSource(el).connect(g).connect(musicBus);}catch(er){}e=musEls[name]={el,g};}
-  try{e.el.currentTime=name==='end'?0:e.el.currentTime;}catch(er){}const pr=e.el.play();if(pr&&pr.catch)pr.catch(()=>{});
-  e.g.gain.cancelScheduledValues(ac.currentTime);e.g.gain.setTargetAtTime(1,ac.currentTime,.9);musNow=e;
-}
-/* ---------------- feel: adaptive music, distant sounds, kill streaks, slow motion ---------------- */
+/* ---------------- feel: kill streaks, slow motion, flying coins ---------------- */
 const JUICE=(()=>{
-  let radioT=20,beatT=0,step=0,inten=0,musicOn=false,bossOn=false,heartT=0,ambT=8,streakN=0,streakT=0,shownScore=0,scoreAnim=null,farBus=null;
-  const chordsA=[[55,65.4,82.4],[49,58.3,73.4],[43.7,52,65.4],[41.2,49,61.7]]; // A minor, G, F, E: low and grim
-  function far(){ // distant sounds go through a muffled echo
-    if(farBus||!ac)return farBus;const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1400;const g=ac.createGain();g.gain.value=.55;
-    const d=ac.createDelay(1);d.delayTime.value=.32;const fb=ac.createGain();fb.gain.value=.32;lp.connect(g).connect(ambBus);g.connect(d);d.connect(fb).connect(d);d.connect(ambBus);farBus=lp;return lp;}
-  const on=()=>ac&&P.opts.amb;
-  function kick(t,v){const o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(110,t);o.frequency.exponentialRampToValueAtTime(38,t+.18);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+.32);o.connect(g).connect(ambBus);o.start(t);o.stop(t+.35);}
-  function hat(t,v){const s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();s.buffer=noiseBuf;f.type='highpass';f.frequency.value=7000;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+.05);s.connect(f).connect(g).connect(ambBus);s.start(t,Math.random());s.stop(t+.06);}
-  function pad(t,ch,dur,v){for(const f of ch)for(const d of [-.6,.6]){const o=ac.createOscillator(),fl=ac.createBiquadFilter(),g=ac.createGain();o.type='sawtooth';o.frequency.value=f*2+d;fl.type='lowpass';fl.frequency.value=300+inten*700;
-      g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+dur*.3);g.gain.linearRampToValueAtTime(.0001,t+dur);o.connect(fl).connect(g).connect(ambBus);o.start(t);o.stop(t+dur+.05);}}
-  function bass(t,f,v){const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+.4);o.connect(g).connect(ambBus);o.start(t);o.stop(t+.45);}
-  const SYNTH_MUSIC=false; // the generated music sounded robotic; real recordings will replace it
-  function music(dt){
-    if(!SYNTH_MUSIC||!on()||!musicOn)return;beatT-=dt;if(beatT>0)return;
-    const bpm=78+inten*52+(bossOn?14:0),sp=60/bpm/2;beatT+=sp;const t=ac.currentTime+.05,bar=Math.floor(step/16)%4,ch=chordsA[bar],k=step%16;
-    if(k===0)pad(t,ch,sp*16,.012+inten*.012);
-    if(k%8===0||(inten>.45&&k%4===0))kick(t,.16+inten*.18);
-    if(inten>.3&&k%2===1)hat(t,.015+inten*.03);
-    if(inten>.55&&(k===3||k===6||k===10||k===14))bass(t,ch[0],.05+inten*.06);
-    if(bossOn&&k%4===2)bass(t,ch[0]/2,.09);
-    step++;
-  }
-  const ONESHOT=[
-    ()=>ambPlay('crows',{vol:.7,pan:rnd(-.8,.8),dest:far()}),
-    ()=>ambPlay('siren',{vol:.45,pan:rnd(-.6,.6),dest:far()}),
-    ()=>ambPlay('fire',{vol:.5,pan:rnd(-.9,.9),dest:far()}),
-  ];
+  let bossOn=false,streakN=0,streakT=0,shownScore=0,scoreAnim=null;
   function streak(){
     const n=streakN,txt=n>=12?'UNSTOPPABLE':n>=8?'MASSACRE':n>=5?'RAMPAGE':n>=3?'TRIPLE':n>=2?'DOUBLE':'';if(!txt)return;
     const el=$('#streak');el.textContent=txt;el.style.setProperty('--sc',n>=8?'#ff3a2a':n>=5?'#ff8a2a':'#f2b33d');el.hidden=false;el.classList.remove('go');void el.offsetWidth;el.classList.add('go');
-    if(ac&&P.opts.sfx){tn(220,.35,'sawtooth',.06,{f2:440});tn(330,.35,'square',.04,{f2:660,at:.04});nz(.25,.15,'bandpass',1800,{q:1.5,f2:600});}
   }
   function coin(z){try{const v=chest(z).project(camera),x=(v.x*.5+.5)*innerWidth,y=(-v.y*.5+.5)*innerHeight,t=$('#score').getBoundingClientRect();
       for(let i=0;i<3;i++){const c=document.createElement('i');c.className='coinfly';c.style.left=x+'px';c.style.top=y+'px';document.body.appendChild(c);
@@ -810,32 +765,17 @@ const JUICE=(()=>{
     kill(z){if(!G)return;const kf=$('#kflash');kf.classList.remove('on');void kf.offsetWidth;kf.classList.add('on');coin(z);
       streakN=streakT>0?streakN+1:1;streakT=2.6;streak();
       // the last zombie of the wave falls in slow motion
-      if(!G.queue.length&&live().filter(o=>o!==z).length===0&&!z.T.boss){this.slowmo=.9;if(ac&&P.opts.sfx){tn(80,1.2,'sine',.3,{f2:40});nz(1,.12,'lowpass',600,{f2:100});}setTimeout(()=>{if(G&&!G.ended)banner('CLEAR','');},500);}
+      if(!G.queue.length&&live().filter(o=>o!==z).length===0&&!z.T.boss){this.slowmo=.9;setTimeout(()=>{if(G&&!G.ended)banner('CLEAR','');},500);}
       if(z.T.boss){this.slowmo=1.4;shake=Math.max(shake,1);if(!live().some(o=>o.T.boss))bossOn=false;}},
-    combo(c){if(!ac||!P.opts.sfx||c<2)return;const f=523*Math.pow(2,Math.min(c,24)/12);tn(f,.12,'triangle',.05);tn(f*1.5,.16,'sine',.03,{at:.04});},
-    wrong(){streakN=0;if(ac&&P.opts.sfx)tn(300,.25,'sawtooth',.05,{f2:120});},
-    hit(){const w=$('#wallBar');if(w){w.classList.remove('hit');void w.offsetWidth;w.classList.add('hit');}
-      if(ac){const t=ac.currentTime;master.gain.cancelScheduledValues(t);master.gain.setValueAtTime(master.gain.value,t);master.gain.linearRampToValueAtTime(vol('master')/100*.55,t+.03);master.gain.linearRampToValueAtTime(vol('master')/100,t+.5);}},
-    wave(boss){bossOn=!!boss;musicOn=true;if(ac&&P.opts.sfx){tn(55,1.6,'sine',.4,{f2:30});nz(1.4,.18,'lowpass',2400,{f2:200});if(boss){SFX.roar&&SFX.roar();}}},
-    end(win){musicOn=false;bossOn=false;this.slowmo=0;streakN=0;shownScore=0;$('#c').classList.remove('dying');$('.wall')&&$('.wall').classList.remove('low');},
+    combo(c){},
+    wrong(){streakN=0;},
+    hit(){const w=$('#wallBar');if(w){w.classList.remove('hit');void w.offsetWidth;w.classList.add('hit');}},
+    wave(boss){bossOn=!!boss;},
+    end(win){bossOn=false;this.slowmo=0;streakN=0;shownScore=0;$('#c').classList.remove('dying');$('.wall')&&$('.wall').classList.remove('low');},
     score(v){const el=$('#score');if(v===shownScore){el.textContent=fmt(v);return;}
       const from=shownScore;shownScore=v;const t0=performance.now();cancelAnimationFrame(scoreAnim);el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');
       const tick=()=>{const k=Math.min(1,(performance.now()-t0)/400);el.textContent=fmt(Math.round(from+(v-from)*k));if(k<1)scoreAnim=requestAnimationFrame(tick);};tick();},
-    step(raw){const dt=Math.min(.1,raw||0);if(this.slowmo>0)this.slowmo-=dt;if(streakT>0)streakT-=dt;
-      const playing=state==='play'&&G;
-      if(playing){const L=live();const near=L.reduce((m,z)=>Math.max(m,clamp((z.obj.position.z+30)/26,0,1)),0);const wall=1-clamp(G.wall/G.wallMax,0,1);
-        const want=clamp(near*.6+Math.min(L.length,8)/8*.25+wall*.4+(bossOn?.2:0),0,1);inten+=(want-inten)*Math.min(1,dt*.8);
-        if(!L.length&&!G.queue.length)inten*=.98;
-        // heartbeat when the barricade is about to break
-        if(G.wall/G.wallMax<.3){heartT-=dt;if(heartT<=0){heartT=.75;if(ac&&P.opts.sfx){tn(55,.16,'sine',.5,{f2:35});tn(50,.16,'sine',.4,{f2:32,at:.2});}}}}
-      else{musicOn=false;inten*=.95;}
-      music(dt);
-      if(on()&&(state==='play'||state==='menu')){ambT-=dt;if(ambT<=0){ambT=rnd(9,22);try{pick(ONESHOT)();}catch(e){}}}
-      // the radio murmurs on the menu screen now and then
-      if(on()&&state==='menu'){radioT-=dt;if(radioT<=0){radioT=rnd(70,120);ambPlay('radio',{vol:.35,dest:far()});}}
-      // music follows the moment: menu, night, boss, results
-      if(ac&&musicBus)musicTrack(state==='play'||state==='paused'?(bossOn?MUSIC.boss:MUSIC.night[G?(G.i||0)%2:0]):state==='end'?MUSIC.end:state==='menu'||state==='deco'?MUSIC.menu:musWant);
-    },
+    step(raw){const dt=Math.min(.1,raw||0);if(this.slowmo>0)this.slowmo-=dt;if(streakT>0)streakT-=dt;},
   };
 })();
 /* recorded gun sounds (CC0), decoded once the audio context exists */
@@ -2672,7 +2612,7 @@ function settings(tab=setTab){
     gfx:row('คุณภาพกราฟิก',GFX[g].d,seg('data-g',Object.entries(GFX).map(([id,o])=>[id,o.n]),g))
       +row('เฟรมเรตสูงสุด',dispHz?`จอ ${dispHz>100?120:dispHz>75?90:60} Hz`:'',seg('data-cap',[[30,'30'],[60,'60'],[120,'120']],cap))
       +row('แสดง FPS','',sw('oF',P.opts.fps)),
-    snd:row('เสียงหลัก','',slider('master'))+row('เอฟเฟกต์','',slider('sfx'))+row('บรรยากาศ','',slider('amb'))+row('เพลง','',slider('music'))+row('อ่านคำ','',slider('voice')),
+    snd:row('เสียงหลัก','',slider('master'))+row('เอฟเฟกต์','',slider('sfx'))+row('บรรยากาศ','',slider('amb'))+row('อ่านคำ','',slider('voice')),
     play:row('วิธีตอบ','',seg('data-m',[['choice','เลือก (ง่าย)'],['spell','สะกด (ยาก)']],P.mode)),
     about:row('มีอะไรใหม่',`v${VERSION} · ${VERSION_DATE}`,`<button class="sbtn${fresh?' dot':''}" type="button" id="newsBtn">ดู</button>`)+row('เครดิต','Quaternius, Kenney (CC0)',''),
   };
@@ -2934,7 +2874,7 @@ function step(dt){
   const L=live();
   for(const z of L){
     z.hitT-=dt;z.groanT-=dt;
-    if(z.groanT<=0){z.groanT=rnd(4,9);const d=-z.obj.position.z;{const v=clamp(.22-d*.004,.03,.2),big=z.T.boss||z.type==='brute',pn=z.obj.position.x/4;if(!moan(v,big,pn))SFX.groan(v,big,pn);}}
+    if(z.groanT<=0){z.groanT=rnd(4,9);const d=-z.obj.position.z;SFX.groan(clamp(.22-d*.004,.03,.2),z.T.boss||z.type==='brute');}
     const p=z.obj.position;
     if(!z.at){
       if(z.frozen>0){z.frozen-=dt;if(z.frozen<=0)unfreeze(z);z.x=p.x;z.z=p.z;continue;}
