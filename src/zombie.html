@@ -487,7 +487,6 @@ const WORDS=/*WORDS*/{};
 const VERSION='2.23.4',VERSION_DATE='19 พ.ย. 2569';
 const CHANGES=[
   'เพลงประกอบใหม่',
-  'เสียงซอมบี้ครางจริง',
   'คิลสตรีค สโลว์โมชัน เหรียญบิน',
   'ฉากสวยขึ้น: แอ่งน้ำ หมอก ดาว หิ่งห้อย',
   'สุนัขวิ่งออกไปกัดซอมบี้',
@@ -752,13 +751,13 @@ function ambience(){
   }else if(!want&&ambNodes){ambNodes.stop();ambNodes=null;}
 }
 /* recorded ambience (CC0, OpenGameArt): beds, rain, distant one-shots and zombie moans */
-const AMB={},AMB_RAW={};const AMB_LIST=['crows','siren','fire','radio',...Array.from({length:10},(_,i)=>'moan'+(i+1))];
+const AMB={},AMB_RAW={};const AMB_LIST=['crows','siren','fire','radio'];
 for(const n of AMB_LIST)fetch(`assets/amb/${n}.mp3`).then(r=>r.ok?r.arrayBuffer():null).then(b=>{if(b){AMB_RAW[n]=b;decodeAmb();}}).catch(()=>{});
 function decodeAmb(){if(!ac)return;for(const n in AMB_RAW){const b=AMB_RAW[n];delete AMB_RAW[n];ac.decodeAudioData(b).then(d=>{AMB[n]=d;}).catch(()=>{});}}
 function ambPlay(n,{vol=1,rate=1,pan=0,dest}={}){if(!ac||!AMB[n])return false;const s=ac.createBufferSource(),g=ac.createGain();s.buffer=AMB[n];s.playbackRate.value=rate;g.gain.value=vol;
   let node=s.connect(g);if(ac.createStereoPanner&&pan){const pn=ac.createStereoPanner();pn.pan.value=clamp(pan,-1,1);node=node.connect(pn);}node.connect(dest||sfxBus);s.start();return true;}
 // zombie voice: a recorded moan, panned to where the zombie stands; big ones sound deeper
-function moan(vol,big,pan){if(!P.opts.sfx)return false;const n='moan'+(1+Math.floor(Math.random()*10));return ambPlay(n,{vol:vol*3,rate:big?rnd(.62,.75):rnd(.9,1.12),pan});}
+function moan(){return false;} // recorded moans were removed; the generated groan is used
 /* music (CC0, OpenGameArt): one track per mood, crossfaded */
 const MUSIC={menu:'menu',night:['night1','night2'],boss:'boss',end:'end'};let musNow=null,musWant=null;const musEls={};
 function musicTrack(name){if(!ac||!musicBus)return;if(musWant===name)return;musWant=name;
@@ -796,7 +795,6 @@ const JUICE=(()=>{
     ()=>ambPlay('crows',{vol:.7,pan:rnd(-.8,.8),dest:far()}),
     ()=>ambPlay('siren',{vol:.45,pan:rnd(-.6,.6),dest:far()}),
     ()=>ambPlay('fire',{vol:.5,pan:rnd(-.9,.9),dest:far()}),
-    ()=>moan(.12,Math.random()<.3,rnd(-1,1)),
   ];
   function streak(){
     const n=streakN,txt=n>=12?'UNSTOPPABLE':n>=8?'MASSACRE':n>=5?'RAMPAGE':n>=3?'TRIPLE':n>=2?'DOUBLE':'';if(!txt)return;
