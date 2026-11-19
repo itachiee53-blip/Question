@@ -1,6 +1,6 @@
 {
-  "name": "Last Checkpoint",
-  "short_name": "Last Checkpoint",
+  "name": "เกมฝึกอังกฤษ",
+  "short_name": "เกมอังกฤษ",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",

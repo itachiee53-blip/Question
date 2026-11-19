@@ -851,11 +851,13 @@ function title(){
     ${cont?`<button class="big" type="button" id="mCont">เล่นต่อ · วันที่ ${P.day}</button>`:''}
     <button class="big ${cont?'sec':''}" type="button" id="mNew">เริ่มใหม่</button>
     <button class="big sec" type="button" id="mBook">สมุดคำศัพท์</button>
-    <button class="big sec" type="button" id="mOpt">ตั้งค่า</button></div></div>`;
+    <button class="big sec" type="button" id="mOpt">ตั้งค่า</button>
+    <button class="big sec" type="button" id="mGames">เลือกเกม</button></div></div>`;
   s.hidden=false;
   if(cont)$('#mCont').onclick=async()=>{SFX.ui();s.hidden=true;await fade(true);await startDay(P.day);await fade(false);};
   $('#mNew').onclick=()=>{SFX.ui();if(cont&&!confirm('เริ่มใหม่? ความคืบหน้าจะหาย'))return;nameScreen();};
   $('#mBook').onclick=()=>{SFX.ui();bookScreen(title);};$('#mOpt').onclick=()=>{SFX.ui();optScreen(title);};
+  $('#mGames').onclick=()=>{location.href='./';};
 }
 function nameScreen(){
   const s=$('#screen');s.innerHTML=`<div class="box"><h2>ก่อนเริ่ม</h2>
