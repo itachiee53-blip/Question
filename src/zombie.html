@@ -486,8 +486,9 @@ import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 const WORDS=/*WORDS*/{};
 const VERSION='2.23.4',VERSION_DATE='19 พ.ย. 2569';
 const CHANGES=[
-  'เพลงเร้าใจขึ้นตามความกดดัน',
-  'เสียงบรรยากาศรอบเมือง',
+  'เพลงประกอบใหม่',
+  'เสียงบรรยากาศจริง',
+  'เสียงซอมบี้ครางจริง',
   'คิลสตรีค สโลว์โมชัน เหรียญบิน',
   'ฉากสวยขึ้น: แอ่งน้ำ หมอก ดาว หิ่งห้อย',
   'สุนัขวิ่งออกไปกัดซอมบี้',
@@ -664,19 +665,19 @@ const nextNight=k=>Math.min(ZONES[k].nights.length-1,P.prog[k].filter(Boolean).l
 const zoneStars=k=>P.prog[k].reduce((a,b)=>a+(b||0),0);
 
 /* ---------------- audio (all synthesized) ---------------- */
-let ac=null,master=null,sfxBus=null,ambBus=null,noiseBuf=null,ambNodes=null;
+let musicBus=null;let ac=null,master=null,sfxBus=null,ambBus=null,noiseBuf=null,ambNodes=null;
 // volumes 0-100 per channel; 0 also counts as switched off
-const VOL_DEF={master:80,sfx:100,amb:70,voice:100};
+const VOL_DEF={master:80,sfx:100,amb:70,voice:100,music:55};
 const vol=k=>{const v=(P.opts.vol||{})[k];return v==null?VOL_DEF[k]:v;};
 function applyVolume(){P.opts.sfx=vol('sfx')>0;P.opts.amb=vol('amb')>0;P.opts.voice=vol('voice')>0;
-  if(!ac)return;const t=ac.currentTime;master.gain.setTargetAtTime(vol('master')/100,t,.05);sfxBus.gain.setTargetAtTime(vol('sfx')/100,t,.05);ambBus.gain.setTargetAtTime(vol('amb')/100,t,.05);ambience();}
+  if(!ac)return;const t=ac.currentTime;master.gain.setTargetAtTime(vol('master')/100,t,.05);sfxBus.gain.setTargetAtTime(vol('sfx')/100,t,.05);ambBus.gain.setTargetAtTime(vol('amb')/100,t,.05);if(musicBus)musicBus.gain.setTargetAtTime(vol('music')/100,t,.05);ambience();}
 function audio(){
   try{
     if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=vol('master')/100;master.connect(ac.destination);
-      sfxBus=ac.createGain();sfxBus.gain.value=vol('sfx')/100;sfxBus.connect(master);ambBus=ac.createGain();ambBus.gain.value=vol('amb')/100;ambBus.connect(master);
+      sfxBus=ac.createGain();sfxBus.gain.value=vol('sfx')/100;sfxBus.connect(master);ambBus=ac.createGain();ambBus.gain.value=vol('amb')/100;ambBus.connect(master);musicBus=ac.createGain();musicBus.gain.value=vol('music')/100;musicBus.connect(master);
       noiseBuf=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}
     if(ac.state!=='running')ac.resume();
-    decodeSounds();
+    decodeSounds();decodeAmb();
     ambience();
   }catch(e){ac=null;}
 }
@@ -714,7 +715,7 @@ const SFX={
     f.type='bandpass';f.frequency.setValueAtTime(rnd(380,520),t);f.frequency.linearRampToValueAtTime(rnd(250,350),t+d);f.Q.value=4;
     g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+.15);g.gain.exponentialRampToValueAtTime(.0001,t+d);
     const pn=ac.createStereoPanner?ac.createStereoPanner():null;if(pn){pn.pan.value=clamp(pan,-1,1);o.connect(f).connect(g).connect(pn).connect(sfxBus);}else o.connect(f).connect(g).connect(sfxBus);o.start(t);l.start(t);o.stop(t+d+.05);l.stop(t+d+.05);},
-  die(){SFX.groan(.22);nz(.3,.25,'lowpass',400,{at:.1});},
+  die(){if(!moan(.2,false,0))SFX.groan(.22);nz(.3,.25,'lowpass',400,{at:.1});},
   win(){[392,494,587,784].forEach((f,i)=>tn(f,.5,'triangle',.12,{at:i*.12}));},
   lose(){[220,196,165,131].forEach((f,i)=>tn(f,.7,'sawtooth',.08,{at:i*.2}));},
   coin(){tn(1320,.08,'square',.06);tn(1760,.18,'square',.06,{at:.07});},
@@ -741,19 +742,33 @@ const SFX={
 function ambience(){
   if(!ac)return;
   const want=P.opts.amb;
-  if(want&&!ambNodes){
-    const g=ac.createGain();g.gain.value=0;g.connect(ambBus);
-    const s=ac.createBufferSource();s.buffer=noiseBuf;s.loop=true;const f=ac.createBiquadFilter();f.type='lowpass';f.frequency.value=400;f.Q.value=.6;
-    const lfo=ac.createOscillator(),lg=ac.createGain();lfo.frequency.value=.07;lg.gain.value=220;lfo.connect(lg).connect(f.frequency);
-    const wg=ac.createGain();wg.gain.value=.11;s.connect(f).connect(wg).connect(g);
-    const o1=ac.createOscillator(),o2=ac.createOscillator(),dg=ac.createGain();o1.frequency.value=55;o2.frequency.value=55.6;o1.type=o2.type='sine';dg.gain.value=.05;o1.connect(dg);o2.connect(dg);dg.connect(g);
-    s.start();lfo.start();o1.start();o2.start();g.gain.linearRampToValueAtTime(1,ac.currentTime+2);
-    ambNodes={g,stop(){g.gain.linearRampToValueAtTime(0,ac.currentTime+.5);setTimeout(()=>{try{s.stop();lfo.stop();o1.stop();o2.stop();}catch(e){}},700);}};
+  if(want&&!ambNodes&&AMB.bed_outside&&AMB.bed_rumble){
+    const g=ac.createGain();g.gain.value=0;g.connect(ambBus);const srcs=[];
+    for(const [n,v] of [['bed_outside',.9],['bed_rumble',.55]]){const s=ac.createBufferSource();s.buffer=AMB[n];s.loop=true;const gg=ac.createGain();gg.gain.value=v;s.connect(gg).connect(g);s.start(0,Math.random()*AMB[n].duration);srcs.push(s);}
+    g.gain.linearRampToValueAtTime(1,ac.currentTime+2.5);
+    ambNodes={g,stop(){g.gain.linearRampToValueAtTime(0,ac.currentTime+.6);setTimeout(()=>{for(const s of srcs)try{s.stop();}catch(e){}},800);}};
   }else if(!want&&ambNodes){ambNodes.stop();ambNodes=null;}
+}
+/* recorded ambience (CC0, OpenGameArt): beds, rain, distant one-shots and zombie moans */
+const AMB={},AMB_RAW={};const AMB_LIST=['bed_outside','bed_rumble','rain','crows','siren','fire','radio',...Array.from({length:10},(_,i)=>'moan'+(i+1))];
+for(const n of AMB_LIST)fetch(`assets/amb/${n}.mp3`).then(r=>r.ok?r.arrayBuffer():null).then(b=>{if(b){AMB_RAW[n]=b;decodeAmb();}}).catch(()=>{});
+function decodeAmb(){if(!ac)return;for(const n in AMB_RAW){const b=AMB_RAW[n];delete AMB_RAW[n];ac.decodeAudioData(b).then(d=>{AMB[n]=d;if(n.startsWith('bed'))ambience();}).catch(()=>{});}}
+function ambPlay(n,{vol=1,rate=1,pan=0,dest}={}){if(!ac||!AMB[n])return false;const s=ac.createBufferSource(),g=ac.createGain();s.buffer=AMB[n];s.playbackRate.value=rate;g.gain.value=vol;
+  let node=s.connect(g);if(ac.createStereoPanner&&pan){const pn=ac.createStereoPanner();pn.pan.value=clamp(pan,-1,1);node=node.connect(pn);}node.connect(dest||sfxBus);s.start();return true;}
+// zombie voice: a recorded moan, panned to where the zombie stands; big ones sound deeper
+function moan(vol,big,pan){if(!P.opts.sfx)return false;const n='moan'+(1+Math.floor(Math.random()*10));return ambPlay(n,{vol:vol*3,rate:big?rnd(.62,.75):rnd(.9,1.12),pan});}
+/* music (CC0, OpenGameArt): one track per mood, crossfaded */
+const MUSIC={menu:'menu',night:['night1','night2'],boss:'boss',end:'end'};let musNow=null,musWant=null;const musEls={};
+function musicTrack(name){if(!ac||!musicBus)return;if(musWant===name)return;musWant=name;
+  const old=musNow;musNow=null;if(old){const o=old;o.g.gain.setTargetAtTime(0,ac.currentTime,.6);setTimeout(()=>{o.el.pause();},2500);}
+  if(!name)return;let e=musEls[name];
+  if(!e){const el=new Audio(`assets/music/${name}.mp3`);el.loop=true;el.preload='auto';el.crossOrigin='anonymous';const g=ac.createGain();g.gain.value=0;try{ac.createMediaElementSource(el).connect(g).connect(musicBus);}catch(er){}e=musEls[name]={el,g};}
+  try{e.el.currentTime=name==='end'?0:e.el.currentTime;}catch(er){}const pr=e.el.play();if(pr&&pr.catch)pr.catch(()=>{});
+  e.g.gain.cancelScheduledValues(ac.currentTime);e.g.gain.setTargetAtTime(1,ac.currentTime,.9);musNow=e;
 }
 /* ---------------- feel: adaptive music, distant sounds, kill streaks, slow motion ---------------- */
 const JUICE=(()=>{
-  let beatT=0,step=0,inten=0,musicOn=false,bossOn=false,heartT=0,ambT=8,streakN=0,streakT=0,shownScore=0,scoreAnim=null,farBus=null;
+  let radioT=20,beatT=0,step=0,inten=0,musicOn=false,bossOn=false,heartT=0,ambT=8,streakN=0,streakT=0,shownScore=0,scoreAnim=null,farBus=null;
   const chordsA=[[55,65.4,82.4],[49,58.3,73.4],[43.7,52,65.4],[41.2,49,61.7]]; // A minor, G, F, E: low and grim
   function far(){ // distant sounds go through a muffled echo
     if(farBus||!ac)return farBus;const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1400;const g=ac.createGain();g.gain.value=.55;
@@ -776,14 +791,10 @@ const JUICE=(()=>{
     step++;
   }
   const ONESHOT=[
-    ()=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sine';const t=ac.currentTime;for(let i=0;i<3;i++){o.frequency.setValueAtTime(620,t+i*1.4);o.frequency.linearRampToValueAtTime(880,t+i*1.4+.7);o.frequency.linearRampToValueAtTime(620,t+i*1.4+1.4);}
-      g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.05,t+.6);g.gain.linearRampToValueAtTime(.0001,t+4.2);o.connect(g).connect(far());o.start(t);o.stop(t+4.3);},     // siren
-    ()=>{for(let i=0;i<3;i++)nz(.16,.12,'bandpass',rnd(1500,1900),{q:6,at:i*.28,f2:900,dest:far()});},                                                                // crows
-    ()=>{for(let i=0;i<2;i++)tn(rnd(500,700),1,'sawtooth',.025,{f2:rnd(900,1200),at:i*.08,dest:far()});},                                                         // a scream far away
-    ()=>{tn(rnd(300,500),.5,'square',.03,{f2:120,dest:far()});nz(.3,.12,'bandpass',2500,{q:8,dest:far()});},                                                       // metal falling
-    ()=>{const t0=ac.currentTime;for(let i=0;i<40;i++){nz(.05,.05*Math.sin(i/40*Math.PI),'lowpass',260,{at:i*.09,dest:far()});}},                                   // helicopter
-    ()=>{if(SFX.bark){nz(.09,.1,'bandpass',800,{q:2,dest:far()});nz(.09,.08,'bandpass',760,{q:2,at:.2,dest:far()});}},                                              // a dog
-    ()=>{nz(2.5,.12,'lowpass',180,{f2:60,dest:far()});},                                                                                                              // distant rumble
+    ()=>ambPlay('crows',{vol:.7,pan:rnd(-.8,.8),dest:far()}),
+    ()=>ambPlay('siren',{vol:.45,pan:rnd(-.6,.6),dest:far()}),
+    ()=>ambPlay('fire',{vol:.5,pan:rnd(-.9,.9),dest:far()}),
+    ()=>moan(.12,Math.random()<.3,rnd(-1,1)),
   ];
   function streak(){
     const n=streakN,txt=n>=12?'UNSTOPPABLE':n>=8?'MASSACRE':n>=5?'RAMPAGE':n>=3?'TRIPLE':n>=2?'DOUBLE':'';if(!txt)return;
@@ -800,7 +811,7 @@ const JUICE=(()=>{
       streakN=streakT>0?streakN+1:1;streakT=2.6;streak();
       // the last zombie of the wave falls in slow motion
       if(!G.queue.length&&live().filter(o=>o!==z).length===0&&!z.T.boss){this.slowmo=.9;if(ac&&P.opts.sfx){tn(80,1.2,'sine',.3,{f2:40});nz(1,.12,'lowpass',600,{f2:100});}setTimeout(()=>{if(G&&!G.ended)banner('CLEAR','');},500);}
-      if(z.T.boss){this.slowmo=1.4;shake=Math.max(shake,1);}},
+      if(z.T.boss){this.slowmo=1.4;shake=Math.max(shake,1);if(!live().some(o=>o.T.boss))bossOn=false;}},
     combo(c){if(!ac||!P.opts.sfx||c<2)return;const f=523*Math.pow(2,Math.min(c,24)/12);tn(f,.12,'triangle',.05);tn(f*1.5,.16,'sine',.03,{at:.04});},
     wrong(){streakN=0;if(ac&&P.opts.sfx)tn(300,.25,'sawtooth',.05,{f2:120});},
     hit(){const w=$('#wallBar');if(w){w.classList.remove('hit');void w.offsetWidth;w.classList.add('hit');}
@@ -819,7 +830,11 @@ const JUICE=(()=>{
         if(G.wall/G.wallMax<.3){heartT-=dt;if(heartT<=0){heartT=.75;if(ac&&P.opts.sfx){tn(55,.16,'sine',.5,{f2:35});tn(50,.16,'sine',.4,{f2:32,at:.2});}}}}
       else{musicOn=false;inten*=.95;}
       music(dt);
-      if(SYNTH_MUSIC&&on()&&(state==='play'||state==='menu')){ambT-=dt;if(ambT<=0){ambT=rnd(7,18);try{pick(ONESHOT)();}catch(e){}}}
+      if(on()&&(state==='play'||state==='menu')){ambT-=dt;if(ambT<=0){ambT=rnd(9,22);try{pick(ONESHOT)();}catch(e){}}}
+      // the radio murmurs on the menu screen now and then
+      if(on()&&state==='menu'){radioT-=dt;if(radioT<=0){radioT=rnd(70,120);ambPlay('radio',{vol:.35,dest:far()});}}
+      // music follows the moment: menu, night, boss, results
+      if(ac&&musicBus)musicTrack(state==='play'||state==='paused'?(bossOn?MUSIC.boss:MUSIC.night[G?(G.i||0)%2:0]):state==='end'?MUSIC.end:state==='menu'||state==='deco'?MUSIC.menu:musWant);
     },
   };
 })();
@@ -834,7 +849,7 @@ function sample(n,vol=1,{rate=1,offset=0,dur}={}){
 let rainNode=null;
 function rainSound(on){
   if(!ac)return;
-  if(on&&!rainNode&&P.opts.amb){const s=ac.createBufferSource();s.buffer=noiseBuf;s.loop=true;const f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=1200;const g=ac.createGain();g.gain.value=0;s.connect(f).connect(g).connect(ambBus);s.start();g.gain.linearRampToValueAtTime(.028,ac.currentTime+1.5);rainNode={s,g};}
+  if(on&&!rainNode&&P.opts.amb&&AMB.rain){const s=ac.createBufferSource();s.buffer=AMB.rain;s.loop=true;const g=ac.createGain();g.gain.value=0;s.connect(g).connect(ambBus);s.start();g.gain.linearRampToValueAtTime(.8,ac.currentTime+1.5);rainNode={s,g};}
   else if((!on||!P.opts.amb)&&rainNode){const r=rainNode;rainNode=null;r.g.gain.linearRampToValueAtTime(0,ac.currentTime+.6);setTimeout(()=>{try{r.s.stop();}catch(e){}},800);}
 }
 function speak(t){if(!P.opts.voice||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.95;u.volume=Math.max(.05,vol('master')/100*Math.max(vol('voice'),20)/100);speechSynthesis.speak(u);}catch(e){}}
@@ -2657,7 +2672,7 @@ function settings(tab=setTab){
     gfx:row('คุณภาพกราฟิก',GFX[g].d,seg('data-g',Object.entries(GFX).map(([id,o])=>[id,o.n]),g))
       +row('เฟรมเรตสูงสุด',dispHz?`จอ ${dispHz>100?120:dispHz>75?90:60} Hz`:'',seg('data-cap',[[30,'30'],[60,'60'],[120,'120']],cap))
       +row('แสดง FPS','',sw('oF',P.opts.fps)),
-    snd:row('เสียงหลัก','',slider('master'))+row('เอฟเฟกต์','',slider('sfx'))+row('บรรยากาศ','',slider('amb'))+row('อ่านคำ','',slider('voice')),
+    snd:row('เสียงหลัก','',slider('master'))+row('เอฟเฟกต์','',slider('sfx'))+row('บรรยากาศ','',slider('amb'))+row('เพลง','',slider('music'))+row('อ่านคำ','',slider('voice')),
     play:row('วิธีตอบ','',seg('data-m',[['choice','เลือก (ง่าย)'],['spell','สะกด (ยาก)']],P.mode)),
     about:row('มีอะไรใหม่',`v${VERSION} · ${VERSION_DATE}`,`<button class="sbtn${fresh?' dot':''}" type="button" id="newsBtn">ดู</button>`)+row('เครดิต','Quaternius, Kenney (CC0)',''),
   };
@@ -2919,7 +2934,7 @@ function step(dt){
   const L=live();
   for(const z of L){
     z.hitT-=dt;z.groanT-=dt;
-    if(z.groanT<=0){z.groanT=rnd(4,9);const d=-z.obj.position.z;SFX.groan(clamp(.22-d*.004,.03,.2),z.T.boss||z.type==='brute',z.obj.position.x/4);}
+    if(z.groanT<=0){z.groanT=rnd(4,9);const d=-z.obj.position.z;{const v=clamp(.22-d*.004,.03,.2),big=z.T.boss||z.type==='brute',pn=z.obj.position.x/4;if(!moan(v,big,pn))SFX.groan(v,big,pn);}}
     const p=z.obj.position;
     if(!z.at){
       if(z.frozen>0){z.frozen-=dt;if(z.frozen<=0)unfreeze(z);z.x=p.x;z.z=p.z;continue;}
