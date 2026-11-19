@@ -9,12 +9,14 @@ Every button, title, label, description, toast and hint in the game must be **sh
 - When adding new UI text, check it against this rule before committing.
 
 ## Build
-The game is **Last Checkpoint** (ด่านสุดท้าย): a 3D checkpoint story game for learning English.
-- `src/game.html`: engine (scene, people, inspection tools, dialogue, cutscenes, saves).
+The site has two games and a picker page:
+- `src/index.html` → `index.html`: the game picker.
+- `src/zombie.html` → `zombie.html`: **Dead Words**, the zombie word game.
+- `src/checkpoint.html` → `checkpoint.html`: **Last Checkpoint** (ด่านสุดท้าย), a 3D checkpoint story game. Engine: scene, people, inspection tools, dialogue, cutscenes, saves.
 - `src/story1.js`: chapter 1 (cast, 5 days, dialogue, events, endings). Inlined into the page at `/*STORY*/`.
 - `words/*.txt`: dictionary used when the player taps a word.
 - Models: `assets/models` (scenery, zombies) and `assets/people` (CC0 Quaternius characters; `_anims.glb` holds the shared animations).
-Run `python3 build.py` to regenerate `index.html`.
+Run `python3 build.py` to regenerate the three root pages.
 Story lines: natural spoken English, and natural Thai (not word-for-word).
 
 ## Deploy rule (from the owner, required)
