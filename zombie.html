@@ -94,6 +94,7 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 .bossbar b{font-size:14px;color:#ffb8a8;font-weight:600}.bossbar span{display:flex;gap:4px}.bossbar i{width:18px;height:6px;border-radius:3px;background:var(--blood)}.bossbar i.off{background:#ffffff22}
 .opbar{position:fixed;left:50%;top:calc(64px + var(--safe-t));transform:translateX(-50%);z-index:8;display:flex;align-items:center;gap:10px;padding:5px 14px;border-radius:999px;background:#0b1a10cc;border:1px solid #a6e05a66;pointer-events:none;font-family:var(--f-th);white-space:nowrap}
 .opbar b{font-size:14px;color:#cdeea0;font-weight:600}.opbar small{font-size:13px;color:#e8efe4}.opp{width:clamp(80px,22vw,200px);height:8px;border-radius:4px;background:#ffffff1f;overflow:hidden}.opp i{display:block;height:100%;width:0;background:#a6e05a;transition:width .3s}
+.wall .opbar{position:static;transform:none;align-self:center;margin-top:4px;max-width:calc(100vw - 260px)}
 .opbar.stop{border-color:#d8402f}.opbar.stop small{color:#ff9a8a}.opbar.stop .opp i{background:#d8a02f}
 .ptag.surv{background:#2f7a3add;border-color:#a6e05a;animation:none;pointer-events:none}.ptag.surv.danger{background:#d8402fee;border-color:#ffb09a;animation:ping 1s infinite}.ptag.surv.lost{background:#333c;border-color:#666}
 .chip.op{border-color:var(--amber);color:var(--amber)}
@@ -455,11 +456,10 @@ button[disabled]{cursor:not-allowed;opacity:.4}
 <div class="hud" id="hud" hidden>
   <button class="iconbtn" id="pauseBtn" type="button" aria-label="หยุดเกม"><svg viewBox="0 0 20 20" fill="currentColor"><rect x="4" y="3" width="4" height="14" rx="1"/><rect x="12" y="3" width="4" height="14" rx="1"/></svg></button>
   <div class="hinfo"><b id="hNight">NIGHT 1</b><small id="hWave">คลื่น 1/3</small></div>
-  <div class="wall"><div class="lbl"><span>แนวกั้น</span><span id="wallN">100</span></div><div class="bar"><i id="wallBar"></i></div><div class="adrrow" id="adrRow"><span class="adrl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>อะดรีนาลีน</span><div class="adrbar"><i id="adrBar"></i></div><small id="adrN">0/8</small></div></div>
+  <div class="wall"><div class="lbl"><span>แนวกั้น</span><span id="wallN">100</span></div><div class="bar"><i id="wallBar"></i></div><div class="adrrow" id="adrRow"><span class="adrl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>อะดรีนาลีน</span><div class="adrbar"><i id="adrBar"></i></div><small id="adrN">0/8</small></div><div class="opbar" id="opBar" hidden><b id="opName"></b><span class="opp" id="opP"><i id="opFill"></i></span><small id="opTxt"></small></div></div>
   <div class="hright"><div class="score" id="score">0</div><div class="combo" id="combo" hidden></div></div>
 </div>
 <div class="bossbar" id="bossBar" hidden><b id="bossName"></b><span id="bossPips"></span></div>
-<div class="opbar" id="opBar" hidden><b id="opName"></b><span class="opp" id="opP"><i id="opFill"></i></span><small id="opTxt"></small></div>
 <div class="banner" id="banner" hidden><b id="banT"></b><small id="banS"></small></div>
 <div class="jamtag" id="jamTag" hidden>ปืนติด!</div>
 <div class="dock" id="dock" hidden>
