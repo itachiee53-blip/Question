@@ -1,6 +1,6 @@
 {
-  "name": "Dead Words",
-  "short_name": "Dead Words",
+  "name": "Last Checkpoint",
+  "short_name": "Last Checkpoint",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",
