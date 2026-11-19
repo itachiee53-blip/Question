@@ -475,7 +475,6 @@ import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 const WORDS=/*WORDS*/{};
 const VERSION='2.23.4',VERSION_DATE='19 พ.ย. 2569';
 const CHANGES=[
-  'เดินหน้าไประหว่างคลื่น',
   'ด่านพิเศษเล่นแบบใหม่ ไม่ต้องตอบคำ',
   'คืนมีด: ปาดนิ้วฟันซอมบี้',
   'สุนัขวิ่งออกไปกัดซอมบี้',
@@ -695,7 +694,6 @@ const SFX={
   flesh(){nz(.12,.35,'lowpass',700,{f2:200});},
   key(){tn(1800,.02,'triangle',.05);},
   thud(){tn(110,.25,'sine',.55,{f2:45});nz(.2,.35,'lowpass',500);},
-  step(){nz(.07,.16,'lowpass',380);},
   boom(){nz(1.4,1,'lowpass',1600,{f2:60});tn(55,1,'sine',.9,{f2:25});nz(.3,.6,'highpass',1500);},
   groan(vol=.15,low=false){if(!ac||!P.opts.sfx)return;const t=ac.currentTime,o=ac.createOscillator(),f=ac.createBiquadFilter(),g=ac.createGain(),l=ac.createOscillator(),lg=ac.createGain();
     const base=low?rnd(45,60):rnd(70,105),d=rnd(.7,1.3);o.type='sawtooth';o.frequency.setValueAtTime(base,t);o.frequency.linearRampToValueAtTime(base*rnd(.75,.9),t+d);
@@ -1809,7 +1807,7 @@ function survWave(n){
   return {list:shuffle(list),gap:Math.max(1.1,2.8-n*.12)};
 }
 function startNight(k,i,mode='night'){
-  resetWalk();clearZombies();clearProps();barricadeLook();allyReact('reset');
+  clearZombies();clearProps();barricadeLook();allyReact('reset');
   const info=nightInfo(k,i,mode);setScene(info.scene);setAtmosphere(info.sky,info.mod);
   const nw=mode==='survival'?survWords(k):nightWords(k,i,mode),wv=mode==='survival'?{W:[],speed:1+RANK[k]*.06}:waves(k,i,mode,info.mod);
   const wallMax=100+25*P.up.wall;
@@ -1831,40 +1829,12 @@ function startNight(k,i,mode='night'){
   else nextWave();
   if(key)P.seenStory.includes(k+':'+info.scene)||(P.seenStory.push(k+':'+info.scene),save());
 }
-/* ---------------- walking forward between waves ---------------- */
-const WALK_STEP=16,WALK_MAX=32; // 16 = street-lamp spacing, so the barricade stays lit after the walk
-// street things that end up next to the player are cut off just in front of the barricade
-const WORLD_CLIP=new THREE.Plane(new THREE.Vector3(0,0,-1),1e4),clipMats=new Map();
-function clipWorld(){renderer.localClippingEnabled=true;
-  const cl=m=>{let c=clipMats.get(m);if(!c){c=m.clone();c.clippingPlanes=[WORLD_CLIP];clipMats.set(m,c);clipMats.set(c,c);}return c;};
-  WORLD.traverse(o=>{if(!o.material)return;o.material=Array.isArray(o.material)?o.material.map(cl):cl(o.material);});}
-function canWalk(){return !G.op&&WORLD.position.z+WALK_STEP<=WALK_MAX;}
-function baseParts(){return [skinGrp,barrGrp,decoGrp,allyCrate,...allies.map(a=>a.obj)].filter(Boolean);}
-function startWalk(){
-  clearProps();for(const z of [...zombies])if(z.dead)removeZombie(z);
-  for(const o of baseParts()){o.userData.wasVis=o.visible;o.visible=false;}
-  clipWorld();WORLD_CLIP.constant=-.5;
-  G.walk={t:0,dur:3.4,from:WORLD.position.z,to:WORLD.position.z+WALK_STEP,bob:0,built:false};
-  if(gunObj)gunObj.visible=true;SFX.ui();
-}
-function stepWalk(dt){
-  const w=G.walk;w.t+=dt;
-  if(w.t<=w.dur){let k=Math.min(1,w.t/w.dur);k=k*k*(3-2*k);WORLD.position.z=w.from+(w.to-w.from)*k;w.bob+=dt*9;
-    if(Math.floor(w.bob/Math.PI)!==Math.floor((w.bob-dt*9)/Math.PI))SFX.step();return;}
-  // put the barricade back up: it rises out of the ground
-  if(!w.built){w.built=true;w.bob=0;WORLD_CLIP.constant=BARR_Z+.5;SFX.thud();shake=Math.max(shake,.25);for(const o of baseParts()){o.visible=o.userData.wasVis;o.userData.sy=o.scale.y;o.scale.y=.01;}}
-  const r=Math.min(1,(w.t-w.dur)/.45);for(const o of baseParts())o.scale.y=(o.userData.sy||1)*Math.max(.01,1-Math.pow(1-r,3));
-  if(r<1)return;
-  for(const o of baseParts())o.scale.y=o.userData.sy||1;
-  G.walk=null;waveProps();
-}
-function resetWalk(){if(G&&G.walk){for(const o of baseParts()){if(o.userData.wasVis!=null)o.visible=o.userData.wasVis;if(o.userData.sy)o.scale.y=o.userData.sy;}G.walk=null;}WORLD.position.z=0;WORLD_CLIP.constant=1e4;}
 function nextWave(){
   G.wave++;
   if(G.mode==='survival'){G.W.push(survWave(G.wave));quest('surv',G.wave);}
   if(G.wave>=G.W.length){endNight(true);return;}
   G.queue=[...G.W[G.wave].list];G.spawnT=G.wave===0?1.2:3;
-  if(G.wave>0&&canWalk())startWalk();else waveProps();
+  waveProps();
   const boss=G.queue.find(t=>ZT[t]&&ZT[t].boss);
   const surv=G.mode==='survival',introBoss=boss&&boss!=='twins';
   if(!introBoss)banner(surv?'WAVE '+(G.wave+1):G.wave===G.W.length-1?(boss?'BOSS: '+ZT[boss].boss:'FINAL WAVE'):'WAVE '+(G.wave+1),
@@ -2559,7 +2529,7 @@ function toast(m,ms=2200){const n=document.querySelectorAll('.toast').length;con
 const coinTag=()=>`<span class="coins">${SV.coin}${fmt(P.coins)}</span>`;
 function hideGame(){document.body.classList.remove('act','blade');$('#bossBar').hidden=true;$('#hud').hidden=true;$('#dock').hidden=true;$('#danger').hidden=true;$('#jamTag').hidden=true;}
 function home(){if(CUT){CUT.then=null;endCut();}CAM.copy(BASE_CAM);
-  resetWalk();state='menu';G=null;target=null;hideGame();clearZombies();clearProps();setZone(P.zone);barricadeLook();allyVisibility();allyReact('reset');menuScene();if(gunObj)gunObj.visible=false;
+  state='menu';G=null;target=null;hideGame();clearZombies();clearProps();setZone(P.zone);barricadeLook();allyVisibility();allyReact('reset');menuScene();if(gunObj)gunObj.visible=false;
   const k=P.zone,ni=nextNight(k),weak=WEAK.size;
   const learned=LEARNED.size;
   const fresh=P.seen!==VERSION;dailyInit();
@@ -2812,8 +2782,7 @@ function frame(now){
   const sway=Math.sin(clock*.7)*.03;
   if(CUT&&CUT.cam){const c=CUT.cam;CUT.t+=dt;let k=Math.min(1,CUT.t/c.dur);k=k*k*(3-2*k);camera.position.lerpVectors(c.p0,c.p1,k);camera.position.x+=(Math.random()-.5)*shake*.2;camera.lookAt(c.l0.clone().lerp(c.l1,k));}
   else{
-  const wb=G&&G.walk?G.walk.bob:0;
-  camera.position.set(CAM.x+sway+Math.sin(wb)*.05+(Math.random()-.5)*shake*.25,CAM.y+Math.sin(clock*1.3)*.015+Math.abs(Math.cos(wb))*.07+(Math.random()-.5)*shake*.25,CAM.z);
+  camera.position.set(CAM.x+sway+(Math.random()-.5)*shake*.25,CAM.y+Math.sin(clock*1.3)*.015+(Math.random()-.5)*shake*.25,CAM.z);
   const look=target&&!target.dead&&playing?chest(target):new THREE.Vector3(0,1.1,-20);
   const aim=new THREE.Vector3(0,1.05,-20).lerp(look,.15);
   camera.lookAt(state==='deco'&&!decoPlayView?DECO_LOOK:aim);}
@@ -2858,7 +2827,6 @@ function step(dt){
   if(!$('#jamTag').hidden&&G.t>=jamUntil){$('#jamTag').hidden=true;$('#pad').classList.remove('jam');renderPad();}
   stepOps(dt);
   if(G.grenT>0)G.grenT-=dt;if(G.op==='blade'&&gunObj)gunObj.visible=false;
-  if(G.walk){stepWalk(dt);return;}
   // spawning
   if(G.queue.length){G.spawnT-=dt;if(G.spawnT<=0&&live().length<8){spawn(G.queue.shift());G.spawnT=G.W[G.wave].gap*rnd(.75,1.2);}}
   else if(!live().length&&!G.ended&&!G.opDone&&!SURV.some(s=>!s.dead)){G.waveGap=(G.waveGap||2.2)-dt;if(G.waveGap<=0){G.waveGap=0;const last=G.mode!=='survival'&&G.wave>=G.W.length-1;if(!last&&G.mode==='night'&&G.wave===0)miniGame();else if(!last&&G.mode!=='review')perkPick();else nextWave();}}
