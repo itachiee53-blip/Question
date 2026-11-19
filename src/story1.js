@@ -237,8 +237,8 @@ async function gateEvent(F,D){
   G.gateTo(true,.01);
   walk(pri,[[.4,-1.6]],{run:true,speed:1.25});walk(iv,[[-.6,-1.8]],{run:true,speed:1.05});walk(z,[[.2,-3.4]],{run:true,speed:2.9});
   await say(L('carter','Close the gate when they\'re through! Not before!','ปิดประตูตอนพวกเขาผ่านเข้ามาแล้ว! ห้ามปิดก่อน!'));
-  const zOf=a=>a.obj.position.z,pct=zz=>(zz+42)/41*100;
-  const t=await G.qte({label:'ปิดประตู!',dur:6,marks:[{c:'#fff',at:()=>pct(zOf(pri))},{c:'#ccc',at:()=>pct(zOf(iv))},{c:'#ff3a2a',at:()=>pct(zOf(z))}]});
+  const zOf=a=>a.obj.position.z,pct=zz=>(zz+30)/29*100;
+  const t=await G.qte({label:'ปิดประตู!',dur:6,gateAt:pct(-3.2),marks:[{c:'#fff',at:()=>pct(zOf(pri))},{c:'#ccc',at:()=>pct(zOf(iv))},{c:'#ff3a2a',at:()=>pct(zOf(z))}]});
   const inside=a=>zOf(a)>-3.2;
   let res='ok';if(t===null||zOf(z)>-5.2)res='late';else if(!inside(pri)||!inside(iv))res='early';
   G.gateTo(false,.4);G.SFX.gate();hideSay();

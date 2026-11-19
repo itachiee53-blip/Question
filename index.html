@@ -544,9 +544,9 @@ const fade=on=>new Promise(r=>{$('#black').classList.toggle('on',on);setTimeout(
 
 /* ---------------- camera ---------------- */
 const CAMS={
-  booth:{p:[.95,1.6,.25],l:[.8,1.3,-5]},
-  close:{p:[.95,1.55,-.15],l:[.9,1.42,-1.6]},
-  body:{p:[.6,1.3,-.25],l:[.9,1.05,-1.6]},
+  booth:{p:[.95,1.68,.35],l:[.75,1.2,-6]},
+  close:{p:[.95,1.56,-.6],l:[.9,1.45,-2.4]},
+  body:{p:[.55,1.35,-.7],l:[.9,1.05,-2.4]},
   radio:{p:[.4,1.55,.7],l:[2.2,1.15,2.3]},
   gate:{p:[.2,1.7,.1],l:[-2.6,1.1,-2.5]},
   bridge:{p:[.95,1.75,.2],l:[.4,1.2,-30]},
@@ -815,8 +815,8 @@ async function gateEvent(F,D){
   G.gateTo(true,.01);
   walk(pri,[[.4,-1.6]],{run:true,speed:1.25});walk(iv,[[-.6,-1.8]],{run:true,speed:1.05});walk(z,[[.2,-3.4]],{run:true,speed:2.9});
   await say(L('carter','Close the gate when they\'re through! Not before!','ปิดประตูตอนพวกเขาผ่านเข้ามาแล้ว! ห้ามปิดก่อน!'));
-  const zOf=a=>a.obj.position.z,pct=zz=>(zz+42)/41*100;
-  const t=await G.qte({label:'ปิดประตู!',dur:6,marks:[{c:'#fff',at:()=>pct(zOf(pri))},{c:'#ccc',at:()=>pct(zOf(iv))},{c:'#ff3a2a',at:()=>pct(zOf(z))}]});
+  const zOf=a=>a.obj.position.z,pct=zz=>(zz+30)/29*100;
+  const t=await G.qte({label:'ปิดประตู!',dur:6,gateAt:pct(-3.2),marks:[{c:'#fff',at:()=>pct(zOf(pri))},{c:'#ccc',at:()=>pct(zOf(iv))},{c:'#ff3a2a',at:()=>pct(zOf(z))}]});
   const inside=a=>zOf(a)>-3.2;
   let res='ok';if(t===null||zOf(z)>-5.2)res='late';else if(!inside(pri)||!inside(iv))res='early';
   G.gateTo(false,.4);G.SFX.gate();hideSay();
@@ -1396,8 +1396,8 @@ function renderDec(){
 }
 
 /* ---------------- a day at the checkpoint ---------------- */
-const QUEUE_SLOTS=[[-.2,-4.2],[-.5,-5.6],[-.1,-7.0],[-.6,-8.4],[-.2,-9.8],[-.7,-11.2]];
-const COUNTER=[.9,-1.55];
+const QUEUE_SLOTS=[[-.3,-5.0],[-.6,-6.4],[-.2,-7.8],[-.7,-9.2],[-.3,-10.6],[-.8,-12.0]];
+const COUNTER=[.9,-2.35];
 async function startDay(n){
   P.day=n;P.started=true;save();const d=STORY.days[n-1];
   clearDay();D={n,queue:[],idx:-1,cur:null,res:[],asked:new Set(),seen:new Set(),qLeft:d.quarantine||0,busy:true,crowd:[]};
@@ -1564,8 +1564,8 @@ $('#menuBtn').onclick=()=>{SFX.ui();const s=$('#screen');s.innerHTML=`<div class
   $('#pGo').onclick=()=>{s.hidden=true;};$('#pOpt').onclick=()=>optScreen(()=>{s.hidden=true;});$('#pQuit').onclick=()=>{s.hidden=true;title();};};
 
 /* ---------------- QTE: a button you must hit in time ---------------- */
-function qte({label,dur,marks,onTick}){return new Promise(res=>{
-  const el=document.createElement('div');el.className='qte';el.innerHTML=`<div class="track"><span class="gate"></span>${marks.map(m=>`<i style="background:${m.c}"></i>`).join('')}</div><button type="button">${esc(label)}</button>`;
+function qte({label,dur,marks,onTick,gateAt=88}){return new Promise(res=>{
+  const el=document.createElement('div');el.className='qte';el.innerHTML=`<div class="track"><span class="gate" style="left:${gateAt}%"></span>${marks.map(m=>`<i style="background:${m.c}"></i>`).join('')}</div><button type="button">${esc(label)}</button>`;
   document.body.appendChild(el);const dots=el.querySelectorAll('.track i');const t0=performance.now();let done=false;
   const fin=t=>{if(done)return;done=true;el.remove();res(t);};
   el.querySelector('button').onpointerdown=e=>{e.preventDefault();fin((performance.now()-t0)/1000);};
