@@ -73,7 +73,10 @@ def main():
     cp = (here / 'src' / 'checkpoint.html').read_text(encoding='utf-8')
     assert '/*WORDS*/{}' in cp and '/*STORY*/' in cp
     story = (here / 'src' / 'story1.js').read_text(encoding='utf-8')
-    page = cp.replace('/*WORDS*/{}', wj).replace('/*STORY*/', story)
+    vi = here / 'assets' / 'voice' / 'index.json'
+    voice = vi.read_text(encoding='utf-8') if vi.exists() else '{}'
+    assert '/*VOICE*/{}' in cp
+    page = cp.replace('/*WORDS*/{}', wj).replace('/*STORY*/', story).replace('/*VOICE*/{}', voice)
     (here / 'checkpoint.html').write_text(page, encoding='utf-8')
     (here / 'index.html').write_text((here / 'src' / 'index.html').read_text(encoding='utf-8'), encoding='utf-8')
     print('\n'.join(report))
