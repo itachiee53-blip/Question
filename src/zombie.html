@@ -487,7 +487,6 @@ const WORDS=/*WORDS*/{};
 const VERSION='2.23.4',VERSION_DATE='19 พ.ย. 2569';
 const CHANGES=[
   'เพลงประกอบใหม่',
-  'เสียงบรรยากาศจริง',
   'เสียงซอมบี้ครางจริง',
   'คิลสตรีค สโลว์โมชัน เหรียญบิน',
   'ฉากสวยขึ้น: แอ่งน้ำ หมอก ดาว หิ่งห้อย',
@@ -742,17 +741,20 @@ const SFX={
 function ambience(){
   if(!ac)return;
   const want=P.opts.amb;
-  if(want&&!ambNodes&&AMB.bed_outside&&AMB.bed_rumble){
-    const g=ac.createGain();g.gain.value=0;g.connect(ambBus);const srcs=[];
-    for(const [n,v] of [['bed_outside',.9],['bed_rumble',.55]]){const s=ac.createBufferSource();s.buffer=AMB[n];s.loop=true;const gg=ac.createGain();gg.gain.value=v;s.connect(gg).connect(g);s.start(0,Math.random()*AMB[n].duration);srcs.push(s);}
-    g.gain.linearRampToValueAtTime(1,ac.currentTime+2.5);
-    ambNodes={g,stop(){g.gain.linearRampToValueAtTime(0,ac.currentTime+.6);setTimeout(()=>{for(const s of srcs)try{s.stop();}catch(e){}},800);}};
+  if(want&&!ambNodes){
+    const g=ac.createGain();g.gain.value=0;g.connect(ambBus);
+    const s=ac.createBufferSource();s.buffer=noiseBuf;s.loop=true;const f=ac.createBiquadFilter();f.type='lowpass';f.frequency.value=400;f.Q.value=.6;
+    const lfo=ac.createOscillator(),lg=ac.createGain();lfo.frequency.value=.07;lg.gain.value=220;lfo.connect(lg).connect(f.frequency);
+    const wg=ac.createGain();wg.gain.value=.11;s.connect(f).connect(wg).connect(g);
+    const o1=ac.createOscillator(),o2=ac.createOscillator(),dg=ac.createGain();o1.frequency.value=55;o2.frequency.value=55.6;o1.type=o2.type='sine';dg.gain.value=.05;o1.connect(dg);o2.connect(dg);dg.connect(g);
+    s.start();lfo.start();o1.start();o2.start();g.gain.linearRampToValueAtTime(1,ac.currentTime+2);
+    ambNodes={g,stop(){g.gain.linearRampToValueAtTime(0,ac.currentTime+.5);setTimeout(()=>{try{s.stop();lfo.stop();o1.stop();o2.stop();}catch(e){}},700);}};
   }else if(!want&&ambNodes){ambNodes.stop();ambNodes=null;}
 }
 /* recorded ambience (CC0, OpenGameArt): beds, rain, distant one-shots and zombie moans */
-const AMB={},AMB_RAW={};const AMB_LIST=['bed_outside','bed_rumble','rain','crows','siren','fire','radio',...Array.from({length:10},(_,i)=>'moan'+(i+1))];
+const AMB={},AMB_RAW={};const AMB_LIST=['crows','siren','fire','radio',...Array.from({length:10},(_,i)=>'moan'+(i+1))];
 for(const n of AMB_LIST)fetch(`assets/amb/${n}.mp3`).then(r=>r.ok?r.arrayBuffer():null).then(b=>{if(b){AMB_RAW[n]=b;decodeAmb();}}).catch(()=>{});
-function decodeAmb(){if(!ac)return;for(const n in AMB_RAW){const b=AMB_RAW[n];delete AMB_RAW[n];ac.decodeAudioData(b).then(d=>{AMB[n]=d;if(n.startsWith('bed'))ambience();}).catch(()=>{});}}
+function decodeAmb(){if(!ac)return;for(const n in AMB_RAW){const b=AMB_RAW[n];delete AMB_RAW[n];ac.decodeAudioData(b).then(d=>{AMB[n]=d;}).catch(()=>{});}}
 function ambPlay(n,{vol=1,rate=1,pan=0,dest}={}){if(!ac||!AMB[n])return false;const s=ac.createBufferSource(),g=ac.createGain();s.buffer=AMB[n];s.playbackRate.value=rate;g.gain.value=vol;
   let node=s.connect(g);if(ac.createStereoPanner&&pan){const pn=ac.createStereoPanner();pn.pan.value=clamp(pan,-1,1);node=node.connect(pn);}node.connect(dest||sfxBus);s.start();return true;}
 // zombie voice: a recorded moan, panned to where the zombie stands; big ones sound deeper
@@ -849,7 +851,7 @@ function sample(n,vol=1,{rate=1,offset=0,dur}={}){
 let rainNode=null;
 function rainSound(on){
   if(!ac)return;
-  if(on&&!rainNode&&P.opts.amb&&AMB.rain){const s=ac.createBufferSource();s.buffer=AMB.rain;s.loop=true;const g=ac.createGain();g.gain.value=0;s.connect(g).connect(ambBus);s.start();g.gain.linearRampToValueAtTime(.8,ac.currentTime+1.5);rainNode={s,g};}
+  if(on&&!rainNode&&P.opts.amb){const s=ac.createBufferSource();s.buffer=noiseBuf;s.loop=true;const f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=1200;const g=ac.createGain();g.gain.value=0;s.connect(f).connect(g).connect(ambBus);s.start();g.gain.linearRampToValueAtTime(.028,ac.currentTime+1.5);rainNode={s,g};}
   else if((!on||!P.opts.amb)&&rainNode){const r=rainNode;rainNode=null;r.g.gain.linearRampToValueAtTime(0,ac.currentTime+.6);setTimeout(()=>{try{r.s.stop();}catch(e){}},800);}
 }
 function speak(t){if(!P.opts.voice||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.95;u.volume=Math.max(.05,vol('master')/100*Math.max(vol('voice'),20)/100);speechSynthesis.speak(u);}catch(e){}}
