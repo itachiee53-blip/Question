@@ -18,6 +18,9 @@ The site has two games and a picker page:
 - Models: `assets/models` (scenery, zombies) and `assets/people` (CC0 Quaternius characters; `_anims.glb` holds the shared animations).
 Run `python3 build.py` to regenerate the three root pages.
 Story lines: natural spoken English, and natural Thai (not word-for-word).
+Voices: every English story line has a recording in `assets/voice` (index in `assets/voice/index.json`, inlined at `/*VOICE*/`).
+After changing or adding English lines, regenerate them: `node tools/voice_lines.js > /tmp/lines.json` then
+`python3 tools/make_voices.py /tmp/lines.json <piper models dir>` (see the script header for the voices). Lines without a recording fall back to the phone voice.
 
 ## Deploy rule (from the owner, required)
 The game is played from `main`. After every change: build, commit, push the working branch, open a PR to `main`, and **merge it yourself right away**. Do not ask the owner to press Merge.
