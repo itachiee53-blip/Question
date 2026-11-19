@@ -469,6 +469,7 @@ import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 const WORDS=/*WORDS*/{};
 const VERSION='2.23.4',VERSION_DATE='19 พ.ย. 2569';
 const CHANGES=[
+  'สุนัขวิ่งออกไปกัดซอมบี้',
   'จัดของตกแต่งใหม่ให้เข้ากับกำแพง · คืนเหรียญของที่ถอดออก',
   'ข้อความทั้งเกมสั้นลง อ่านง่ายขึ้น',
   'รั้วเหล็กแบบเต็มชุด',
@@ -1499,7 +1500,7 @@ const ALLY={
     nx:l=>`ทุก ${ALLY.man.cd[l]} วิ${l>=2?' + ยิงบอสได้':''}`},
   // dog: a guard. kills whatever is hitting the barricade and scares the ones around it
   dog:{n:'สุนัขเฝ้ายาม',cost:400,up:[300,600],cd:[9,7,5],stun:[0,1.5,2.5],
-    d:l=>`กัดตัวที่ตีแนวกั้น ทุก ${ALLY.dog.cd[l]} วิ${ALLY.dog.stun[l]?` · ขู่ ${ALLY.dog.stun[l]} วิ`:''}`,
+    d:l=>`วิ่งไปกัด ทุก ${ALLY.dog.cd[l]} วิ${ALLY.dog.stun[l]?` · ขู่ ${ALLY.dog.stun[l]} วิ`:''}`,
     nx:l=>`ทุก ${ALLY.dog.cd[l]} วิ${ALLY.dog.stun[l]?` + ขู่ ${ALLY.dog.stun[l]} วิ`:''}`},
 };
 let allyCrate=null;
@@ -1518,8 +1519,8 @@ function allyPlay(a,name,once=false){const c=a.clips[name];if(!c)return;const ac
 function allyReact(kind){
   const [man,dog]=allies;
   if(kind==='kill'&&man&&Math.random()<.35&&man.busy<=0)allyPlay(man,'Yes',true);
-  if(kind==='win'){man&&allyPlay(man,'Wave');dog&&allyPlay(dog,'Run_Jump');}
-  if(kind==='reset'){man&&allyPlay(man,man.idle);dog&&allyPlay(dog,dog.idle);}
+  if(kind==='win'){dogHome();man&&allyPlay(man,'Wave');dog&&allyPlay(dog,'Run_Jump');}
+  if(kind==='reset'){dogHome();man&&allyPlay(man,man.idle);dog&&allyPlay(dog,dog.idle);}
 }
 function stepAllies(dt){
   const near=state==='play'&&live().some(z=>z.obj.position.z>-9);
@@ -1533,11 +1534,43 @@ function stepAllies(dt){
       bullet(from,chest(t).clone(),140,()=>{if(!zombies.includes(t)||t.dead)return;blood(t);
         if(t.T.boss||t.wi<t.words.length-1){t.wi=Math.min(t.wi+1,t.words.length-1);t.p=0;t.opts=null;renderTag(t);knock(t,1,.4);if(t===target)renderPad();floatAt(t,'ผู้รอดชีวิตยิง!','#a6e05a');hud();}
         else{floatAt(t,'ผู้รอดชีวิตยิง!','#a6e05a');kill(t,false);}},1);}else G.manT=.5;}}
-  // dog: kills a zombie that is hitting the barricade; from level 2 the ones around it freeze in fright
-  if(dog&&ld>0){G.dogT-=dt;if(G.dogT<=0){const t=live().filter(z=>!z.T.boss&&(z.at||z.obj.position.z>STOP_Z-2.5)).sort((a,b)=>b.obj.position.z-a.obj.position.z)[0];
-    if(t){G.dogT=ALLY.dog.cd[ld-1];allyPlay(dog,'Attack',true);SFX.bark();setTimeout(()=>{if(!zombies.includes(t)||t.dead)return;blood(t);floatAt(t,'ถูกกัด!','#ffb070');kill(t,false);
-      const s=ALLY.dog.stun[ld-1];if(s)for(const o of live())if(Math.hypot(o.obj.position.x-t.obj.position.x,o.obj.position.z-t.obj.position.z)<2.5){o.stunT=s;o.hitT=Math.max(o.hitT||0,s);play(o,'HitReact',false,.05);}},250);}else G.dogT=.5;}}
+  // dog: leaps over the barricade, bites a zombie that is hitting it, then runs back to its crate; from level 2 the ones around it freeze in fright
+  if(dog&&ld>0){
+    G.dogT-=dt;
+    if(dog.job)stepDogJob(dog,dt,ld);
+    else if(G.dogT<=0){const t=live().filter(z=>!z.T.boss&&!z.dogged&&z.obj.position.z>-14).sort((a,b)=>b.obj.position.z-a.obj.position.z)[0];
+      if(t){G.dogT=ALLY.dog.cd[ld-1];t.dogged=1;SFX.bark();allyPlay(dog,'Run_Jump',true);dog.busy=9;dogGo(dog,'out',t.obj.position.x,t.obj.position.z,t);}else G.dogT=.5;}
+  }
 }
+// the dog jumps off its crate, over the barricade, and runs out on the road to bite; then runs back the same way
+const DOG_HOME={x:2.4,y:.79,z:-3.05,ry:Math.PI-.6},DOG_SPD=8,DOG_HOP=2.2;
+function dogGo(dog,ph,x,z,t){const o=dog.obj.position;let ex=x,ez=z;
+  if(ph==='out'){const dx=x-o.x,dz=z-o.z,d=Math.hypot(dx,dz)||1;ex=x-dx/d*.75;ez=z-dz/d*.75;}
+  const len=Math.hypot(ex-o.x,ez-o.z)||.01;
+  dog.job={ph,t:t||dog.job?.t,sx:o.x,sz:o.z,ex,ez,len,s:0,ran:false};dog.obj.rotation.y=Math.atan2(ex-o.x,ez-o.z);}
+function stepDogJob(dog,dt,ld){
+  const j=dog.job,o=dog.obj.position,t=j.t,alive=t&&zombies.includes(t)&&!t.dead;
+  if(alive&&j.ph!=='back')t.hitT=Math.max(t.hitT||0,.3);   // the target stops and waits for the bite
+  if(j.ph==='out'||j.ph==='back'){
+    if(j.ph==='out'&&alive){const tp=t.obj.position,dx=tp.x-o.x,dz=tp.z-o.z,d=Math.hypot(dx,dz)||1;j.ex=tp.x-dx/d*.75;j.ez=tp.z-dz/d*.75;}
+    j.s=Math.min(j.len,j.s+DOG_SPD*dt);const u=j.s/j.len;
+    o.x=j.sx+(j.ex-j.sx)*u;o.z=j.sz+(j.ez-j.sz)*u;
+    // hop over the barricade near the crate end of the path
+    const h=j.ph==='out'?j.s:j.len-j.s,k=Math.min(1,h/DOG_HOP);o.y=DOG_HOME.y*(1-k)+Math.sin(k*Math.PI)*1.1;
+    if(!j.ran&&h>DOG_HOP*.8&&j.len-h>DOG_HOP*.3){j.ran=true;allyPlay(dog,'Run');}
+    if(j.ph==='back'&&j.ran&&j.len-j.s<DOG_HOP&&j.ran!==2){j.ran=2;allyPlay(dog,'Run_Jump',true);dog.busy=9;}
+    if(u<1)return;
+    if(j.ph==='back'){dog.job=null;o.set(DOG_HOME.x,DOG_HOME.y,DOG_HOME.z);dog.obj.rotation.y=DOG_HOME.ry;dog.busy=0;allyPlay(dog,dog.idle);return;}
+    j.ph='bite';j.w=alive?.7:0;j.bit=false;
+    if(alive){const tp=t.obj.position;dog.obj.rotation.y=Math.atan2(tp.x-o.x,tp.z-o.z);allyPlay(dog,'Attack',true);dog.busy=9;}
+    return;}
+  if(j.ph==='bite'){j.w-=dt;
+    if(!j.bit&&j.w<.45){j.bit=true;if(alive){blood(t);floatAt(t,'ถูกกัด!','#ffb070');kill(t,false);
+      const s=ALLY.dog.stun[ld-1];if(s)for(const z of live())if(Math.hypot(z.obj.position.x-t.obj.position.x,z.obj.position.z-t.obj.position.z)<2.5){z.stunT=s;z.hitT=Math.max(z.hitT||0,s);play(z,'HitReact',false,.05);}}}
+    if(j.w>0)return;
+    dogGo(dog,'back',DOG_HOME.x,DOG_HOME.z);allyPlay(dog,'Run');dog.busy=0;dog.job.ran=true;}
+}
+function dogHome(){const dog=allies[1];if(!dog)return;dog.job=null;dog.obj.position.set(DOG_HOME.x,DOG_HOME.y,DOG_HOME.z);dog.obj.rotation.y=DOG_HOME.ry;}
 
 /* ---------------- tappable things on the road: exploding barrels, medkits ---------------- */
 const props=[];
