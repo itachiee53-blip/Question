@@ -224,6 +224,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const WORDS=/*WORDS*/{};
+const VOICE=/*VOICE*/{}; // recorded story lines: "who|english" -> assets/voice/<n>.mp3
 const VERSION='3.0.0';
 const $=s=>document.querySelector(s);
 const rnd=(a,b)=>a+Math.random()*(b-a),pick=a=>a[Math.floor(Math.random()*a.length)],clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -337,6 +338,15 @@ function voiceFor(g){
   const same=VOICES.filter(v=>vGender(v)===g);if(same.length)return {v:same[0],fake:false};
   const other=VOICES.filter(v=>vGender(v)!==(g==='f'?'m':'f'));if(other.length)return {v:other[0],fake:false};
   return {v:VOICES[0]||null,fake:true};
+}
+const voiceEl=new Audio();voiceEl.preload='auto';
+function stopVoice(){try{voiceEl.pause();}catch(e){}try{speechSynthesis.cancel();}catch(e){}}
+function speakLine(line,slow){
+  if(!P.opts.voice||!line||!line.en)return;
+  const who=line.who==='me'?(P.opts.meF?'me_f':'me_m'):(line.who||'');const n=VOICE[who+'|'+line.en];
+  if(n==null){speak(sub(line.en),line.who,slow);return;}
+  stopVoice();voiceEl.src=`assets/voice/${n}.mp3`;voiceEl.playbackRate=slow?.75:1;voiceEl.preservesPitch=true;
+  const p=voiceEl.play();if(p&&p.catch)p.catch(()=>speak(sub(line.en),line.who,slow));
 }
 function speak(text,who,slow){
   if(!P.opts.voice||!('speechSynthesis' in window)||!text)return;
@@ -632,15 +642,15 @@ function say(line,{wait=false,cut=false}={}){
   $('#sayEn').innerHTML=line.en?wordsHtml(line.en):'';$('#sayEn').hidden=!line.en;
   $('#sayTh2').textContent=sub(line.th||'');$('#sayTh2').hidden=!(P.opts.th||!line.en)||!line.th;$('#sayTh').classList.toggle('on',!$('#sayTh2').hidden);
   $('#sayTh').hidden=!line.en;$('#sayAgain').hidden=$('#saySlow').hidden=!line.en;
-  bindWords($('#sayEn'));sayLine=line;if(line.en)speak(sub(line.en),line.who);
+  bindWords($('#sayEn'));sayLine=line;if(line.en)speakLine(line);
   $('#sayMore').hidden=!wait;el.classList.toggle('tap',wait);
   if(wait)return new Promise(r=>{sayWait=r;});
   return Promise.resolve();
 }
 function hideSay(){$('#say').hidden=true;sayLine=null;}
 $('#say').addEventListener('pointerdown',e=>{if(e.target.closest('button,.w'))return;if(sayWait){const r=sayWait;sayWait=null;$('#sayMore').hidden=true;SFX.ui();r();}});
-$('#sayAgain').onclick=()=>sayLine&&speak(sub(sayLine.en),sayLine.who);
-$('#saySlow').onclick=()=>sayLine&&speak(sub(sayLine.en),sayLine.who,true);
+$('#sayAgain').onclick=()=>sayLine&&speakLine(sayLine);
+$('#saySlow').onclick=()=>sayLine&&speakLine(sayLine,true);
 $('#sayTh').onclick=()=>{const t=$('#sayTh2');t.hidden=!t.hidden;$('#sayTh').classList.toggle('on',!t.hidden);};
 
 function toast(m,ms=2200){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),ms);}
@@ -740,7 +750,7 @@ function renderQs(){
   qs.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>ask(list[+b.dataset.i]));
 }
 async function ask(q){
-  if(D.busy)return;D.busy=true;const Q=STORY.Q[q.q]||{en:q.en,th:q.th};D.asked.add(q.q||q.en);speak(sub(Q.en),'me');
+  if(D.busy)return;D.busy=true;const Q=STORY.Q[q.q]||{en:q.en,th:q.th};D.asked.add(q.q||q.en);
   await say({who:'me',en:Q.en,th:Q.th});await sleep(Math.min(2600,700+Q.en.length*45));
   const lines=typeof q.a==='function'?q.a(D):q.a;
   for(let i=0;i<lines.length;i++){const l=lines[i];if(l.run)await l.run();if(l.en||l.th)await say(l,{wait:i<lines.length-1});}
@@ -910,8 +920,8 @@ function optScreen(back){
   s.innerHTML=`<div class="box"><h2>ตั้งค่า</h2>
     <h3>เสียงพูด</h3>${seg('voice',[[true,'เปิด'],[false,'ปิด']])}
     <h3>ความเร็วเสียง</h3>${seg('rate',[[.7,'ช้า'],[.9,'ปกติ'],[1.05,'เร็ว']])}
-    ${VOICES.length?`<h3>เสียงผู้ชาย</h3><div class="vrow">${vsel('vm','m')}<button type="button" class="vt" data-g="m">ฟัง</button></div>
-    <h3>เสียงผู้หญิง</h3><div class="vrow">${vsel('vf','f')}<button type="button" class="vt" data-g="f">ฟัง</button></div>`:''}
+    ${VOICES.length?`<h3>เสียงคำศัพท์ ชาย</h3><div class="vrow">${vsel('vm','m')}<button type="button" class="vt" data-g="m">ฟัง</button></div>
+    <h3>เสียงคำศัพท์ หญิง</h3><div class="vrow">${vsel('vf','f')}<button type="button" class="vt" data-g="f">ฟัง</button></div>`:''}
     <h3>เสียงตัวเรา</h3>${seg('meF',[[false,'ผู้ชาย'],[true,'ผู้หญิง']])}
     <h3>คำแปลไทย</h3>${seg('th',[[false,'แตะเพื่อดู'],[true,'แสดงเสมอ']])}
     <h3>เสียงเอฟเฟกต์</h3>${seg('sfx',[[0,'ปิด'],[50,'เบา'],[80,'ปกติ']])}
@@ -921,6 +931,7 @@ function optScreen(back){
   s.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k,v=b.dataset.v;P.opts[k]=v==='true'?true:v==='false'?false:+v;save();applyVol();SFX.ui();optScreen(back);});
   s.querySelectorAll('select[data-v]').forEach(el=>el.onchange=()=>{P.opts[el.dataset.v]=el.value;save();speak(el.dataset.v==='vf'?"Hi. I'm Min. I run the radio.":"Check the card. Then check the face.",el.dataset.v==='vf'?'min':'carter');});
   s.querySelectorAll('.vt').forEach(b=>b.onclick=()=>speak(b.dataset.g==='f'?"Hi. I'm Min. I run the radio.":"Check the card. Then check the face.",b.dataset.g==='f'?'min':'carter'));
+  s.querySelectorAll('[data-k="meF"]').forEach(b=>b.addEventListener('click',()=>setTimeout(()=>speakLine({who:'me',en:STORY.Q.name.en}),50)));
   $('#opGo').onclick=()=>{SFX.ui();s.hidden=true;back();};
 }
 $('#rulesBtn').onclick=()=>{SFX.paper();const d=STORY.days[P.day-1];const el=$('#panel');const on=el.querySelector('.rules');closePanel();if(on)return;
