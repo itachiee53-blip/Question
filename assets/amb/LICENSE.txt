@@ -1,7 +1,4 @@
 All files here are CC0 (public domain) from OpenGameArt.org:
-  bed_outside  - "amb_outside_1"            https://opengameart.org/content/amb-outside-1
-  bed_rumble   - "Low Rumbling"             https://opengameart.org/content/low-rumbling
-  rain         - "Rain on window loop"      https://opengameart.org/content/rain-on-window-loop
   crows        - "Crows singing"            https://opengameart.org/content/crows-singing
   siren        - "Sirens and alarm noise"   https://opengameart.org/content/sirens-and-alarm-noise
   fire         - "Fire crackling"           https://opengameart.org/content/fire-crackling
