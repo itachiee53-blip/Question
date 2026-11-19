@@ -14,7 +14,7 @@ const STORY={
   endingCount:4,
   dateOf:d=>`${11+d} Oct 2031`,
   cast:{
-    me:{n:'{P}',f:false,pitch:1.05},
+    me:{n:'{P}'},
     carter:{n:'จ่าคาร์เตอร์',pitch:.75,rate:.92,vi:1,look:{model:'Soldier_Male',skin:'brown',h:1.86}},
     min:{n:'มิน',f:true,pitch:1.2,rate:1.02,vi:0,look:{model:'Casual3_Female',skin:'light',h:1.62}},
     diaz:{n:'สิบตรีดิอาซ',f:true,pitch:1.0,vi:1,look:{model:'Soldier_Female',skin:'tan',h:1.7}},
