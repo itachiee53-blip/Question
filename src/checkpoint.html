@@ -145,9 +145,15 @@ body.cut .lb{transform:none}
 .big{display:block;width:100%;margin-top:10px;padding:12px;border-radius:12px;background:var(--amber);color:#1a1408;font-size:18px;font-weight:600}
 .big.sec{background:#ffffff14;color:var(--text)}
 .title{text-align:center}
-.title h1{margin:0;font-family:var(--f-disp);font-size:84px;letter-spacing:8px;line-height:.9;font-weight:400}
+.title h1{margin:0;font-family:var(--f-disp);font-size:min(84px,13vh,11vw);letter-spacing:.1em;line-height:.9;font-weight:400}
 .title h1 small{display:block;font-size:22px;letter-spacing:4px;color:var(--dim)}
 .title .menu{width:280px;margin:18px auto 0}
+.scr:has(.title){overflow:auto}
+@media (max-height:520px) and (orientation:landscape){
+  .title{display:flex;align-items:center;gap:6vw;text-align:left}
+  .title h1{font-size:min(76px,19vh)}.title h1 small{font-size:min(20px,5vh);margin-top:6px}
+  .title .menu{margin:0;width:min(300px,42vw)}.title .menu .big{margin-top:8px;padding:min(11px,2.6vh);font-size:min(17px,4.4vh)}
+}
 .field{display:block;margin:10px 0}
 .field span{display:block;font-size:14px;color:var(--dim);margin-bottom:4px}
 .field input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0a0c0d;color:#fff;font-size:18px}
@@ -159,6 +165,8 @@ body.cut .lb{transform:none}
 .opts{display:grid;gap:8px;margin-top:10px}
 .opt{padding:10px 12px;border-radius:10px;background:#ffffff10;border:1px solid var(--line);text-align:left;font-size:16px}
 .opt.right{background:#2d4a1c;border-color:var(--ok)}.opt.wrong{background:#4a1a14;border-color:var(--no)}
+.vrow{display:flex;gap:6px}.vrow select{flex:1;min-width:0;padding:7px 8px;border-radius:8px;background:#0a0c0d;color:var(--text);border:1px solid var(--line);font:inherit;font-size:14px}
+.vrow .vt{padding:6px 14px;border-radius:8px;background:#ffffff12;font-size:14px}
 .seg{display:flex;gap:6px;flex-wrap:wrap}.seg button{padding:6px 12px;border-radius:8px;background:#ffffff12;font-size:14px}.seg button.on{background:var(--amber);color:#1a1408}
 .book{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;font-size:15px}
 .book div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid var(--line);padding:4px 0}
@@ -225,7 +233,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 /* ---------------- save ---------------- */
 const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
 const SAVE_KEY='lc-save-v1';
-const DEF_OPTS={voice:true,rate:.9,th:false,sfx:80,amb:70};
+const DEF_OPTS={voice:true,rate:.9,th:false,sfx:80,amb:70,vm:'',vf:'',meF:false};
 let P=store.get(SAVE_KEY,null);
 function freshSave(){
   // words learned in the old zombie game carry over into the notebook
@@ -312,16 +320,32 @@ function ambience(kind){
   amb={g,stop(){for(const n of nodes)try{n.stop();}catch(e){}}};
 }
 
-/* ---------------- voices ---------------- */
+/* ---------------- voices ----------------
+   Pick the best English voice the device has for men and for women; the player can override both.
+   Pitch stays close to normal: pushing a voice far down or up is what makes it sound robotic. */
 let VOICES=[];
-function loadVoices(){try{VOICES=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));}catch(e){}}
+const NOVELTY=/albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|hysterical|jester|junior|organ|princess|ralph|superstar|trinoids|whisper|wobble|zarvox|kathy|\bfred\b|grandma|grandpa|eddy|\bflo\b|\breed\b|rocko|sandy|shelley/i;
+const FEM=/female|woman|samantha|victoria|karen|moira|tessa|fiona|zira|susan|hazel|serena|allison|\bava\b|\bkate\b|joanna|salli|kimberly|\bivy\b|emma|\bamy\b|libby|sonia|jenny|\baria\b|michelle|catherine|natasha|clara|nicky|\bzoe\b|evie|google us english|google uk english female|x-(iob|iog|sfg|tpc|tpf|gba|gbc|gbg|afa|afc|ena|enc)/i;
+const MAL=/\bmale\b|\bman\b|daniel|\balex\b|david|\bmark\b|george|rishi|aaron|arthur|gordon|oliver|\btom\b|james|\bguy\b|ryan|christopher|\beric\b|matthew|joey|justin|brian|\blee\b|nathan|thomas|google uk english male|x-(iol|iom|tpd|gbb|gbd|rjs|aub|aud|end|ene)/i;
+const vKey=v=>v.name+' '+(v.voiceURI||'');
+const vGender=v=>FEM.test(vKey(v))?'f':MAL.test(vKey(v))?'m':'';
+const vScore=v=>(/natural|neural|enhanced|premium/i.test(vKey(v))?4:0)+(/google|online/i.test(vKey(v))?2:0)+(/en[-_](us|gb)/i.test(v.lang)?1:0)-(NOVELTY.test(v.name)?9:0);
+function loadVoices(){try{VOICES=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)&&!NOVELTY.test(v.name)).sort((a,b)=>vScore(b)-vScore(a));}catch(e){}}
 if('speechSynthesis' in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices;}
+function voiceFor(g){
+  const want=g==='f'?P.opts.vf:P.opts.vm;const picked=want&&VOICES.find(v=>v.voiceURI===want||v.name===want);if(picked)return {v:picked,fake:false};
+  const same=VOICES.filter(v=>vGender(v)===g);if(same.length)return {v:same[0],fake:false};
+  const other=VOICES.filter(v=>vGender(v)!==(g==='f'?'m':'f'));if(other.length)return {v:other[0],fake:false};
+  return {v:VOICES[0]||null,fake:true};
+}
 function speak(text,who,slow){
   if(!P.opts.voice||!('speechSynthesis' in window)||!text)return;
-  try{speechSynthesis.cancel();const t=text.replace(/\*/g,'').replace(/[\u0E00-\u0E7F]+/g,'').replace(/\s+([,.!?'])/g,'$1').replace(/^[\s,]+/,'').replace(/,\s*,/g,',');if(!/[A-Za-z]/.test(t))return;const u=new SpeechSynthesisUtterance(t);u.lang='en-US';
-    const c=STORY.cast[who]||(D&&D.cur&&D.cur.def.name===who?D.cur.def.voice:null)||{};u.pitch=c.pitch||1;u.rate=(slow?.62:P.opts.rate)*(c.rate||1);
-    if(VOICES.length){const fem=c.f,list=VOICES.filter(v=>fem?/female|samantha|victoria|karen|moira|tessa|fiona|zira|susan|google us english/i.test(v.name):/male|daniel|alex|fred|david|mark|george|rishi|google uk english male/i.test(v.name));
-      const pool=list.length?list:VOICES;u.voice=pool[(c.vi||0)%pool.length];}
+  try{speechSynthesis.cancel();const t=text.replace(/\*/g,'').replace(/[฀-๿]+/g,'').replace(/\s+([,.!?'])/g,'$1').replace(/^[\s,]+/,'').replace(/,\s*,/g,',');if(!/[A-Za-z]/.test(t))return;const u=new SpeechSynthesisUtterance(t);u.lang='en-US';
+    const c=who==='me'?{f:P.opts.meF}:STORY.cast[who]||(D&&D.cur&&D.cur.def.name===who?D.cur.def.voice:null)||{f:false};
+    const g=c.f?'f':'m',pick=voiceFor(g);if(pick.v){u.voice=pick.v;u.lang=pick.v.lang;}
+    // only a small shift per character; a woman's voice standing in for a man is lowered a little
+    let pitch=1+((c.pitch||1)-1)*.35;if(pick.fake&&g==='m')pitch-=.08;u.pitch=clamp(pitch,.88,1.15);
+    u.rate=(slow?.65:P.opts.rate)*clamp(c.rate||1,.9,1.1);
     speechSynthesis.speak(u);}catch(e){}
 }
 
@@ -880,16 +904,23 @@ function bookScreen(back){
     <button class="big" type="button" id="bkGo">กลับ</button></div>`;s.hidden=false;$('#bkGo').onclick=()=>{SFX.ui();s.hidden=true;back();};
 }
 function optScreen(back){
+  loadVoices();
+  const vsel=(k,g)=>{const cur=voiceFor(g).v;return `<select data-v="${k}">${VOICES.map(v=>`<option value="${esc(v.voiceURI||v.name)}" ${cur===v?'selected':''}>${esc(v.name.replace(/^(Microsoft|Google|Apple)\s+/,''))}${vGender(v)?` · ${vGender(v)==='f'?'หญิง':'ชาย'}`:''}</option>`).join('')}</select>`;};
   const s=$('#screen');const seg=(k,opts)=>`<div class="seg">${opts.map(([v,n])=>`<button type="button" data-k="${k}" data-v="${v}" class="${P.opts[k]==v?'on':''}">${n}</button>`).join('')}</div>`;
   s.innerHTML=`<div class="box"><h2>ตั้งค่า</h2>
     <h3>เสียงพูด</h3>${seg('voice',[[true,'เปิด'],[false,'ปิด']])}
     <h3>ความเร็วเสียง</h3>${seg('rate',[[.7,'ช้า'],[.9,'ปกติ'],[1.05,'เร็ว']])}
+    ${VOICES.length?`<h3>เสียงผู้ชาย</h3><div class="vrow">${vsel('vm','m')}<button type="button" class="vt" data-g="m">ฟัง</button></div>
+    <h3>เสียงผู้หญิง</h3><div class="vrow">${vsel('vf','f')}<button type="button" class="vt" data-g="f">ฟัง</button></div>`:''}
+    <h3>เสียงตัวเรา</h3>${seg('meF',[[false,'ผู้ชาย'],[true,'ผู้หญิง']])}
     <h3>คำแปลไทย</h3>${seg('th',[[false,'แตะเพื่อดู'],[true,'แสดงเสมอ']])}
     <h3>เสียงเอฟเฟกต์</h3>${seg('sfx',[[0,'ปิด'],[50,'เบา'],[80,'ปกติ']])}
     <h3>เสียงบรรยากาศ</h3>${seg('amb',[[0,'ปิด'],[40,'เบา'],[70,'ปกติ']])}
     <button class="big" type="button" id="opGo">กลับ</button></div>`;
   s.hidden=false;
   s.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k,v=b.dataset.v;P.opts[k]=v==='true'?true:v==='false'?false:+v;save();applyVol();SFX.ui();optScreen(back);});
+  s.querySelectorAll('select[data-v]').forEach(el=>el.onchange=()=>{P.opts[el.dataset.v]=el.value;save();speak(el.dataset.v==='vf'?"Hi. I'm Min. I run the radio.":"Check the card. Then check the face.",el.dataset.v==='vf'?'min':'carter');});
+  s.querySelectorAll('.vt').forEach(b=>b.onclick=()=>speak(b.dataset.g==='f'?"Hi. I'm Min. I run the radio.":"Check the card. Then check the face.",b.dataset.g==='f'?'min':'carter'));
   $('#opGo').onclick=()=>{SFX.ui();s.hidden=true;back();};
 }
 $('#rulesBtn').onclick=()=>{SFX.paper();const d=STORY.days[P.day-1];const el=$('#panel');const on=el.querySelector('.rules');closePanel();if(on)return;
