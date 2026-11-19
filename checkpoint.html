@@ -494,6 +494,76 @@ function buildBooth(){
 }
 let radio=null;const RADIOLED=[];
 
+/* ---------------- faces: drawn eyes, brows, beard and mouth that blink, look around, talk and change mood ---------------- */
+// shared face rig, also pasted into the game
+// builds a mesh from the head's own triangles (skinned positions), so a face texture sits right on the surface
+function headPatch(skin,sel,uv,offset){
+  const v=new THREE.Vector3(),pos=skin.geometry.attributes.position,idx=skin.geometry.index,n=pos.count,W=[];
+  for(let i=0;i<n;i++){skin.getVertexPosition(i,v);W.push(v.clone().applyMatrix4(skin.matrixWorld));}
+  const P=[],U=[],tri=idx?idx.count/3:n/3,e1=new THREE.Vector3(),e2=new THREE.Vector3(),nn=new THREE.Vector3(),c=new THREE.Vector3();
+  // smooth normals per original vertex (matched by position), so neighbouring triangles move out together without cracks
+  const VN=W.map(()=>new THREE.Vector3()),key=p=>p.x.toFixed(4)+','+p.y.toFixed(4)+','+p.z.toFixed(4),grp=new Map();
+  for(let t=0;t<tri;t++){const a=idx?idx.getX(t*3):t*3,b=idx?idx.getX(t*3+1):t*3+1,d=idx?idx.getX(t*3+2):t*3+2;e1.subVectors(W[b],W[a]);e2.subVectors(W[d],W[a]);nn.crossVectors(e1,e2);for(const k of [a,b,d]){const kk=key(W[k]);if(!grp.has(kk))grp.set(kk,new THREE.Vector3());grp.get(kk).add(nn);}}
+  for(let i=0;i<n;i++)VN[i].copy(grp.get(key(W[i]))).normalize();
+  for(let t=0;t<tri;t++){const a=idx?idx.getX(t*3):t*3,b=idx?idx.getX(t*3+1):t*3+1,d=idx?idx.getX(t*3+2):t*3+2;const A=W[a],B=W[b],C=W[d];
+    c.copy(A).add(B).add(C).multiplyScalar(1/3);e1.subVectors(B,A);e2.subVectors(C,A);nn.crossVectors(e1,e2).normalize();
+    if(!sel(c,nn))continue;
+    for(const k of [a,b,d]){const p=W[k],q=p.clone().addScaledVector(VN[k],offset);P.push(q.x,q.y,q.z);const u=uv(p);U.push(u[0],u[1]);}}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(U,2));g.computeVertexNormals();return g;
+}
+function faceRig(o,opt){
+  o.updateMatrixWorld(true);
+  let skin=null,head=null;o.traverse(m=>{if(m.isMesh&&m.material&&m.material.name==='Skin')skin=m;if(m.isBone&&m.name==='Head')head=m;});
+  o.traverse(m=>{if(m.isMesh&&m.material&&(m.material.name==='Face'||(opt.noHelmet&&m.material.name==='Helmet')))m.visible=false;});
+  const hp=new THREE.Vector3();head.getWorldPosition(hp);
+  const can=document.createElement('canvas');can.width=can.height=256;const tex=new THREE.CanvasTexture(can);tex.colorSpace=THREE.SRGBColorSpace;
+  const inv=new THREE.Matrix4().copy(head.matrixWorld).invert();
+  const F=opt.f;const inHead=c=>c.y>F.neck&&Math.abs(c.x-hp.x)<F.w*.75;
+  // face: front-facing triangles of the head, texture projected straight on
+  const fg=headPatch(skin,(c,n)=>inHead(c)&&n.z>.15&&c.y<F.top,p=>[(p.x-(hp.x-F.w/2))/F.w,(p.y-(F.y-F.h/2))/F.h],.006);
+  fg.applyMatrix4(inv);tex.wrapS=tex.wrapT=THREE.ClampToEdgeWrapping;
+  head.add(new THREE.Mesh(fg,new THREE.MeshStandardMaterial({map:tex,transparent:true,depthWrite:false,roughness:.85,polygonOffset:true,polygonOffsetFactor:-4})));
+  // hair: everything on the head above the hairline
+  if(opt.hair){const hg=headPatch(skin,(c,n)=>inHead(c)&&c.y>F.hairline+(Math.abs(n.x)>.5?.06:0)&&!(n.z>.5&&c.y<F.hairline+.12),()=>[0,0],.012);hg.applyMatrix4(inv);
+    head.add(new THREE.Mesh(hg,new THREE.MeshStandardMaterial({color:opt.hair,roughness:.95,flatShading:true,polygonOffset:true,polygonOffsetFactor:-2})));}
+  return {can,tex,g:can.getContext('2d'),mood:'stern',blink:0,nextBlink:2,lx:0,ly:0,tx:0,ty:0,nextLook:1,talk:0,mouth:0,opt};
+}
+function drawFace(st,dt){
+  const {g,opt}=st;const W=256;
+  st.nextBlink-=dt;if(st.nextBlink<=0){st.blink=.14;st.nextBlink=1.8+Math.random()*3.5;}
+  if(st.blink>0)st.blink-=dt;
+  st.nextLook-=dt;if(st.nextLook<=0){st.nextLook=.8+Math.random()*2.4;const r=Math.random();st.tx=r<.55?0:(Math.random()*2-1)*.7;st.ty=r<.55?0:(Math.random()*2-1)*.35;if(st.mood==='sad')st.ty=.5;}
+  st.lx+=(st.tx-st.lx)*Math.min(1,dt*14);st.ly+=(st.ty-st.ly)*Math.min(1,dt*14);
+  st.mouth+=((st.talk?(.25+Math.abs(Math.sin(performance.now()/90))*.75):0)-st.mouth)*Math.min(1,dt*18);
+  g.clearRect(0,0,W,W);
+  if(opt.hair){g.fillStyle=opt.hair;g.beginPath();g.moveTo(0,0);g.lineTo(W,0);g.lineTo(W,W*opt.hairY);g.quadraticCurveTo(W*.75,W*(opt.hairY-.05),W*.5,W*(opt.hairY+.02));g.quadraticCurveTo(W*.25,W*(opt.hairY-.05),0,W*opt.hairY);g.closePath();g.fill();}
+  const M=st.mood,ex=[W*.33,W*.67],ey=W*opt.eyeY,er=W*.082;
+  const open=st.blink>0?.08:M==='angry'?.72:M==='surprised'?1.15:M==='sad'?.8:.88;
+  // short beard: along the jaw, around the mouth and over the chin; the mouth sits in an opening
+  const my=W*.8,mo=st.mouth*W*.04;
+  if(opt.beard){g.fillStyle=g.strokeStyle=opt.beard;g.lineCap='round';g.lineJoin='round';
+    g.lineWidth=W*.085;g.beginPath();g.moveTo(W*.15,W*.56);g.quadraticCurveTo(W*.2,W*.93,W*.5,W*.95);g.quadraticCurveTo(W*.8,W*.93,W*.85,W*.56);g.stroke();
+    g.beginPath();g.ellipse(W*.5,my+W*.02,W*.2,W*.13,0,0,Math.PI*2);g.fill();}
+  g.fillStyle='#2a1410';g.beginPath();g.ellipse(W*.5,my,W*.07,Math.max(W*.01,mo),0,0,Math.PI*2);g.fill();
+  if(opt.beard){g.fillStyle=opt.beard;g.beginPath();g.ellipse(W*.5,my-W*.04,W*.15,W*.032,0,0,Math.PI*2);g.fill();}
+  for(let i=0;i<2;i++){const x=ex[i],s=i?1:-1;
+    // eye white
+    g.save();g.beginPath();g.ellipse(x,ey,er*1.25,er*open,0,0,Math.PI*2);g.closePath();g.fillStyle='#f6f2ea';g.fill();g.clip();
+    const ix=x+st.lx*er*.55,iy=ey+st.ly*er*.45,ir=er*(M==='surprised'?.62:.72);
+    g.fillStyle=opt.iris||'#4a2e1a';g.beginPath();g.arc(ix,iy,ir,0,Math.PI*2);g.fill();
+    g.fillStyle='#0c0806';g.beginPath();g.arc(ix,iy,ir*.5,0,Math.PI*2);g.fill();
+    g.fillStyle='#fff';g.beginPath();g.arc(ix-ir*.3,iy-ir*.35,ir*.22,0,Math.PI*2);g.fill();
+    g.restore();
+    // upper lid line
+    g.strokeStyle='#1a0e0a';g.lineWidth=W*.014;g.beginPath();g.ellipse(x,ey,er*1.25,er*open,0,Math.PI*1.08,Math.PI*1.92);g.stroke();
+    // eyebrow: inner end is near the nose
+    const by=ey-er*(M==='surprised'?2.1:1.55),inner=x-s*er*1.15,outer=x+s*er*1.35;
+    const tilt=M==='angry'?.55:M==='stern'?.28:M==='sad'?-.45:M==='surprised'?-.1:.05;
+    g.strokeStyle=opt.brow||'#8a8a86';g.lineWidth=W*.05;g.lineCap='round';g.beginPath();g.moveTo(inner,by+tilt*er);g.lineTo(outer,by-tilt*er*.4);g.stroke();
+  }
+  st.tex.needsUpdate=true;
+}
+
 /* ---------------- people ---------------- */
 const SKIN={pale:'#f2d0b0',light:'#e6b48c',tan:'#c98e64',brown:'#9a6440',dark:'#6a4126',deep:'#4a2c1a'};
 const ACTORS=[];
@@ -502,6 +572,7 @@ function makeActor(spec){
   // spec: {model, skin, h, eyes:'red'|'pink', tint:{Shirt:'#..'}, bandage:'L'|'R', blood:true, zombie:false}
   const src=spec.zombie?MODELS[spec.model]:PEOPLE[spec.model];if(!src)return null;
   const o=SkeletonUtils.clone(src.scene);o.updateMatrixWorld(true);
+  const face=spec.face&&!spec.zombie?faceRig(o,spec.face):null;
   const b=new THREE.Box3().setFromObject(o),hh=(b.max.y-b.min.y)||1,s=(spec.h||1.72)/hh;
   o.scale.setScalar(s);o.position.y=-b.min.y*s;
   const w=new THREE.Group();w.add(o);scene.add(w);
@@ -514,7 +585,7 @@ function makeActor(spec){
     m.material=Array.isArray(m.material)?m.material.map(one):one(m.material);});
   const mixer=new THREE.AnimationMixer(o),clips={};
   for(const c of (spec.zombie?src.animations:Object.values(CLIPS)))clips[c.name]=c;
-  const a={obj:w,model:o,mixer,clips,act:null,spec,path:null,bones:{}};
+  const a={obj:w,model:o,mixer,clips,act:null,spec,path:null,bones:{},face};
   o.traverse(x=>{if(x.isBone)a.bones[x.name]=x;});
   if(spec.bandage)attachBandage(a,spec.bandage,spec.blood);
   if(spec.bundle){const bone=a.bones.Torso;if(bone){const g=new THREE.Group();g.scale.setScalar(1/boneWorldScale(bone));bone.add(g);const m=new THREE.Mesh(new THREE.CapsuleGeometry(.09,.18,4,8),mat(0xe6d8c4));m.rotation.z=Math.PI/2;m.position.set(0,.12,.16);g.add(m);}}
@@ -557,6 +628,7 @@ function stepActor(a,dt){
       a.stuck=moved<st*.3?(a.stuck||0)+dt:0;if(a.stuck>1.2){a.ghost=.8;a.stuck=0;}}
     if(a.ghost>0)a.ghost-=dt;}
   if(a.shake){a.model.position.x=Math.sin(clock*40)*.006;}
+  if(a.turnTo!=null&&!a.path){let dr=a.turnTo-a.obj.rotation.y;dr=Math.atan2(Math.sin(dr),Math.cos(dr));a.obj.rotation.y+=dr*Math.min(1,dt*5);if(Math.abs(dr)<.01)a.turnTo=null;}
 }
 function faceCam(a){a.obj.rotation.y=Math.atan2(camera.position.x-a.obj.position.x,camera.position.z-a.obj.position.z);}
 
@@ -637,7 +709,7 @@ portrait.c={};
    so it can use the engine helpers (G, makeActor, walk, play, say, camTo ...).
    Lines: {who, en, th}. A line with only th is narration. {P} = player name, {S} = sister. */
 
-const L=(who,en,th)=>({who,en,th});
+const L=(who,en,th,mood)=>({who,en,th,mood});   // mood: stern, angry, sad, surprised, soft
 const N=th=>({th});                         // narration
 const run=fn=>({run:fn});
 const wait=s=>({wait:s});
@@ -649,7 +721,8 @@ const STORY={
   dateOf:d=>`${11+d} Oct 2031`,
   cast:{
     me:{n:'{P}'},
-    carter:{n:'จ่าคาร์เตอร์',pitch:.75,rate:.92,vi:1,look:{model:'Soldier_Male',skin:'brown',h:1.86}},
+    carter:{n:'จ่าคาร์เตอร์',pitch:.75,rate:.92,vi:1,look:{model:'Soldier_Male',skin:'#7e4e30',h:1.86,tint:{Main:'#7c8a5c',DarkGreen:'#55603f',Black:'#46523a'},
+      face:{noHelmet:true,f:{y:2.45,h:1,w:1,neck:1.98,top:2.96,hairline:2.78},hair:'#8e8e8a',hairY:.2,beard:'#9a9a96',brow:'#8a8a86',iris:'#4a2e1a',eyeY:.44,mood:'stern'}}},
     min:{n:'มิน',f:true,pitch:1.2,rate:1.02,vi:0,look:{model:'Casual3_Female',skin:'light',h:1.62}},
     diaz:{n:'สิบตรีดิอาซ',f:true,pitch:1.0,vi:1,look:{model:'Soldier_Female',skin:'tan',h:1.7}},
     rossi:{n:'รอสซี่',pitch:.95,rate:1.08,vi:2},
@@ -715,8 +788,8 @@ function person(o){
   if(!(o.qs||[]).some(q=>q.q==='girl'))(o.qs=o.qs||[]).push({q:'girl',a:Array.isArray(girl[0])?girl.map(g=>L(nm,g[0],g[1])):[L(nm,girl[0],girl[1])]});
   return o;
 }
-const say1=(who,en,th)=>G.say(L(who,en,th));
-const sayW=(who,en,th)=>G.say(L(who,en,th),{wait:true});
+const say1=(who,en,th,mood)=>G.say(L(who,en,th,mood));
+const sayW=(who,en,th,mood)=>G.say(L(who,en,th,mood),{wait:true});
 // someone already inside the checkpoint, standing by the gate
 function bystander(look,x,z,ry=1.2){const a=makeActor(look);if(!a)return null;a.obj.position.set(x,0,z);a.obj.rotation.y=ry;(G.D.extra||(G.D.extra=[])).push(a);return a;}
 function zombie(x,z,model='Zombie_Basic'){const a=makeActor({zombie:true,model,h:rnd(1.7,1.85)});if(!a)return null;a.obj.position.set(x,0,z);(G.D?(G.D.extra||(G.D.extra=[])):[]).push(a);return a;}
@@ -766,8 +839,8 @@ S.days.push({
     N('{P}เล่าเรื่อง{S}ให้มินฟัง ว่าพลัดกันที่สนามบินในวันที่เชื้อระบาด'),
     L('min','Your sister... {S}. I listen to the radio every night. I\'ll listen for her name. I promise.','น้องสาวเธอ... {S} ฉันฟังวิทยุทุกคืนอยู่แล้ว จะคอยฟังชื่อเธอให้ สัญญา'),
     {if:F=>F.d_grace==='no',then:[cm('outside',2),
-      L('carter','That old woman with no card. She\'s sleeping on the bridge tonight.','ยายที่ไม่มีบัตรคนนั้น คืนนี้แกนอนอยู่บนสะพาน'),
-      L('carter','You did the right thing. It doesn\'t feel like it. It never does.','เธอทำถูกแล้ว ถึงจะไม่รู้สึกแบบนั้นก็ตาม มันไม่เคยรู้สึกดีหรอก')]},
+      L('carter','That old woman with no card. She\'s sleeping on the bridge tonight.','ยายที่ไม่มีบัตรคนนั้น คืนนี้แกนอนอยู่บนสะพาน','sad'),
+      L('carter','You did the right thing. It doesn\'t feel like it. It never does.','เธอทำถูกแล้ว ถึงจะไม่รู้สึกแบบนั้นก็ตาม มันไม่เคยรู้สึกดีหรอก','sad')]},
     {fade:'out'},
   ],
 });
@@ -781,8 +854,8 @@ S.people.reyes=person({name:'Daniel Reyes',look:{model:'Casual_Male',skin:'tan',
     {q:'bag',a:[L('Daniel Reyes','Clothes, water, a photo of my mom. That\'s all.','เสื้อผ้า น้ำ แล้วก็รูปแม่ผม แค่นั้นครับ')]}],
   bag:[{i:'👕',en:'clothes'},{i:'💧',en:'water'},{i:'🖼',en:'photo'}],
   why:'บัตรถูกต้อง หน้าตรงกับรูป',
-  after:{yes:async()=>{await say1('carter',"Good. That's how it's done.",'ดี แบบนี้แหละ');await G.sleep(1500);},
-    no:async()=>{await say1('carter','No? His card was fine, {P}. Be careful.','ไม่ให้เข้าเหรอ บัตรเขาไม่มีปัญหาเลยนะ {P} ระวังหน่อย');await G.sleep(1800);}},
+  after:{yes:async()=>{await say1('carter',"Good. That's how it's done.",'ดี แบบนี้แหละ','soft');await G.sleep(1500);},
+    no:async()=>{await say1('carter','No? His card was fine, {P}. Be careful.','ไม่ให้เข้าเหรอ บัตรเขาไม่มีปัญหาเลยนะ {P} ระวังหน่อย','stern');await G.sleep(1800);}},
 });
 S.people.grace=person({name:'Grace Okafor',look:{model:'OldClassy_Female',skin:'deep',h:1.6},voice:{f:true,pitch:.85,rate:.85,vi:1},
   id:null,
@@ -845,7 +918,7 @@ S.days.push({
   evening:F=>[
     {if:F=>F.gate==='late',then:[cm('gate',1.5),{run:()=>{G.setTod(.92);const d=G.STAFF.diaz;if(d){d.obj.visible=true;d.obj.position.set(-2.8,0,-.6);G.play(d,'SitDown',{once:true});}}},
       L('diaz','Sarge... you know what to do. Don\'t let me become one of them.','จ่า... จ่ารู้ว่าต้องทำยังไง อย่าปล่อยให้ฉันกลายเป็นพวกมัน'),
-      L('carter','...I know, Diaz. I know.','...ฉันรู้ ดิอาซ ฉันรู้'),
+      L('carter','...I know, Diaz. I know.','...ฉันรู้ ดิอาซ ฉันรู้','sad'),
       {fade:'out'},wait(1),{run:()=>{G.SFX.shot();}},wait(2),
       {run:()=>{F.diazDead=true;if(G.STAFF.diaz)G.STAFF.diaz.obj.visible=false;}},
       cm('radio',0),{fade:'in'},
@@ -853,8 +926,8 @@ S.days.push({
     {if:F=>F.d_victor==='no',then:[cm('bridge',1.6),{run:()=>G.setTod(.9)},
       N('ตอนพลบค่ำ มีเสียงกรีดร้องดังมาจากกลางสะพาน'),
       run(async()=>{const z=zombie(1.2,-17,'Zombie_Arm');const v=G.D.crowd[0];if(z&&v){await maul(z,v);await G.sleep(500);await shootDown(z);}}),
-      L('carter','The man with the long sleeves. Victor. You were right about him.','ผู้ชายแขนยาวคนนั้น วิกเตอร์ เธอคิดถูก'),
-      L('carter','He would have done that inside. To children.','ถ้าเขาเข้าไป เขาจะทำแบบนี้ข้างใน กับเด็ก ๆ')]},
+      L('carter','The man with the long sleeves. Victor. You were right about him.','ผู้ชายแขนยาวคนนั้น วิกเตอร์ เธอคิดถูก','soft'),
+      L('carter','He would have done that inside. To children.','ถ้าเขาเข้าไป เขาจะทำแบบนี้ข้างใน กับเด็ก ๆ','sad')]},
     {if:F=>F.clue1,then:[cm('radio',1.6),
       L('min','An old woman saw {S} at the airport shelter? That\'s great news!','ยายคนนั้นเคยเห็น{S}ที่ศูนย์พักพิงสนามบินเหรอ ข่าวดีมากเลย!'),
       L('min','I\'ll try to reach the airport tonight. No promises. The signal is bad.','คืนนี้ฉันจะลองติดต่อสนามบินดู สัญญาไม่ได้นะ สัญญาณแย่มาก')]},
@@ -891,7 +964,7 @@ async function gateEvent(F,D){
     await sayW('diaz','It got me... Sarge, it got my arm.','มันกัดฉัน... จ่า มันกัดแขนฉัน');F.trust=(F.trust||0)-2;F.gate='late';F.diazBit=true;
   }else{
     G.play(z,'HitReact',{once:true});G.SFX.gate();await G.sleep(500);await shootDown(z);
-    await sayW('carter','Good timing. Good.','จังหวะดีมาก ดี');F.trust=(F.trust||0)+2;F.gate='ok';
+    await sayW('carter','Good timing. Good.','จังหวะดีมาก ดี','soft');F.trust=(F.trust||0)+2;F.gate='ok';
   }
   G.heart(false);G.ambience('wind');
   // whoever made it inside takes Priya's place in the line; the dead stay where they fell
@@ -963,7 +1036,7 @@ S.days.push({
     {if:F=>F.d_victor==='yes',then:[
       L('min','The man with the long sleeves... Victor? He turned at three in the morning. In the shelter.','ผู้ชายแขนยาวคนนั้น... วิกเตอร์ เขากลายร่างตอนตีสาม ในศูนย์พักพิง'),
       L('min','Three people died before the soldiers stopped him. One of them was a little girl.','ตายไปสามคนก่อนทหารจะหยุดเขาได้ หนึ่งในนั้นเป็นเด็กผู้หญิงตัวเล็ก ๆ'),
-      L('carter','That\'s on us, {P}. On you.','นั่นเป็นความผิดของพวกเรา {P} ความผิดของเธอ')]},
+      L('carter','That\'s on us, {P}. On you.','นั่นเป็นความผิดของพวกเรา {P} ความผิดของเธอ','angry')]},
     {if:F=>F.gate==='early',then:[L('min','They buried the two people from the gate this morning.','เช้านี้เขาฝังสองคนที่หน้าประตูไปแล้ว')]},
     cm('gate',1.4),
     L('carter','Command sent us thermometers. A bite gives you a fever before it turns you.','กองบัญชาการส่งเครื่องวัดไข้มาให้ คนโดนกัดจะมีไข้ก่อนกลายร่าง'),
@@ -1094,8 +1167,8 @@ S.days.push({
       {run:()=>{F.parkTragedy=true;}}]},
     {if:F=>F.parkFather==='quar',then:[cm('gate',1.6),{run:()=>G.setTod(1)},
       N('ดึกคืนนั้น มีเสียงปืนนัดเดียวดังมาจากเต็นท์กักตัว'),{run:()=>G.SFX.shot()},
-      L('carter','He turned. Alone. Nobody else got hurt.','เขากลายร่าง อยู่คนเดียว ไม่มีใครเจ็บเพิ่ม'),
-      L('carter','I\'ll tell his wife in the morning. That\'s my job, not yours.','พรุ่งนี้เช้าฉันจะบอกเมียเขาเอง นั่นเป็นงานฉัน ไม่ใช่ของเธอ')]},
+      L('carter','He turned. Alone. Nobody else got hurt.','เขากลายร่าง อยู่คนเดียว ไม่มีใครเจ็บเพิ่ม','sad'),
+      L('carter','I\'ll tell his wife in the morning. That\'s my job, not yours.','พรุ่งนี้เช้าฉันจะบอกเมียเขาเอง นั่นเป็นงานฉัน ไม่ใช่ของเธอ','sad')]},
     {if:F=>F.parkFather==='out',then:[cm('bridge',1.6),{run:()=>G.setTod(1)},
       N('มินจุนนั่งพิงรั้วสะพานอยู่ข้างนอกประตูทั้งคืน'),
       N('ก่อนรุ่งสาง เขาลุกขึ้นยืน... แต่ไม่ใช่มินจุนอีกต่อไปแล้ว'),{run:()=>{G.SFX.groan(.3);}},wait(.8),{run:()=>{G.SFX.shot();}},
@@ -1141,7 +1214,7 @@ S.people.minjun=person({name:'Min-jun Park',look:{model:'Casual3_Male',skin:'lig
     no:async(F,D)=>{F.parkFather='out';if(F.parkIn){await sayW('sunhee','No! No, please! He\'s my husband!','ไม่! ไม่นะ ได้โปรด! เขาเป็นสามีฉัน!');}
       await say1('Min-jun Park','It\'s okay. It\'s okay, Sun-hee. Take care of Jae.','ไม่เป็นไร ไม่เป็นไรนะซันฮี ดูแลแจด้วย');await G.sleep(2400);},
     quar:async(F)=>{F.parkFather='quar';if(F.parkIn)await sayW('sunhee','Quarantine? He\'ll be okay? He\'ll be okay, right?','กักตัวเหรอ เขาจะไม่เป็นไรใช่ไหม เขาจะไม่เป็นไรใช่ไหม');
-      await say1('carter','...We\'ll see.','...ต้องดูกันไป');await G.sleep(1800);}},
+      await say1('carter','...We\'ll see.','...ต้องดูกันไป','sad');await G.sleep(1800);}},
 });
 S.people.paul=person({name:'Paul Grant',look:{model:'OldClassy_Male',skin:'pale',h:1.76,tint:{Shirt:'#4a4a3a'}},voice:{pitch:.88,rate:.9,vi:0},
   id:{born:'30 Jun 1958',from:'Velmora City',no:'VL-126-4410'},permit:{until:'14 Oct 2031'},temp:36.4,
@@ -1240,7 +1313,7 @@ function hordeScene(F){return [
   N('ฝุ่นตลบขึ้นที่ปลายสะพาน แล้วเสียงคำรามนับพันก็ดังตามมา'),
   run(async()=>{const D=G.D;const zs=[];for(let i=0;i<16;i++){const z=zombie(rnd(-3.4,3.4),rnd(-58,-70),pick(['Zombie_Basic','Zombie_Chubby','Zombie_Ribcage','Zombie_Arm']));if(z){zs.push(z);walk(z,[[rnd(-3,3),-12]],{run:true,speed:rnd(.9,1.3)});}}D.horde=zs;}),
   cm('bridge',1.2),
-  L('carter','CLOSE THE GATE! NOW!','ปิดประตู! เดี๋ยวนี้!'),
+  L('carter','CLOSE THE GATE! NOW!','ปิดประตู! เดี๋ยวนี้!','surprised'),
   run(async()=>{G.gateTo(false,.6);G.SFX.gate();const D=G.D;
     for(const c of D.crowd.slice(0,10)){walk(c,[[rnd(-3,3),-3.5]],{run:true,speed:rnd(.9,1.2)});}
     await G.sleep(2200);G.SFX.scream();
@@ -1263,8 +1336,8 @@ STORY.ending=F=>{
   const E={
     holds:{n:'ด่านยังยืน',d:'ด่าน 7 รอดคืนนั้นมาได้ ทุกคนเชื่อใจ{P}',steps:[
       cm('gate',1.4),N('ประตูเหล็กรับแรงกระแทกได้ทั้งคืน จ่าคาร์เตอร์ถูกกัดเฉียดขา แต่ยังรอด'),
-      L('carter','You did good, {P}. Better than good.','เธอทำได้ดี {P} ดีกว่าดีอีก'),
-      L('carter','Min found the airport channel. Take it. Go find your sister.','มินหาคลื่นวิทยุของสนามบินเจอแล้ว เอาไป ไปตามหาน้องสาวเธอ'),...radio]},
+      L('carter','You did good, {P}. Better than good.','เธอทำได้ดี {P} ดีกว่าดีอีก','soft'),
+      L('carter','Min found the airport channel. Take it. Go find your sister.','มินหาคลื่นวิทยุของสนามบินเจอแล้ว เอาไป ไปตามหาน้องสาวเธอ','soft'),...radio]},
     outbreak:{n:'เชื้อในค่าย',d:'คนติดเชื้อที่{P}ปล่อยเข้าไป ทำให้ค่ายแตกจากข้างใน',steps:[
       cm('radio',1),{run:()=>{G.SFX.scream();G.flashRed();}},
       N('ขณะที่ทุกคนจ้องไปที่ฝูงข้างนอก เสียงกรีดร้องกลับดังมาจากข้างในค่าย'),
@@ -1334,6 +1407,7 @@ function say(line,{wait=false,cut=false}={}){
   $('#sayTh2').textContent=sub(line.th||'');$('#sayTh2').hidden=!(P.opts.th||!line.en)||!line.th;$('#sayTh').classList.toggle('on',!$('#sayTh2').hidden);
   $('#sayTh').hidden=!line.en;$('#sayAgain').hidden=$('#saySlow').hidden=!line.en;
   bindWords($('#sayEn'));sayLine=line;if(line.en)speakLine(line);
+  const sp=STAFF[line.who];if(sp&&!sp.path&&!sp.dead)sp.turnTo=Math.atan2(camera.position.x-sp.obj.position.x,camera.position.z-sp.obj.position.z);
   $('#sayMore').hidden=!wait;el.classList.toggle('tap',wait);
   if(wait)return new Promise(r=>{sayWait=r;});
   return Promise.resolve();
@@ -1473,7 +1547,7 @@ async function startDay(n){
   D.busy=false;await nextPerson();
 }
 function staff(){
-  if(!STAFF.carter){STAFF.carter=makeActor(STORY.cast.carter.look);}
+  if(!STAFF.carter){STAFF.carter=makeActor(STORY.cast.carter.look);if(STAFF.carter)STAFF.carter.castId='carter';}
   if(!STAFF.diaz&&!P.F.diazDead){STAFF.diaz=makeActor(STORY.cast.diaz.look);}
   if(!STAFF.min){STAFF.min=makeActor(STORY.cast.min.look);}
   const c=STAFF.carter;if(c){c.obj.position.set(-2.3,0,-1.9);c.obj.rotation.y=-2.6;}
@@ -1644,12 +1718,16 @@ function stepTimer(dt){if(!D||!D.timer||state!=='play')return;if(!D.busy||D.cur)
   if(t<=0&&!D.ended){D.ended=true;D.timer=0;STORY.days[P.day-1].onTimeUp?.(P.F,D);if(!D.busy){D.busy=true;const c=D.cur;if(c){walk(c.actor,[[.4,-6]]);D.cur=null;}endDay();}}}
 
 /* ---------------- main loop ---------------- */
-let clock=0,last=performance.now(),state='play';
+let clock=0,last=performance.now(),state='play',faceT=0;
 const grain=$('#grain').getContext('2d');let grainT=0;
 function frame(now){
   requestAnimationFrame(frame);const dt=Math.min(.05,(now-last)/1000);last=now;clock+=dt;
   for(const a of ACTORS){stepActor(a,dt);if(window.__clip&&a.path&&!(a.ghost>0)&&blockedAt(a.obj.position.x,a.obj.position.z))window.__clip.push([a.spec.model,+a.obj.position.x.toFixed(2),+a.obj.position.z.toFixed(2)]);}stepFx(dt);stepCam(dt);stepTimer(dt);
   for(const s of FLOODSPR)s.visible=flood.intensity>2;
+  faceT+=dt;if(faceT>.033){for(const a of ACTORS)if(a.face&&a.obj.visible){const me=sayLine&&a.castId&&sayLine.who===a.castId;
+      a.face.talk=me&&!$('#say').hidden&&((!voiceEl.paused&&!voiceEl.ended)||(window.speechSynthesis&&speechSynthesis.speaking));
+      a.face.mood=me?(sayLine.mood||(/!/.test(sayLine.en||'')?'angry':/^\.\.\./.test(sayLine.en||'')?'sad':a.face.opt.mood||'stern')):a.face.opt.mood||'stern';
+      drawFace(a.face,faceT);}faceT=0;}
   grainT+=dt;if(grainT>.08){grainT=0;const im=grain.createImageData(160,160);for(let i=0;i<im.data.length;i+=4){const v=Math.random()*255;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=255;}grain.putImageData(im,0,0);}
   renderer.render(scene,camera);
 }

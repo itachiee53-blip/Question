@@ -494,6 +494,76 @@ function buildBooth(){
 }
 let radio=null;const RADIOLED=[];
 
+/* ---------------- faces: drawn eyes, brows, beard and mouth that blink, look around, talk and change mood ---------------- */
+// shared face rig, also pasted into the game
+// builds a mesh from the head's own triangles (skinned positions), so a face texture sits right on the surface
+function headPatch(skin,sel,uv,offset){
+  const v=new THREE.Vector3(),pos=skin.geometry.attributes.position,idx=skin.geometry.index,n=pos.count,W=[];
+  for(let i=0;i<n;i++){skin.getVertexPosition(i,v);W.push(v.clone().applyMatrix4(skin.matrixWorld));}
+  const P=[],U=[],tri=idx?idx.count/3:n/3,e1=new THREE.Vector3(),e2=new THREE.Vector3(),nn=new THREE.Vector3(),c=new THREE.Vector3();
+  // smooth normals per original vertex (matched by position), so neighbouring triangles move out together without cracks
+  const VN=W.map(()=>new THREE.Vector3()),key=p=>p.x.toFixed(4)+','+p.y.toFixed(4)+','+p.z.toFixed(4),grp=new Map();
+  for(let t=0;t<tri;t++){const a=idx?idx.getX(t*3):t*3,b=idx?idx.getX(t*3+1):t*3+1,d=idx?idx.getX(t*3+2):t*3+2;e1.subVectors(W[b],W[a]);e2.subVectors(W[d],W[a]);nn.crossVectors(e1,e2);for(const k of [a,b,d]){const kk=key(W[k]);if(!grp.has(kk))grp.set(kk,new THREE.Vector3());grp.get(kk).add(nn);}}
+  for(let i=0;i<n;i++)VN[i].copy(grp.get(key(W[i]))).normalize();
+  for(let t=0;t<tri;t++){const a=idx?idx.getX(t*3):t*3,b=idx?idx.getX(t*3+1):t*3+1,d=idx?idx.getX(t*3+2):t*3+2;const A=W[a],B=W[b],C=W[d];
+    c.copy(A).add(B).add(C).multiplyScalar(1/3);e1.subVectors(B,A);e2.subVectors(C,A);nn.crossVectors(e1,e2).normalize();
+    if(!sel(c,nn))continue;
+    for(const k of [a,b,d]){const p=W[k],q=p.clone().addScaledVector(VN[k],offset);P.push(q.x,q.y,q.z);const u=uv(p);U.push(u[0],u[1]);}}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(U,2));g.computeVertexNormals();return g;
+}
+function faceRig(o,opt){
+  o.updateMatrixWorld(true);
+  let skin=null,head=null;o.traverse(m=>{if(m.isMesh&&m.material&&m.material.name==='Skin')skin=m;if(m.isBone&&m.name==='Head')head=m;});
+  o.traverse(m=>{if(m.isMesh&&m.material&&(m.material.name==='Face'||(opt.noHelmet&&m.material.name==='Helmet')))m.visible=false;});
+  const hp=new THREE.Vector3();head.getWorldPosition(hp);
+  const can=document.createElement('canvas');can.width=can.height=256;const tex=new THREE.CanvasTexture(can);tex.colorSpace=THREE.SRGBColorSpace;
+  const inv=new THREE.Matrix4().copy(head.matrixWorld).invert();
+  const F=opt.f;const inHead=c=>c.y>F.neck&&Math.abs(c.x-hp.x)<F.w*.75;
+  // face: front-facing triangles of the head, texture projected straight on
+  const fg=headPatch(skin,(c,n)=>inHead(c)&&n.z>.15&&c.y<F.top,p=>[(p.x-(hp.x-F.w/2))/F.w,(p.y-(F.y-F.h/2))/F.h],.006);
+  fg.applyMatrix4(inv);tex.wrapS=tex.wrapT=THREE.ClampToEdgeWrapping;
+  head.add(new THREE.Mesh(fg,new THREE.MeshStandardMaterial({map:tex,transparent:true,depthWrite:false,roughness:.85,polygonOffset:true,polygonOffsetFactor:-4})));
+  // hair: everything on the head above the hairline
+  if(opt.hair){const hg=headPatch(skin,(c,n)=>inHead(c)&&c.y>F.hairline+(Math.abs(n.x)>.5?.06:0)&&!(n.z>.5&&c.y<F.hairline+.12),()=>[0,0],.012);hg.applyMatrix4(inv);
+    head.add(new THREE.Mesh(hg,new THREE.MeshStandardMaterial({color:opt.hair,roughness:.95,flatShading:true,polygonOffset:true,polygonOffsetFactor:-2})));}
+  return {can,tex,g:can.getContext('2d'),mood:'stern',blink:0,nextBlink:2,lx:0,ly:0,tx:0,ty:0,nextLook:1,talk:0,mouth:0,opt};
+}
+function drawFace(st,dt){
+  const {g,opt}=st;const W=256;
+  st.nextBlink-=dt;if(st.nextBlink<=0){st.blink=.14;st.nextBlink=1.8+Math.random()*3.5;}
+  if(st.blink>0)st.blink-=dt;
+  st.nextLook-=dt;if(st.nextLook<=0){st.nextLook=.8+Math.random()*2.4;const r=Math.random();st.tx=r<.55?0:(Math.random()*2-1)*.7;st.ty=r<.55?0:(Math.random()*2-1)*.35;if(st.mood==='sad')st.ty=.5;}
+  st.lx+=(st.tx-st.lx)*Math.min(1,dt*14);st.ly+=(st.ty-st.ly)*Math.min(1,dt*14);
+  st.mouth+=((st.talk?(.25+Math.abs(Math.sin(performance.now()/90))*.75):0)-st.mouth)*Math.min(1,dt*18);
+  g.clearRect(0,0,W,W);
+  if(opt.hair){g.fillStyle=opt.hair;g.beginPath();g.moveTo(0,0);g.lineTo(W,0);g.lineTo(W,W*opt.hairY);g.quadraticCurveTo(W*.75,W*(opt.hairY-.05),W*.5,W*(opt.hairY+.02));g.quadraticCurveTo(W*.25,W*(opt.hairY-.05),0,W*opt.hairY);g.closePath();g.fill();}
+  const M=st.mood,ex=[W*.33,W*.67],ey=W*opt.eyeY,er=W*.082;
+  const open=st.blink>0?.08:M==='angry'?.72:M==='surprised'?1.15:M==='sad'?.8:.88;
+  // short beard: along the jaw, around the mouth and over the chin; the mouth sits in an opening
+  const my=W*.8,mo=st.mouth*W*.04;
+  if(opt.beard){g.fillStyle=g.strokeStyle=opt.beard;g.lineCap='round';g.lineJoin='round';
+    g.lineWidth=W*.085;g.beginPath();g.moveTo(W*.15,W*.56);g.quadraticCurveTo(W*.2,W*.93,W*.5,W*.95);g.quadraticCurveTo(W*.8,W*.93,W*.85,W*.56);g.stroke();
+    g.beginPath();g.ellipse(W*.5,my+W*.02,W*.2,W*.13,0,0,Math.PI*2);g.fill();}
+  g.fillStyle='#2a1410';g.beginPath();g.ellipse(W*.5,my,W*.07,Math.max(W*.01,mo),0,0,Math.PI*2);g.fill();
+  if(opt.beard){g.fillStyle=opt.beard;g.beginPath();g.ellipse(W*.5,my-W*.04,W*.15,W*.032,0,0,Math.PI*2);g.fill();}
+  for(let i=0;i<2;i++){const x=ex[i],s=i?1:-1;
+    // eye white
+    g.save();g.beginPath();g.ellipse(x,ey,er*1.25,er*open,0,0,Math.PI*2);g.closePath();g.fillStyle='#f6f2ea';g.fill();g.clip();
+    const ix=x+st.lx*er*.55,iy=ey+st.ly*er*.45,ir=er*(M==='surprised'?.62:.72);
+    g.fillStyle=opt.iris||'#4a2e1a';g.beginPath();g.arc(ix,iy,ir,0,Math.PI*2);g.fill();
+    g.fillStyle='#0c0806';g.beginPath();g.arc(ix,iy,ir*.5,0,Math.PI*2);g.fill();
+    g.fillStyle='#fff';g.beginPath();g.arc(ix-ir*.3,iy-ir*.35,ir*.22,0,Math.PI*2);g.fill();
+    g.restore();
+    // upper lid line
+    g.strokeStyle='#1a0e0a';g.lineWidth=W*.014;g.beginPath();g.ellipse(x,ey,er*1.25,er*open,0,Math.PI*1.08,Math.PI*1.92);g.stroke();
+    // eyebrow: inner end is near the nose
+    const by=ey-er*(M==='surprised'?2.1:1.55),inner=x-s*er*1.15,outer=x+s*er*1.35;
+    const tilt=M==='angry'?.55:M==='stern'?.28:M==='sad'?-.45:M==='surprised'?-.1:.05;
+    g.strokeStyle=opt.brow||'#8a8a86';g.lineWidth=W*.05;g.lineCap='round';g.beginPath();g.moveTo(inner,by+tilt*er);g.lineTo(outer,by-tilt*er*.4);g.stroke();
+  }
+  st.tex.needsUpdate=true;
+}
+
 /* ---------------- people ---------------- */
 const SKIN={pale:'#f2d0b0',light:'#e6b48c',tan:'#c98e64',brown:'#9a6440',dark:'#6a4126',deep:'#4a2c1a'};
 const ACTORS=[];
@@ -502,6 +572,7 @@ function makeActor(spec){
   // spec: {model, skin, h, eyes:'red'|'pink', tint:{Shirt:'#..'}, bandage:'L'|'R', blood:true, zombie:false}
   const src=spec.zombie?MODELS[spec.model]:PEOPLE[spec.model];if(!src)return null;
   const o=SkeletonUtils.clone(src.scene);o.updateMatrixWorld(true);
+  const face=spec.face&&!spec.zombie?faceRig(o,spec.face):null;
   const b=new THREE.Box3().setFromObject(o),hh=(b.max.y-b.min.y)||1,s=(spec.h||1.72)/hh;
   o.scale.setScalar(s);o.position.y=-b.min.y*s;
   const w=new THREE.Group();w.add(o);scene.add(w);
@@ -514,7 +585,7 @@ function makeActor(spec){
     m.material=Array.isArray(m.material)?m.material.map(one):one(m.material);});
   const mixer=new THREE.AnimationMixer(o),clips={};
   for(const c of (spec.zombie?src.animations:Object.values(CLIPS)))clips[c.name]=c;
-  const a={obj:w,model:o,mixer,clips,act:null,spec,path:null,bones:{}};
+  const a={obj:w,model:o,mixer,clips,act:null,spec,path:null,bones:{},face};
   o.traverse(x=>{if(x.isBone)a.bones[x.name]=x;});
   if(spec.bandage)attachBandage(a,spec.bandage,spec.blood);
   if(spec.bundle){const bone=a.bones.Torso;if(bone){const g=new THREE.Group();g.scale.setScalar(1/boneWorldScale(bone));bone.add(g);const m=new THREE.Mesh(new THREE.CapsuleGeometry(.09,.18,4,8),mat(0xe6d8c4));m.rotation.z=Math.PI/2;m.position.set(0,.12,.16);g.add(m);}}
@@ -557,6 +628,7 @@ function stepActor(a,dt){
       a.stuck=moved<st*.3?(a.stuck||0)+dt:0;if(a.stuck>1.2){a.ghost=.8;a.stuck=0;}}
     if(a.ghost>0)a.ghost-=dt;}
   if(a.shake){a.model.position.x=Math.sin(clock*40)*.006;}
+  if(a.turnTo!=null&&!a.path){let dr=a.turnTo-a.obj.rotation.y;dr=Math.atan2(Math.sin(dr),Math.cos(dr));a.obj.rotation.y+=dr*Math.min(1,dt*5);if(Math.abs(dr)<.01)a.turnTo=null;}
 }
 function faceCam(a){a.obj.rotation.y=Math.atan2(camera.position.x-a.obj.position.x,camera.position.z-a.obj.position.z);}
 
@@ -660,6 +732,7 @@ function say(line,{wait=false,cut=false}={}){
   $('#sayTh2').textContent=sub(line.th||'');$('#sayTh2').hidden=!(P.opts.th||!line.en)||!line.th;$('#sayTh').classList.toggle('on',!$('#sayTh2').hidden);
   $('#sayTh').hidden=!line.en;$('#sayAgain').hidden=$('#saySlow').hidden=!line.en;
   bindWords($('#sayEn'));sayLine=line;if(line.en)speakLine(line);
+  const sp=STAFF[line.who];if(sp&&!sp.path&&!sp.dead)sp.turnTo=Math.atan2(camera.position.x-sp.obj.position.x,camera.position.z-sp.obj.position.z);
   $('#sayMore').hidden=!wait;el.classList.toggle('tap',wait);
   if(wait)return new Promise(r=>{sayWait=r;});
   return Promise.resolve();
@@ -799,7 +872,7 @@ async function startDay(n){
   D.busy=false;await nextPerson();
 }
 function staff(){
-  if(!STAFF.carter){STAFF.carter=makeActor(STORY.cast.carter.look);}
+  if(!STAFF.carter){STAFF.carter=makeActor(STORY.cast.carter.look);if(STAFF.carter)STAFF.carter.castId='carter';}
   if(!STAFF.diaz&&!P.F.diazDead){STAFF.diaz=makeActor(STORY.cast.diaz.look);}
   if(!STAFF.min){STAFF.min=makeActor(STORY.cast.min.look);}
   const c=STAFF.carter;if(c){c.obj.position.set(-2.3,0,-1.9);c.obj.rotation.y=-2.6;}
@@ -970,12 +1043,16 @@ function stepTimer(dt){if(!D||!D.timer||state!=='play')return;if(!D.busy||D.cur)
   if(t<=0&&!D.ended){D.ended=true;D.timer=0;STORY.days[P.day-1].onTimeUp?.(P.F,D);if(!D.busy){D.busy=true;const c=D.cur;if(c){walk(c.actor,[[.4,-6]]);D.cur=null;}endDay();}}}
 
 /* ---------------- main loop ---------------- */
-let clock=0,last=performance.now(),state='play';
+let clock=0,last=performance.now(),state='play',faceT=0;
 const grain=$('#grain').getContext('2d');let grainT=0;
 function frame(now){
   requestAnimationFrame(frame);const dt=Math.min(.05,(now-last)/1000);last=now;clock+=dt;
   for(const a of ACTORS){stepActor(a,dt);if(window.__clip&&a.path&&!(a.ghost>0)&&blockedAt(a.obj.position.x,a.obj.position.z))window.__clip.push([a.spec.model,+a.obj.position.x.toFixed(2),+a.obj.position.z.toFixed(2)]);}stepFx(dt);stepCam(dt);stepTimer(dt);
   for(const s of FLOODSPR)s.visible=flood.intensity>2;
+  faceT+=dt;if(faceT>.033){for(const a of ACTORS)if(a.face&&a.obj.visible){const me=sayLine&&a.castId&&sayLine.who===a.castId;
+      a.face.talk=me&&!$('#say').hidden&&((!voiceEl.paused&&!voiceEl.ended)||(window.speechSynthesis&&speechSynthesis.speaking));
+      a.face.mood=me?(sayLine.mood||(/!/.test(sayLine.en||'')?'angry':/^\.\.\./.test(sayLine.en||'')?'sad':a.face.opt.mood||'stern')):a.face.opt.mood||'stern';
+      drawFace(a.face,faceT);}faceT=0;}
   grainT+=dt;if(grainT>.08){grainT=0;const im=grain.createImageData(160,160);for(let i=0;i<im.data.length;i+=4){const v=Math.random()*255;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=255;}grain.putImageData(im,0,0);}
   renderer.render(scene,camera);
 }

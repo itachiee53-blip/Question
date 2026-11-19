@@ -3,7 +3,7 @@
    so it can use the engine helpers (G, makeActor, walk, play, say, camTo ...).
    Lines: {who, en, th}. A line with only th is narration. {P} = player name, {S} = sister. */
 
-const L=(who,en,th)=>({who,en,th});
+const L=(who,en,th,mood)=>({who,en,th,mood});   // mood: stern, angry, sad, surprised, soft
 const N=th=>({th});                         // narration
 const run=fn=>({run:fn});
 const wait=s=>({wait:s});
@@ -15,7 +15,8 @@ const STORY={
   dateOf:d=>`${11+d} Oct 2031`,
   cast:{
     me:{n:'{P}'},
-    carter:{n:'จ่าคาร์เตอร์',pitch:.75,rate:.92,vi:1,look:{model:'Soldier_Male',skin:'brown',h:1.86}},
+    carter:{n:'จ่าคาร์เตอร์',pitch:.75,rate:.92,vi:1,look:{model:'Soldier_Male',skin:'#7e4e30',h:1.86,tint:{Main:'#7c8a5c',DarkGreen:'#55603f',Black:'#46523a'},
+      face:{noHelmet:true,f:{y:2.45,h:1,w:1,neck:1.98,top:2.96,hairline:2.78},hair:'#8e8e8a',hairY:.2,beard:'#9a9a96',brow:'#8a8a86',iris:'#4a2e1a',eyeY:.44,mood:'stern'}}},
     min:{n:'มิน',f:true,pitch:1.2,rate:1.02,vi:0,look:{model:'Casual3_Female',skin:'light',h:1.62}},
     diaz:{n:'สิบตรีดิอาซ',f:true,pitch:1.0,vi:1,look:{model:'Soldier_Female',skin:'tan',h:1.7}},
     rossi:{n:'รอสซี่',pitch:.95,rate:1.08,vi:2},
@@ -81,8 +82,8 @@ function person(o){
   if(!(o.qs||[]).some(q=>q.q==='girl'))(o.qs=o.qs||[]).push({q:'girl',a:Array.isArray(girl[0])?girl.map(g=>L(nm,g[0],g[1])):[L(nm,girl[0],girl[1])]});
   return o;
 }
-const say1=(who,en,th)=>G.say(L(who,en,th));
-const sayW=(who,en,th)=>G.say(L(who,en,th),{wait:true});
+const say1=(who,en,th,mood)=>G.say(L(who,en,th,mood));
+const sayW=(who,en,th,mood)=>G.say(L(who,en,th,mood),{wait:true});
 // someone already inside the checkpoint, standing by the gate
 function bystander(look,x,z,ry=1.2){const a=makeActor(look);if(!a)return null;a.obj.position.set(x,0,z);a.obj.rotation.y=ry;(G.D.extra||(G.D.extra=[])).push(a);return a;}
 function zombie(x,z,model='Zombie_Basic'){const a=makeActor({zombie:true,model,h:rnd(1.7,1.85)});if(!a)return null;a.obj.position.set(x,0,z);(G.D?(G.D.extra||(G.D.extra=[])):[]).push(a);return a;}
@@ -132,8 +133,8 @@ S.days.push({
     N('{P}เล่าเรื่อง{S}ให้มินฟัง ว่าพลัดกันที่สนามบินในวันที่เชื้อระบาด'),
     L('min','Your sister... {S}. I listen to the radio every night. I\'ll listen for her name. I promise.','น้องสาวเธอ... {S} ฉันฟังวิทยุทุกคืนอยู่แล้ว จะคอยฟังชื่อเธอให้ สัญญา'),
     {if:F=>F.d_grace==='no',then:[cm('outside',2),
-      L('carter','That old woman with no card. She\'s sleeping on the bridge tonight.','ยายที่ไม่มีบัตรคนนั้น คืนนี้แกนอนอยู่บนสะพาน'),
-      L('carter','You did the right thing. It doesn\'t feel like it. It never does.','เธอทำถูกแล้ว ถึงจะไม่รู้สึกแบบนั้นก็ตาม มันไม่เคยรู้สึกดีหรอก')]},
+      L('carter','That old woman with no card. She\'s sleeping on the bridge tonight.','ยายที่ไม่มีบัตรคนนั้น คืนนี้แกนอนอยู่บนสะพาน','sad'),
+      L('carter','You did the right thing. It doesn\'t feel like it. It never does.','เธอทำถูกแล้ว ถึงจะไม่รู้สึกแบบนั้นก็ตาม มันไม่เคยรู้สึกดีหรอก','sad')]},
     {fade:'out'},
   ],
 });
@@ -147,8 +148,8 @@ S.people.reyes=person({name:'Daniel Reyes',look:{model:'Casual_Male',skin:'tan',
     {q:'bag',a:[L('Daniel Reyes','Clothes, water, a photo of my mom. That\'s all.','เสื้อผ้า น้ำ แล้วก็รูปแม่ผม แค่นั้นครับ')]}],
   bag:[{i:'👕',en:'clothes'},{i:'💧',en:'water'},{i:'🖼',en:'photo'}],
   why:'บัตรถูกต้อง หน้าตรงกับรูป',
-  after:{yes:async()=>{await say1('carter',"Good. That's how it's done.",'ดี แบบนี้แหละ');await G.sleep(1500);},
-    no:async()=>{await say1('carter','No? His card was fine, {P}. Be careful.','ไม่ให้เข้าเหรอ บัตรเขาไม่มีปัญหาเลยนะ {P} ระวังหน่อย');await G.sleep(1800);}},
+  after:{yes:async()=>{await say1('carter',"Good. That's how it's done.",'ดี แบบนี้แหละ','soft');await G.sleep(1500);},
+    no:async()=>{await say1('carter','No? His card was fine, {P}. Be careful.','ไม่ให้เข้าเหรอ บัตรเขาไม่มีปัญหาเลยนะ {P} ระวังหน่อย','stern');await G.sleep(1800);}},
 });
 S.people.grace=person({name:'Grace Okafor',look:{model:'OldClassy_Female',skin:'deep',h:1.6},voice:{f:true,pitch:.85,rate:.85,vi:1},
   id:null,
@@ -211,7 +212,7 @@ S.days.push({
   evening:F=>[
     {if:F=>F.gate==='late',then:[cm('gate',1.5),{run:()=>{G.setTod(.92);const d=G.STAFF.diaz;if(d){d.obj.visible=true;d.obj.position.set(-2.8,0,-.6);G.play(d,'SitDown',{once:true});}}},
       L('diaz','Sarge... you know what to do. Don\'t let me become one of them.','จ่า... จ่ารู้ว่าต้องทำยังไง อย่าปล่อยให้ฉันกลายเป็นพวกมัน'),
-      L('carter','...I know, Diaz. I know.','...ฉันรู้ ดิอาซ ฉันรู้'),
+      L('carter','...I know, Diaz. I know.','...ฉันรู้ ดิอาซ ฉันรู้','sad'),
       {fade:'out'},wait(1),{run:()=>{G.SFX.shot();}},wait(2),
       {run:()=>{F.diazDead=true;if(G.STAFF.diaz)G.STAFF.diaz.obj.visible=false;}},
       cm('radio',0),{fade:'in'},
@@ -219,8 +220,8 @@ S.days.push({
     {if:F=>F.d_victor==='no',then:[cm('bridge',1.6),{run:()=>G.setTod(.9)},
       N('ตอนพลบค่ำ มีเสียงกรีดร้องดังมาจากกลางสะพาน'),
       run(async()=>{const z=zombie(1.2,-17,'Zombie_Arm');const v=G.D.crowd[0];if(z&&v){await maul(z,v);await G.sleep(500);await shootDown(z);}}),
-      L('carter','The man with the long sleeves. Victor. You were right about him.','ผู้ชายแขนยาวคนนั้น วิกเตอร์ เธอคิดถูก'),
-      L('carter','He would have done that inside. To children.','ถ้าเขาเข้าไป เขาจะทำแบบนี้ข้างใน กับเด็ก ๆ')]},
+      L('carter','The man with the long sleeves. Victor. You were right about him.','ผู้ชายแขนยาวคนนั้น วิกเตอร์ เธอคิดถูก','soft'),
+      L('carter','He would have done that inside. To children.','ถ้าเขาเข้าไป เขาจะทำแบบนี้ข้างใน กับเด็ก ๆ','sad')]},
     {if:F=>F.clue1,then:[cm('radio',1.6),
       L('min','An old woman saw {S} at the airport shelter? That\'s great news!','ยายคนนั้นเคยเห็น{S}ที่ศูนย์พักพิงสนามบินเหรอ ข่าวดีมากเลย!'),
       L('min','I\'ll try to reach the airport tonight. No promises. The signal is bad.','คืนนี้ฉันจะลองติดต่อสนามบินดู สัญญาไม่ได้นะ สัญญาณแย่มาก')]},
@@ -257,7 +258,7 @@ async function gateEvent(F,D){
     await sayW('diaz','It got me... Sarge, it got my arm.','มันกัดฉัน... จ่า มันกัดแขนฉัน');F.trust=(F.trust||0)-2;F.gate='late';F.diazBit=true;
   }else{
     G.play(z,'HitReact',{once:true});G.SFX.gate();await G.sleep(500);await shootDown(z);
-    await sayW('carter','Good timing. Good.','จังหวะดีมาก ดี');F.trust=(F.trust||0)+2;F.gate='ok';
+    await sayW('carter','Good timing. Good.','จังหวะดีมาก ดี','soft');F.trust=(F.trust||0)+2;F.gate='ok';
   }
   G.heart(false);G.ambience('wind');
   // whoever made it inside takes Priya's place in the line; the dead stay where they fell
@@ -329,7 +330,7 @@ S.days.push({
     {if:F=>F.d_victor==='yes',then:[
       L('min','The man with the long sleeves... Victor? He turned at three in the morning. In the shelter.','ผู้ชายแขนยาวคนนั้น... วิกเตอร์ เขากลายร่างตอนตีสาม ในศูนย์พักพิง'),
       L('min','Three people died before the soldiers stopped him. One of them was a little girl.','ตายไปสามคนก่อนทหารจะหยุดเขาได้ หนึ่งในนั้นเป็นเด็กผู้หญิงตัวเล็ก ๆ'),
-      L('carter','That\'s on us, {P}. On you.','นั่นเป็นความผิดของพวกเรา {P} ความผิดของเธอ')]},
+      L('carter','That\'s on us, {P}. On you.','นั่นเป็นความผิดของพวกเรา {P} ความผิดของเธอ','angry')]},
     {if:F=>F.gate==='early',then:[L('min','They buried the two people from the gate this morning.','เช้านี้เขาฝังสองคนที่หน้าประตูไปแล้ว')]},
     cm('gate',1.4),
     L('carter','Command sent us thermometers. A bite gives you a fever before it turns you.','กองบัญชาการส่งเครื่องวัดไข้มาให้ คนโดนกัดจะมีไข้ก่อนกลายร่าง'),
@@ -460,8 +461,8 @@ S.days.push({
       {run:()=>{F.parkTragedy=true;}}]},
     {if:F=>F.parkFather==='quar',then:[cm('gate',1.6),{run:()=>G.setTod(1)},
       N('ดึกคืนนั้น มีเสียงปืนนัดเดียวดังมาจากเต็นท์กักตัว'),{run:()=>G.SFX.shot()},
-      L('carter','He turned. Alone. Nobody else got hurt.','เขากลายร่าง อยู่คนเดียว ไม่มีใครเจ็บเพิ่ม'),
-      L('carter','I\'ll tell his wife in the morning. That\'s my job, not yours.','พรุ่งนี้เช้าฉันจะบอกเมียเขาเอง นั่นเป็นงานฉัน ไม่ใช่ของเธอ')]},
+      L('carter','He turned. Alone. Nobody else got hurt.','เขากลายร่าง อยู่คนเดียว ไม่มีใครเจ็บเพิ่ม','sad'),
+      L('carter','I\'ll tell his wife in the morning. That\'s my job, not yours.','พรุ่งนี้เช้าฉันจะบอกเมียเขาเอง นั่นเป็นงานฉัน ไม่ใช่ของเธอ','sad')]},
     {if:F=>F.parkFather==='out',then:[cm('bridge',1.6),{run:()=>G.setTod(1)},
       N('มินจุนนั่งพิงรั้วสะพานอยู่ข้างนอกประตูทั้งคืน'),
       N('ก่อนรุ่งสาง เขาลุกขึ้นยืน... แต่ไม่ใช่มินจุนอีกต่อไปแล้ว'),{run:()=>{G.SFX.groan(.3);}},wait(.8),{run:()=>{G.SFX.shot();}},
@@ -507,7 +508,7 @@ S.people.minjun=person({name:'Min-jun Park',look:{model:'Casual3_Male',skin:'lig
     no:async(F,D)=>{F.parkFather='out';if(F.parkIn){await sayW('sunhee','No! No, please! He\'s my husband!','ไม่! ไม่นะ ได้โปรด! เขาเป็นสามีฉัน!');}
       await say1('Min-jun Park','It\'s okay. It\'s okay, Sun-hee. Take care of Jae.','ไม่เป็นไร ไม่เป็นไรนะซันฮี ดูแลแจด้วย');await G.sleep(2400);},
     quar:async(F)=>{F.parkFather='quar';if(F.parkIn)await sayW('sunhee','Quarantine? He\'ll be okay? He\'ll be okay, right?','กักตัวเหรอ เขาจะไม่เป็นไรใช่ไหม เขาจะไม่เป็นไรใช่ไหม');
-      await say1('carter','...We\'ll see.','...ต้องดูกันไป');await G.sleep(1800);}},
+      await say1('carter','...We\'ll see.','...ต้องดูกันไป','sad');await G.sleep(1800);}},
 });
 S.people.paul=person({name:'Paul Grant',look:{model:'OldClassy_Male',skin:'pale',h:1.76,tint:{Shirt:'#4a4a3a'}},voice:{pitch:.88,rate:.9,vi:0},
   id:{born:'30 Jun 1958',from:'Velmora City',no:'VL-126-4410'},permit:{until:'14 Oct 2031'},temp:36.4,
@@ -606,7 +607,7 @@ function hordeScene(F){return [
   N('ฝุ่นตลบขึ้นที่ปลายสะพาน แล้วเสียงคำรามนับพันก็ดังตามมา'),
   run(async()=>{const D=G.D;const zs=[];for(let i=0;i<16;i++){const z=zombie(rnd(-3.4,3.4),rnd(-58,-70),pick(['Zombie_Basic','Zombie_Chubby','Zombie_Ribcage','Zombie_Arm']));if(z){zs.push(z);walk(z,[[rnd(-3,3),-12]],{run:true,speed:rnd(.9,1.3)});}}D.horde=zs;}),
   cm('bridge',1.2),
-  L('carter','CLOSE THE GATE! NOW!','ปิดประตู! เดี๋ยวนี้!'),
+  L('carter','CLOSE THE GATE! NOW!','ปิดประตู! เดี๋ยวนี้!','surprised'),
   run(async()=>{G.gateTo(false,.6);G.SFX.gate();const D=G.D;
     for(const c of D.crowd.slice(0,10)){walk(c,[[rnd(-3,3),-3.5]],{run:true,speed:rnd(.9,1.2)});}
     await G.sleep(2200);G.SFX.scream();
@@ -629,8 +630,8 @@ STORY.ending=F=>{
   const E={
     holds:{n:'ด่านยังยืน',d:'ด่าน 7 รอดคืนนั้นมาได้ ทุกคนเชื่อใจ{P}',steps:[
       cm('gate',1.4),N('ประตูเหล็กรับแรงกระแทกได้ทั้งคืน จ่าคาร์เตอร์ถูกกัดเฉียดขา แต่ยังรอด'),
-      L('carter','You did good, {P}. Better than good.','เธอทำได้ดี {P} ดีกว่าดีอีก'),
-      L('carter','Min found the airport channel. Take it. Go find your sister.','มินหาคลื่นวิทยุของสนามบินเจอแล้ว เอาไป ไปตามหาน้องสาวเธอ'),...radio]},
+      L('carter','You did good, {P}. Better than good.','เธอทำได้ดี {P} ดีกว่าดีอีก','soft'),
+      L('carter','Min found the airport channel. Take it. Go find your sister.','มินหาคลื่นวิทยุของสนามบินเจอแล้ว เอาไป ไปตามหาน้องสาวเธอ','soft'),...radio]},
     outbreak:{n:'เชื้อในค่าย',d:'คนติดเชื้อที่{P}ปล่อยเข้าไป ทำให้ค่ายแตกจากข้างใน',steps:[
       cm('radio',1),{run:()=>{G.SFX.scream();G.flashRed();}},
       N('ขณะที่ทุกคนจ้องไปที่ฝูงข้างนอก เสียงกรีดร้องกลับดังมาจากข้างในค่าย'),
