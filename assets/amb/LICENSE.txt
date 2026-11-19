@@ -1,0 +1,12 @@
+All files here are CC0 (public domain) from OpenGameArt.org:
+  bed_outside  - "amb_outside_1"            https://opengameart.org/content/amb-outside-1
+  bed_rumble   - "Low Rumbling"             https://opengameart.org/content/low-rumbling
+  rain         - "Rain on window loop"      https://opengameart.org/content/rain-on-window-loop
+  crows        - "Crows singing"            https://opengameart.org/content/crows-singing
+  siren        - "Sirens and alarm noise"   https://opengameart.org/content/sirens-and-alarm-noise
+  fire         - "Fire crackling"           https://opengameart.org/content/fire-crackling
+  radio        - "Zombie news in radio"     https://opengameart.org/content/zombie-news-in-radio
+  moan1-4      - "Undead moans"             https://opengameart.org/content/undead-moans
+  moan5-7      - "Zombie noises and moans"  https://opengameart.org/content/zombie-noises-and-moans
+  moan8-10     - "Zombie moans"             https://opengameart.org/content/zombie-moans
+Trimmed and loudness-normalised for the game.
