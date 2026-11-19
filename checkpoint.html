@@ -261,6 +261,10 @@ function audio(){
 }
 function applyVol(){if(!ac)return;sfxBus.gain.value=P.opts.sfx/100;ambBus.gain.value=P.opts.amb/100;}
 addEventListener('pointerdown',audio,{capture:true,passive:true});
+function goFullscreen(){if(!matchMedia('(pointer:coarse)').matches||document.fullscreenElement||document.webkitFullscreenElement)return;
+  try{const el=document.documentElement,f=el.requestFullscreen||el.webkitRequestFullscreen;const r=f&&f.call(el,{navigationUI:'hide'});
+    const lock=()=>screen.orientation?.lock?.('landscape').catch(()=>{});if(r&&r.then)r.then(lock).catch(()=>{});else lock();}catch(e){}}
+addEventListener('click',goFullscreen,{capture:true,passive:true});addEventListener('touchend',goFullscreen,{capture:true,passive:true});
 function nz(dur,vol,type,f,{q=1,at=0,f2=0,dest=sfxBus}={}){
   if(!ac)return;const t=ac.currentTime+at,s=ac.createBufferSource(),fl=ac.createBiquadFilter(),g=ac.createGain();
   s.buffer=noiseBuf;fl.type=type;fl.frequency.setValueAtTime(f,t);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,t+dur);fl.Q.value=q;
@@ -314,7 +318,7 @@ function loadVoices(){try{VOICES=speechSynthesis.getVoices().filter(v=>/^en/i.te
 if('speechSynthesis' in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices;}
 function speak(text,who,slow){
   if(!P.opts.voice||!('speechSynthesis' in window)||!text)return;
-  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text.replace(/\*/g,''));u.lang='en-US';
+  try{speechSynthesis.cancel();const t=text.replace(/\*/g,'').replace(/[\u0E00-\u0E7F]+/g,'').replace(/\s+([,.!?'])/g,'$1').replace(/^[\s,]+/,'').replace(/,\s*,/g,',');if(!/[A-Za-z]/.test(t))return;const u=new SpeechSynthesisUtterance(t);u.lang='en-US';
     const c=STORY.cast[who]||(D&&D.cur&&D.cur.def.name===who?D.cur.def.voice:null)||{};u.pitch=c.pitch||1;u.rate=(slow?.62:P.opts.rate)*(c.rate||1);
     if(VOICES.length){const fem=c.f,list=VOICES.filter(v=>fem?/female|samantha|victoria|karen|moira|tessa|fiona|zira|susan|google us english/i.test(v.name):/male|daniel|alex|fred|david|mark|george|rishi|google uk english male/i.test(v.name));
       const pool=list.length?list:VOICES;u.voice=pool[(c.vi||0)%pool.length];}
@@ -1535,11 +1539,11 @@ function title(){
 }
 function nameScreen(){
   const s=$('#screen');s.innerHTML=`<div class="box"><h2>ก่อนเริ่ม</h2>
-    <label class="field"><span>ชื่อของคุณ</span><input id="nP" maxlength="14" autocomplete="off" placeholder="Non"></label>
-    <label class="field"><span>ชื่อน้องสาว</span><input id="nS" maxlength="14" autocomplete="off" placeholder="Prae"></label>
+    <label class="field"><span>ชื่อของคุณ</span><input id="nP" maxlength="14" autocomplete="off" placeholder="นนท์"></label>
+    <label class="field"><span>ชื่อน้องสาว</span><input id="nS" maxlength="14" autocomplete="off" placeholder="แพร"></label>
     <button class="big" type="button" id="nGo">เริ่มเกม</button></div>`;s.hidden=false;
-  const clean=v=>v.replace(/[^A-Za-z \-']/g,'').trim().replace(/\b\w/g,c=>c.toUpperCase()).slice(0,14);
-  $('#nGo').onclick=async()=>{const a=clean($('#nP').value),b=clean($('#nS').value);if(!a||!b){toast('พิมพ์ชื่อเป็นภาษาอังกฤษ');return;}
+  const clean=v=>v.replace(/[^A-Za-z\u0E00-\u0E7F \-']/g,'').replace(/\s+/g,' ').trim().replace(/(^|\s)([a-z])/g,(m,a,c)=>a+c.toUpperCase()).slice(0,14);
+  $('#nGo').onclick=async()=>{const a=clean($('#nP').value),b=clean($('#nS').value);if(!a||!b){toast('พิมพ์ชื่อก่อน');return;}
     const keep={opts:P.opts,endings:P.endings};P=freshSave();Object.assign(P,keep);P.name=a;P.sis=b;P.F={trust:0};save();SFX.ui();s.hidden=true;
     await fade(true);await startDay(1);await fade(false);};
 }
