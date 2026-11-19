@@ -469,6 +469,7 @@ import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 const WORDS=/*WORDS*/{};
 const VERSION='2.23.4',VERSION_DATE='19 พ.ย. 2569';
 const CHANGES=[
+  'ฉากสวยขึ้น: แอ่งน้ำ หมอก ดาว หิ่งห้อย',
   'สุนัขวิ่งออกไปกัดซอมบี้',
   'จัดของตกแต่งใหม่ให้เข้ากับกำแพง · คืนเหรียญของที่ถอดออก',
   'ข้อความทั้งเกมสั้นลง อ่านง่ายขึ้น',
@@ -1478,13 +1479,62 @@ const ZSCN={a1:['lot','park','gas','market','school','forest','beach','mall','ci
   c1:['ruins','hellway','hospital','construction','police','stadium','airport','temple']};
 let curScene='city';
 function setZone(k){setScene((ZSCN[k]||ZSCN.a1)[0]);}
+/* ---------------- small details on every street: puddles, a crosswalk, litter, mist, stars, fireflies ---------------- */
+const NATURE=['park','forest','farm','temple','beach'];
+const DET={mist:[],motes:null,moteV:null,blink:[],stars:null};
+const detMat={
+  puddle:new THREE.MeshStandardMaterial({color:0x4a6a86,emissive:0x0a1826,roughness:.12,metalness:.2,transparent:true,opacity:.5,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2}),
+  hole:new THREE.MeshStandardMaterial({color:0x25272a,roughness:.5,metalness:.6,polygonOffset:true,polygonOffsetFactor:-2}),
+  paint:new THREE.MeshStandardMaterial({color:0xcfcfc4,roughness:.9,transparent:true,opacity:.75,polygonOffset:true,polygonOffsetFactor:-2}),
+  oil:new THREE.MeshStandardMaterial({color:0x101014,roughness:.15,metalness:.5,transparent:true,opacity:.55,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2}),
+};
+function flat(geo,m,x,z,ry=0){const o=new THREE.Mesh(geo,m);o.rotation.set(-Math.PI/2,0,ry);o.position.set(x,.02,z);PLACE_TO.add(o);return o;}
+function dressDetail(k){
+  DET.mist.length=0;DET.blink.length=0;DET.motes=null;DET.stars=null;
+  const nature=NATURE.includes(k),beach=k==='beach';
+  // puddles that catch the street lamps, and oil stains
+  if(!beach)for(let i=0;i<7;i++){const r=rnd(.45,1.1);const o=flat(new THREE.CircleGeometry(r,22),detMat.puddle,rnd(-3.3,3.3),rnd(-7,-42),rnd(0,3));o.scale.set(rnd(1.1,1.9),1,1);}
+  for(let i=0;i<5;i++)flat(new THREE.CircleGeometry(rnd(.3,.7),16),detMat.oil,rnd(-3,3),rnd(-6,-40));
+  // manholes and a crosswalk on city streets
+  if(!nature){for(const z of [rnd(-9,-14),rnd(-24,-32)]){const x=rnd(-2.2,2.2);flat(new THREE.CircleGeometry(.48,20),detMat.hole,x,z);flat(new THREE.RingGeometry(.48,.56,20),detMat.paint,x,z);}
+    const cz=rnd(-18,-22);for(let x=-3.3;x<=3.4;x+=.95)flat(new THREE.PlaneGeometry(.5,2.6),detMat.paint,x,cz);}
+  // litter: papers on the road, fallen leaves on nature roads
+  for(let i=0;i<4;i++)place('Debris_Papers_1',rnd(-3.4,3.4),.01,rnd(-8,-34),rnd(0,6),rnd(.7,1));
+  if(nature){const C=[0x6a4a1c,0x8a5a20,0x4a5a1c,0x7a3a18];for(let i=0;i<70;i++){const m=new THREE.Mesh(new THREE.PlaneGeometry(.16,.1),mat(pick(C)));m.rotation.set(-Math.PI/2,0,rnd(0,6));m.position.set(rnd(-4,4),.025,rnd(-5,-38));PLACE_TO.add(m);}}
+  // warning lights blinking on cones at the curb
+  for(const sd of [-1,1]){const z=rnd(-11,-26),x=sd*rnd(3.7,4.1);const c=place('TrafficCone_1',x,0,z,rnd(0,6));if(!c)continue;
+    const b=new THREE.Mesh(new THREE.SphereGeometry(.07,10,8),new THREE.MeshBasicMaterial({color:0xffa020}));b.position.set(x,.78,z);b.userData.keep=true;PLACE_TO.add(b);
+    const g=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:0xffa020,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));g.position.set(x,.78,z);g.scale.setScalar(1.1);PLACE_TO.add(g);
+    DET.blink.push({b,g,ph:rnd(0,6)});}
+  // low mist drifting over the road
+  for(let i=0;i<7;i++){const m=new THREE.Sprite(new THREE.SpriteMaterial({map:smokeTex,color:nature?0xb8d0c0:0xb0b8c0,transparent:true,opacity:.34,depthWrite:false}));
+    const z=-8-i*5-rnd(0,3);m.position.set(rnd(-5,5),.5,z);m.scale.set(rnd(7,10),rnd(1.6,2.4),1);PLACE_TO.add(m);DET.mist.push({m,v:rnd(.15,.4)*(Math.random()<.5?-1:1)});}
+  // stars high above the skyline
+  {const n=260,a=new Float32Array(n*3);for(let i=0;i<n;i++){const th=rnd(0,Math.PI*2),ph=rnd(.18,1.2),r=90;a[i*3]=Math.cos(th)*Math.cos(ph)*r;a[i*3+1]=Math.sin(ph)*r;a[i*3+2]=-Math.abs(Math.sin(th))*Math.cos(ph)*r-10;}
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(a,3));
+    const st=new THREE.Points(g,new THREE.PointsMaterial({color:0xdfe8ff,size:.55,transparent:true,opacity:.8,fog:false,depthWrite:false}));PLACE_TO.add(st);DET.stars=st;}
+  // fireflies over grass, embers drifting in the city
+  {const n=nature?46:30,a=new Float32Array(n*3),v=[];for(let i=0;i<n;i++){a[i*3]=rnd(-7,7);a[i*3+1]=rnd(.3,3.2);a[i*3+2]=rnd(-5,-28);v.push(rnd(0,6));}
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(a,3));
+    const p=new THREE.Points(g,new THREE.PointsMaterial({map:glowTex,color:nature?0xc8ff6a:0xff9a40,size:nature?.32:.2,transparent:true,opacity:.9,depthWrite:false,blending:THREE.AdditiveBlending}));
+    p.userData.nature=nature;PLACE_TO.add(p);DET.motes=p;DET.moteV=v;}
+}
+function stepDetail(dt){
+  for(const b of DET.blink){b.ph+=dt*3.2;const on=Math.sin(b.ph)>.2;b.b.material.color.setHex(on?0xffb030:0x3a2000);b.g.visible=on;}
+  for(const d of DET.mist){const p=d.m.position;p.x+=d.v*dt;if(p.x>7)p.x=-7;if(p.x<-7)p.x=7;}
+  const m=DET.motes;if(m){const a=m.geometry.attributes.position.array,v=DET.moteV,nat=m.userData.nature;
+    for(let i=0;i<v.length;i++){const o=i*3;v[i]+=dt*(nat?.9:.6);a[o]+=Math.sin(v[i]*1.3)*dt*.35;
+      if(nat)a[o+1]+=Math.cos(v[i])*dt*.25;else{a[o+1]+=dt*.35;if(a[o+1]>4.5){a[o+1]=.2;a[o]=rnd(-7,7);}}}
+    m.geometry.attributes.position.needsUpdate=true;if(nat)m.material.opacity=.55+Math.sin(clock*2.1)*.35;}
+  if(DET.stars)DET.stars.material.opacity=.7+Math.sin(clock*.7)*.1;
+}
 function setScene(k){
   if(builtZone===k)return;curScene=k;
   if(zoneGrp)scene.remove(zoneGrp);
   for(let i=FIRES.length-1;i>=0;i--)FIRES.splice(i,1);
   OBST=OBST.filter(o=>!o.zone);BMATS.length=0;
   zoneGrp=new THREE.Group();scene.add(zoneGrp);PLACE_TO=zoneGrp;
-  SWEEP.length=0;const sc=SCN[k]||SCN.city;skyline(sc.sky);(DRESS[sc.dress]||DRESS.a1)();PLACE_TO=scene;builtZone=k;mergeStatic(zoneGrp);
+  SWEEP.length=0;const sc=SCN[k]||SCN.city;skyline(sc.sky);(DRESS[sc.dress]||DRESS.a1)();dressDetail(k);PLACE_TO=scene;builtZone=k;mergeStatic(zoneGrp);
   ground.material.color.setHex(sc.ground||0x1b1e1a);
   if(decoGrp)buildDeco(); // scene change clears the fire list; rebuild so deco fires keep flickering
 }
@@ -2710,7 +2760,7 @@ function frame(now){
         if(z.T.vehicle&&!z.wreck){z.wreck=1;explosion(z.obj.position.x,z.obj.position.z);SFX.boom();shake=1;PLACE_TO=scene;fire(z.obj.position.x,1.6,z.obj.position.z,1.4);}
         if(!z.clips.Death&&z.model){z.mixer.timeScale=0;z.model.rotation.x=Math.max(-1.5,z.model.rotation.x-dt*5);}if(z.dieT>1.8)z.obj.position.y-=dt*.6;if(z.dieT>3.2)removeZombie(z);}
     }
-    stepFx(dt);stepAllies(dt);stepAtmosphere(dt);
+    stepFx(dt);stepAllies(dt);stepAtmosphere(dt);stepDetail(dt);
     for(const w of SWEEP){w.ph+=dt*.6;w.l.target.position.set(Math.sin(w.ph)*6,0,w.z-10-Math.cos(w.ph*.7)*8);}
     for(const f of FIRES){f.ph+=dt*9;const k=.75+Math.sin(f.ph)*.12+Math.sin(f.ph*2.3)*.08;f.l.intensity=f.base*k;f.g.children.forEach((c,i)=>{if(c.isSprite)c.material.rotation=Math.sin(f.ph*.5+i)*.15;});}
     if(state==='play')for(const pr of [...props]){if(pr.ttl!=null){pr.ttl-=dt;if(pr.ttl<=0){removeProp(pr);continue;}}pr.obj.rotation.y+=pr.kind==='med'?dt*1.5:0;}
