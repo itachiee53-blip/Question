@@ -425,7 +425,12 @@ async function loadAll(){
     if(k==='m')MODELS[n]=g;else if(k==='p')PEOPLE[n]=g;else for(const c of g.animations)CLIPS[c.name]=c;
     done++;$('#loadBar').style.width=done/all.length*100+'%';res();},undefined,()=>{done++;res();});})));
 }
-function place(n,x,y,z,ry=0,s=1){const m=MODELS[n];if(!m)return null;const o=m.scene.clone();o.position.set(x,y,z);o.rotation.y=ry;o.scale.setScalar(s);scene.add(o);return o;}
+const OBST=[],SOLID=/^(SackTrench|Barrier_Large|Container|TrafficBarrier|Debris_BrokenCar|Debris_Pile|Debris_Tires|Vehicle|Crate|Barrel|Pallet|WaterTank|CardboardBoxes|GasTank|Pipes|TrafficCone)/;
+function solid(o,pad=0){o.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(o);if(b.max.y<.15)return null;const e={x0:b.min.x-pad,x1:b.max.x+pad,z0:b.min.z-pad,z1:b.max.z+pad,o};OBST.push(e);return e;}
+function unsolid(o){for(let i=OBST.length-1;i>=0;i--)if(OBST[i].o===o)OBST.splice(i,1);}
+function place(n,x,y,z,ry=0,s=1){const m=MODELS[n];if(!m)return null;const o=m.scene.clone();o.position.set(x,y,z);o.rotation.y=ry;o.scale.setScalar(s);scene.add(o);if(SOLID.test(n)&&y<.5)solid(o);return o;}
+const AR=.3; // how wide a person is
+function blockedAt(x,z){for(const b of OBST)if(x>b.x0-AR&&x<b.x1+AR&&z>b.z0-AR&&z<b.z1+AR)return b;return null;}
 
 /* ---------------- world: the bridge checkpoint ---------------- */
 const FIRE=[],SMOKE=[],RAIN={o:null};
@@ -437,7 +442,7 @@ function buildWorld(){
   // the bridge deck, its railings, and the river far below
   const deck=box(10,.6,140,0x4a4a46,0,-.6,-60);deck.receiveShadow=true;
   for(let z=4;z>-130;z-=8)place('Street_Straight',0,0,z,0);
-  for(const s of [-1,1]){box(.35,1.0,140,0x6a6a64,s*4.9,0,-60);box(.12,.12,140,0x8a8a84,s*4.9,1.05,-60);
+  for(const s of [-1,1]){solid(box(.35,1.0,140,0x6a6a64,s*4.9,0,-60));box(.12,.12,140,0x8a8a84,s*4.9,1.05,-60);
     for(let z=-6;z>-130;z-=8)box(.4,.6,.4,0x6a6a64,s*4.9,1,z);}
   for(let z=-10;z>-130;z-=22)for(const s of [-1,1])box(1.4,16,1.4,0x3e3e3a,s*3.6,-16.6,z);
   const water=new THREE.Mesh(new THREE.PlaneGeometry(600,600),new THREE.MeshStandardMaterial({color:0x1a2a30,roughness:.25,metalness:.6}));water.rotation.x=-Math.PI/2;water.position.set(0,-14,-60);scene.add(water);
@@ -456,11 +461,12 @@ function buildWorld(){
   fire(1.4,.4,-34,1.3);fire(-1.6,.6,-26,1);fire(0,.2,-62,2.4);
   for(const z of [-16,-44])place('StreetLights',4.4,0,z,-Math.PI/2);
   // floodlight pole
-  box(.18,6.2,.18,0x3a3a36,-3.6,0,-2.5);box(.7,.35,.4,0x2a2a26,-3.6,6,-2.5);
+  box(.7,.35,.4,0x2a2a26,-3.6,6,-2.5);
   const fl=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:0xfff0d0,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));fl.position.set(-3.6,6.05,-2.3);fl.scale.setScalar(1.6);scene.add(fl);FLOODSPR.push(fl);
   // the gate: a steel boom across the lane people walk through
   gate=new THREE.Group();gate.position.set(-4.5,1.1,-3.3);scene.add(gate);
-  box(.35,1.25,.35,0x3a3a36,-4.5,0,-3.3);box(.3,1.0,.3,0x3a3a36,4.5,0,-3.3);
+  solid(box(.35,1.25,.35,0x3a3a36,-4.5,0,-3.3));solid(box(.3,1.0,.3,0x3a3a36,4.5,0,-3.3));
+  solid(box(.18,6.2,.18,0x3a3a36,-3.6,0,-2.5));
   const arm=new THREE.Mesh(new THREE.BoxGeometry(9,.16,.16),mat(0xd8d0c0));arm.position.x=4.5;arm.castShadow=true;gate.add(arm);
   for(let i=0;i<9;i++){const st=new THREE.Mesh(new THREE.BoxGeometry(.5,.17,.17),mat(0xc0281e));st.position.x=.6+i*1;gate.add(st);}
   const grid=new THREE.Mesh(new THREE.BoxGeometry(9,.9,.05),new THREE.MeshStandardMaterial({color:0x2a2a28,transparent:true,opacity:.55}));grid.position.set(4.5,-.55,0);gate.add(grid);
@@ -472,11 +478,11 @@ const FLOODSPR=[];let gate=null;
 function buildBooth(){
   const W=0x3c4246,D=0x2a2e30,wood=0x6a5038;
   box(3.4,.08,1.0,wood,1.0,.98,-.35);          // counter / window sill
-  box(3.4,.98,.12,W,1.0,0,-.82);               // wall under the window
+  solid(box(3.4,.98,.12,W,1.0,0,-.82));               // wall under the window
   box(.16,1.3,.16,D,-.65,1.06,-.8);box(.16,1.3,.16,D,2.65,1.06,-.8); // posts
   box(3.5,.5,.2,W,1.0,2.36,-.82);              // header
   // side walls and the back room where the radio sits
-  box(.12,2.9,3.6,W,-.75,0,.95);box(.12,2.9,3.6,W,2.75,0,.95);box(3.6,2.9,.12,W,1.0,0,2.75);box(3.6,.1,3.6,0x2e3234,1.0,2.86,.95);
+  solid(box(.12,2.9,3.6,W,-.75,0,.95));solid(box(.12,2.9,3.6,W,2.75,0,.95));solid(box(3.6,2.9,.12,W,1.0,0,2.75));box(3.6,.1,3.6,0x2e3234,1.0,2.86,.95);
   box(3.6,.05,3.6,0x3a3530,1.0,0,.95);
   box(1.4,.06,.7,wood,2.0,.92,2.2);box(.06,.92,.06,D,1.35,0,1.9);box(.06,.92,.06,D,2.65,0,1.9);box(.06,.92,.06,D,1.35,0,2.5);box(.06,.92,.06,D,2.65,0,2.5);
   radio=box(.55,.3,.3,0x2a3a2a,2.2,.98,2.35);box(.04,.5,.04,0x111111,2.4,1.28,2.35);
@@ -538,7 +544,18 @@ function stepActor(a,dt){
   if(a.path){const p=a.obj.position,t=a.path.pts[0];const dx=t.x-p.x,dz=t.z-p.z,d=Math.hypot(dx,dz),st=a.path.speed*dt;
     if(d>.001){const want=Math.atan2(dx,dz);let dr=want-a.obj.rotation.y;dr=Math.atan2(Math.sin(dr),Math.cos(dr));a.obj.rotation.y+=dr*Math.min(1,dt*10);}
     if(d<=st){p.x=t.x;p.z=t.z;a.path.pts.shift();if(!a.path.pts.length){const r=a.path.res,f=a.path.face;a.path=null;if(f!=null)a.obj.rotation.y=f;if(!a.dead)play(a,a.idle||'Idle');r();}}
-    else{p.x+=dx/d*st;p.z+=dz/d*st;}}
+    else{const nx=p.x+dx/d*st,nz=p.z+dz/d*st;
+      if(a.ghost>0||!blockedAt(nx,nz)||blockedAt(p.x,p.z)){p.x=nx;p.z=nz;}
+      else if(Math.abs(dx)>=Math.abs(dz)?!blockedAt(nx,p.z):false){p.x=nx;}
+      else if(!blockedAt(p.x,nz)){p.z=nz;}
+      else if(!blockedAt(nx,p.z)){p.x=nx;}
+      else{const b=blockedAt(nx,nz),cx=(b.x0+b.x1)/2,cz=(b.z0+b.z1)/2;
+        // step sideways toward the nearer free edge of the obstacle
+        if(Math.abs(dz)>=Math.abs(dx)){const sx=(p.x<cx?-1:1);if(!blockedAt(p.x+sx*st,p.z))p.x+=sx*st;else p.x-=sx*st;}
+        else{const sz=(p.z<cz?-1:1);if(!blockedAt(p.x,p.z+sz*st))p.z+=sz*st;else p.z-=sz*st;}}
+      const moved=Math.hypot(p.x-(a.lx??p.x),p.z-(a.lz??p.z));a.lx=p.x;a.lz=p.z;
+      a.stuck=moved<st*.3?(a.stuck||0)+dt:0;if(a.stuck>1.2){a.ghost=.8;a.stuck=0;}}
+    if(a.ghost>0)a.ghost-=dt;}
   if(a.shake){a.model.position.x=Math.sin(clock*40)*.006;}
 }
 function faceCam(a){a.obj.rotation.y=Math.atan2(camera.position.x-a.obj.position.x,camera.position.z-a.obj.position.z);}
@@ -771,7 +788,7 @@ async function startDay(n){
   clearDay();D={n,queue:[],idx:-1,cur:null,res:[],asked:new Set(),seen:new Set(),qLeft:d.quarantine||0,busy:true,crowd:[]};
   setWeather(d.weather||'wind');setTod(d.tod0??0);topBar();
   // background crowd far down the bridge
-  for(let i=0;i<(d.crowd??6);i++){const a=makeActor({model:pick(PPL.filter(x=>!/Soldier/.test(x))),skin:pick(Object.keys(SKIN)),h:rnd(1.55,1.85)});if(!a)continue;a.obj.position.set(rnd(-2.6,2.6),0,rnd(-15,-22));a.obj.rotation.y=rnd(-.4,.4);a.mixer.update(rnd(0,3));D.crowd.push(a);}
+  for(let i=0;i<(d.crowd??6);i++){const a=makeActor({model:pick(PPL.filter(x=>!/Soldier/.test(x))),skin:pick(Object.keys(SKIN)),h:rnd(1.55,1.85)});if(!a)continue;let x,z,k=0;do{x=rnd(-2.6,2.6);z=rnd(-15,-22);}while(blockedAt(x,z)&&++k<20);a.obj.position.set(x,0,z);a.obj.rotation.y=rnd(-.4,.4);a.mixer.update(rnd(0,3));D.crowd.push(a);}
   staff();
   await camTo('booth',0);
   if(d.morning)await runCut(d.morning(P.F));
@@ -795,7 +812,7 @@ function spawnQ(i){const id=D.queue[i];if(!id||D.queue['a'+i])return;const def=g
   const s=QUEUE_SLOTS[Math.min(i,QUEUE_SLOTS.length-1)];a.obj.position.set(s[0],0,s[1]);a.obj.rotation.y=0;a.def=def;D.queue['a'+i]=a;a.idle=def.idle||'Idle';if(def.look.shake)a.shake=true;}
 function clearDay(){
   if(D){for(const a of D.crowd||[])removeActor(a);for(const k in D.queue)if(k.startsWith('a'))removeActor(D.queue[k]);if(D.cur)removeActor(D.cur.actor);for(const a of D.extra||[])removeActor(a);}
-  if(D)for(const o of D.props||[])scene.remove(o);
+  if(D)for(const o of D.props||[]){scene.remove(o);unsolid(o);}
   for(const m of POOLS)scene.remove(m);POOLS.length=0;
 }
 async function nextPerson(){
@@ -834,9 +851,9 @@ async function decide(k){
   else{const l=def.bye&&def.bye[k];if(l)await say(l);await sleep(700);}
   hideSay();
   if(!p.gone){const a=p.actor;
-    if(goesIn)await walk(a,[[-.4,-1.4],[-2.0,-.6],[-2.2,4]],{});
-    else if(k==='quar')await walk(a,[[-.4,-1.4],[-2.2,-.6],[-4.2,1.0]],{});
-    else await walk(a,[[2.2,-2.4],[2.4,-14]],{});
+    if(goesIn)await walk(a,[[-.4,-1.7],[-1.7,-1.6],[-2.0,-.4],[-2.2,4]],{});
+    else if(k==='quar')await walk(a,[[-.4,-1.7],[-1.7,-1.6],[-2.2,-.4],[-3.2,1.4]],{});
+    else await walk(a,[[1.0,-3.4],[0.8,-9],[0.5,-16]],{});
     removeActor(a);}
   if(def.leave)def.leave(D);
   D.cur=null;D.busy=false;await nextPerson();
@@ -899,8 +916,8 @@ function title(){
 }
 function nameScreen(){
   const s=$('#screen');s.innerHTML=`<div class="box"><h2>ก่อนเริ่ม</h2>
-    <label class="field"><span>ชื่อของคุณ</span><input id="nP" maxlength="14" autocomplete="off" placeholder="นนท์"></label>
-    <label class="field"><span>ชื่อน้องสาว</span><input id="nS" maxlength="14" autocomplete="off" placeholder="แพร"></label>
+    <label class="field"><span>ชื่อของคุณ</span><input id="nP" maxlength="14" autocomplete="off"></label>
+    <label class="field"><span>ชื่อน้องสาว</span><input id="nS" maxlength="14" autocomplete="off"></label>
     <button class="big" type="button" id="nGo">เริ่มเกม</button></div>`;s.hidden=false;
   const clean=v=>v.replace(/[^A-Za-z\u0E00-\u0E7F \-']/g,'').replace(/\s+/g,' ').trim().replace(/(^|\s)([a-z])/g,(m,a,c)=>a+c.toUpperCase()).slice(0,14);
   $('#nGo').onclick=async()=>{const a=clean($('#nP').value),b=clean($('#nS').value);if(!a||!b){toast('พิมพ์ชื่อก่อน');return;}
@@ -920,8 +937,6 @@ function optScreen(back){
   s.innerHTML=`<div class="box"><h2>ตั้งค่า</h2>
     <h3>เสียงพูด</h3>${seg('voice',[[true,'เปิด'],[false,'ปิด']])}
     <h3>ความเร็วเสียง</h3>${seg('rate',[[.7,'ช้า'],[.9,'ปกติ'],[1.05,'เร็ว']])}
-    ${VOICES.length?`<h3>เสียงคำศัพท์ ชาย</h3><div class="vrow">${vsel('vm','m')}<button type="button" class="vt" data-g="m">ฟัง</button></div>
-    <h3>เสียงคำศัพท์ หญิง</h3><div class="vrow">${vsel('vf','f')}<button type="button" class="vt" data-g="f">ฟัง</button></div>`:''}
     <h3>เสียงตัวเรา</h3>${seg('meF',[[false,'ผู้ชาย'],[true,'ผู้หญิง']])}
     <h3>คำแปลไทย</h3>${seg('th',[[false,'แตะเพื่อดู'],[true,'แสดงเสมอ']])}
     <h3>เสียงเอฟเฟกต์</h3>${seg('sfx',[[0,'ปิด'],[50,'เบา'],[80,'ปกติ']])}
@@ -959,7 +974,7 @@ let clock=0,last=performance.now(),state='play';
 const grain=$('#grain').getContext('2d');let grainT=0;
 function frame(now){
   requestAnimationFrame(frame);const dt=Math.min(.05,(now-last)/1000);last=now;clock+=dt;
-  for(const a of ACTORS)stepActor(a,dt);stepFx(dt);stepCam(dt);stepTimer(dt);
+  for(const a of ACTORS){stepActor(a,dt);if(window.__clip&&a.path&&!(a.ghost>0)&&blockedAt(a.obj.position.x,a.obj.position.z))window.__clip.push([a.spec.model,+a.obj.position.x.toFixed(2),+a.obj.position.z.toFixed(2)]);}stepFx(dt);stepCam(dt);stepTimer(dt);
   for(const s of FLOODSPR)s.visible=flood.intensity>2;
   grainT+=dt;if(grainT>.08){grainT=0;const im=grain.createImageData(160,160);for(let i=0;i<im.data.length;i+=4){const v=Math.random()*255;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=255;}grain.putImageData(im,0,0);}
   renderer.render(scene,camera);
@@ -978,7 +993,7 @@ function die(a,{pool=true}={}){if(!a||a.dead)return;a.dead=true;a.path=null;play
   try{await loadAll();}catch(e){}
   buildWorld();setTod(.82);
   $('#loading').hidden=true;requestAnimationFrame(frame);
-  window.__lc={get D(){return D;},get P(){return P;},STORY,startDay,decide,ask,openTool,title,camTo,CAMS,setTod,ACTORS,camera,scene,get state(){return state;},runCut,G,ending,lookup};
+  window.__lc={get D(){return D;},OBST,get P(){return P;},STORY,startDay,decide,ask,openTool,title,camTo,CAMS,setTod,ACTORS,camera,scene,get state(){return state;},runCut,G,ending,lookup};
   title();
 })();
 </script>
