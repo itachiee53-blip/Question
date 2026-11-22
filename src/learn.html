@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101418">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Easy English</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400;600;700&display=swap">
+<style>
+:root{--bg:#101418;--card:#1a2027;--card2:#222a33;--line:#ffffff1a;--text:#f3efe6;--dim:#f3efe699;--acc:#ffb547;--ok:#4cd38a;--bad:#ff6b6b;--blue:#5aa9ff;
+  --f:"Kanit",system-ui,sans-serif;--disp:"Bebas Neue","Kanit",sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--f);-webkit-tap-highlight-color:transparent}
+body{min-height:100dvh}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;touch-action:manipulation}
+button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.wrap{max-width:620px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px))}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.top h1{flex:1;margin:0;font-family:var(--disp);font-weight:400;font-size:34px;letter-spacing:2px;line-height:1}
+.top h1 span{color:var(--acc)}
+.pill{display:inline-flex;align-items:center;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:15px;white-space:nowrap}
+.ic{width:40px;height:40px;border-radius:12px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;font-size:18px}
+.tabs{display:flex;gap:6px;overflow:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none}
+.tabs button{flex:1;min-width:58px;padding:8px 0;border-radius:12px;background:var(--card);border:1px solid var(--line);font-family:var(--disp);font-size:22px;letter-spacing:1px}
+.tabs button.on{background:var(--acc);color:#2a1a00;border-color:transparent}
+.rev{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:linear-gradient(135deg,#2b3a52,#24303f);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:12px}
+.rev b{display:block;font-size:18px}.rev small{color:var(--dim)}
+.rev .n{margin-left:auto;font-family:var(--disp);font-size:32px;color:var(--blue)}
+.units{display:flex;flex-direction:column;gap:8px}
+.unit{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.unit .num{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--card2);font-family:var(--disp);font-size:20px;flex:none}
+.unit.done .num{background:var(--ok);color:#06200f}
+.unit .t{flex:1;min-width:0}.unit b{display:block;font-size:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.unit small{color:var(--dim);font-size:13px}
+.bar{height:6px;border-radius:3px;background:#ffffff14;overflow:hidden;margin-top:5px}.bar i{display:block;height:100%;background:var(--ok);border-radius:3px}
+.head2{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.head2 h2{flex:1;margin:0;font-size:22px;font-weight:600}
+.lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:14px}
+.les{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:left}
+.les b{display:block;font-size:17px}.les small{color:var(--dim)}.les em{display:block;font-style:normal;color:var(--acc);margin-top:2px;letter-spacing:2px}
+.les[disabled]{opacity:.35}
+.wl{display:flex;flex-direction:column;gap:6px}
+.wi{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.wi b{font-size:18px;font-weight:600}.wi span{flex:1;color:var(--dim);font-size:15px;text-align:right}
+.say{width:38px;height:38px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:17px;flex:none}
+.say.big{width:64px;height:64px;font-size:28px;background:var(--blue);color:#06182b}
+.btn{display:block;width:100%;padding:14px;border-radius:14px;background:var(--card2);border:1px solid var(--line);font-size:18px;font-weight:600;text-align:center}
+.btn.p{background:var(--acc);color:#2a1a00;border-color:transparent}
+.btn.ok{background:var(--ok);color:#06200f;border-color:transparent}.btn.bad{background:var(--bad);color:#2b0606;border-color:transparent}
+.row{display:flex;gap:8px}.row>*{flex:1}
+/* lesson */
+.lhead{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.prog{flex:1;height:12px;border-radius:6px;background:#ffffff14;overflow:hidden}.prog i{display:block;height:100%;background:var(--ok);border-radius:6px;transition:width .3s}
+.stage{min-height:calc(100dvh - 200px);display:flex;flex-direction:column;gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:28px 18px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.card .en{font-size:clamp(34px,10vw,52px);font-weight:600;line-height:1.1;word-break:break-word}
+.card .th{font-size:24px;color:var(--acc)}
+.card .lv{font-size:13px;color:var(--dim)}
+.q{font-size:15px;color:var(--dim);text-align:center}
+.qbig{font-size:clamp(30px,9vw,44px);font-weight:600;text-align:center;line-height:1.15;word-break:break-word}
+.qbig.th{color:var(--acc)}
+.opts{display:grid;gap:8px}
+.opt{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:14px;font-size:19px;text-align:center}
+.opt.ok{border-color:var(--ok);background:#173a27}.opt.bad{border-color:var(--bad);background:#3d1a1a}
+.slots{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;min-height:52px}
+.slot{width:40px;height:48px;border-radius:10px;border-bottom:3px solid #ffffff44;display:grid;place-items:center;font-size:24px;font-weight:600;background:var(--card)}
+.slot.sp{background:none;border:0;width:14px}
+.tiles{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.tile{width:48px;height:52px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:24px;font-weight:600}
+.tile.used{opacity:.2}
+.fb{position:fixed;left:0;right:0;bottom:0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));border-radius:20px 20px 0 0;z-index:20;animation:up .2s ease-out}
+.fb.ok{background:#173a27}.fb.bad{background:#3d1a1a}
+.fb .in{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.fb .msg{display:flex;align-items:center;gap:10px}
+.fb .msg b{font-size:20px}.fb .msg div{flex:1}.fb .msg small{display:block;font-size:17px;color:var(--text)}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.res{text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center;padding-top:20px}
+.res .big{font-family:var(--disp);font-size:56px;letter-spacing:2px;line-height:1}
+.res .stars{font-size:44px;color:var(--acc);letter-spacing:6px}.res .stars i{font-style:normal;opacity:.2}.res .stars i.on{opacity:1}
+.stats{display:flex;gap:8px;width:100%}.stats div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px}.stats b{display:block;font-family:var(--disp);font-size:30px}.stats small{color:var(--dim)}
+.set{display:flex;flex-direction:column;gap:8px}
+.set .r{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.seg{display:flex;gap:4px}.seg button{padding:5px 12px;border-radius:999px;border:1px solid var(--line)}.seg button.on{background:var(--acc);color:#2a1a00;border-color:transparent}
+.search{width:100%;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:17px;margin-bottom:10px}
+.empty{color:var(--dim);text-align:center;padding:30px 0}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+'use strict';
+const WORDS=/*WORDS*/{};
+const AUDIO=/*AUDIO*/{};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pick=a=>a[Math.random()*a.length|0];
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+const LV=['a1','a2','b1','b2','c1'];
+const DAY=864e5,INT=[0,1,2,4,8,16,30];
+
+/* ---------- save ---------- */
+const KEY='easyeng1';
+const S={xp:0,streak:0,last:'',lv:'a1',les:{},cards:{},rate:.9,auto:1};
+try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||'{}'));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const today=()=>new Date().toISOString().slice(0,10);
+
+/* ---------- lessons from the dictionary ---------- */
+const UNITS={};
+for(const lv of LV){
+  UNITS[lv]=(WORDS[lv]||[]).map(([name,ws],ui)=>{
+    const list=ws.map(([en,th])=>({en,th,lv})),les=[];
+    for(let i=0;i<list.length;i+=8)les.push(list.slice(i,i+8));
+    if(les.length>1&&les[les.length-1].length<4){const t=les.pop();les[les.length-1].push(...t);}
+    return{name,ui,lv,words:list,les};
+  });
+}
+const ALL=LV.flatMap(lv=>UNITS[lv].flatMap(u=>u.words));
+const BYEN=new Map(ALL.map(w=>[w.en,w]));
+
+/* ---------- voice: your recordings first, device voice otherwise ---------- */
+const slug=w=>w.toLowerCase().replace(/['’]/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');
+let player=null,voice=null;
+function pickVoice(){if(!('speechSynthesis' in window))return;const vs=speechSynthesis.getVoices().filter(v=>/^en[-_](US|GB)/i.test(v.lang));voice=vs.find(v=>/Samantha|Google US|Aria|Jenny|Natural|Daniel/i.test(v.name))||vs[0]||null;}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+function tts(t){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';if(voice)u.voice=voice;u.rate=S.rate;speechSynthesis.speak(u);}catch(e){}}
+function say(t){
+  try{if(player){player.pause();player=null;}if('speechSynthesis' in window)speechSynthesis.cancel();}catch(e){}
+  const f=AUDIO[slug(t)];
+  if(f){player=new Audio('assets/audio/'+encodeURIComponent(f));player.playbackRate=S.rate<.8?.85:1;player.play().catch(()=>tts(t));}
+  else tts(t);
+}
+let AC=null;
+function tone(ok){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime;
+  (ok?[660,880]:[220,180]).forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=ok?'sine':'square';o.frequency.value=f;g.gain.setValueAtTime(.07,t+i*.1);g.gain.exponentialRampToValueAtTime(.0001,t+i*.1+.2);o.connect(g);g.connect(AC.destination);o.start(t+i*.1);o.stop(t+i*.1+.22);});}catch(e){}}
+
+/* ---------- spaced review ---------- */
+function mark(w,ok){const c=S.cards[w.en]||{b:0,d:0};
+  if(ok){c.b=Math.min(c.b+1,INT.length-1);c.d=Date.now()+INT[c.b]*DAY;}else{c.b=0;c.d=Date.now()+10*60e3;}
+  S.cards[w.en]=c;}
+const dueList=()=>Object.entries(S.cards).filter(([en,c])=>c.d<=Date.now()&&BYEN.has(en)).sort((a,b)=>a[1].b-b[1].b).map(([en])=>BYEN.get(en));
+
+/* ---------- screens ---------- */
+const app=$('#app');
+let view='home',curUnit=null,L=null;
+function render(){({home,unit,learn,quiz,result,words,settings}[view])();window.scrollTo(0,0);}
+function go(v){view=v;render();}
+const lesKey=(u,i)=>`${u.lv}:${u.ui}:${i}`;
+function unitDone(u){return u.les.filter((_,i)=>S.les[lesKey(u,i)]).length;}
+
+function home(){
+  const lv=S.lv,due=dueList().length;
+  app.innerHTML=`
+  <div class="top"><h1>EASY <span>ENGLISH</span></h1><span class="pill">🔥 ${S.streak}</span><span class="pill">⭐ ${S.xp}</span>
+    <button class="ic" data-go="words" aria-label="คำศัพท์">📖</button><button class="ic" data-go="settings" aria-label="ตั้งค่า">⚙️</button></div>
+  <div class="tabs">${LV.map(l=>`<button data-lv="${l}" class="${l===lv?'on':''}">${l.toUpperCase()}</button>`).join('')}</div>
+  ${due?`<button class="rev" id="revB"><div><b>ทบทวน</b><small>คำที่ถึงรอบ</small></div><span class="n">${due}</span></button>`:''}
+  <div class="units">${UNITS[lv].map((u,i)=>{const d=unitDone(u),all=u.les.length;
+    return `<button class="unit ${d===all?'done':''}" data-u="${i}"><span class="num">${d===all?'✓':i+1}</span><span class="t"><b>${esc(u.name)}</b><small>${u.words.length} คำ</small><div class="bar"><i style="width:${d/all*100}%"></i></div></span></button>`;}).join('')}</div>
+  <p style="text-align:center;margin-top:18px"><a href="index.html" style="color:var(--dim)">กลับหน้าเกม</a></p>`;
+  app.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{S.lv=b.dataset.lv;save();render();});
+  app.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>{curUnit=UNITS[lv][+b.dataset.u];go('unit');});
+  app.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+  const r=$('#revB');if(r)r.onclick=()=>startLesson(shuffle(dueList()).slice(0,12),null,true);
+}
+function unit(){
+  const u=curUnit;
+  app.innerHTML=`<div class="head2"><button class="ic" id="back">←</button><h2>${esc(u.name)}</h2><span class="pill">${u.lv.toUpperCase()}</span></div>
+  <div class="lessons">${u.les.map((ws,i)=>{const s=S.les[lesKey(u,i)]||0,open=i===0||S.les[lesKey(u,i-1)];
+    return `<button class="les" data-l="${i}" ${open?'':'disabled'}><b>บทที่ ${i+1}</b><small>${ws.length} คำ</small><em>${s?'★'.repeat(s)+'☆'.repeat(3-s):'&nbsp;'}</em></button>`;}).join('')}</div>
+  <div class="wl">${u.words.map(w=>wordRow(w)).join('')}</div>`;
+  $('#back').onclick=()=>go('home');
+  app.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{const i=+b.dataset.l;startLesson(u.les[i],lesKey(u,i));});
+  bindSay();
+}
+function wordRow(w){return `<div class="wi"><button class="say" data-say="${esc(w.en)}" aria-label="ฟัง">🔊</button><b>${esc(w.en)}</b><span>${esc(w.th)}</span></div>`;}
+function bindSay(){app.querySelectorAll('[data-say]').forEach(b=>b.onclick=e=>{e.stopPropagation();say(b.dataset.say);});}
+
+/* ---------- lesson: learn cards, then quiz ---------- */
+function startLesson(ws,key,review){
+  if(!ws.length)return;
+  const lvw=ws[0].lv;
+  const pool=w=>{const u=UNITS[w.lv].find(u=>u.words.includes(w));const near=u?u.words:[];return near.length>=6?near:UNITS[w.lv].flatMap(u=>u.words);};
+  const qs=[];
+  for(const w of ws){
+    const types=['enTh','listen','thEn'];
+    if(/^[a-z]+$/i.test(w.en)&&w.en.length>=3&&w.en.length<=10)types.push('spell');
+    for(const t of shuffle(types).slice(0,review?1:2))qs.push({t,w,pool:pool(w)});
+  }
+  L={ws,key,review,qs:shuffle(qs),i:0,card:0,ok:0,bad:0,total:qs.length,missed:new Set(),lv:lvw};
+  go(review?'quiz':'learn');
+}
+function lhead(p){return `<div class="lhead"><button class="ic" id="quit">✕</button><div class="prog"><i style="width:${p*100}%"></i></div></div>`;}
+function bindQuit(){$('#quit').onclick=()=>{if(view==='quiz'&&L.i>0&&!confirm('ออกจากบทเรียน?'))return;go(curUnit&&!L.review?'unit':'home');};}
+function learn(){
+  const w=L.ws[L.card];
+  app.innerHTML=lhead(L.card/(L.ws.length+L.total))+`<div class="stage">
+    <div class="q">คำใหม่</div>
+    <div class="card"><button class="say big" id="s">🔊</button><div class="en">${esc(w.en)}</div><div class="th">${esc(w.th)}</div><div class="lv">${w.lv.toUpperCase()}</div></div>
+    <div style="flex:1"></div>
+    <div class="row">${L.card>0?'<button class="btn" id="prev">ย้อน</button>':''}<button class="btn p" id="next">${L.card<L.ws.length-1?'ต่อ':'เริ่มทดสอบ'}</button></div></div>`;
+  bindQuit();$('#s').onclick=()=>say(w.en);if(S.auto)say(w.en);
+  $('#next').onclick=()=>{if(L.card<L.ws.length-1){L.card++;render();}else go('quiz');};
+  const p=$('#prev');if(p)p.onclick=()=>{L.card--;render();};
+}
+function options(q,field){
+  const right=q.w[field],others=shuffle(q.pool.filter(x=>x!==q.w&&x[field]!==right)).slice(0,3).map(x=>x[field]);
+  return shuffle([right,...others]);
+}
+function quiz(){
+  const q=L.qs[L.i];if(!q){finish();return;}
+  const done=(L.review?0:L.ws.length)+L.i,all=(L.review?0:L.ws.length)+L.qs.length;
+  let body='';
+  if(q.t==='enTh'){q.ans=q.w.th;body=`<div class="q">แปลว่าอะไร</div><div style="display:flex;justify-content:center;gap:10px;align-items:center"><button class="say" id="s">🔊</button><div class="qbig">${esc(q.w.en)}</div></div><div class="opts">${options(q,'th').map(o=>`<button class="opt" data-o="${esc(o)}">${esc(o)}</button>`).join('')}</div>`;}
+  if(q.t==='thEn'){q.ans=q.w.en;body=`<div class="q">ภาษาอังกฤษคือ</div><div class="qbig th">${esc(q.w.th)}</div><div class="opts">${options(q,'en').map(o=>`<button class="opt" data-o="${esc(o)}">${esc(o)}</button>`).join('')}</div>`;}
+  if(q.t==='listen'){q.ans=q.w.en;body=`<div class="q">ฟังแล้วเลือก</div><div style="display:flex;justify-content:center"><button class="say big" id="s">🔊</button></div><div class="opts">${options(q,'en').map(o=>`<button class="opt" data-o="${esc(o)}">${esc(o)}</button>`).join('')}</div>`;}
+  if(q.t==='spell'){q.ans=q.w.en;q.typed=[];const letters=shuffle(q.w.en.toLowerCase().split(''));q.tiles=letters;
+    body=`<div class="q">สะกดคำ</div><div style="display:flex;justify-content:center;gap:10px;align-items:center"><button class="say" id="s">🔊</button><div class="qbig th" style="font-size:30px">${esc(q.w.th)}</div></div>
+      <div class="slots" id="slots"></div><div class="tiles">${letters.map((c,i)=>`<button class="tile" data-t="${i}">${esc(c)}</button>`).join('')}</div>
+      <div class="row"><button class="btn" id="clr">ลบ</button></div>`;}
+  app.innerHTML=lhead(done/all)+`<div class="stage">${body}</div>`;
+  bindQuit();
+  const s=$('#s');if(s){s.onclick=()=>say(q.w.en);if(q.t==='listen'||(S.auto&&q.t!=='thEn'))say(q.w.en);}
+  app.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>answer(q,b.dataset.o===q.ans,b));
+  if(q.t==='spell'){
+    const draw=()=>{$('#slots').innerHTML=q.w.en.split('').map((c,i)=>`<div class="slot">${esc(q.typed[i]!=null?q.tiles[q.typed[i]]:'')}</div>`).join('');
+      app.querySelectorAll('[data-t]').forEach(b=>b.classList.toggle('used',q.typed.includes(+b.dataset.t)));};
+    draw();
+    app.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const i=+b.dataset.t;if(q.typed.includes(i)||q.done)return;q.typed.push(i);draw();
+      if(q.typed.length===q.w.en.length){const word=q.typed.map(k=>q.tiles[k]).join('');answer(q,word===q.w.en.toLowerCase(),null);}});
+    $('#clr').onclick=()=>{if(q.done)return;q.typed.pop();draw();};
+  }
+}
+function answer(q,ok,btn){
+  if(q.done)return;q.done=true;tone(ok);
+  app.querySelectorAll('[data-o]').forEach(b=>{if(b.dataset.o===q.ans)b.classList.add('ok');});
+  if(!ok&&btn)btn.classList.add('bad');
+  if(ok)L.ok++;else{L.bad++;if(!L.missed.has(q.w.en)){L.missed.add(q.w.en);L.qs.push({...q,done:false,t:q.t==='spell'?'enTh':q.t});}}
+  mark(q.w,ok);
+  const fb=document.createElement('div');fb.className='fb '+(ok?'ok':'bad');
+  fb.innerHTML=`<div class="in"><div class="msg"><button class="say" id="fs">🔊</button><div><b>${ok?'ถูกต้อง!':'ยังไม่ถูก'}</b><small>${esc(q.w.en)} = ${esc(q.w.th)}</small></div></div><button class="btn ${ok?'ok':'bad'}" id="fn">ต่อ</button></div>`;
+  document.body.appendChild(fb);
+  $('#fs').onclick=()=>say(q.w.en);if(!ok||q.t==='thEn')say(q.w.en);
+  $('#fn').onclick=()=>{fb.remove();L.i++;render();};
+}
+function finish(){
+  const acc=L.ok/Math.max(1,L.ok+L.bad),stars=acc>=.95?3:acc>=.8?2:1,xp=(L.review?5:10)+L.ok;
+  S.xp+=xp;
+  const t=today();if(S.last!==t){const y=new Date(Date.now()-DAY).toISOString().slice(0,10);S.streak=S.last===y?S.streak+1:1;S.last=t;}
+  if(L.key)S.les[L.key]=Math.max(S.les[L.key]||0,stars);
+  save();L.res={stars,xp,acc};go('result');
+}
+function result(){
+  const r=L.res;tone(true);
+  app.innerHTML=`<div class="res"><div class="big">เก่งมาก!</div>
+    <div class="stars">${[1,2,3].map(i=>`<i class="${i<=r.stars?'on':''}">★</i>`).join('')}</div>
+    <div class="stats"><div><b>+${r.xp}</b><small>XP</small></div><div><b>${Math.round(r.acc*100)}%</b><small>ถูก</small></div><div><b>🔥 ${S.streak}</b><small>วันติด</small></div></div>
+    <div class="wl" style="width:100%;text-align:left">${L.ws.map(w=>wordRow(w)).join('')}</div>
+    <div class="row" style="width:100%">${L.key?'<button class="btn" id="again">เรียนซ้ำ</button>':''}<button class="btn p" id="ok">ต่อ</button></div></div>`;
+  bindSay();
+  $('#ok').onclick=()=>go(curUnit&&!L.review?'unit':'home');
+  const a=$('#again');if(a)a.onclick=()=>startLesson(L.ws,L.key);
+}
+function words(){
+  app.innerHTML=`<div class="head2"><button class="ic" id="back">←</button><h2>คำศัพท์</h2><span class="pill">${ALL.length}</span></div>
+    <input class="search" id="q" placeholder="ค้นหา" autocomplete="off"><div class="wl" id="wl"></div>`;
+  $('#back').onclick=()=>go('home');
+  const draw=()=>{const k=$('#q').value.trim().toLowerCase();
+    const list=k?ALL.filter(w=>w.en.toLowerCase().includes(k)||w.th.includes(k)).slice(0,80):Object.keys(S.cards).map(e=>BYEN.get(e)).filter(Boolean).slice(-80).reverse();
+    $('#wl').innerHTML=list.length?list.map(w=>wordRow(w)).join(''):`<div class="empty">${k?'ไม่พบคำ':'ยังไม่มีคำที่เรียน'}</div>`;bindSay();};
+  $('#q').oninput=draw;draw();
+}
+function settings(){
+  const seg=(id,v,opts)=>`<div class="seg" id="${id}">${opts.map(([val,lab])=>`<button data-v="${val}" class="${String(v)===String(val)?'on':''}">${lab}</button>`).join('')}</div>`;
+  app.innerHTML=`<div class="head2"><button class="ic" id="back">←</button><h2>ตั้งค่า</h2></div><div class="set">
+    <div class="r"><span>ความเร็วเสียง</span>${seg('sRate',S.rate,[[.7,'ช้า'],[.9,'กลาง'],[1,'ปกติ']])}</div>
+    <div class="r"><span>เล่นเสียงเอง</span>${seg('sAuto',S.auto,[[1,'เปิด'],[0,'ปิด']])}</div>
+    <div class="r"><span>ทดสอบเสียง</span><button class="say" data-say="Hello! How are you?">🔊</button></div>
+    <div class="r"><span>ไฟล์เสียง</span><span class="pill">${Object.keys(AUDIO).length} คำ</span></div>
+    <button class="btn" id="reset" style="margin-top:10px">ล้างความคืบหน้า</button></div>`;
+  $('#back').onclick=()=>go('home');bindSay();
+  $('#sRate').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.rate=+b.dataset.v;save();render();say('Hello! How are you?');};
+  $('#sAuto').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.auto=+b.dataset.v;save();render();};
+  $('#reset').onclick=()=>{if(confirm('ล้างความคืบหน้าทั้งหมด?')){S.xp=0;S.streak=0;S.last='';S.les={};S.cards={};save();go('home');}};
+}
+render();
+window.__app={S,UNITS,startLesson,get L(){return L},AUDIO,slug};
+</script>
+</body>
+</html>
