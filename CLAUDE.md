@@ -9,10 +9,9 @@ Every button, title, label, description, toast and hint in the game must be **sh
 - When adding new UI text, check it against this rule before committing.
 
 ## Build
-The site has two games and a picker page:
-- `src/index.html` → `index.html`: the game picker.
+The site has one game:
+- `src/index.html` → `index.html` (and the old links `learn.html`, `city.html`, `checkpoint.html`): redirects to the zombie game.
 - `src/zombie.html` → `zombie.html`: **Dead Words**, the zombie word game.
-- `src/learn.html` → `learn.html`: **Easy English**, a word-learning app (levels, topics, lessons, quizzes, review). Voice: a recording in `assets/audio` (file name = word, spaces as `_`, e.g. `thank_you.mp3`) is played first; words without one use the device voice. `build.py` lists the recordings and inlines them at `/*AUDIO*/`.
 - `words/*.txt`: dictionary used when the player taps a word.
 - Models: `assets/models` (scenery, zombies).
 Run `python3 build.py` to regenerate the root pages.
