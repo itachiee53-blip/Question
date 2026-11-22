@@ -9,18 +9,12 @@ Every button, title, label, description, toast and hint in the game must be **sh
 - When adding new UI text, check it against this rule before committing.
 
 ## Build
-The site has two games and a picker page:
+The site has one game and a picker page:
 - `src/index.html` → `index.html`: the game picker.
 - `src/zombie.html` → `zombie.html`: **Dead Words**, the zombie word game.
-- `src/checkpoint.html` → `checkpoint.html`: **Last Checkpoint** (ด่านสุดท้าย), a 3D checkpoint story game. Engine: scene, people, inspection tools, dialogue, cutscenes, saves.
-- `src/story1.js`: chapter 1 (cast, 5 days, dialogue, events, endings). Inlined into the page at `/*STORY*/`.
 - `words/*.txt`: dictionary used when the player taps a word.
-- Models: `assets/models` (scenery, zombies) and `assets/people` (CC0 Quaternius characters; `_anims.glb` holds the shared animations).
-Run `python3 build.py` to regenerate the three root pages.
-Story lines: natural spoken English, and natural Thai (not word-for-word).
-Voices: every English story line has a recording in `assets/voice` (index in `assets/voice/index.json`, inlined at `/*VOICE*/`).
-After changing or adding English lines, regenerate them: `node tools/voice_lines.js > /tmp/lines.json` then
-`python3 tools/make_voices.py /tmp/lines.json <piper models dir>` (see the script header for the voices). Lines without a recording fall back to the phone voice.
+- Models: `assets/models` (scenery, zombies).
+Run `python3 build.py` to regenerate the root pages.
 
 ## Deploy rule (from the owner, required)
 The game is played from `main`. After every change: build, commit, push the working branch, open a PR to `main`, and **merge it yourself right away**. Do not ask the owner to press Merge.
