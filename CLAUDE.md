@@ -9,9 +9,10 @@ Every button, title, label, description, toast and hint in the game must be **sh
 - When adding new UI text, check it against this rule before committing.
 
 ## Build
-The site has one game and a picker page:
+The site has two games and a picker page:
 - `src/index.html` → `index.html`: the game picker.
 - `src/zombie.html` → `zombie.html`: **Dead Words**, the zombie word game.
+- `src/city.html` → `city.html`: **Sun Bay**, a top-down city driving game; missions are given in simple spoken English (tap a word for Thai). Missions live in `MISSIONS` inside the file.
 - `words/*.txt`: dictionary used when the player taps a word.
 - Models: `assets/models` (scenery, zombies).
 Run `python3 build.py` to regenerate the root pages.

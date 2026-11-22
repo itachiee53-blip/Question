@@ -1,4 +1,4 @@
-"""Build the site: index.html (game picker) and zombie.html (src/zombie.html), with words/*.txt as the dictionary.
+"""Build the site: index.html (game picker), zombie.html (src/zombie.html) and city.html (src/city.html), with words/*.txt as the dictionary.
 
 Word files: '# topic' lines start a unit; other lines hold 'english|thai' pairs separated by ';'.
 3D models live in assets/models (CC0, Quaternius) and are loaded at runtime.
@@ -68,6 +68,9 @@ def main():
     zombie = (here / 'src' / 'zombie.html').read_text(encoding='utf-8')
     assert '/*WORDS*/{}' in zombie
     (here / 'zombie.html').write_text(zombie.replace('/*WORDS*/{}', wj), encoding='utf-8')
+    city = (here / 'src' / 'city.html').read_text(encoding='utf-8')
+    assert '/*WORDS*/{}' in city
+    (here / 'city.html').write_text(city.replace('/*WORDS*/{}', wj), encoding='utf-8')
     (here / 'index.html').write_text((here / 'src' / 'index.html').read_text(encoding='utf-8'), encoding='utf-8')
     print('\n'.join(report))
     print('total', sum(len(ws) for u in words.values() for _, ws in u), 'words ·', len(zombie) // 1024, 'KB')

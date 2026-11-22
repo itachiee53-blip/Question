@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0d1b26">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Sun Bay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@300;400;600;800&display=swap">
+<style>
+:root{--bg:#0d1b26;--panel:#0b1520e6;--line:#ffffff24;--text:#f6f1e7;--dim:#f6f1e799;--sun:#ff8a3d;--pink:#ff4f8b;--teal:#3fd0c9;--gold:#ffcc4d;--green:#8ff0a4;
+  --f-th:"Kanit",system-ui,sans-serif;--f-disp:"Bebas Neue","Kanit",sans-serif;
+  --sl:env(safe-area-inset-left,0px);--sr:env(safe-area-inset-right,0px);--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:var(--f-th);overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none;touch-action:none}
+[hidden]{display:none!important}
+button,a.btn{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;text-decoration:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.tint{position:fixed;inset:0;pointer-events:none;z-index:2;background:radial-gradient(ellipse at 50% 45%,transparent 55%,#1a0a2a66 100%),linear-gradient(180deg,#ff8a3d14,#ff4f8b10)}
+.hud{position:fixed;z-index:10}
+.btn{display:inline-block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 16px;font-size:16px;text-align:center}
+.btn:active{transform:scale(.96)}
+.btn.p{background:linear-gradient(135deg,var(--sun),var(--pink));border-color:transparent;color:#1d0c12;font-weight:600}
+#top{top:calc(10px + var(--st));left:calc(10px + var(--sl));display:flex;gap:10px;align-items:center}
+#pauseB{width:42px;height:42px;padding:0;font-size:18px;font-weight:800;border-radius:50%}
+#money{font-family:var(--f-disp);font-size:28px;letter-spacing:1px;color:var(--green);text-shadow:0 2px 6px #000}
+#stars{font-size:22px;color:var(--gold);text-shadow:0 0 8px #000;letter-spacing:2px}
+#stars i{font-style:normal;opacity:.22}#stars i.on{opacity:1}
+#stars.flash{animation:fl .5s steps(2) infinite}@keyframes fl{50%{color:#ff5d5d}}
+#mini{top:calc(10px + var(--st));right:calc(10px + var(--sr));width:120px;height:120px;border-radius:50%;border:2px solid #ffffff55;box-shadow:0 6px 20px #0009;cursor:pointer}
+#obj{top:calc(10px + var(--st));left:50%;transform:translateX(-50%);width:max-content;max-width:min(560px,calc(100vw - 330px));text-align:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:7px 14px 8px}
+#objEn{font-size:22px;font-weight:600;line-height:1.25}
+#objTh{font-size:15px;color:var(--gold);margin-top:1px}
+#objBtns{display:flex;gap:6px;justify-content:center;margin-top:5px}
+#objBtns .btn{padding:2px 12px;font-size:13px;border-radius:999px}
+#objBtns .btn.used{opacity:.45}
+.w{cursor:pointer;border-radius:4px}.w:hover,.w.on{background:#ffffff2a}
+#talk{left:50%;bottom:calc(12px + var(--sb));transform:translateX(-50%);width:min(700px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:10px 16px 12px;z-index:20}
+#tWho{font-size:14px;font-weight:600;letter-spacing:.5px}
+#tEn{font-size:25px;line-height:1.3;margin:1px 0;font-weight:400}
+#tTh{font-size:16px;color:var(--gold)}
+#tOpts{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+#tOpts .btn{text-align:left;font-size:19px;padding:7px 14px}
+#tOpts small{display:block;color:var(--gold);font-size:14px}
+#tBtns{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+#tBtns .btn{padding:6px 16px}
+#pop{position:fixed;z-index:40;background:#0b1520f5;border:1px solid #ffffff44;border-radius:14px;padding:8px 12px;min-width:150px;max-width:260px;box-shadow:0 10px 30px #000a}
+#pop b{display:block;font-size:20px}#pop span{display:block;color:var(--gold);font-size:16px;margin:1px 0 6px}
+#pop .row{display:flex;gap:6px}#pop .btn{padding:3px 12px;font-size:14px}
+#toast{left:50%;top:38%;transform:translate(-50%,-50%);font-family:var(--f-disp);font-size:44px;letter-spacing:2px;color:#fff;text-shadow:0 3px 0 #0008,0 0 18px #ff4f8b;pointer-events:none;opacity:0;transition:opacity .25s;white-space:nowrap}
+#toast.on{opacity:1}
+#toast small{display:block;text-align:center;font-family:var(--f-th);font-size:17px;letter-spacing:0;color:var(--gold);text-shadow:0 2px 4px #000}
+#stick{left:calc(26px + var(--sl));bottom:calc(26px + var(--sb));width:130px;height:130px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff30;pointer-events:none}
+#stick i{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:#ffffff40;border:2px solid #ffffff70}
+#acts{right:calc(22px + var(--sr));bottom:calc(24px + var(--sb));display:flex;flex-direction:column;gap:12px;align-items:flex-end}
+#acts .btn{width:84px;height:84px;border-radius:50%;padding:0;font-size:17px;font-weight:600}
+#actB{background:linear-gradient(135deg,var(--teal),#2b8fd6);color:#04161c;border:0}
+#brakeB{background:#ffffff1c}
+@media (pointer:fine){#stick,#brakeB{display:none!important}}
+.scr{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:calc(14px + var(--st)) calc(16px + var(--sr)) calc(14px + var(--sb)) calc(16px + var(--sl));background:#060b12aa}
+.scr.solid{background:#070d15ee}
+.logo{font-family:var(--f-disp);font-size:clamp(64px,13vw,120px);line-height:.85;letter-spacing:6px;background:linear-gradient(180deg,#ffd27f,#ff8a3d 45%,#ff4f8b);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 18px #ff4f8b66)}
+.mbtns{display:grid;grid-template-columns:repeat(3,minmax(130px,1fr));gap:10px;width:min(520px,100%)}
+.mbtns .btn{padding:12px 10px;font-size:18px}
+h2{margin:0;font-weight:600;font-size:24px}
+.sub{color:var(--dim);font-size:15px;margin-top:-6px}
+.list{width:min(760px,100%);max-height:calc(100dvh - 120px);overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;touch-action:pan-y;padding:2px}
+.ch{grid-column:1/-1;font-size:15px;color:var(--gold);margin-top:6px}
+.mc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 12px;text-align:left}
+.mc b{display:block;font-size:17px}.mc span{display:block;font-size:13px;color:var(--dim)}.mc em{font-style:normal;color:var(--gold);font-size:14px}
+.mc[disabled]{opacity:.35}
+.big{font-family:var(--f-disp);font-size:clamp(48px,9vw,78px);letter-spacing:3px;line-height:1;color:#fff;text-shadow:0 0 24px #ff4f8b}
+.big.bad{text-shadow:0 0 24px #ff3b3b}
+.rstars{font-size:38px;color:var(--gold);letter-spacing:6px}.rstars i{font-style:normal;opacity:.2}.rstars i.on{opacity:1}
+.cash{font-family:var(--f-disp);font-size:34px;color:var(--green)}
+.words{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:640px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:15px}
+.chip span{color:var(--gold);margin-left:6px}
+.row2{display:flex;gap:10px}
+.notes{width:min(620px,100%);max-height:calc(100dvh - 140px);overflow:auto;display:flex;flex-direction:column;gap:6px;touch-action:pan-y}
+.note{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 12px}
+.note b{font-size:18px}.note span{flex:1;color:var(--gold)}
+.note button{font-size:18px;padding:2px 8px}
+.set{display:flex;flex-direction:column;gap:10px;width:min(420px,100%)}
+.set .r{display:flex;justify-content:space-between;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.seg{display:flex;gap:4px}.seg button{padding:4px 12px;border-radius:999px;border:1px solid var(--line)}.seg button.on{background:var(--sun);color:#1d0c12;border-color:transparent}
+#mapC{border-radius:16px;box-shadow:0 10px 40px #000c;max-width:100%}
+.rotate{display:none;position:fixed;inset:0;z-index:100;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#070d15;text-align:center;padding:24px}
+.rotate b{font-size:22px}.rotate div{font-size:60px;animation:tilt 2.2s ease-in-out infinite}
+@keyframes tilt{0%,30%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
+@media (orientation:portrait) and (pointer:coarse){.rotate{display:flex}}
+@media (max-height:430px){#objEn{font-size:19px}#tEn{font-size:21px}#mini{width:96px;height:96px}#acts .btn{width:72px;height:72px;font-size:15px}#stick{width:110px;height:110px}.logo{font-size:64px}.mbtns .btn{padding:9px 8px;font-size:16px}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="tint"></div>
+
+<div class="hud" id="top" hidden>
+  <button class="btn" id="pauseB" aria-label="พัก">II</button>
+  <div id="money">$0</div>
+  <div id="stars"></div>
+</div>
+<canvas class="hud" id="mini" hidden></canvas>
+<div class="hud" id="obj" hidden>
+  <div id="objEn"></div>
+  <div id="objTh" hidden></div>
+  <div id="objBtns"><button class="btn" id="trB">แปล</button><button class="btn" id="gpsB">นำทาง</button><button class="btn" id="sayB">🔊</button></div>
+</div>
+<div class="hud" id="toast"></div>
+<div class="hud" id="stick" hidden><i></i></div>
+<div class="hud" id="acts" hidden>
+  <button class="btn" id="actB">ขึ้นรถ</button>
+  <button class="btn" id="brakeB">เบรก</button>
+</div>
+
+<div class="hud" id="talk" hidden>
+  <div id="tWho"></div>
+  <div id="tEn"></div>
+  <div id="tTh" hidden></div>
+  <div id="tOpts"></div>
+  <div id="tBtns"><button class="btn" id="tSay">🔊</button><button class="btn" id="tTr">แปล</button><button class="btn p" id="tNext">ต่อ</button></div>
+</div>
+<div id="pop" hidden><b id="popW"></b><span id="popT"></span><div class="row"><button class="btn" id="popSay">🔊</button><button class="btn" id="popSave">จด</button></div></div>
+
+<div class="scr" id="menu">
+  <div class="logo">SUN BAY</div>
+  <div class="mbtns">
+    <button class="btn p" id="mCont">เล่นต่อ</button>
+    <button class="btn" id="mList">ภารกิจ</button>
+    <button class="btn" id="mFree">ขับเล่น</button>
+    <button class="btn" id="mNotes">สมุดคำ</button>
+    <button class="btn" id="mSet">ตั้งค่า</button>
+    <a class="btn" href="index.html">ออก</a>
+  </div>
+</div>
+<div class="scr solid" id="missions" hidden><h2>ภารกิจ</h2><div class="list" id="mlist"></div><button class="btn" data-back>กลับ</button></div>
+<div class="scr" id="done" hidden>
+  <div class="big">MISSION PASSED</div>
+  <div class="rstars" id="dStars"></div>
+  <div class="cash" id="dCash"></div>
+  <div class="words" id="dWords"></div>
+  <div class="row2"><button class="btn" id="dMenu">เมนู</button><button class="btn p" id="dNext">ต่อไป</button></div>
+</div>
+<div class="scr" id="fail" hidden>
+  <div class="big bad" id="fTitle">BUSTED</div>
+  <div class="sub" id="fTh"></div>
+  <div class="row2"><button class="btn" id="fMenu">เมนู</button><button class="btn p" id="fRetry">ลองใหม่</button></div>
+</div>
+<div class="scr" id="pause" hidden>
+  <h2>พักเกม</h2>
+  <div class="row2"><button class="btn" id="pMenu">เมนู</button><button class="btn" id="pRetry">เริ่มใหม่</button><button class="btn p" id="pGo">เล่นต่อ</button></div>
+</div>
+<div class="scr solid" id="notesS" hidden><h2>สมุดคำ</h2><div class="notes" id="nlist"></div><button class="btn" data-back>กลับ</button></div>
+<div class="scr solid" id="setS" hidden>
+  <h2>ตั้งค่า</h2>
+  <div class="set">
+    <div class="r"><span>เสียงพูด</span><div class="seg" id="segRate"><button data-v=".7">ช้า</button><button data-v=".85">กลาง</button><button data-v="1">ปกติ</button></div></div>
+    <div class="r"><span>เสียงรถ</span><div class="seg" id="segSnd"><button data-v="1">เปิด</button><button data-v="0">ปิด</button></div></div>
+  </div>
+  <button class="btn" data-back>กลับ</button>
+</div>
+<div class="scr" id="mapS" hidden><canvas id="mapC"></canvas><button class="btn" id="mapX">ปิด</button></div>
+<div class="rotate"><div>📱</div><b>หมุนจอ</b></div>
+
+<script>
+'use strict';
+const WORDS=/*WORDS*/{};
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const rand=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[Math.random()*a.length|0];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const angDiff=(a,b)=>{let d=a-b;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;return d;};
+const hyp=Math.hypot;
+function seeded(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function shade(hex,k){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const f=v=>clamp(Math.round(k<0?v*(1+k):v+(255-v)*k),0,255);return'#'+((1<<24)|(f(r)<<16)|(f(g)<<8)|f(b)).toString(16).slice(1);}
+
+/* ---------- save ---------- */
+const KEY='sunbay1';
+const S={money:0,done:{},notes:{},rate:.85,snd:1};
+try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||'{}'));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+/* ---------- dictionary ---------- */
+const DICT=new Map();
+for(const lv in WORDS)for(const [,ws] of WORDS[lv])for(const [en,th] of ws){const k=en.toLowerCase();if(!DICT.has(k))DICT.set(k,th);}
+const SLANG={
+  "i'm":'ฉัน (เป็น/อยู่)',"you're":'คุณ (เป็น/อยู่)',"he's":'เขา (เป็น/อยู่)',"she's":'เธอ (เป็น/อยู่)',"it's":'มัน (เป็น/อยู่)',"that's":'นั่น (คือ)',
+  "there's":'มี...อยู่',"what's":'อะไร (คือ)',"let's":'มา...กันเถอะ',"don't":'อย่า, ไม่',"didn't":'ไม่ได้ (ทำ)',"can't":'ไม่ได้',"won't":'จะไม่',
+  "i'll":'ฉันจะ',"you'll":'คุณจะ',"we're":'พวกเรา (เป็น/อยู่)',"they're":'พวกเขา (เป็น/อยู่)',"i've":'ฉันมี/ได้...แล้ว',"we've":'พวกเรามี',"one's":'คน (เป็น/อยู่)',
+  "flight's":'เที่ยวบิน (อยู่/คือ)',"ray's":'ของเรย์',"talkin'":'พูด',"c'mon":'มาเถอะน่า',
+  gonna:'กำลังจะ',wanna:'อยาก',gotta:'ต้อง',outta:'ออกจาก',yo:'โย่, เฮ้',cops:'ตำรวจ',cop:'ตำรวจ',kid:'ไอ้หนู, เด็ก',guy:'ผู้ชาย, หมอนี่',
+  cash:'เงินสด',ride:'ติดรถ, ไปส่ง',okay:'โอเค',ok:'โอเค',hey:'เฮ้',hi:'หวัดดี','uh-oh':'แย่แล้ว',phew:'เฮ้อ',ow:'โอ๊ย',wow:'ว้าว',alright:'เอาล่ะ, โอเค',
+  yeah:'ใช่, เอาสิ',mmm:'อืม',ha:'ฮ่า',boss:'บอส, เจ้านาย',setup:'กับดัก',roll:'ไปกันเลย',cut:'ส่วนแบ่ง',stole:'ขโมย',saw:'เห็น',told:'บอก',got:'ได้, มี',
+  owes:'ติดหนี้',stopped:'หยุด',saved:'ช่วยชีวิต',lost:'หนีพ้น, คลาด',paid:'จ่ายแล้ว',
+  gas:'น้ำมัน',nightclub:'ไนต์คลับ',docks:'ท่าเรือ','car wash':'ที่ล้างรถ',
+};
+const BASIC={the:'(คำนำหน้านาม)',a:'หนึ่ง (คำนำหน้านาม)',an:'หนึ่ง (คำนำหน้านาม)',you:'คุณ, นาย',i:'ฉัน',me:'ฉัน (กรรม)',my:'ของฉัน',your:'ของคุณ',he:'เขา (ชาย)',him:'เขา (กรรม)',
+  she:'เธอ',her:'เธอ, ของเธอ',it:'มัน',we:'พวกเรา',us:'พวกเรา (กรรม)',they:'พวกเขา',them:'พวกเขา (กรรม)',is:'เป็น, อยู่',are:'เป็น, อยู่',am:'เป็น, อยู่',was:'เป็น, อยู่ (อดีต)',
+  be:'เป็น',must:'ต้อง, คงจะ',can:'ได้, สามารถ',did:'ทำ (อดีต)',do:'ทำ',to:'ไป, ถึง',at:'ที่',in:'ใน',on:'บน',of:'ของ',for:'สำหรับ',and:'และ',or:'หรือ',
+  this:'นี่, นี้',that:'นั่น, นั้น',there:'ที่นั่น',here:'ที่นี่',what:'อะไร',who:'ใคร',why:'ทำไม',not:'ไม่',no:'ไม่, ไม่มี',yes:'ใช่',so:'มาก, ดังนั้น',
+  now:'ตอนนี้',just:'แค่',some:'บ้าง, บางส่วน',great:'เยี่ยม',cool:'เจ๋ง',nothing:'ไม่มีอะไร',somebody:'ใครบางคน',someone:'ใครบางคน',best:'ดีที่สุด',
+  way:'ทาง',place:'สถานที่, ร้าน',lot:'ลาน',bar:'บาร์',handle:'จัดการ',crazy:'บ้า',off:'ออก',up:'ขึ้น',out:'ออก',get:'ได้, ไป, เอา',see:'เห็น',
+  good:'ดี',nice:'ดี, ยินดี',man:'ผู้ชาย, เพื่อน',kind:'ชนิด, แบบ',sure:'ได้สิ',still:'ยัง',already:'แล้ว',always:'เสมอ',really:'จริงๆ',too:'ด้วย, เกินไป',
+  long:'ยาว',story:'เรื่อง',tell:'บอก, เล่า',town:'เมือง',head:'มุ่งหน้า',meet:'เจอ',with:'กับ',if:'ถ้า',look:'ดู',new:'ใหม่',right:'ใช่ไหม, ขวา',maybe:'อาจจะ',funny:'ตลก',
+  thanks:'ขอบคุณ',thank:'ขอบคุณ',bye:'ลาก่อน',hold:'จับ, ถือ',make:'ทำ',money:'เงิน',easy:'ง่าย',home:'บ้าน',back:'กลับ',called:'โทรเรียก',call:'โทร',
+  coming:'กำลังมา',come:'มา',go:'ไป',need:'ต้องการ',needs:'ต้องการ',friend:'เพื่อน',drop:'ส่ง, ปล่อย',take:'พาไป, เอาไป',care:'ดูแล',nine:'เก้า',
+  baby:'ที่รัก',one:'หนึ่ง, คน',tomorrow:'พรุ่งนี้',bad:'แย่',car:'รถ',kid:'ไอ้หนู',guy:'ผู้ชาย'};
+const NAMES={ray:'เรย์ (ชื่อ)',mia:'มีอา (ชื่อ)',leo:'ลีโอ (ชื่อ)'};
+function lookup(w){
+  const k=w.toLowerCase().replace(/’/g,"'");
+  const hit=t=>SLANG[t]||NAMES[t]||LEARN.get(t)||BASIC[t]||DICT.get(t);
+  let r=hit(k);if(r)return r;
+  const tries=[k.replace(/'s$/,''),k.replace(/s$/,''),k.replace(/es$/,''),k.replace(/ies$/,'y'),k.replace(/ed$/,''),k.replace(/d$/,''),k.replace(/ing$/,''),k.replace(/ing$/,'e'),k.replace(/ly$/,''),k.replace(/(.)\1(ed|ing)$/,'$1'),k.replace(/er$/,'')];
+  for(const t of tries)if(t&&t!==k&&(r=hit(t)))return r;
+  return null;
+}
+function wordsHTML(en){
+  return en.split(/(\s+)/).map(tok=>{
+    if(!tok.trim())return tok;
+    const core=tok.replace(/^[^A-Za-z']+|[^A-Za-z'-]+$/g,'');
+    if(!core)return esc(tok);
+    return `<span class="w" data-w="${esc(core)}">${esc(tok)}</span>`;
+  }).join('');
+}
+
+/* ---------- speech + sound ---------- */
+let voice=null;
+function pickVoice(){const vs=speechSynthesis.getVoices().filter(v=>/^en[-_]US/i.test(v.lang));voice=vs.find(v=>/Samantha|Google US|Aria|Jenny|Natural/i.test(v.name))||vs[0]||null;}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+const PITCH={Ray:.8,Mia:1.3,Leo:1.05};
+function speak(t,who){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';if(voice)u.voice=voice;u.rate=S.rate;u.pitch=PITCH[who]||1;speechSynthesis.speak(u);}catch(e){}}
+let AC=null,eng=null;
+function audio(){if(AC||!window.AudioContext&&!window.webkitAudioContext)return;try{AC=new(window.AudioContext||window.webkitAudioContext)();
+  const o=AC.createOscillator(),f=AC.createBiquadFilter(),g=AC.createGain();o.type='sawtooth';o.frequency.value=40;f.type='lowpass';f.frequency.value=380;g.gain.value=0;o.connect(f);f.connect(g);g.connect(AC.destination);o.start();eng={o,g};}catch(e){}}
+function beep(freq,dur,type='sine',vol=.08){if(!AC||!S.snd)return;const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,AC.currentTime);g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+dur);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+dur);}
+function thud(v){if(!AC||!S.snd)return;const n=AC.createBufferSource(),b=AC.createBuffer(1,AC.sampleRate*.25,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3);n.buffer=b;const g=AC.createGain();g.gain.value=clamp(v/600,.05,.35);n.connect(g);g.connect(AC.destination);n.start();}
+const ring=()=>{beep(880,.12);setTimeout(()=>beep(1100,.12),150);};
+
+/* ---------- world ---------- */
+const N=8,B=440,RH=60,SAND=240,PK=.0011,LO=24,PO=50;
+const L0=-RH-SAND,L1=N*B+RH+SAND;
+const COLS={red:'#d9342b',blue:'#2f6fd6',green:'#2e9e4f',yellow:'#f2c230',black:'#22252b',white:'#eef0f2',orange:'#f07a22',purple:'#7f4bc4',pink:'#ee6aa7',gray:'#8a9099'};
+const CNAMES=Object.keys(COLS);
+const PLACES={
+  garage:{en:"Ray's Garage",th:'อู่ของเรย์',ic:'🔧',b:[3,3],side:'s',col:'#e07b4f',h:70},
+  gas:{en:'gas station',th:'ปั๊มน้ำมัน',ic:'⛽',b:[5,3],side:'w',col:'#f2c14e',h:40},
+  bank:{en:'bank',th:'ธนาคาร',ic:'🏦',b:[2,2],side:'e',col:'#9fc8e8',h:150},
+  hospital:{en:'hospital',th:'โรงพยาบาล',ic:'🏥',b:[6,2],side:'w',col:'#f4f1ea',h:170},
+  police:{en:'police station',th:'สถานีตำรวจ',ic:'🚓',b:[1,4],side:'e',col:'#6f8fd6',h:90},
+  hotel:{en:'hotel',th:'โรงแรม',ic:'🏨',b:[5,5],side:'s',col:'#f3a3b8',h:200},
+  bar:{en:'bar',th:'บาร์',ic:'🍸',b:[2,5],side:'n',col:'#b07ad6',h:60},
+  pizza:{en:'pizza place',th:'ร้านพิซซ่า',ic:'🍕',b:[3,1],side:'s',col:'#f08a5d',h:55},
+  gym:{en:'gym',th:'ยิม',ic:'🏋️',b:[6,4],side:'w',col:'#7fd1b9',h:70},
+  mall:{en:'mall',th:'ห้าง',ic:'🛍️',b:[4,6],side:'n',col:'#ffd28a',h:95},
+  church:{en:'church',th:'โบสถ์',ic:'⛪',b:[1,1],side:'n',col:'#e9e0c9',h:115},
+  park:{en:'park',th:'สวนสาธารณะ',ic:'🌳',b:[4,4],side:'n',kind:'park'},
+  parking:{en:'parking lot',th:'ลานจอดรถ',ic:'🅿️',b:[2,3],side:'s',kind:'lot'},
+  carwash:{en:'car wash',th:'ที่ล้างรถ',ic:'🚿',b:[6,6],side:'n',col:'#6fd3f0',h:45},
+  market:{en:'market',th:'ตลาด',ic:'🧺',b:[1,6],side:'e',col:'#e3b26b',h:45},
+  school:{en:'school',th:'โรงเรียน',ic:'🏫',b:[5,1],side:'n',col:'#f6c87a',h:80},
+  club:{en:'nightclub',th:'ไนต์คลับ',ic:'🎵',b:[3,7],side:'n',col:'#ff4f8b',h:75},
+  docks:{en:'docks',th:'ท่าเรือ',ic:'⚓',b:[5,7],side:'s',kind:'docks'},
+  airport:{en:'airport',th:'สนามบิน',ic:'✈️',b:[0,0],side:'s',kind:'airport'},
+  beach:{en:'beach',th:'ชายหาด',ic:'🏖️',kind:'beach'},
+};
+const PAL=['#f4a582','#f7d6a0','#9fd8cb','#c7b6e8','#f2c6d0','#e8e1d0','#a7c5eb','#ffd27f','#d4a5a5','#b5d99c','#f6b8a8','#bde0f2'];
+const blocks=[],buildings=[],trees=[];
+(function gen(){
+  const r=seeded(11);
+  for(let by=0;by<N;by++)for(let bx=0;bx<N;bx++){
+    const x0=bx*B+RH,y0=by*B+RH,x1=(bx+1)*B-RH,y1=(by+1)*B-RH;
+    blocks.push({bx,by,x0,y0,x1,y1,kind:'city',rects:[],place:null});
+  }
+  for(const [k,p] of Object.entries(PLACES)){
+    p.key=k;p.rad=95;
+    if(p.kind==='beach'){p.ex=N*B+RH+120;p.ey=4*B;p.sx=p.ex+40;p.sy=p.ey;p.rad=170;p.lx=p.ex+40;p.ly=p.ey;continue;}
+    const b=blocks[p.b[1]*N+p.b[0]];b.place=k;b.kind=p.kind||'lm';p.blk=b;
+    const cx=(b.x0+b.x1)/2,cy=(b.y0+b.y1)/2;
+    if(p.side==='s'){p.ex=cx;p.ey=b.y1+RH/2;p.sx=cx;p.sy=b.y1-9;}
+    if(p.side==='n'){p.ex=cx;p.ey=b.y0-RH/2;p.sx=cx;p.sy=b.y0+9;}
+    if(p.side==='e'){p.ex=b.x1+RH/2;p.ey=cy;p.sx=b.x1-9;p.sy=cy;}
+    if(p.side==='w'){p.ex=b.x0-RH/2;p.ey=cy;p.sx=b.x0+9;p.sy=cy;}
+    p.lx=cx;p.ly=cy;
+  }
+  const add=(b,x0,y0,x1,y1,h,col,label)=>{const q={x0,y0,x1,y1,h,col,wall:shade(col,-.32),wall2:shade(col,-.45),label,ac:r()<.7?[r(),r()]:null};b.rects.push(q);buildings.push(q);return q;};
+  for(const b of blocks){
+    const i0=b.x0+20,j0=b.y0+20,i1=b.x1-20,j1=b.y1-20,mx=(i0+i1)/2,my=(j0+j1)/2,g=7;
+    if(b.kind==='city'){
+      const pat=r()*4|0,h=()=>50+r()*150,c=()=>PAL[r()*PAL.length|0];
+      if(pat===0)add(b,i0,j0,i1,j1,h(),c());
+      else if(pat===1){const s=mx+(r()-.5)*70;add(b,i0,j0,s-g,j1,h(),c());add(b,s+g,j0,i1,j1,h(),c());}
+      else if(pat===2){const s=my+(r()-.5)*70;add(b,i0,j0,i1,s-g,h(),c());add(b,i0,s+g,i1,j1,h(),c());}
+      else{add(b,i0,j0,mx-g,my-g,h(),c());add(b,mx+g,j0,i1,my-g,h(),c());add(b,i0,my+g,mx-g,j1,h(),c());add(b,mx+g,my+g,i1,j1,h(),c());}
+      for(let t=40;t<b.x1-b.x0-20;t+=95){if(r()<.35)trees.push({x:b.x0+t,y:b.y0+8,h:55+r()*25});if(r()<.35)trees.push({x:b.x0+t,y:b.y1-8,h:55+r()*25});}
+      for(let t=40;t<b.y1-b.y0-20;t+=95){if(r()<.35)trees.push({x:b.x0+8,y:b.y0+t,h:55+r()*25});if(r()<.35)trees.push({x:b.x1-8,y:b.y0+t,h:55+r()*25});}
+    }else{
+      const p=PLACES[b.place],S2=95;
+      let a0=i0,c0=j0,a1=i1,c1=j1;
+      if(p.side==='s')c1-=S2;if(p.side==='n')c0+=S2;if(p.side==='e')a1-=S2;if(p.side==='w')a0+=S2;
+      b.strip={x0:p.side==='e'?a1+g:i0,y0:p.side==='s'?c1+g:j0,x1:p.side==='w'?a0-g:i1,y1:p.side==='n'?c0-g:j1};
+      if(b.kind==='lm'){const q=add(b,a0,c0,a1,c1,p.h,p.col,p);p.lx=(a0+a1)/2;p.ly=(c0+c1)/2;p.roof=q;}
+      else if(b.kind==='park'){for(let n=0;n<16;n++)trees.push({x:rand(i0+10,i1-10),y:rand(j0+10,j1-10),h:50+r()*30,round:r()<.5});}
+      else if(b.kind==='airport'){const q=add(b,i0,j0,i1,j0+80,55,'#dfe6ee',p);p.roof=q;p.lx=(i0+i1)/2;p.ly=j0+40;}
+      else if(b.kind==='docks'){const cc=['#c0392b','#2f6fd6','#2e9e4f','#f07a22','#7f4bc4'];for(let yy=j0;yy<c1-30;yy+=40)for(let xx=i0;xx<i1-60;xx+=86)if(r()<.75)add(b,xx,yy,xx+74,yy+30,30,cc[r()*cc.length|0]);p.lx=(i0+i1)/2;p.ly=c1+40;}
+      if(b.kind==='lot'||b.kind==='park'){p.lx=(i0+i1)/2;p.ly=(j0+j1)/2;}
+    }
+  }
+  for(let n=0;n<26;n++){const s=r()*4|0,t=r()*(N*B);const o=RH+40+r()*SAND*.5;trees.push(s===0?{x:t,y:-o,h:60}:s===1?{x:t,y:N*B+o,h:60}:s===2?{x:-o,y:t,h:60}:{x:N*B+o,y:t,h:60});}
+})();
+const onSand=(x,y)=>x<-RH||y<-RH||x>N*B+RH||y>N*B+RH;
+function pushOut(x,y,r){
+  let dx=0,dy=0;const bi=Math.floor(x/B),bj=Math.floor(y/B);
+  for(let j=bj-1;j<=bj+1;j++)for(let i=bi-1;i<=bi+1;i++){
+    if(i<0||j<0||i>=N||j>=N)continue;
+    for(const q of blocks[j*N+i].rects){
+      const nx=clamp(x,q.x0,q.x1),ny=clamp(y,q.y0,q.y1),ex=x-nx,ey=y-ny,d2=ex*ex+ey*ey;
+      if(d2>=r*r)continue;
+      if(d2>1e-6){const d=Math.sqrt(d2),p=r-d;dx+=ex/d*p;dy+=ey/d*p;}
+      else{const l=x-q.x0,rr=q.x1-x,t=y-q.y0,bb=q.y1-y,m=Math.min(l,rr,t,bb);if(m===l)dx-=l+r;else if(m===rr)dx+=rr+r;else if(m===t)dy-=t+r;else dy+=bb+r;}
+    }
+  }
+  if(x-r<L0)dx+=L0-(x-r);if(x+r>L1)dx-=x+r-L1;if(y-r<L0)dy+=L0-(y-r);if(y+r>L1)dy-=y+r-L1;
+  return [dx,dy];
+}
+
+/* ---------- missions ---------- */
+const WHO={Ray:'#ff9f5a',Mia:'#ff7ab0',Leo:'#5fe0d6'};
+const CHAPTERS=['New in Town','Small Jobs','Street Talk'];
+const go=(at,en,th,o={})=>({t:'go',at,en,th,...o});
+const car=(col,en,th,at)=>({t:'car',col,en,th,at});
+const anyCar={t:'car',col:'any',en:'Get in a car.',th:'ขึ้นรถสักคัน'};
+const backCar={t:'car',col:'any',en:'Get back in the car.',th:'กลับขึ้นรถ'};
+const out={t:'out',en:'Get out of the car.',th:'ลงจากรถ'};
+const talk=(...lines)=>({t:'talk',lines});
+const ask=(...opts)=>({ask:opts});
+const MISSIONS=[
+ {id:'first',ch:0,en:'First Day',th:'วันแรก',steps:[
+  talk(['Ray','Hey! You must be the new kid.','เฮ้! นายคือเด็กใหม่ใช่ไหม'],['Ray',"I'm Ray. Welcome to Sun Bay.",'ฉันชื่อเรย์ ยินดีต้อนรับสู่ซันเบย์'],
+    ask(['Nice to meet you.','ยินดีที่ได้รู้จัก',[['Ray','Nice to meet you too.','ยินดีที่ได้รู้จักเหมือนกัน']]],['Who are you?','คุณเป็นใคร',[['Ray',"I told you. I'm Ray. I own the garage.",'บอกแล้วไง ฉันเรย์ เจ้าของอู่']]]),
+    ['Ray',"Let's see if you can drive.",'มาดูซิว่านายขับรถเป็นไหม']),
+  car('red','Get in the red car.','ขึ้นรถสีแดง'),
+  talk(['Ray','Good. Now go to the gas station.','ดีมาก ทีนี้ไปปั๊มน้ำมัน']),
+  go('gas','Go to the gas station.','ไปปั๊มน้ำมัน'),
+  talk(['Ray','Not bad! Now come back to the garage.','ไม่เลว! กลับมาที่อู่ได้แล้ว']),
+  go('garage','Come back to the garage.','กลับมาที่อู่'),
+  talk(['Ray','Great job, kid. See you tomorrow.','เก่งมาก ไอ้หนู เจอกันพรุ่งนี้']),
+ ],learn:[['get in','ขึ้น (รถ)'],['red','สีแดง'],['gas station','ปั๊มน้ำมัน'],['come back','กลับมา'],['welcome','ยินดีต้อนรับ']]},
+ {id:'pizza',ch:0,en:'Pizza Run',th:'ซื้อพิซซ่า',steps:[
+  talk(['Ray',"I'm so hungry.",'หิวจะตายแล้ว'],['Ray','Can you get me a pizza?','ไปเอาพิซซ่ามาให้หน่อยได้ไหม'],
+    ask(['Sure.','ได้สิ',[['Ray',"Thanks. It's already paid for.",'ขอบใจ จ่ายเงินไว้แล้ว']]],['What kind?','หน้าอะไร',[['Ray','Cheese. Always cheese.','ชีส ต้องชีสเท่านั้น']]])),
+  anyCar,
+  go('pizza','Go to the pizza place.','ไปร้านพิซซ่า'),
+  out,
+  {t:'grab',item:'pizza',at:'pizza',en:'Take the pizza.',th:'หยิบพิซซ่า'},
+  backCar,
+  go('garage','Bring it to the garage.','เอามาที่อู่'),
+  talk(['Ray','Mmm, still hot. Thanks!','อืม ยังร้อนอยู่เลย ขอบใจนะ']),
+ ],learn:[['hungry','หิว'],['get out','ลงจากรถ'],['take','หยิบ, เอาไป'],['bring','เอามา'],['hot','ร้อน']]},
+ {id:'mia',ch:0,en:'Meet Mia',th:'เจอมีอา',steps:[
+  talk(['Ray','My friend Mia needs a ride.','มีอาเพื่อนฉัน อยากให้ใครไปส่ง'],['Ray',"She's at the hotel.",'เธออยู่ที่โรงแรม'],['Ray','Go pick her up.','ไปรับเธอหน่อย']),
+  anyCar,
+  {t:'pick',who:'Mia',at:'hotel',en:'Pick up Mia at the hotel.',th:'ไปรับมีอาที่โรงแรม'},
+  talk(['Mia',"Hi! You're Ray's new guy, right?",'หวัดดี! นายคือคนใหม่ของเรย์ใช่ไหม'],
+    ask(["Yes, that's me.",'ใช่ ผมเอง',[['Mia',"Cool. I'm Mia.",'เจ๋ง ฉันมีอา']]],['Maybe.','ก็อาจจะนะ',[['Mia','Ha! Funny guy.','ฮ่า! ตลกดีนี่']]]),
+    ['Mia','Take me to the mall, please.','พาฉันไปห้างหน่อยนะ']),
+  go('mall','Take Mia to the mall.','พามีอาไปห้าง',{drop:1}),
+  talk(['Mia','Thanks for the ride. See you around!','ขอบใจที่มาส่งนะ ไว้เจอกัน!']),
+ ],learn:[['ride','การไปส่ง'],['pick up','ไปรับ'],['hotel','โรงแรม'],['mall','ห้าง'],['please','หน่อยนะ, กรุณา']]},
+ {id:'wash',ch:0,en:'Car Wash',th:'ล้างรถ',steps:[
+  talk(['Ray',"Look at that blue car. It's so dirty!",'ดูรถสีฟ้าคันนั้นสิ สกปรกมาก!'],['Ray','Take it to the car wash.','เอาไปล้างที']),
+  car('blue','Get in the blue car.','ขึ้นรถสีฟ้า'),
+  go('carwash','Go to the car wash.','ไปที่ล้างรถ'),
+  {t:'wait',s:4,at:'carwash',en:'Wait here.',th:'รอตรงนี้'},
+  talk(['Ray','Is it clean now? Good.','สะอาดแล้วใช่ไหม ดี'],['Ray','Park it at the parking lot.','เอาไปจอดที่ลานจอดรถ']),
+  go('parking','Park at the parking lot.','จอดที่ลานจอดรถ'),
+  talk(['Ray','Perfect. Thanks, kid.','เยี่ยม ขอบใจนะ']),
+ ],learn:[['blue','สีฟ้า'],['dirty','สกปรก'],['clean','สะอาด'],['wait','รอ'],['park','จอด']]},
+ {id:'bag',ch:1,en:'The Bag',th:'กระเป๋าใบนั้น',steps:[
+  talk(['Ray',"I've got a job for you.",'มีงานให้ทำ'],['Ray',"There's a black bag behind the bar.",'มีกระเป๋าสีดำอยู่หลังบาร์'],['Ray',"Go get it. Don't open it.",'ไปเอามา ห้ามเปิดนะ'],
+    ask(['Okay, boss.','ได้เลย บอส',[]],["What's inside?",'ข้างในมีอะไร',[['Ray',"Don't ask.",'อย่าถาม']]])),
+  anyCar,
+  go('bar','Go to the bar.','ไปที่บาร์'),
+  out,
+  {t:'grab',item:'bag',at:'bar',en:'Take the black bag.',th:'หยิบกระเป๋าสีดำ'},
+  backCar,
+  go('garage','Bring the bag to Ray.','เอากระเป๋าไปให้เรย์'),
+  talk(['Ray',"You didn't open it, right? Good.",'ไม่ได้เปิดใช่ไหม ดีมาก']),
+ ],learn:[['job','งาน'],['black','สีดำ'],['behind','ข้างหลัง'],['open','เปิด'],['inside','ข้างใน']]},
+ {id:'follow',ch:1,en:'Follow Him',th:'ตามเขาไป',steps:[
+  talk(['Ray','See that green car?','เห็นรถสีเขียวคันนั้นไหม'],['Ray','That guy owes me money.','หมอนั่นติดเงินฉันอยู่'],['Ray',"Follow him. Don't lose him.",'ตามไป อย่าให้คลาด']),
+  anyCar,
+  {t:'follow',col:'green',to:'docks',en:'Follow the green car.',th:'ตามรถสีเขียวไป'},
+  talk(['Ray','He stopped at the docks? Okay.','เขาจอดที่ท่าเรือเหรอ โอเค'],['Ray',"I'll handle it. Come back.",'เดี๋ยวฉันจัดการเอง กลับมาได้']),
+  go('garage','Come back to the garage.','กลับมาที่อู่'),
+ ],learn:[['green','สีเขียว'],['follow','ตาม'],['owe','ติดหนี้'],['lose','คลาด'],['docks','ท่าเรือ']]},
+ {id:'hurt',ch:1,en:'Hurry Up',th:'รีบหน่อย',steps:[
+  talk(['Mia','Help! My brother Leo is hurt.','ช่วยด้วย! ลีโอน้องชายฉันเจ็บ'],['Mia',"He's at the gym.",'เขาอยู่ที่ยิม'],['Mia','Please hurry!','รีบหน่อยนะ!']),
+  anyCar,
+  {t:'pick',who:'Leo',at:'gym',en:'Pick up Leo at the gym.',th:'ไปรับลีโอที่ยิม'},
+  talk(['Leo','Ow... my leg. It really hurts.','โอ๊ย... ขาฉัน เจ็บมาก'],['Leo','Take me to the hospital.','พาฉันไปโรงพยาบาล']),
+  go('hospital','Take Leo to the hospital.','พาลีโอไปโรงพยาบาล',{drop:1}),
+  talk(['Mia','You saved him. Thank you so much!','นายช่วยเขาไว้ ขอบคุณมากนะ!']),
+ ],learn:[['help','ช่วยด้วย'],['brother','พี่ชาย, น้องชาย'],['hurt','เจ็บ'],['hurry','รีบ'],['leg','ขา']]},
+ {id:'cops',ch:1,en:'Cops!',th:'ตำรวจมา!',steps:[
+  talk(['Leo',"Hey, it's Leo. I need a ride.",'เฮ้ ลีโอเอง ขอติดรถหน่อย'],['Leo',"I'm at the bank. Come quick!",'ฉันอยู่ที่ธนาคาร มาเร็ว!']),
+  anyCar,
+  {t:'pick',who:'Leo',at:'bank',en:'Pick up Leo at the bank.',th:'ไปรับลีโอที่ธนาคาร'},
+  talk(['Leo','Drive! The cops are coming!','ขับเลย! ตำรวจมาแล้ว!'],
+    ask(['What did you do?','นายทำอะไรมา',[['Leo','Nothing! Just drive!','ไม่ได้ทำอะไร! ขับไปเถอะ!']]],['Hold on!','จับไว้แน่นๆ!',[]])),
+  {t:'cops',n:1,en:'Lose the cops!',th:'หนีตำรวจให้พ้น'},
+  talk(['Leo',"We lost them! You're crazy, man.",'หนีพ้นแล้ว! นายนี่บ้าจริงๆ'],['Leo','Drop me off at the beach.','ส่งฉันที่ชายหาดนะ']),
+  go('beach','Drop Leo off at the beach.','ส่งลีโอที่ชายหาด',{drop:1}),
+ ],learn:[['cops','ตำรวจ'],['quick','เร็ว'],['drive','ขับ'],['lose the cops','หนีตำรวจ'],['drop off','ส่ง (ลงรถ)']]},
+ {id:'cash',ch:2,en:'Easy Money',th:'เงินง่ายๆ',steps:[
+  talk(['Leo',"Yo, what's up?",'โย่ ว่าไง'],['Leo','Wanna make some cash?','อยากได้เงินไหม'],
+    ask(["Yeah, I'm in.",'เอาสิ ฉันเอาด้วย',[['Leo',"That's what I'm talkin' about!",'นั่นแหละที่อยากได้ยิน!']]],['Not really.','ไม่ค่อยอยาก',[['Leo',"C'mon, it's easy money.",'มาเถอะน่า เงินง่ายๆ']]]),
+    ['Leo',"There's a box at the market. Go grab it.",'มีกล่องอยู่ที่ตลาด ไปหยิบมา']),
+  anyCar,
+  go('market','Go to the market.','ไปตลาด'),
+  out,
+  {t:'grab',item:'box',at:'market',en:'Grab the box.',th:'หยิบกล่อง'},
+  backCar,
+  talk(['Leo','Uh-oh. Somebody called the cops.','แย่แล้ว มีคนแจ้งตำรวจ'],['Leo','Get outta there!','รีบออกมาจากตรงนั้น!']),
+  {t:'cops',n:2,en:'Lose the cops!',th:'หนีตำรวจให้พ้น'},
+  talk(['Leo','Nice! Now drop it off at the docks.','เยี่ยม! เอาไปส่งที่ท่าเรือ']),
+  go('docks','Take the box to the docks.','เอากล่องไปท่าเรือ'),
+  talk(['Leo',"Here's your cut. Don't tell Ray.",'ส่วนแบ่งของนาย อย่าบอกเรย์นะ']),
+ ],learn:[['wanna','อยาก'],['cash','เงินสด'],['grab','หยิบ, คว้า'],['outta','ออกจาก'],['cut','ส่วนแบ่ง']]},
+ {id:'stolen',ch:2,en:'Stolen Car',th:'รถหาย',steps:[
+  talk(['Ray','We got a problem. Somebody stole my car.','มีปัญหาแล้ว มีคนขโมยรถฉัน'],['Ray',"It's yellow. Someone saw it near the church.",'สีเหลือง มีคนเห็นแถวโบสถ์'],['Ray','Go get it back.','ไปเอาคืนมา']),
+  anyCar,
+  go('church','Go to the church.','ไปโบสถ์'),
+  out,
+  car('yellow','Get in the yellow car.','ขึ้นรถสีเหลือง','church'),
+  talk(['Ray','Careful! The cops think you stole it!','ระวัง! ตำรวจนึกว่านายขโมยมา!']),
+  {t:'cops',n:1,en:'Lose the cops!',th:'หนีตำรวจให้พ้น'},
+  go('garage','Bring it back to the garage.','เอากลับมาที่อู่'),
+  talk(['Ray',"My baby! You're the best, kid.",'ที่รักของฉัน! นายเจ๋งที่สุด']),
+ ],learn:[['problem','ปัญหา'],['stole','ขโมย'],['yellow','สีเหลือง'],['near','ใกล้, แถว'],['careful','ระวัง']]},
+ {id:'flight',ch:2,en:'Last Flight',th:'เที่ยวบินสุดท้าย',steps:[
+  talk(['Mia',"Hey, it's me. I'm leaving town tonight.",'นี่ฉันเอง คืนนี้ฉันจะไปจากเมืองนี้'],['Mia',"I'm at the nightclub. Can you take me to the airport?",'ฉันอยู่ที่ไนต์คลับ ไปส่งสนามบินได้ไหม'],
+    ask(['Why are you leaving?','ทำไมถึงไป',[['Mia',"Long story. I'll tell you in the car.",'เรื่องยาว เดี๋ยวเล่าในรถ']]],["I'm on my way.",'กำลังไป',[['Mia',"Thanks. You're the best.",'ขอบใจ นายดีที่สุด']]])),
+  anyCar,
+  {t:'pick',who:'Mia',at:'club',en:'Pick up Mia at the nightclub.',th:'ไปรับมีอาที่ไนต์คลับ'},
+  talk(['Mia',"Hurry up, my flight's at nine.",'รีบหน่อย เครื่องออกสามทุ่ม']),
+  go('airport','Take Mia to the airport.','พามีอาไปสนามบิน',{drop:1}),
+  talk(['Mia',"I'm gonna miss you. Take care of Leo, okay?",'ฉันจะคิดถึงนายนะ ดูแลลีโอด้วยล่ะ']),
+ ],learn:[['leave','จากไป'],['tonight','คืนนี้'],['airport','สนามบิน'],['flight','เที่ยวบิน'],['gonna','กำลังจะ'],['miss','คิดถึง']]},
+ {id:'family',ch:2,en:'Big Night',th:'คืนสำคัญ',steps:[
+  talk(['Ray','Alright, kid. This is it.','เอาล่ะ ไอ้หนู ถึงเวลาแล้ว'],['Ray','Meet me at the nightclub. Bring a fast car.','มาเจอฉันที่ไนต์คลับ เอารถแรงๆ มาด้วย']),
+  car('white','Get in the white car.','ขึ้นรถสีขาว'),
+  {t:'pick',who:'Ray',at:'club',en:'Pick up Ray at the nightclub.',th:'ไปรับเรย์ที่ไนต์คลับ'},
+  talk(['Ray',"Let's roll. Head to the docks.",'ไปกันเลย มุ่งหน้าไปท่าเรือ']),
+  go('docks','Go to the docks.','ไปท่าเรือ'),
+  talk(['Ray',"Wait... no one's here.",'เดี๋ยวนะ... ไม่มีใครอยู่เลย'],["Ray","It's a setup! Get us outta here!",'โดนหลอกแล้ว! พาเราออกไปจากที่นี่!']),
+  {t:'cops',n:3,en:'Lose the cops!',th:'หนีตำรวจให้พ้น'},
+  talk(['Ray','Phew. That was close.','เฮ้อ เกือบไปแล้ว'],['Ray','Take us home.','พาเรากลับบ้าน']),
+  go('garage','Drive back to the garage.','ขับกลับอู่',{drop:1}),
+  talk(['Ray','You did good tonight. Welcome to the family.','คืนนี้นายทำได้ดีมาก ยินดีต้อนรับสู่ครอบครัว']),
+ ],learn:[['alright','เอาล่ะ'],['fast','เร็ว, แรง'],["let's roll",'ไปกันเลย'],['setup','กับดัก'],['close','เฉียด, เกือบ'],['family','ครอบครัว']]},
+];
+const LEARN=new Map();for(const m of MISSIONS)for(const [en,th] of m.learn)if(!LEARN.has(en))LEARN.set(en,th);
+
+/* ---------- state ---------- */
+const cv=$('#c'),ctx=cv.getContext('2d');
+let W=0,VH=0,DPR=1;
+function resize(){DPR=Math.min(2,window.devicePixelRatio||1);W=innerWidth;VH=innerHeight;cv.width=W*DPR|0;cv.height=VH*DPR|0;}
+addEventListener('resize',resize);resize();
+let mode='menu';            // menu | play
+let paused=false,TK=null;   // TK = active talk
+let cars=[],peds=[],items=[],floats=[];
+const P={mode:'foot',x:0,y:0,a:0,car:null,walk:0,vx:0,vy:0};
+const cam={x:N*B/2,y:N*B/2,z:1,shake:0};
+let wanted=0,lostT=0,bustT=0,M=null,tick=0,menuT=0;
+const px=()=>P.mode==='car'?P.car.x:P.x, py=()=>P.mode==='car'?P.car.y:P.y;
+const pspeed=()=>P.mode==='car'?hyp(P.car.vx,P.car.vy):hyp(P.vx,P.vy);
+const focus=()=>mode==='play'?{x:px(),y:py()}:{x:cam.x,y:cam.y};
+
+/* ---------- entities ---------- */
+function mkCar(x,y,a,cname,o={}){const c={x,y,a,vx:0,vy:0,v:0,cname,col:COLS[cname]||'#ffffff',police:false,ai:null,keep:false,stun:0,bt:0,...o};cars.push(c);return c;}
+function curbSpots(x,y){
+  const i=clamp(Math.round(x/B),0,N),j=clamp(Math.round(y/B),0,N),dv=Math.abs(x-i*B),dh=Math.abs(y-j*B),o=[];
+  if(dh<dv){const base=clamp(Math.floor(x/B),0,N-1)*B;for(const s of[1,-1])for(const a of[160,280])o.push({x:base+a,y:j*B+s*PO,a:s>0?0:Math.PI});}
+  else{const base=clamp(Math.floor(y/B),0,N-1)*B;for(const s of[1,-1])for(const a of[160,280])o.push({x:i*B+s*PO,y:base+a,a:s>0?-Math.PI/2:Math.PI/2});}
+  return o;
+}
+function spawnParked(x,y,cols){
+  const sp=curbSpots(x,y).sort((a,b)=>hyp(a.x-x,a.y-y)-hyp(b.x-x,b.y-y)),out=[];
+  cols.forEach((cn,k)=>{const s=sp[k%sp.length];cars=cars.filter(c=>c===P.car||hyp(c.x-s.x,c.y-s.y)>60);out.push(mkCar(s.x,s.y,s.a,cn,{keep:true,parked:true}));});
+  return out;
+}
+const DIRS=[[1,0],[-1,0],[0,1],[0,-1]];
+function setRoute(c,dx,dy,ti,tj){c.ai.dx=dx;c.ai.dy=dy;c.ai.ti=ti;c.ai.tj=tj;}
+function aiFromPose(c){
+  const dx=Math.round(Math.cos(c.a)),dy=Math.round(Math.sin(c.a));
+  let ti,tj;
+  if(dx){tj=clamp(Math.round(c.y/B),0,N);ti=dx>0?Math.floor(c.x/B)+1:Math.ceil(c.x/B)-1;}
+  else{ti=clamp(Math.round(c.x/B),0,N);tj=dy>0?Math.floor(c.y/B)+1:Math.ceil(c.y/B)-1;}
+  setRoute(c,dx,dy,clamp(ti,0,N),clamp(tj,0,N));
+}
+function spawnTraffic(police){
+  const f=focus();
+  for(let tries=0;tries<12;tries++){
+    const i=clamp(Math.round(f.x/B)+((Math.random()*7|0)-3),0,N),j=clamp(Math.round(f.y/B)+((Math.random()*7|0)-3),0,N);
+    const ds=DIRS.filter(([dx,dy])=>i+dx>=0&&i+dx<=N&&j+dy>=0&&j+dy<=N);const [dx,dy]=pick(ds);
+    const t=rand(.25,.75)*B,x=i*B+dx*t-dy*LO,y=j*B+dy*t+dx*LO;
+    const d=hyp(x-f.x,y-f.y);
+    if(d<(police?750:550)||d>(police?1400:1200)||onScreen(x,y,60))continue;
+    if(cars.some(c=>hyp(c.x-x,c.y-y)<110))continue;
+    const c=mkCar(x,y,Math.atan2(dy,dx),police?'police':pick(CNAMES),{police:!!police});
+    c.col=police?'#f4f4f4':c.col;
+    c.ai={mode:police?'chase':'roam',cruise:police?320+wanted*25:rand(150,200)};
+    setRoute(c,dx,dy,i+dx,j+dy);c.v=c.ai.cruise*.8;
+    return c;
+  }
+  return null;
+}
+function arrive(c){
+  const ai=c.ai,i=ai.ti,j=ai.tj;
+  if(ai.mode==='route'&&i===ai.di&&j===ai.dj){ai.mode='final';return;}
+  let opts=DIRS.filter(([dx,dy])=>i+dx>=0&&i+dx<=N&&j+dy>=0&&j+dy<=N&&!(dx===-ai.dx&&dy===-ai.dy));
+  if(!opts.length)opts=[[-ai.dx,-ai.dy]];
+  let d;
+  if(ai.mode==='roam')d=pick(opts);
+  else{const gx=ai.mode==='chase'?px():ai.di*B,gy=ai.mode==='chase'?py():ai.dj*B;
+    d=opts.map(o=>[o,hyp((i+o[0])*B-gx,(j+o[1])*B-gy)+Math.random()*20]).sort((a,b)=>a[1]-b[1])[0][0];}
+  setRoute(c,d[0],d[1],i+d[0],j+d[1]);
+}
+function blockedAhead(c){
+  const ca=Math.cos(c.a),sa=Math.sin(c.a);
+  const chk=(x,y,w)=>{const rx=x-c.x,ry=y-c.y,f=rx*ca+ry*sa;if(f<=0||f>95)return false;return Math.abs(-rx*sa+ry*ca)<w;};
+  for(const o of cars)if(o!==c&&chk(o.x,o.y,24))return true;
+  if(P.mode==='foot'&&mode==='play'&&chk(P.x,P.y,22))return true;
+  for(const p of peds)if(p.st!=='walk'&&chk(p.x,p.y,20))return true;
+  return false;
+}
+function aiCar(c,dt){
+  const ai=c.ai;
+  if(c.stun>0){c.stun-=dt;c.vx*=Math.exp(-3*dt);c.vy*=Math.exp(-3*dt);c.v=c.vx*Math.cos(c.a)+c.vy*Math.sin(c.a);return;}
+  if(ai.mode==='parked'||ai.mode==='hold'){c.v=0;c.vx*=Math.exp(-6*dt);c.vy*=Math.exp(-6*dt);return;}
+  const P2={x:px(),y:py()},dp=hyp(c.x-P2.x,c.y-P2.y);
+  let tx,ty,cruise=ai.cruise,direct=false;
+  if(ai.mode==='chase'&&mode==='play'&&dp<380){tx=P2.x;ty=P2.y;direct=true;ai.wasDirect=true;}
+  else{
+    if(ai.wasDirect){ai.wasDirect=false;const i=clamp(Math.round(c.x/B),0,N),j=clamp(Math.round(c.y/B),0,N);setRoute(c,Math.sign(i*B-c.x)|0,Math.sign(j*B-c.y)|0,i,j);if(!ai.dx&&!ai.dy)ai.dx=1;}
+    if(ai.mode==='final'){tx=ai.fx;ty=ai.fy;}
+    else{tx=ai.ti*B-ai.dy*LO;ty=ai.tj*B+ai.dx*LO;}
+  }
+  const dx=tx-c.x,dy=ty-c.y,d=hyp(dx,dy);
+  if(!direct&&d<30){if(ai.mode==='final'){ai.mode='parked';return;}arrive(c);return;}
+  const da=angDiff(Math.atan2(dy,dx),c.a);
+  c.a+=clamp(da,-3.2*dt,3.2*dt);
+  let tv=cruise*(Math.abs(da)>.6?.5:1);
+  if(ai.mode==='final')tv=Math.min(tv,d*1.4+20);
+  if(!direct){if(blockedAhead(c)){c.bt+=dt;if(c.bt<2.5)tv=0;else if(c.bt>3.5)c.bt=0;}else c.bt=0;}
+  c.v+=clamp(tv-c.v,-700*dt,320*dt);
+  c.vx=Math.cos(c.a)*c.v;c.vy=Math.sin(c.a)*c.v;
+}
+function playerCar(c,dt){
+  let th=0,st=0;const hb=K[' ']||brakeHeld;
+  if(K.ArrowUp||K.w)th+=1;if(K.ArrowDown||K.s)th-=1;if(K.ArrowLeft||K.a)st-=1;if(K.ArrowRight||K.d)st+=1;
+  let fx=Math.cos(c.a),fy=Math.sin(c.a),fwd=c.vx*fx+c.vy*fy;
+  if(stick.on&&stick.m>.18){const d=angDiff(stick.ang,c.a);
+    if(Math.abs(d)<2.1||fwd>90){th=stick.m;st=clamp(d*2.2,-1,1);}else{th=-stick.m*.8;st=clamp(-angDiff(stick.ang+Math.PI,c.a)*2.2,-1,1);}}
+  let lx=c.vx-fx*fwd,ly=c.vy-fy*fwd;
+  const MAX=onSand(c.x,c.y)?300:540;
+  if(th>0)fwd+=(fwd<0?900:430)*th*dt;
+  else if(th<0)fwd-=(fwd>0?900:320)*-th*dt;
+  else fwd*=Math.exp(-.9*dt);
+  if(hb)fwd*=Math.exp(-2.4*dt);
+  fwd=clamp(fwd,-170,Math.max(MAX,fwd*Math.exp(-2*dt)));
+  const g=hb?1.6:9;lx*=Math.exp(-g*dt);ly*=Math.exp(-g*dt);
+  const sf=clamp(Math.abs(fwd)/140,0,1)*(fwd<0?-1:1);
+  c.a+=st*2.7*sf*dt*(hb?1.35:1);
+  fx=Math.cos(c.a);fy=Math.sin(c.a);
+  c.vx=fx*fwd+lx;c.vy=fy*fwd+ly;c.v=fwd;
+}
+function carWorld(c){
+  const fx=Math.cos(c.a)*18,fy=Math.sin(c.a)*18;let tx=0,ty=0;
+  for(const s of[1,-1]){const [dx,dy]=pushOut(c.x+fx*s,c.y+fy*s,16);tx+=dx;ty+=dy;}
+  if(!tx&&!ty)return;
+  c.x+=tx;c.y+=ty;const l=hyp(tx,ty),nx=tx/l,ny=ty/l,vn=c.vx*nx+c.vy*ny;
+  if(vn<0){c.vx-=nx*vn*1.3;c.vy-=ny*vn*1.3;if(c.ai)c.v*=.5;if(-vn>150&&c===P.car){thud(-vn);cam.shake=Math.min(12,-vn/40);}}
+}
+function carCars(){
+  for(let i=0;i<cars.length;i++)for(let j=i+1;j<cars.length;j++){
+    const a=cars[i],b=cars[j];if(Math.abs(a.x-b.x)>90||Math.abs(a.y-b.y)>90)continue;
+    const ax=Math.cos(a.a)*18,ay=Math.sin(a.a)*18,bx=Math.cos(b.a)*18,by=Math.sin(b.a)*18;
+    for(const sa of[1,-1])for(const sb of[1,-1]){
+      const x1=a.x+ax*sa,y1=a.y+ay*sa,x2=b.x+bx*sb,y2=b.y+by*sb,dx=x2-x1,dy=y2-y1,d=hyp(dx,dy);
+      if(d>=32||d<1e-3)continue;
+      const nx=dx/d,ny=dy/d,p=(32-d)/2;a.x-=nx*p;a.y-=ny*p;b.x+=nx*p;b.y+=ny*p;
+      const rv=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;
+      if(rv<0){const J=-rv*.55;a.vx-=nx*J;a.vy-=ny*J;b.vx+=nx*J;b.vy+=ny*J;
+        if(-rv>80){for(const c of[a,b])if(c.ai&&c.ai.mode!=='hold'&&c.ai.mode!=='parked')c.stun=c.police?.35:.8;}
+        if((a===P.car||b===P.car)&&-rv>120){thud(-rv);cam.shake=Math.min(10,-rv/50);const o=a===P.car?b:a;if(o.police&&wanted===0)setWanted(1);}}
+    }
+  }
+}
+/* pedestrians walk around the sidewalk of a block */
+function perim(b){const x0=b.x0+9,y0=b.y0+9,x1=b.x1-9,y1=b.y1-9;return{x0,y0,x1,y1,w:x1-x0,h:y1-y0,L:2*(x1-x0+y1-y0)};}
+function perimPos(b,t){const p=perim(b);t=((t%p.L)+p.L)%p.L;
+  if(t<p.w)return[p.x0+t,p.y0];t-=p.w;if(t<p.h)return[p.x1,p.y0+t];t-=p.h;if(t<p.w)return[p.x1-t,p.y1];t-=p.w;return[p.x0,p.y1-t];}
+function perimT(b,x,y){const p=perim(b);const c=[[Math.abs(y-p.y0),clamp(x,p.x0,p.x1)-p.x0],[Math.abs(x-p.x1),p.w+clamp(y,p.y0,p.y1)-p.y0],[Math.abs(y-p.y1),p.w+p.h+p.x1-clamp(x,p.x0,p.x1)],[Math.abs(x-p.x0),2*p.w+p.h+p.y1-clamp(y,p.y0,p.y1)]];c.sort((a,b)=>a[0]-b[0]);return c[0][1];}
+const SHIRT=['#e74c3c','#3498db','#f1c40f','#9b59b6','#1abc9c','#ecf0f1','#e67e22','#34495e','#ff7ab0','#2ecc71'];
+const SKIN=['#f1c27d','#e0ac69','#c68642','#8d5524','#ffdbac'];
+function mkPed(b,t,o={}){const [x,y]=perimPos(b,t);const p={b,t,x,y,a:0,dir:Math.random()<.5?1:-1,spd:rand(28,46),st:'walk',tm:0,vx:0,vy:0,shirt:pick(SHIRT),skin:pick(SKIN),ph:Math.random()*9,...o};peds.push(p);return p;}
+function spawnPed(){
+  const f=focus(),bi=clamp(Math.floor(f.x/B)+((Math.random()*7|0)-3),0,N-1),bj=clamp(Math.floor(f.y/B)+((Math.random()*7|0)-3),0,N-1),b=blocks[bj*N+bi];
+  const t=Math.random()*perim(b).L,[x,y]=perimPos(b,t);
+  if(onScreen(x,y,30)||hyp(x-f.x,y-f.y)>1200)return;
+  mkPed(b,t);
+}
+function updPed(p,dt){
+  if(p.npc){p.a=Math.atan2(py()-p.y,px()-p.x);if(p.board){const dx=px()-p.x,dy=py()-p.y,d=hyp(dx,dy);if(d>8){p.x+=dx/d*120*dt;p.y+=dy/d*120*dt;}}return;}
+  if(p.st==='walk'){p.t+=p.dir*p.spd*dt;const [x,y]=perimPos(p.b,p.t);p.a=Math.atan2(y-p.y,x-p.x);p.x=x;p.y=y;return;}
+  p.tm-=dt;
+  if(p.st==='down'){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=Math.exp(-4*dt);p.vy*=Math.exp(-4*dt);if(p.tm<=0){p.st='flee';p.tm=2.5;}}
+  else if(p.st==='flee'){
+    let dx=p.x-px(),dy=p.y-py(),d=hyp(dx,dy)||1;
+    if(p.home){dx=p.home.x-p.x;dy=p.home.y-p.y;d=hyp(dx,dy)||1;}
+    p.a=Math.atan2(dy,dx);p.x+=dx/d*120*dt;p.y+=dy/d*120*dt;
+    if(p.tm<=0){p.home=null;const bi=clamp(Math.floor(p.x/B),0,N-1),bj=clamp(Math.floor(p.y/B),0,N-1);p.b=blocks[bj*N+bi];p.t=perimT(p.b,p.x,p.y);p.st='walk';}
+  }
+  const [ox,oy]=pushOut(p.x,p.y,7);p.x+=ox;p.y+=oy;
+}
+function carHitsPeds(){
+  for(const c of cars){const sp=hyp(c.vx,c.vy);if(sp<50)continue;
+    for(const p of peds){if(p.npc||p.st==='down')continue;
+      const rx=p.x-c.x,ry=p.y-c.y;if(Math.abs(rx)>45||Math.abs(ry)>45)continue;
+      const ca=Math.cos(c.a),sa=Math.sin(c.a),f=rx*ca+ry*sa,l=-rx*sa+ry*ca;
+      if(Math.abs(f)<42&&Math.abs(l)<24){p.st='down';p.tm=2;p.vx=c.vx*.8+(l>0?-sa:sa)*80;p.vy=c.vy*.8+(l>0?ca:-ca)*80;
+        floatText(p.x,p.y,pick(['Hey!','Ow!','Watch out!']));beep(300,.08,'square',.05);
+        if(c===P.car&&!M&&wanted===0)setWanted(1);}}
+  }
+}
+function floatText(x,y,t,col='#fff'){floats.push({x,y,t,col,life:1.4});}
+
+/* ---------- police ---------- */
+function setWanted(n){wanted=n;lostT=0;renderStars();if(n>0)beep(600,.2,'square',.05);}
+function renderStars(){const el=$('#stars');el.innerHTML=wanted?[1,2,3].map(i=>`<i class="${i<=wanted?'on':''}">★</i>`).join(''):'';el.classList.toggle('flash',wanted>0&&lostT>0);}
+function policeTick(dt){
+  const cops=cars.filter(c=>c.police);
+  if(wanted>0){
+    if(cops.length<Math.min(4,wanted+1)&&Math.random()<dt*1.5)spawnTraffic(true);
+    let md=1e9;for(const c of cops){md=Math.min(md,hyp(c.x-px(),c.y-py()));c.ai.mode='chase';c.ai.cruise=320+wanted*25;}
+    const was=lostT>0;
+    if(md>820){lostT+=dt;if(lostT>3+wanted*1.5){wanted=0;lostT=0;for(const c of cops)c.ai.mode='roam';toast('LOST THEM','หนีพ้นแล้ว');}}
+    else lostT=0;
+    if(was!==(lostT>0))renderStars();
+    if(md<85&&pspeed()<60&&mode==='play'){bustT+=dt;if(bustT>2)busted();}else bustT=Math.max(0,bustT-dt);
+  }else bustT=0;
+}
+function busted(){
+  bustT=0;setWanted(0);for(const c of cars)if(c.police)c.ai.mode='roam';
+  if(M){failMission('BUSTED','โดนจับ');return;}
+  S.money=Math.max(0,S.money-50);save();updMoney();
+  leaveCar(true);const p=PLACES.police;P.x=p.sx;P.y=p.sy;cars=cars.filter(c=>!c.police);
+  toast('BUSTED','−$50');
+}
+
+/* ---------- player ---------- */
+function nearCar(){let best=null,bd=75;for(const c of cars){if(c.police)continue;const d=hyp(c.x-P.x,c.y-P.y);if(d<bd){bd=d;best=c;}}return best;}
+function enterCar(c){
+  if(c.ai&&c.ai.mode!=='parked'&&!c.parked){const b=blocks[clamp(Math.floor(c.y/B),0,N-1)*N+clamp(Math.floor(c.x/B),0,N-1)];const p=mkPed(b,0,{st:'flee',tm:2.5});p.x=c.x-Math.sin(c.a)*30;p.y=c.y+Math.cos(c.a)*30;floatText(p.x,p.y,'Hey! My car!');}
+  if(M&&M.follow===c)return;
+  c.ai=null;c.parked=false;c.keep=true;P.mode='car';P.car=c;beep(200,.08,'square',.04);
+}
+function leaveCar(force){
+  const c=P.car;if(!c)return;
+  if(!force&&hyp(c.vx,c.vy)>90){return;}
+  P.mode='foot';P.x=c.x-Math.sin(c.a)*-34;P.y=c.y+Math.cos(c.a)*-34;
+  const [ox,oy]=pushOut(P.x,P.y,10);P.x+=ox;P.y+=oy;
+  c.vx=c.vy=0;c.v=0;c.ai={mode:'parked'};c.parked=true;P.car=null;P.vx=P.vy=0;
+}
+function act(){audio();if(paused||TK||mode!=='play')return;if(P.mode==='car')leaveCar();else{const c=nearCar();if(c)enterCar(c);}}
+function footUpdate(dt){
+  let mx=0,my=0;
+  if(K.ArrowUp||K.w)my-=1;if(K.ArrowDown||K.s)my+=1;if(K.ArrowLeft||K.a)mx-=1;if(K.ArrowRight||K.d)mx+=1;
+  if(stick.on&&stick.m>.15){mx=Math.cos(stick.ang)*stick.m;my=Math.sin(stick.ang)*stick.m;}
+  const m=hyp(mx,my);if(m>1){mx/=m;my/=m;}
+  P.vx=mx*190;P.vy=my*190;P.x+=P.vx*dt;P.y+=P.vy*dt;if(m>.05){P.a=Math.atan2(my,mx);P.walk+=dt*m*10;}
+  let [ox,oy]=pushOut(P.x,P.y,9);P.x+=ox;P.y+=oy;
+  for(const c of cars){const dx=P.x-c.x,dy=P.y-c.y,ca=Math.cos(c.a),sa=Math.sin(c.a),f=dx*ca+dy*sa,l=-dx*sa+dy*ca;
+    if(Math.abs(f)<44&&Math.abs(l)<26){const pf=44-Math.abs(f),pl=26-Math.abs(l);if(pl<pf){const s=Math.sign(l)||1;P.x+=-sa*pl*s;P.y+=ca*pl*s;}else{const s=Math.sign(f)||1;P.x+=ca*pf*s;P.y+=sa*pf*s;}}}
+}
+
+/* ---------- mission engine ---------- */
+function resetWorld(){cars=[];peds=[];items=[];floats=[];wanted=0;lostT=0;bustT=0;renderStars();P.mode='foot';P.car=null;const g=PLACES.garage;P.x=g.sx;P.y=g.sy+2;P.a=Math.PI/2;}
+function startMission(id){
+  const def=MISSIONS.find(m=>m.id===id);resetWorld();
+  M={def,i:-1,usedTr:false,usedGps:false,spawned:[],gps:false};
+  enterPlay();next();
+}
+function startFree(){M=null;resetWorld();enterPlay();spawnParked(P.x,P.y,[pick(CNAMES),pick(CNAMES)]);showObj();}
+function next(){
+  if(!M)return;
+  M.i++;const st=M.def.steps[M.i];M.st=st;M.gps=false;M.wait=0;M.lost=0;M.cool=0;
+  $('#objTh').hidden=true;
+  if(!st){finishMission();return;}
+  if(st.t==='talk'){showObj();openTalk(st.lines,next);return;}
+  if(st.t==='car'){
+    if(st.col==='any'&&P.mode==='car'){next();return;}
+    const ref=st.at?PLACES[st.at]:{ex:P.x,ey:P.y};
+    let cols;if(st.col==='any')cols=[pick(CNAMES),pick(CNAMES)];else{const o=CNAMES.filter(c=>c!==st.col).sort(()=>Math.random()-.5).slice(0,3);cols=[o[0],st.col,o[1],o[2]];}
+    const cs=spawnParked(ref.ex,ref.ey,cols);M.target=cs.find(c=>c.cname===st.col)||cs[0];
+  }
+  if(st.t==='out'&&P.mode==='foot'){next();return;}
+  if(st.t==='grab'){const p=PLACES[st.at];items.push({x:p.sx+(p.side==='e'||p.side==='w'?0:50),y:p.sy+(p.side==='e'||p.side==='w'?50:0),kind:st.item});}
+  if(st.t==='pick'){const p=PLACES[st.at];const b=p.blk;M.npc=mkPed(b,perimT(b,p.sx,p.sy),{npc:st.who,shirt:WHO[st.who]});M.npc.x=p.sx;M.npc.y=p.sy;}
+  if(st.t==='follow'){
+    const sp=curbSpots(px(),py()).sort((a,b)=>hyp(b.x-px(),b.y-py())-hyp(a.x-px(),a.y-py()))[0];
+    const c=mkCar(sp.x,sp.y,sp.a,st.col,{keep:true});c.ai={mode:'hold',cruise:190};aiFromPose(c);
+    const p=PLACES[st.to];c.ai.di=clamp(Math.round(p.ex/B),0,N);c.ai.dj=clamp(Math.round(p.ey/B),0,N);c.ai.fx=p.ex;c.ai.fy=p.ey;M.follow=c;
+  }
+  if(st.t==='cops')setWanted(st.n);
+  showObj();
+}
+function stepTarget(){
+  const st=M&&M.st;if(!st)return null;
+  if(st.t==='go'||st.t==='wait'){const p=PLACES[st.at];return{x:p.ex,y:p.ey};}
+  if(st.t==='car'&&st.col!=='any'&&M.target)return M.target;
+  if(st.t==='grab')return items[0]||null;
+  if(st.t==='pick')return M.npc;
+  if(st.t==='follow')return M.follow;
+  return null;
+}
+function missionTick(dt){
+  const st=M&&M.st;if(!st||TK)return;
+  M.cool-=dt;
+  const x=px(),y=py(),sp=pspeed();
+  if(st.t==='go'){
+    const p=PLACES[st.at];
+    if(hyp(x-p.ex,y-p.ey)<p.rad){
+      if(st.drop&&M.pass){const b=p.blk||blocks[4*N+N-1];const q=mkPed(b,0,{st:'flee',tm:2.2,shirt:WHO[M.pass]});q.x=x;q.y=y;q.home={x:p.sx,y:p.sy};floatText(x,y-20,'Bye!');M.pass=null;}
+      beep(660,.1);beep(990,.15);next();return;
+    }
+    if(sp<70&&M.cool<=0)for(const q of Object.values(PLACES))if(q!==p&&hyp(x-q.ex,y-q.ey)<q.rad){toast('WRONG PLACE','ผิดที่');M.cool=4;break;}
+  }else if(st.t==='car'){
+    if(P.mode==='car'){if(st.col==='any'||P.car.cname===st.col){next();return;}if(M.cool<=0){toast('WRONG CAR','ผิดคัน');M.cool=4;}}
+  }else if(st.t==='out'){if(P.mode==='foot')next();}
+  else if(st.t==='grab'){
+    const it=items[0];if(!it){next();return;}
+    const d=hyp(x-it.x,y-it.y);
+    if(P.mode==='foot'&&d<34){items.shift();beep(880,.1);next();return;}
+    if(P.mode==='car'&&d<90&&M.cool<=0){toast('GET OUT OF THE CAR','ลงจากรถก่อน');M.cool=4;}
+  }else if(st.t==='pick'){
+    const n=M.npc,d=hyp(x-n.x,y-n.y);
+    if(P.mode==='car'&&d<120&&sp<90){n.board=true;if(d<34){peds=peds.filter(p=>p!==n);M.pass=n.npc;M.npc=null;beep(700,.1);next();}}
+    else{n.board=false;if(P.mode==='foot'&&d<70&&M.cool<=0){toast('GET IN A CAR','ขึ้นรถก่อน');M.cool=4;}}
+  }else if(st.t==='wait'){
+    const p=PLACES[st.at];
+    if(hyp(x-p.ex,y-p.ey)<p.rad+20&&sp<60){M.wait+=dt;}
+    const left=Math.ceil(st.s-M.wait);$('#objEn').innerHTML=wordsHTML(st.en)+` <b style="color:var(--gold)">${Math.max(0,left)}</b>`;
+    if(M.wait>=st.s)next();
+  }else if(st.t==='follow'){
+    const c=M.follow,d=hyp(x-c.x,y-c.y);
+    if(c.ai.mode==='hold'&&P.mode==='car'&&d<520)c.ai.mode='route';
+    if(c.ai.mode!=='hold'){if(d>850)M.lost+=dt;else M.lost=0;if(M.lost>5){failMission('LOST HIM','คลาดแล้ว');return;}}
+    if(c.ai.mode==='parked'&&d<420){next();}
+  }else if(st.t==='cops'){if(wanted===0)next();}
+}
+function finishMission(){
+  const st=M.usedGps?1:M.usedTr?2:3,def=M.def,cash=100+def.ch*50+st*25;
+  const prev=S.done[def.id]||0;S.done[def.id]=Math.max(prev,st);S.money+=cash;save();updMoney();
+  $('#dStars').innerHTML=[1,2,3].map(i=>`<i class="${i<=st?'on':''}">★</i>`).join('');
+  $('#dCash').textContent='+$'+cash;
+  $('#dWords').innerHTML=def.learn.map(([en,th])=>`<button class="chip" data-say="${esc(en)}">🔊 ${esc(en)}<span>${esc(th)}</span></button>`).join('');
+  const idx=MISSIONS.indexOf(def);$('#dNext').hidden=idx>=MISSIONS.length-1;$('#dNext').dataset.id=MISSIONS[idx+1]?MISSIONS[idx+1].id:'';
+  M.over=true;paused=true;showScr('done');beep(523,.15);setTimeout(()=>beep(659,.15),150);setTimeout(()=>beep(784,.3),300);
+}
+function failMission(t,th){M.over=true;paused=true;$('#fTitle').textContent=t;$('#fTh').textContent=th;showScr('fail');beep(200,.4,'sawtooth',.06);}
+
+/* ---------- talk ---------- */
+function openTalk(lines,cb){TK={q:[...lines],cb,cur:null};ring();$('#talk').hidden=false;hidePop();showLine();updControls();}
+function showLine(){
+  const it=TK.q.shift();
+  if(!it){const cb=TK.cb;TK=null;$('#talk').hidden=true;hidePop();updControls();cb&&cb();return;}
+  $('#tTh').hidden=true;
+  if(Array.isArray(it)){
+    const [who,en,th]=it;TK.cur={who,en,th};
+    $('#tWho').textContent=who;$('#tWho').style.color=WHO[who]||'#fff';
+    $('#tEn').innerHTML=wordsHTML(en);$('#tTh').textContent=th;$('#tOpts').innerHTML='';$('#tNext').hidden=false;
+    speak(en,who);
+  }else{
+    TK.cur={opts:it.ask};$('#tWho').textContent='You';$('#tWho').style.color='#fff';$('#tEn').innerHTML='';$('#tNext').hidden=true;
+    $('#tOpts').innerHTML=it.ask.map((o,i)=>`<button class="btn" data-opt="${i}">${esc(o[0])}<small hidden>${esc(o[1])}</small></button>`).join('');
+  }
+}
+$('#tNext').onclick=()=>{audio();if(TK)showLine();};
+$('#tSay').onclick=()=>{if(!TK||!TK.cur)return;if(TK.cur.en)speak(TK.cur.en,TK.cur.who);else speak(TK.cur.opts.map(o=>o[0]).join('. '));};
+$('#tTr').onclick=()=>{if(!TK||!TK.cur)return;if(TK.cur.en)$('#tTh').hidden=false;else $('#tOpts').querySelectorAll('small').forEach(s=>s.hidden=false);};
+$('#tOpts').onclick=e=>{const b=e.target.closest('[data-opt]');if(!b||!TK)return;const o=TK.cur.opts[+b.dataset.opt];speak(o[0]);TK.q.unshift(...o[2]);setTimeout(()=>TK&&showLine(),o[2].length?700:200);b.classList.add('p');};
+
+/* ---------- word popup ---------- */
+let popWord='';
+function showPop(el){
+  const w=el.dataset.w;popWord=w;const th=lookup(w)||'—';
+  $('#popW').textContent=w;$('#popT').textContent=th;$('#popSave').textContent=S.notes[w.toLowerCase()]?'จดแล้ว':'จด';
+  const pop=$('#pop');pop.hidden=false;const r=el.getBoundingClientRect(),pr=pop.getBoundingClientRect();
+  let x=clamp(r.left+r.width/2-pr.width/2,8,W-pr.width-8),y=r.top-pr.height-8;if(y<8)y=r.bottom+8;
+  pop.style.left=x+'px';pop.style.top=y+'px';
+  document.querySelectorAll('.w.on').forEach(e=>e.classList.remove('on'));el.classList.add('on');
+  speak(w);
+}
+function hidePop(){$('#pop').hidden=true;document.querySelectorAll('.w.on').forEach(e=>e.classList.remove('on'));}
+document.addEventListener('pointerdown',e=>{const w=e.target.closest('.w');if(w){showPop(w);e.stopPropagation();return;}if(!e.target.closest('#pop'))hidePop();},true);
+$('#popSay').onclick=()=>speak(popWord);
+$('#popSave').onclick=()=>{const k=popWord.toLowerCase();if(S.notes[k])delete S.notes[k];else S.notes[k]=lookup(popWord)||'';save();$('#popSave').textContent=S.notes[k]!=null?'จดแล้ว':'จด';};
+
+/* ---------- objective HUD ---------- */
+function showObj(){
+  const st=M&&M.st;const on=!!(st&&st.t!=='talk');$('#obj').hidden=!on;
+  if(!on)return;
+  $('#objEn').innerHTML=wordsHTML(st.en);$('#objTh').textContent=st.th;
+  $('#gpsB').classList.remove('used');$('#trB').classList.remove('used');
+  $('#gpsB').hidden=!stepTarget()&&st.t!=='cops'?true:st.t==='cops';
+}
+$('#trB').onclick=()=>{if(!M||!M.st)return;M.usedTr=true;$('#objTh').hidden=false;$('#trB').classList.add('used');};
+$('#gpsB').onclick=()=>{if(!M||!M.st)return;M.usedGps=true;M.gps=true;$('#gpsB').classList.add('used');};
+$('#sayB').onclick=()=>{if(M&&M.st)speak(M.st.en);};
+
+/* ---------- screens ---------- */
+const SCR=['menu','missions','done','fail','pause','notesS','setS','mapS'];
+let backTo='menu';
+function showScr(id){for(const s of SCR)$('#'+s).hidden=s!==id;}
+function enterPlay(){mode='play';paused=false;showScr(null);for(const id of['#top','#mini','#acts'])$(id).hidden=false;$('#stick').hidden=false;updMoney();updControls();}
+function toMenu(){mode='menu';paused=false;TK=null;M=null;$('#talk').hidden=true;hidePop();for(const id of['#top','#mini','#acts','#obj','#stick'])$(id).hidden=true;cars=cars.filter(c=>!c.police&&c!==P.car);P.car=null;wanted=0;renderStars();if('speechSynthesis' in window)speechSynthesis.cancel();showScr('menu');}
+function updMoney(){$('#money').textContent='$'+S.money;}
+function nextId(){const m=MISSIONS.find(m=>!S.done[m.id]);return(m||MISSIONS[MISSIONS.length-1]).id;}
+function unlocked(i){return i===0||!!S.done[MISSIONS[i-1].id];}
+function renderList(){
+  let h='',ch=-1;
+  MISSIONS.forEach((m,i)=>{if(m.ch!==ch){ch=m.ch;h+=`<div class="ch">${CHAPTERS[ch]}</div>`;}
+    const s=S.done[m.id]||0;h+=`<button class="mc" data-id="${m.id}" ${unlocked(i)?'':'disabled'}><b>${i+1}. ${esc(m.en)}</b><span>${esc(m.th)}</span><em>${s?'★'.repeat(s)+'☆'.repeat(3-s):'&nbsp;'}</em></button>`;});
+  $('#mlist').innerHTML=h;
+}
+function renderNotes(){
+  const ks=Object.keys(S.notes);
+  $('#nlist').innerHTML=ks.length?ks.map(k=>`<div class="note"><b>${esc(k)}</b><span>${esc(S.notes[k]||lookup(k)||'')}</span><button data-say="${esc(k)}">🔊</button><button data-del="${esc(k)}">✕</button></div>`).join(''):'<div class="sub">ยังไม่มีคำ</div>';
+}
+function renderSet(){document.querySelectorAll('#segRate button').forEach(b=>b.classList.toggle('on',+b.dataset.v===S.rate));document.querySelectorAll('#segSnd button').forEach(b=>b.classList.toggle('on',+b.dataset.v===S.snd));}
+$('#mCont').onclick=()=>{audio();startMission(nextId());};
+$('#mList').onclick=()=>{renderList();backTo='menu';showScr('missions');};
+$('#mFree').onclick=()=>{audio();startFree();};
+$('#mNotes').onclick=()=>{renderNotes();showScr('notesS');};
+$('#mSet').onclick=()=>{renderSet();showScr('setS');};
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>showScr('menu'));
+$('#mlist').onclick=e=>{const b=e.target.closest('[data-id]');if(b&&!b.disabled){audio();startMission(b.dataset.id);}};
+$('#nlist').onclick=e=>{const s=e.target.closest('[data-say]'),d=e.target.closest('[data-del]');if(s)speak(s.dataset.say);if(d){delete S.notes[d.dataset.del];save();renderNotes();}};
+$('#dWords').onclick=e=>{const s=e.target.closest('[data-say]');if(s)speak(s.dataset.say);};
+$('#segRate').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.rate=+b.dataset.v;save();renderSet();speak('Hello! Welcome to Sun Bay.');};
+$('#segSnd').onclick=e=>{const b=e.target.closest('button');if(!b)return;audio();S.snd=+b.dataset.v;save();renderSet();};
+$('#dMenu').onclick=toMenu;$('#fMenu').onclick=toMenu;$('#pMenu').onclick=toMenu;
+$('#dNext').onclick=()=>startMission($('#dNext').dataset.id);
+$('#fRetry').onclick=()=>startMission(M.def.id);
+$('#pRetry').onclick=()=>{if(M)startMission(M.def.id);else startFree();};
+$('#pGo').onclick=()=>{paused=false;showScr(null);};
+$('#pauseB').onclick=()=>{if(mode!=='play'||(M&&M.over))return;paused=true;$('#pRetry').hidden=false;showScr('pause');if('speechSynthesis' in window)speechSynthesis.cancel();};
+$('#mini').onclick=()=>{if(mode!=='play'||(M&&M.over))return;paused=true;drawBigMap();showScr('mapS');};
+$('#mapX').onclick=()=>{paused=false;showScr(null);};
+$('#actB').onclick=act;
+
+/* ---------- input ---------- */
+const K={};
+addEventListener('keydown',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;K[k]=true;audio();
+  if(k==='e'||k==='f')act();
+  if((k==='Enter'||k===' ')&&TK&&TK.cur&&TK.cur.en){showLine();e.preventDefault();}
+  if(k==='m'&&mode==='play')$('#mini').onclick();
+  if(k==='Escape'&&mode==='play'&&!paused)$('#pauseB').onclick();
+  if(k.startsWith('Arrow')||k===' ')e.preventDefault();});
+addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;K[k]=false;});
+addEventListener('blur',()=>{for(const k in K)K[k]=false;});
+const stick={on:false,id:null,x0:0,y0:0,ang:0,m:0};
+let brakeHeld=false;
+const SR=55;
+cv.addEventListener('pointerdown',e=>{audio();if(e.pointerType==='mouse'||mode!=='play'||stick.on)return;if(e.clientX<W*.55){stick.on=true;stick.id=e.pointerId;stick.x0=e.clientX;stick.y0=e.clientY;stick.m=0;placeStick();}});
+addEventListener('pointermove',e=>{if(!stick.on||e.pointerId!==stick.id)return;const dx=e.clientX-stick.x0,dy=e.clientY-stick.y0,d=hyp(dx,dy);stick.ang=Math.atan2(dy,dx);stick.m=clamp(d/SR,0,1);placeStick();});
+const endStick=e=>{if(e.pointerId===stick.id){stick.on=false;stick.id=null;stick.m=0;placeStick();}};
+addEventListener('pointerup',endStick);addEventListener('pointercancel',endStick);
+function placeStick(){const el=$('#stick'),k=el.firstElementChild;
+  if(stick.on){el.style.left=(stick.x0-el.offsetWidth/2)+'px';el.style.top=(stick.y0-el.offsetHeight/2)+'px';el.style.bottom='auto';k.style.transform=`translate(${Math.cos(stick.ang)*stick.m*SR}px,${Math.sin(stick.ang)*stick.m*SR}px)`;}
+  else{el.style.left='';el.style.top='';el.style.bottom='';k.style.transform='';}}
+const bb=$('#brakeB');bb.addEventListener('pointerdown',e=>{brakeHeld=true;e.preventDefault();});
+for(const ev of['pointerup','pointercancel','pointerleave'])bb.addEventListener(ev,()=>brakeHeld=false);
+function updControls(){
+  const show=mode==='play'&&!TK;$('#acts').hidden=!show;$('#stick').hidden=!show;
+  if(!show)return;
+  const a=$('#actB');
+  if(P.mode==='car'){a.textContent='ลงรถ';a.hidden=false;bb.hidden=false;}
+  else{a.textContent='ขึ้นรถ';a.hidden=!nearCar();bb.hidden=true;}
+}
+
+/* ---------- toast ---------- */
+let toastT=0;
+function toast(t,th){const el=$('#toast');el.innerHTML=esc(t)+(th?`<small>${esc(th)}</small>`:'');el.classList.add('on');toastT=2;}
+
+/* ---------- update ---------- */
+function update(dt){
+  tick+=dt;
+  const f=focus();
+  // populate
+  const nTraffic=cars.filter(c=>!c.police&&!c.keep).length;
+  if(nTraffic<16&&Math.random()<dt*4)spawnTraffic(false);
+  if(peds.length<26&&Math.random()<dt*6)spawnPed();
+  cars=cars.filter(c=>c===P.car||c.keep&&(!c.police)||hyp(c.x-f.x,c.y-f.y)<(c.police&&wanted?2600:1600)||(M&&(c===M.follow||c===M.target)));
+  peds=peds.filter(p=>p.npc||hyp(p.x-f.x,p.y-f.y)<1400);
+  // move
+  if(mode==='play'){if(P.mode==='car')playerCar(P.car,dt);else footUpdate(dt);}
+  for(const c of cars)if(c.ai)aiCar(c,dt);
+  for(const c of cars){if(c.parked&&c!==P.car){c.vx*=Math.exp(-4*dt);c.vy*=Math.exp(-4*dt);}c.x+=c.vx*dt;c.y+=c.vy*dt;}
+  carCars();for(const c of cars)carWorld(c);
+  for(const p of peds)updPed(p,dt);
+  carHitsPeds();
+  if(mode==='play'){policeTick(dt);missionTick(dt);}
+  for(const t of floats){t.life-=dt;t.y-=30*dt;}floats=floats.filter(t=>t.life>0);
+  if(toastT>0){toastT-=dt;if(toastT<=0)$('#toast').classList.remove('on');}
+  if((tick*10|0)%3===0)updControls();
+  // engine sound
+  if(eng){const on=S.snd&&mode==='play'&&P.mode==='car'&&!paused;const sp=on?Math.abs(P.car.v):0;eng.o.frequency.value=40+sp*.18;eng.g.gain.value=on?.035+sp/540*.04:0;}
+}
+
+/* ---------- render ---------- */
+function onScreen(x,y,m){const z=cam.z;return Math.abs(x-cam.x)*z<W/2+m*z&&Math.abs(y-cam.y)*z<VH/2+m*z;}
+function camUpdate(dt){
+  if(mode==='play'){
+    const x=px(),y=py(),vx=P.mode==='car'?P.car.vx:0,vy=P.mode==='car'?P.car.vy:0,sp=hyp(vx,vy);
+    const tx=x+vx*.35,ty=y+vy*.35,k=1-Math.exp(-4*dt);cam.x+=(tx-cam.x)*k;cam.y+=(ty-cam.y)*k;
+    const tz=Math.min(W,VH)/(P.mode==='car'?560:440)*(1-clamp(sp/540,0,1)*.28);cam.z+=(tz-cam.z)*(1-Math.exp(-2*dt));
+  }else{menuT+=dt*.05;cam.x=N*B/2+Math.cos(menuT)*900;cam.y=N*B/2+Math.sin(menuT*1.3)*700;cam.z=Math.min(W,VH)/620;}
+  cam.shake*=Math.exp(-8*dt);
+}
+function rr(x,y,w,h,r){ctx.beginPath();ctx.roundRect?ctx.roundRect(x,y,w,h,r):ctx.rect(x,y,w,h);}
+function render(){
+  const z=cam.z,sx=(Math.random()-.5)*cam.shake,sy=(Math.random()-.5)*cam.shake;
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='#1f7f9c';ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.setTransform(DPR*z,0,0,DPR*z,DPR*(W/2-cam.x*z+sx),DPR*(VH/2-cam.y*z+sy));
+  const vx0=cam.x-W/2/z-60,vx1=cam.x+W/2/z+60,vy0=cam.y-VH/2/z-60,vy1=cam.y+VH/2/z+60;
+  // water shimmer
+  ctx.strokeStyle='#ffffff22';ctx.lineWidth=3;
+  for(let yy=Math.floor(vy0/90)*90;yy<vy1;yy+=90)for(let xx=Math.floor(vx0/140)*140;xx<vx1;xx+=140){const o=Math.sin(tick*1.5+xx*.01+yy*.02)*8;ctx.beginPath();ctx.moveTo(xx+o,yy);ctx.quadraticCurveTo(xx+20+o,yy-6,xx+40+o,yy);ctx.stroke();}
+  // sand + asphalt
+  ctx.fillStyle='#bfe7ee';rr(L0-14,L0-14,L1-L0+28,L1-L0+28,120);ctx.fill();
+  ctx.fillStyle='#ecd59f';rr(L0,L0,L1-L0,L1-L0,110);ctx.fill();
+  ctx.fillStyle='#41444b';ctx.fillRect(-RH,-RH,N*B+2*RH,N*B+2*RH);
+  // docks pier
+  {const p=PLACES.docks.blk;ctx.fillStyle='#8a6a4a';ctx.fillRect(p.x0+40,N*B+RH,90,SAND+120);ctx.fillRect(p.x1-130,N*B+RH,90,SAND+120);}
+  // lane lines
+  ctx.strokeStyle='#e8c547';ctx.lineWidth=3;ctx.setLineDash([26,22]);
+  ctx.beginPath();
+  for(let i=0;i<=N;i++){const c=i*B;if(c>vx0-RH&&c<vx1+RH){ctx.moveTo(c,Math.max(-RH,vy0));ctx.lineTo(c,Math.min(N*B+RH,vy1));}if(c>vy0-RH&&c<vy1+RH){ctx.moveTo(Math.max(-RH,vx0),c);ctx.lineTo(Math.min(N*B+RH,vx1),c);}}
+  ctx.stroke();ctx.setLineDash([]);
+  // intersections cover + crosswalks
+  for(let i=0;i<=N;i++)for(let j=0;j<=N;j++){const x=i*B,y=j*B;if(x<vx0-B||x>vx1+B||y<vy0-B||y>vy1+B)continue;
+    ctx.fillStyle='#41444b';ctx.fillRect(x-RH,y-RH,R2,R2);ctx.fillStyle='#e9e9e9aa';
+    for(let k=-RH+8;k<RH-6;k+=14){ctx.fillRect(x+k,y-RH-16,8,14);ctx.fillRect(x+k,y+RH+2,8,14);ctx.fillRect(x-RH-16,y+k,14,8);ctx.fillRect(x+RH+2,y+k,14,8);}}
+  // blocks
+  for(const b of blocks){if(b.x1<vx0||b.x0>vx1||b.y1<vy0||b.y0>vy1)continue;drawBlock(b);}
+  // entrances of the current target (only with GPS)
+  const tgt=M&&M.gps?stepTarget():null;
+  if(tgt){ctx.strokeStyle='#ffcc4d';ctx.lineWidth=5;const r=40+Math.sin(tick*5)*8;ctx.beginPath();ctx.arc(tgt.x,tgt.y,r,0,7);ctx.stroke();ctx.fillStyle='#ffcc4d33';ctx.fill();}
+  // items
+  for(const it of items){const bob=Math.sin(tick*4)*3;ctx.fillStyle='#ffcc4d44';ctx.beginPath();ctx.arc(it.x,it.y,22+bob,0,7);ctx.fill();ctx.font='26px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(it.kind==='pizza'?'🍕':it.kind==='bag'?'👜':'📦',it.x,it.y-4+bob);}
+  // peds
+  for(const p of peds)if(p.x>vx0&&p.x<vx1&&p.y>vy0&&p.y<vy1)drawPed(p);
+  if(mode==='play'&&P.mode==='foot')drawPed({x:P.x,y:P.y,a:P.a,shirt:'#ff8a3d',skin:'#e0ac69',ph:P.walk,st:'walk',me:true});
+  // cars
+  for(const c of cars)if(c.x>vx0-50&&c.x<vx1+50&&c.y>vy0-50&&c.y<vy1+50)drawCar(c);
+  // buildings far→near
+  const vis=buildings.filter(q=>q.x1>vx0-200&&q.x0<vx1+200&&q.y1>vy0-200&&q.y0<vy1+200);
+  vis.sort((a,b)=>hyp((b.x0+b.x1)/2-cam.x,(b.y0+b.y1)/2-cam.y)-hyp((a.x0+a.x1)/2-cam.x,(a.y0+a.y1)/2-cam.y));
+  for(const q of vis)drawBuilding(q);
+  for(const t of trees)if(t.x>vx0-80&&t.x<vx1+80&&t.y>vy0-80&&t.y<vy1+80)drawTree(t);
+  // ground labels for open places
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  for(const p of Object.values(PLACES)){if(p.roof||p.lx<vx0-200||p.lx>vx1+200||p.ly<vy0-200||p.ly>vy1+200)continue;label(p.ic+' '+p.en.toUpperCase(),p.lx,p.ly,30);}
+  // npc names, floaters
+  for(const p of peds)if(p.npc)label(p.npc,p.x,p.y-24,16,WHO[p.npc]);
+  for(const t of floats){ctx.globalAlpha=clamp(t.life,0,1);label(t.t,t.x,t.y-20,18,t.col);ctx.globalAlpha=1;}
+  if(M&&M.follow&&M.st&&M.st.t==='follow'&&M.gps)label('▼',M.follow.x,M.follow.y-44,22,'#ffcc4d');
+  // screen-space arrow
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  if(tgt&&!onScreen(tgt.x,tgt.y,-40))drawArrow(tgt);
+}
+const R2=RH*2;
+function drawBlock(b){
+  ctx.fillStyle='#cfc7b8';ctx.fillRect(b.x0,b.y0,b.x1-b.x0,b.y1-b.y0);
+  ctx.strokeStyle='#ffffff55';ctx.lineWidth=2;ctx.strokeRect(b.x0+1,b.y0+1,b.x1-b.x0-2,b.y1-b.y0-2);
+  const i0=b.x0+20,j0=b.y0+20,w=b.x1-b.x0-40,h=b.y1-b.y0-40;
+  if(b.kind==='city'){ctx.fillStyle='#9bb27c';ctx.fillRect(i0,j0,w,h);}
+  else if(b.kind==='park'){ctx.fillStyle='#74b45c';ctx.fillRect(i0,j0,w,h);ctx.fillStyle='#e2d2a4';ctx.fillRect(i0+w/2-10,j0,20,h);ctx.fillRect(i0,j0+h/2-10,w,20);ctx.fillStyle='#5ec8e6';ctx.beginPath();ctx.arc(i0+w/2,j0+h/2,34,0,7);ctx.fill();}
+  else if(b.kind==='lot'){ctx.fillStyle='#55585f';ctx.fillRect(i0,j0,w,h);ctx.fillStyle='#ffffffaa';for(let x=i0+10;x<i0+w;x+=46){ctx.fillRect(x,j0+10,3,70);ctx.fillRect(x,j0+h-80,3,70);}}
+  else if(b.kind==='airport'){ctx.fillStyle='#7d838b';ctx.fillRect(i0,j0,w,h);ctx.fillStyle='#4a4e55';ctx.fillRect(i0,j0+120,w,60);ctx.fillStyle='#fff';for(let x=i0+10;x<i0+w;x+=40)ctx.fillRect(x,j0+148,22,4);}
+  else if(b.kind==='docks'){ctx.fillStyle='#9a9ea5';ctx.fillRect(i0,j0,w,h);}
+  else{ctx.fillStyle='#e3dccd';ctx.fillRect(i0,j0,w,h);}
+  if(b.strip){const s=b.strip;ctx.fillStyle='#5a5d64';ctx.fillRect(s.x0,s.y0,s.x1-s.x0,s.y1-s.y0);ctx.fillStyle='#ffffff88';
+    if(s.x1-s.x0>s.y1-s.y0)for(let x=s.x0+8;x<s.x1;x+=42)ctx.fillRect(x,s.y0+6,3,s.y1-s.y0-12);else for(let y=s.y0+8;y<s.y1;y+=42)ctx.fillRect(s.x0+6,y,s.x1-s.x0-12,3);}
+}
+function drawBuilding(q){
+  const cx=(q.x0+q.x1)/2,cy=(q.y0+q.y1)/2,k=q.h*PK,ox=clamp((cx-cam.x)*k,-90,90),oy=clamp((cy-cam.y)*k,-90,90);
+  // shadow
+  ctx.fillStyle='#00000030';ctx.fillRect(q.x0+10,q.y0+12,q.x1-q.x0,q.y1-q.y0);
+  ctx.fillStyle=q.wall;
+  if(ox>0){quad(q.x0,q.y0,q.x0,q.y1,q.x0+ox,q.y1+oy,q.x0+ox,q.y0+oy);}else if(ox<0){quad(q.x1,q.y0,q.x1,q.y1,q.x1+ox,q.y1+oy,q.x1+ox,q.y0+oy);}
+  ctx.fillStyle=q.wall2;
+  if(oy>0){quad(q.x0,q.y0,q.x1,q.y0,q.x1+ox,q.y0+oy,q.x0+ox,q.y0+oy);}else if(oy<0){quad(q.x0,q.y1,q.x1,q.y1,q.x1+ox,q.y1+oy,q.x0+ox,q.y1+oy);}
+  const rx=q.x0+ox,ry=q.y0+oy,w=q.x1-q.x0,h=q.y1-q.y0;
+  ctx.fillStyle=q.col;ctx.fillRect(rx,ry,w,h);
+  ctx.strokeStyle=shade(q.col,.25);ctx.lineWidth=4;ctx.strokeRect(rx+2,ry+2,w-4,h-4);
+  if(q.ac&&!q.label&&w>50&&h>50){ctx.fillStyle=shade(q.col,-.15);ctx.fillRect(rx+10+q.ac[0]*(w-50),ry+10+q.ac[1]*(h-50),30,22);}
+  if(q.label){const p=q.label;ctx.textAlign='center';ctx.textBaseline='middle';
+    const fs=clamp(w/(p.en.length*.62+2),16,34);ctx.font=`${fs*1.3}px sans-serif`;ctx.fillText(p.ic,rx+w/2,ry+h/2-fs*.75);
+    label(p.en.toUpperCase(),rx+w/2,ry+h/2+fs*.55,fs);}
+}
+function quad(a,b,c,d,e,f,g,h){ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c,d);ctx.lineTo(e,f);ctx.lineTo(g,h);ctx.closePath();ctx.fill();}
+function label(t,x,y,fs,col='#fff'){ctx.font=`600 ${fs}px Kanit,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=fs*.22;ctx.strokeStyle='#000000aa';ctx.lineJoin='round';ctx.strokeText(t,x,y);ctx.fillStyle=col;ctx.fillText(t,x,y);}
+function drawTree(t){
+  const k=t.h*PK*1.2,ox=(t.x-cam.x)*k,oy=(t.y-cam.y)*k,tx=t.x+ox,ty=t.y+oy;
+  ctx.fillStyle='#00000026';ctx.beginPath();ctx.ellipse(t.x+12,t.y+12,22,14,0,0,7);ctx.fill();
+  if(t.round){ctx.fillStyle='#3f8f45';ctx.beginPath();ctx.arc(tx,ty,24,0,7);ctx.fill();ctx.fillStyle='#57a85a';ctx.beginPath();ctx.arc(tx-6,ty-6,14,0,7);ctx.fill();return;}
+  ctx.strokeStyle='#8b6b47';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(t.x,t.y);ctx.lineTo(tx,ty);ctx.stroke();
+  ctx.fillStyle='#3e9b4f';for(let i=0;i<6;i++){const a=i*1.047+t.x*.01;ctx.beginPath();ctx.ellipse(tx+Math.cos(a)*14,ty+Math.sin(a)*14,16,6,a,0,7);ctx.fill();}
+  ctx.fillStyle='#2f7d3f';ctx.beginPath();ctx.arc(tx,ty,6,0,7);ctx.fill();
+}
+function drawPed(p){
+  ctx.save();ctx.translate(p.x,p.y);
+  if(p.st==='down'){ctx.rotate(p.a+1.5);ctx.fillStyle=p.shirt;rr(-12,-6,24,12,5);ctx.fill();ctx.fillStyle=p.skin;ctx.beginPath();ctx.arc(14,0,5,0,7);ctx.fill();ctx.restore();return;}
+  ctx.fillStyle='#00000030';ctx.beginPath();ctx.ellipse(3,4,10,7,0,0,7);ctx.fill();
+  ctx.rotate(p.a);const sw=Math.sin((p.ph||0)+tick*8)*(p.st==='walk'?3:5);
+  ctx.fillStyle='#2b2b33';ctx.fillRect(-2+sw,-6,6,4);ctx.fillRect(-2-sw,2,6,4);
+  ctx.fillStyle=p.shirt;rr(-5,-9,10,18,5);ctx.fill();
+  ctx.fillStyle=p.skin;ctx.beginPath();ctx.arc(1,0,5.5,0,7);ctx.fill();
+  if(p.me){ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,15,0,7);ctx.stroke();}
+  ctx.restore();
+}
+function drawCar(c){
+  const L=70,Wd=34;ctx.save();ctx.translate(c.x,c.y);
+  ctx.fillStyle='#00000040';ctx.save();ctx.translate(5,7);ctx.rotate(c.a);rr(-L/2,-Wd/2,L,Wd,9);ctx.fill();ctx.restore();
+  ctx.rotate(c.a);
+  ctx.fillStyle=c.col;rr(-L/2,-Wd/2,L,Wd,9);ctx.fill();
+  if(c.police){ctx.fillStyle='#1d2433';ctx.fillRect(-L/2+3,-Wd/2,14,Wd);ctx.fillRect(L/2-15,-Wd/2,12,Wd);}
+  ctx.fillStyle='#1b2330';rr(4,-Wd/2+4,14,Wd-8,4);ctx.fill();rr(-24,-Wd/2+5,9,Wd-10,3);ctx.fill();
+  ctx.fillStyle=shade(c.police?'#f4f4f4':c.col,.18);rr(-15,-Wd/2+4,19,Wd-8,3);ctx.fill();
+  ctx.fillStyle='#fff6c4';ctx.fillRect(L/2-4,-Wd/2+3,4,7);ctx.fillRect(L/2-4,Wd/2-10,4,7);
+  ctx.fillStyle='#ff3b3b';ctx.fillRect(-L/2,-Wd/2+3,3,7);ctx.fillRect(-L/2,Wd/2-10,3,7);
+  if(c.police){const on=(tick*6|0)%2;ctx.fillStyle=on?'#ff2d2d':'#2d6bff';ctx.fillRect(-8,-Wd/2+4,6,Wd/2-4);ctx.fillStyle=on?'#2d6bff':'#ff2d2d';ctx.fillRect(-8,0,6,Wd/2-4);
+    if(wanted){ctx.fillStyle=on?'#ff2d2d22':'#2d6bff22';ctx.beginPath();ctx.arc(0,0,70,0,7);ctx.fill();}}
+  if(c===P.car){ctx.strokeStyle='#ffffffaa';ctx.lineWidth=2;rr(-L/2-3,-Wd/2-3,L+6,Wd+6,11);ctx.stroke();}
+  ctx.restore();
+}
+function drawArrow(t){
+  const a=Math.atan2(t.y-cam.y,t.x-cam.x),m=46,cx=W/2,cy=VH/2;
+  const k=Math.min((W/2-m)/Math.abs(Math.cos(a)||1e-6),(VH/2-m)/Math.abs(Math.sin(a)||1e-6));
+  const x=cx+Math.cos(a)*k,y=cy+Math.sin(a)*k;
+  ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.fillStyle='#ffcc4d';ctx.strokeStyle='#000a';ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(20,0);ctx.lineTo(-12,-14);ctx.lineTo(-6,0);ctx.lineTo(-12,14);ctx.closePath();ctx.stroke();ctx.fill();ctx.restore();
+}
+/* ---------- maps ---------- */
+const mini=$('#mini'),mctx=mini.getContext('2d');
+function drawMap(g,size,big){
+  const s=size/(L1-L0),T=v=>(v-L0)*s;
+  g.fillStyle='#1f7f9c';g.fillRect(0,0,size,size);
+  g.fillStyle='#ecd59f';g.fillRect(T(L0),T(L0),(L1-L0)*s,(L1-L0)*s);
+  g.fillStyle='#41444b';g.fillRect(T(-RH),T(-RH),(N*B+R2)*s,(N*B+R2)*s);
+  for(const b of blocks){g.fillStyle=b.kind==='park'?'#74b45c':b.place?shade(PLACES[b.place].col||'#9a9ea5',-.1):'#b9b1a2';g.fillRect(T(b.x0),T(b.y0),(b.x1-b.x0)*s,(b.y1-b.y0)*s);}
+  g.textAlign='center';g.textBaseline='middle';
+  for(const p of Object.values(PLACES)){const x=T(p.blk?(p.blk.x0+p.blk.x1)/2:p.ex+60),y=T(p.blk?(p.blk.y0+p.blk.y1)/2:p.ey);
+    g.font=`${big?22:Math.max(9,size/14)}px sans-serif`;g.fillText(p.ic,x,y-(big?8:0));
+    if(big){g.font='600 13px Kanit,sans-serif';g.lineWidth=3;g.strokeStyle='#000b';g.strokeText(p.en,x,y+16);g.fillStyle='#fff';g.fillText(p.en,x,y+16);}}
+  for(const c of cars)if(c.police){g.fillStyle=(tick*4|0)%2?'#ff3b3b':'#3b7bff';g.beginPath();g.arc(T(c.x),T(c.y),big?5:3,0,7);g.fill();}
+  const t=M&&M.gps?stepTarget():null;
+  if(t){g.fillStyle='#ffcc4d';g.strokeStyle='#000';g.lineWidth=2;g.beginPath();g.arc(T(t.x),T(t.y),big?9:5,0,7);g.fill();g.stroke();}
+  const a=P.mode==='car'?P.car.a:P.a;g.save();g.translate(T(px()),T(py()));g.rotate(a);g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=2;
+  const r=big?12:7;g.beginPath();g.moveTo(r,0);g.lineTo(-r*.7,-r*.65);g.lineTo(-r*.3,0);g.lineTo(-r*.7,r*.65);g.closePath();g.stroke();g.fill();g.restore();
+}
+function drawMini(){
+  const size=mini.clientWidth||120,d=Math.min(2,DPR);if(mini.width!==size*d){mini.width=mini.height=size*d;}
+  mctx.setTransform(d,0,0,d,0,0);mctx.save();mctx.beginPath();mctx.arc(size/2,size/2,size/2,0,7);mctx.clip();
+  // zoomed: show ~2.6 blocks around player
+  const view=1500,big=size*(L1-L0)/view,s=big/(L1-L0);
+  mctx.translate(size/2-(px()-L0)*s,size/2-(py()-L0)*s);drawMap(mctx,big,false);mctx.restore();
+}
+function drawBigMap(){const c=$('#mapC'),size=Math.min(VH-90,W-40)|0,d=Math.min(2,DPR);c.style.width=c.style.height=size+'px';c.width=c.height=size*d;const g=c.getContext('2d');g.setTransform(d,0,0,d,0,0);drawMap(g,size,true);}
+
+/* ---------- loop ---------- */
+let last=performance.now(),mt=0;
+function frame(now){
+  const dt=Math.min(.05,(now-last)/1000);last=now;
+  if(!paused&&!TK)update(dt);else if(TK){tick+=dt;}
+  camUpdate(dt);render();
+  if(mode==='play'&&(mt+=dt)>.1){mt=0;drawMini();}
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+for(let i=0;i<14;i++)spawnTraffic(false);
+window.__game={startMission,PLACES,P,get M(){return M},lookup,MISSIONS,get cars(){return cars},get items(){return items},get wanted(){return wanted},get TK(){return TK},enterCar,leaveCar,stepTarget,showLine};
+</script>
+</body>
+</html>
