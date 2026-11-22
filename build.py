@@ -1,9 +1,9 @@
-"""Build the site: index.html (game picker), zombie.html (src/zombie.html) and city.html (src/city.html), with words/*.txt as the dictionary.
+"""Build the site: index.html (game picker), zombie.html (src/zombie.html) and learn.html (src/learn.html, recordings in assets/audio), with words/*.txt as the dictionary.
 
 Word files: '# topic' lines start a unit; other lines hold 'english|thai' pairs separated by ';'.
 3D models live in assets/models (CC0, Quaternius) and are loaded at runtime.
 """
-import collections, json, pathlib
+import collections, json, pathlib, re
 
 here = pathlib.Path(__file__).parent
 LEVELS = ['a1', 'a2', 'b1', 'b2', 'c1']
@@ -68,9 +68,18 @@ def main():
     zombie = (here / 'src' / 'zombie.html').read_text(encoding='utf-8')
     assert '/*WORDS*/{}' in zombie
     (here / 'zombie.html').write_text(zombie.replace('/*WORDS*/{}', wj), encoding='utf-8')
-    city = (here / 'src' / 'city.html').read_text(encoding='utf-8')
-    assert '/*WORDS*/{}' in city
-    (here / 'city.html').write_text(city.replace('/*WORDS*/{}', wj), encoding='utf-8')
+    # the learning app: recordings in assets/audio are used first, the device voice otherwise
+    audio = {}
+    ad = here / 'assets' / 'audio'
+    if ad.exists():
+        for f in sorted(ad.iterdir()):
+            if f.suffix.lower() in ('.mp3', '.m4a', '.wav', '.ogg'):
+                key = re.sub(r'[^a-z0-9]+', '_', f.stem.lower().replace("'", '')).strip('_')
+                audio.setdefault(key, f.name)
+    learn = (here / 'src' / 'learn.html').read_text(encoding='utf-8')
+    assert '/*WORDS*/{}' in learn and '/*AUDIO*/{}' in learn
+    (here / 'learn.html').write_text(learn.replace('/*WORDS*/{}', wj).replace('/*AUDIO*/{}', json.dumps(audio, ensure_ascii=False)), encoding='utf-8')
+    print('recordings:', len(audio))
     (here / 'index.html').write_text((here / 'src' / 'index.html').read_text(encoding='utf-8'), encoding='utf-8')
     print('\n'.join(report))
     print('total', sum(len(ws) for u in words.values() for _, ws in u), 'words ·', len(zombie) // 1024, 'KB')

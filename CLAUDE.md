@@ -12,7 +12,7 @@ Every button, title, label, description, toast and hint in the game must be **sh
 The site has two games and a picker page:
 - `src/index.html` → `index.html`: the game picker.
 - `src/zombie.html` → `zombie.html`: **Dead Words**, the zombie word game.
-- `src/city.html` → `city.html`: **Sun Bay**, a 3D city driving game (three.js): steering wheel, pedals, manual/auto gears, story missions (`MISSIONS`) and SunRide driver jobs (pick up people, deliver orders). All instructions in simple spoken English; tap a word for Thai.
+- `src/learn.html` → `learn.html`: **Easy English**, a word-learning app (levels, topics, lessons, quizzes, review). Voice: a recording in `assets/audio` (file name = word, spaces as `_`, e.g. `thank_you.mp3`) is played first; words without one use the device voice. `build.py` lists the recordings and inlines them at `/*AUDIO*/`.
 - `words/*.txt`: dictionary used when the player taps a word.
 - Models: `assets/models` (scenery, zombies).
 Run `python3 build.py` to regenerate the root pages.
